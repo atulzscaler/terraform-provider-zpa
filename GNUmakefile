@@ -1,9 +1,9 @@
 TEST?=$$(go list ./... |grep -v 'vendor')
-GOFMT_FILES?=$$(find . -name '*.go' |grep "zscaler/")
+GOFMT_FILES?=$$(find . -name '*.go' |grep "zpa/")
 WEBSITE_REPO=zscaler.com/hashicorp/terraform-website
-PKG_NAME=zscaler
+PKG_NAME=zpa
 TF_PLUGIN_DIR=~/.terraform.d/plugins
-ZSCALER_PROVIDER_NAMESPACE=zscaler.com/zscaler/zscaler
+ZPA_PROVIDER_NAMESPACE=zscaler.com/zpa/zpa
 
 default: build
 
@@ -13,14 +13,14 @@ build: fmtcheck
 build13: GOOS=$(shell go env GOOS)
 build13: GOARCH=$(shell go env GOARCH)
 ifeq ($(OS),Windows_NT)  # is Windows_NT on XP, 2000, 7, Vista, 10...
-build13: DESTINATION=$(APPDATA)/terraform.d/plugins/$(ZSCALER_PROVIDER_NAMESPACE)/1.0.0/$(GOOS)_$(GOARCH)
+build13: DESTINATION=$(APPDATA)/terraform.d/plugins/$(ZPA_PROVIDER_NAMESPACE)/1.0.0/$(GOOS)_$(GOARCH)
 else
-build13: DESTINATION=$(HOME)/.terraform.d/plugins/$(ZSCALER_PROVIDER_NAMESPACE)/1.0.0/$(GOOS)_$(GOARCH)
+build13: DESTINATION=$(HOME)/.terraform.d/plugins/$(ZPA_PROVIDER_NAMESPACE)/1.0.0/$(GOOS)_$(GOARCH)
 endif
 build13: fmtcheck
 	@echo "==> Installing plugin to $(DESTINATION)"
 	@mkdir -p $(DESTINATION)
-	go build -o $(DESTINATION)/terraform-provider-zscaler_v1.0.0
+	go build -o $(DESTINATION)/terraform-provider-zpa_v1.0.0
 
 test: fmtcheck
 	go test -i $(TEST) || exit 1
