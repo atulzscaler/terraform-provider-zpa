@@ -1,21 +1,21 @@
 
 terraform {
     required_providers {
-        zscaler = {
+        zpa = {
             version = "1.0.0"
-            source = "zscaler.com/zscaler/zscaler"
+            source = "zscaler.com/zpa/zpa"
         }
     }
 }
 
-provider "zscaler" {
+provider "zpa" {
 }
 
-data "zscaler_app_connector_group" "example" {
+data "zpa_app_connector_group" "example" {
   //id = 216196257331281931
   name = "SGIO-Vancouver"
 }
 
 output "all_app_connector_group" {
-  value = data.zscaler_app_connector_group.example.id
+  value = data.zpa_app_connector_group.example.id
 }

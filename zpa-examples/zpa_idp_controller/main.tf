@@ -1,20 +1,19 @@
 terraform {
     required_providers {
-        zscaler = {
+        zpa = {
             version = "1.0.0"
-            source = "zscaler.com/zscaler/zscaler"
+            source = "zscaler.com/zpa/zpa"
         }
     }
 }
 
-provider "zscaler" {
-}
+provider "zpa" {}
 
-data "zscaler_idp_controller" "all" {
+data "zpa_idp_controller" "all" {
     name = "SGIO-Admin-Azure"
 //  id = 216196257331282178
 }
 
 output "idp_controller" {
-    value = data.zscaler_idp_controller.all.id
+    value = data.zpa_idp_controller.all.id
 }

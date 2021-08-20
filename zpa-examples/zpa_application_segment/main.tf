@@ -1,21 +1,20 @@
 terraform {
     required_providers {
-        zscaler = {
+        zpa = {
             version = "1.0.0"
-            source = "zscaler.com/zscaler/zscaler"
+            source = "zscaler.com/zpa/zpa"
         }
     }
 }
 
-provider "zscaler" {
-}
+provider "zpa" {}
 
-data "zscaler_application_segment" "all" { 
+data "zpa_application_segment" "all" { 
   id = 216196257331282483
 }
 
 output "application_segment" {
-    value = data.zscaler_application_segment.all.name
+    value = data.zpa_application_segment.all.name
 }
 
 

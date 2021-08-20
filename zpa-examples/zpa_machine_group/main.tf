@@ -1,21 +1,20 @@
 terraform {
     required_providers {
-        zscaler = {
+        zpa = {
             version = "1.0.0"
-            source = "zscaler.com/zscaler/zscaler"
+            source = "zscaler.com/zpa/zpa"
         }
     }
 }
 
-provider "zscaler" {
-}
+provider "zpa" {}
 
 
-data "zscaler_machine_group" "all" {
+data "zpa_machine_group" "all" {
     totalpages = 20
  // id = 216196257331282185
 }
 
 output "all_machine_group" {
-  value = data.zscaler_machine_group.all
+  value = data.zpa_machine_group.all
 }

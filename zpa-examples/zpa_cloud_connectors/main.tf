@@ -1,20 +1,19 @@
 terraform {
     required_providers {
-        zscaler = {
+        zpa = {
             version = "1.0.0"
-            source = "zscaler.com/zscaler/zscaler"
+            source = "zscaler.com/zpa/zpa"
         }
     }
 }
 
-provider "zscaler" {
-}
+provider "zpa" {}
 
 
 
-data "zscaler_cloud_connector_group" "all" {
+data "zpa_cloud_connector_group" "all" {
 }
 
 output "all_cloud_connector_group" {
-  value = data.zscaler_cloud_connector_group.all
+  value = data.zpa_cloud_connector_group.all
 }

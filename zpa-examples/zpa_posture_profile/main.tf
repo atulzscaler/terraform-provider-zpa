@@ -1,22 +1,21 @@
 terraform {
     required_providers {
-        zscaler = {
+        zpa = {
             version = "1.0.0"
-            source = "zscaler.com/zscaler/zscaler"
+            source = "zscaler.com/zpa/zpa"
         }
     }
 }
 
-provider "zscaler" {
-}
+provider "zpa" {}
 
 
 // Testing Data Source Posture Profile
-data "zscaler_posture_profile" "example" {
+data "zpa_posture_profile" "example" {
     id = 216196257331282068
 //  name = "sgio-windows-domain-joined"
 }
 
 output "all_posture_profile" {
-  value = data.zscaler_posture_profile.example.name
+  value = data.zpa_posture_profile.example.name
 }

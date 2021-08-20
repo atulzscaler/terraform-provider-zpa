@@ -1,21 +1,20 @@
 terraform {
     required_providers {
-        zscaler = {
+        zpa = {
             version = "1.0.0"
-            source = "zscaler.com/zscaler/zscaler"
+            source = "zscaler.com/zpa/zpa"
         }
     }
 }
 
-provider "zscaler" {
-}
+provider "zpa" {}
 
-data "zscaler_scim_groups" "all" {
+data "zpa_scim_groups" "all" {
     list {
         idpid = 216196257331282118
     }
 }
 
 output "scim_groups" {
-    value = data.zscaler_scim_groups.all
+    value = data.zpa_scim_groups.all
 }

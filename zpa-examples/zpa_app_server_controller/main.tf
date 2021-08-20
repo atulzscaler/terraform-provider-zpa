@@ -1,15 +1,15 @@
 terraform {
     required_providers {
-        zscaler = {
+        zpa = {
             version = "1.0.0"
-            source = "zscaler.com/zscaler/zscaler"
+            source = "zscaler.com/zpa/zpa"
         }
     }
 }
 
-provider "zscaler" {}
+provider "zpa" {}
 
-data "zscaler_server_group" "example" {
+data "zpa_server_group" "example" {
   id = 216196257331282482
   //name = "SGIO-CORP-Server-Group"
 }
@@ -18,7 +18,7 @@ output "all_server_group" {
   value = data.zscaler_server_group.example.name
 }
 
-resource "zscaler_application_server" "example1" {
+resource "zpa_application_server" "example1" {
   name                          = "example1"
   description                   = "example1"
   address                       = "1.1.1.2"

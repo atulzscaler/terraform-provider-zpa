@@ -1,22 +1,21 @@
 terraform {
     required_providers {
-        zscaler = {
+        zpa = {
             version = "1.0.0"
-            source = "zscaler.com/zscaler/zscaler"
+            source = "zscaler.com/zpa/zpa"
         }
     }
 }
 
-provider "zscaler" {
-}
+provider "zpa" {}
 
 
 
-data "zscaler_policy_set_global" "all" {
+data "zpa_policy_set_global" "all" {
 }
 
 output "all_policy_set_global" {
-  value = data.zscaler_policy_set_global.all
+  value = data.zpa_policy_set_global.all
 }
 
 
