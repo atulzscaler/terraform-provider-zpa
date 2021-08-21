@@ -15,28 +15,26 @@ data "zpa_policy_set_global" "all" {
 }
 
 output "all_policy_set_global" {
-  value = data.zpa_policy_set_global.all
+  value = data.zpa_policy_set_global.all.id
 }
 
 
-/*
-resource "zscaler_policyset_rule" "test" {
-  policysetid                   = data.zscaler_policy_set_global.all.id
+resource "zpa_policyset_rule" "test" {
+  policysetid                   = data.zpa_policy_set_global.all.id
   name                          = "example1"
   description                   = "example1"
   action                        = "ALLOW"
   ruleorder                     = 1
-  conditions {
-    operands {
-        name = "SGIO Domain Controllers"
-        objecttype = "APP"
-        operator = "AND"
-    }
-    operands {
-        name = "SGIO-User-Okta"
-        objecttype = "SCIM_GROUP"
-        operator = "AND"  
-    }
-  }
+  // conditions {
+  //   operands {
+  //       name = "Example"
+  //       objecttype = "APP"
+  //       operator = "AND"
+  //   }
+  //   operands {
+  //       name = "SGIO-User-Okta"
+  //       objecttype = ["SCIM_GROUP"]
+  //       operator = "AND"  
+  //   }
+  // }
 }
-*/

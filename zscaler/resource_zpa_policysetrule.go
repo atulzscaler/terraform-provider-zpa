@@ -1,13 +1,12 @@
 package zscaler
 
-/*
 import (
 	"log"
 	"strconv"
 
-	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/schema"
 	"github.com/SecurityGeekIO/terraform-provider-zpa/gozscaler/client"
 	"github.com/SecurityGeekIO/terraform-provider-zpa/gozscaler/policysetrule"
+	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/schema"
 )
 
 func resourcePolicySetRule() *schema.Resource {
@@ -198,7 +197,7 @@ func resourcePolicySetRule() *schema.Resource {
 				Optional: true,
 			},
 		},
-		//Create: resourcePolicySetCreate,
+		Create: resourcePolicySetCreate,
 		Read:   resourcePolicySetRead,
 		Update: resourcePolicySetUpdate,
 		Delete: resourcePolicySetDelete,
@@ -287,7 +286,7 @@ func resourcePolicySetDelete(d *schema.ResourceData, m interface{}) error {
 	policySetId := d.Id()
 	ruleId := d.Id()
 
-	log.Printf("[INFO] Deleting rule with id %v\n")
+	//log.Printf("[INFO] Deleting rule with id %v\n")
 
 	if _, err := zClient.policysetrule.Delete(policySetId, ruleId); err != nil {
 		return err
@@ -300,24 +299,24 @@ func resourcePolicySetDelete(d *schema.ResourceData, m interface{}) error {
 //https://help.zscaler.com/zpa/api-reference#/policy-set-controller/addRuleToPolicySet
 func expandCreatePolicyRule(d *schema.ResourceData) policysetrule.PolicyRule {
 	return policysetrule.PolicyRule{
-		Action:            d.Get("action").(string),
-		ActionID:          d.Get("actionid").(int64),
-		CreationTime:      d.Get("creationtime").(int32),
-		CustomMsg:         d.Get("custommsg").(string),
-		Description:       d.Get("description").(string),
-		ID:                d.Get("id").(int64),
-		ModifiedBy:        d.Get("modifiedby").(int64),
-		ModifiedTime:      d.Get("Modifiedtime").(int32),
-		Name:              d.Get("name").(string),
-		Operator:          d.Get("operator").(string),
-		PolicySetID:       d.Get("policysetid").(int64),
-		PolicyType:        d.Get("policytype").(int32),
-		Priority:          d.Get("priority").(int32),
-		ReauthIdleTimeout: d.Get("reauthidletimeout").(int32),
-		ReauthTimeout:     d.Get("reauthtimeout").(int32),
-		RuleOrder:         d.Get("ruleorder").(int32),
-		ZpnCbiProfileID:   d.Get("zpncbiprofileid").(int64),
-		Conditions:        expandConditionSet(d),
+		Action: d.Get("action").(string),
+		// ActionID:     d.Get("actionid").(int),
+		// CreationTime: d.Get("creationtime").(int),
+		CustomMsg:   d.Get("custommsg").(string),
+		Description: d.Get("description").(string),
+		// ID:                d.Get("id").(int),
+		// ModifiedBy:        d.Get("modifiedby").(int),
+		// ModifiedTime:      d.Get("Modifiedtime").(int),
+		Name: d.Get("name").(string),
+		// Operator:    d.Get("operator").(string),
+		PolicySetID: d.Get("policysetid").(int),
+		PolicyType:  d.Get("policytype").(int),
+		Priority:    d.Get("priority").(int),
+		// ReauthIdleTimeout: d.Get("reauthidletimeout").(int),
+		// ReauthTimeout:     d.Get("reauthtimeout").(int),
+		RuleOrder: d.Get("ruleorder").(int),
+		// ZpnCbiProfileID: d.Get("zpncbiprofileid").(int),
+		// Conditions:      expandConditionSet(d),
 	}
 }
 
@@ -329,12 +328,12 @@ func expandConditionSet(d *schema.ResourceData) []policysetrule.Conditions {
 		for i, condition := range conditions {
 			conditionSet := condition.(map[string]interface{})
 			conditionSets[i] = policysetrule.Conditions{
-				CreationTime: conditionSet["creationtime"].(int32),
-				ID:           conditionSet["id"].(int64),
-				ModifiedBy:   conditionSet["modifiedby"].(int64),
-				ModifiedTime: conditionSet["modifiedtime"].(int32),
-				Negated:      conditionSet["negated"].(bool),
-				Operator:     conditionSet["operator"].(string),
+				// CreationTime: conditionSet["creationtime"].(int),
+				// ID:           conditionSet["id"].(int),
+				// ModifiedBy:   conditionSet["modifiedby"].(int),
+				// ModifiedTime: conditionSet["modifiedtime"].(int),
+				Negated:  conditionSet["negated"].(bool),
+				Operator: conditionSet["operator"].(string),
 			}
 		}
 	}
@@ -380,4 +379,3 @@ func flattenPolicyRuleOperands(conditionOperand []policysetrule.Operands) []inte
 
 // Need to flatten the Operands menu, which is a slice inside the slice Conditions
 //https://help.zscaler.com/zpa/api-reference#/policy-set-controller/addRuleToPolicySet
-*/

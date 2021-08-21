@@ -3,6 +3,7 @@ package policysetrule
 import (
 	"fmt"
 	"net/http"
+	"strings"
 )
 
 const (
@@ -11,55 +12,55 @@ const (
 
 type PolicyRule struct {
 	Action             string               `json:"action"`
-	ActionID           int64                `json:"actionId,string"`
-	CreationTime       int32                `json:"creationTime,string"`
+	ActionID           int                  `json:"actionId,string"`
+	CreationTime       int                  `json:"creationTime,string"`
 	CustomMsg          string               `json:"customMsg"`
 	Description        string               `json:"description"`
-	ID                 int64                `json:"id,string"`
-	ModifiedBy         int64                `json:"modifiedBy,string"`
-	ModifiedTime       int32                `json:"modifiedTime,string"`
+	ID                 int                  `json:"id,string"`
+	ModifiedBy         int                  `json:"modifiedBy,string"`
+	ModifiedTime       int                  `json:"modifiedTime,string"`
 	Name               string               `json:"name"`
 	Operator           string               `json:"operator"`
-	PolicySetID        int64                `json:"policySetId,string"`
-	PolicyType         int32                `json:"policyType,string"`
-	Priority           int32                `json:"priority,string"`
-	ReauthIdleTimeout  int32                `json:"reauthIdleTimeout,string"`
-	ReauthTimeout      int32                `json:"reauthTimeout,string"`
-	RuleOrder          int32                `json:"ruleOrder,string"`
-	ZpnCbiProfileID    int64                `json:"zpnCbiProfileId,string"`
+	PolicySetID        int                  `json:"policySetId,string"`
+	PolicyType         int                  `json:"policyType,string"`
+	Priority           int                  `json:"priority,string"`
+	ReauthIdleTimeout  int                  `json:"reauthIdleTimeout,string"`
+	ReauthTimeout      int                  `json:"reauthTimeout,string"`
+	RuleOrder          int                  `json:"ruleOrder,string"`
+	ZpnCbiProfileID    int                  `json:"zpnCbiProfileId,string"`
 	Conditions         []Conditions         `json:"conditions"`
 	AppServerGroups    []AppServerGroups    `json:"appServerGroups"`
 	AppConnectorGroups []AppConnectorGroups `json:"appConnectorGroups"`
 }
 
 type Conditions struct {
-	CreationTime int32      `json:"creationTime,string"`
-	ID           int64      `json:"id,string"`
-	ModifiedBy   int64      `json:"modifiedBy,string"`
-	ModifiedTime int32      `json:"modifiedTime,string"`
+	CreationTime int        `json:"creationTime,string"`
+	ID           int        `json:"id,string"`
+	ModifiedBy   int        `json:"modifiedBy,string"`
+	ModifiedTime int        `json:"modifiedTime,string"`
 	Negated      bool       `json:"negated"`
 	Operands     []Operands `json:"operands"`
 	Operator     string     `json:"operator"`
 }
 type Operands struct {
-	CreationTime int32  `json:"creationTime,string"`
-	ID           int64  `json:"id,string"`
-	IdpID        int64  `json:"idpId,string"`
+	CreationTime int    `json:"creationTime,string"`
+	ID           int    `json:"id,string"`
+	IdpID        int    `json:"idpId,string"`
 	LHS          string `json:"lhs"`
-	ModifiedBy   int64  `json:"modifiedBy,string"`
-	ModifiedTime int32  `json:"modifiedTime,string"`
+	ModifiedBy   int    `json:"modifiedBy,string"`
+	ModifiedTime int    `json:"modifiedTime,string"`
 	Name         string `json:"name"`
 	ObjectType   string `json:"objectType"`
 	RHS          string `json:"rhs"`
 }
 
 type AppServerGroups struct {
-	ID   int64  `json:"id,string"`
+	ID   int    `json:"id,string"`
 	Name string `json:"name"`
 }
 
 type AppConnectorGroups struct {
-	ID           int64          `json:"id,string"`
+	ID           int            `json:"id,string"`
 	Name         string         `json:"name"`
 	Connectors   []Connectors   `json:"connectors"`
 	ServerGroups []ServerGroups `json:"serverGroups"`
@@ -67,7 +68,7 @@ type AppConnectorGroups struct {
 
 type Connectors struct {
 	Name string `json:"name"`
-	ID   int64  `json:"id,string"`
+	ID   int    `json:"id,string"`
 }
 
 type ServerGroups struct {
@@ -85,8 +86,12 @@ func (service *Service) Get(policySetId, ruleId string) (*PolicyRule, *http.Resp
 	return v, resp, nil
 }
 
-func (service *Service) Create(policySetId string) (*PolicyRule, *http.Response, error) {
+func (service *Service) Create(customerId int64, policySetId int64, rule PolicyRule) (PolicyRule, *http.Response, error) {
 	v := new(PolicyRule)
+	localVarPath := a.client.cfg.BasePath + "/mgmtconfig/v1/admin/customers/{customerId}/policySet/{policySetId}/rule"
+	localVarPath = strings.Replace(localVarPath, "{"+"customerId"+"}", fmt.Sprintf("%v", customerId), -1)
+	localVarPath = strings.Replace(localVarPath, "{"+"policySetId"+"}", fmt.Sprintf("%v", policySetId), -1)
+
 	resp, err := service.Client.NewRequestDo("POST", mgmtConfig+service.Client.Config.CustomerID+"/policySet/%v/rule", policySetId, nil, &v)
 	if err != nil {
 		return nil, nil, err

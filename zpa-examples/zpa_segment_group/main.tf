@@ -21,9 +21,9 @@ data "zpa_application_segment" "all" {
   id = 216196257331282483
 }
 
-output "application_segment" {
-    value = data.zpa_application_segment.all.id
-}
+// output "application_segment" {
+//     value = data.zpa_application_segment.all.id
+// }
 
  resource "zpa_segment_group" "example" {
    name = "example"
