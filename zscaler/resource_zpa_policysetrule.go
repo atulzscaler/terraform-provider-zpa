@@ -219,7 +219,6 @@ func resourcePolicySetCreate(d *schema.ResourceData, m interface{}) error {
 		return err
 	}
 	d.SetId(strconv.FormatInt(int64(policysetrule.ID), 10))
-
 	return resourcePolicySetRead(d, m)
 }
 
