@@ -18,7 +18,7 @@ provider "zpa" {}
 // }
 
 data "zpa_application_segment" "all" { 
-  id = 216196257331282483
+  name = "SGIO RDP Services"
 }
 
 // output "application_segment" {
@@ -31,7 +31,7 @@ data "zpa_application_segment" "all" {
    enabled = true
    policymigrated = false
     applications {
-        name = [data.zpa_application_segment.all.name]
-        //id = [data.zpa_application_segment.all.id]
+        //name = [data.zpa_application_segment.all.name]
+        id = [data.zpa_application_segment.all.id]
     }
  }

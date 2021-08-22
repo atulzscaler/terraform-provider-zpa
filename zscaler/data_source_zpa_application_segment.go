@@ -149,7 +149,8 @@ func dataSourceApplicationSegment() *schema.Resource {
 			},
 			"id": {
 				Type:     schema.TypeString,
-				Required: true,
+				Computed: true,
+				//Required: true,
 			},
 			"ipanchored": {
 				Type:     schema.TypeBool,
@@ -168,8 +169,9 @@ func dataSourceApplicationSegment() *schema.Resource {
 				Computed: true,
 			},
 			"name": {
-				Type:     schema.TypeString,
-				Computed: true,
+				Type: schema.TypeString,
+				//Computed: true,
+				Required: true,
 			},
 			"passivehealthenabled": {
 				Type:     schema.TypeBool,
