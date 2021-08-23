@@ -2,7 +2,7 @@ terraform {
     required_providers {
         zpa = {
             version = "1.0.0"
-            source = "zpa.com/zpa/zpa"
+            source = "zscaler.com/zpa/zpa"
         }
     }
 }
@@ -26,8 +26,8 @@ provider "zpa" {}
 
 
 data "zpa_app_connector_group" "example" {
-//name = "SGIO-Vancouver"
-  id = 216196257331281931
+name = "SGIO-Vancouver"
+//id = 216196257331281931
 }
 
 
