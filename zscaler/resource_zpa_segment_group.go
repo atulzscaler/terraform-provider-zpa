@@ -18,16 +18,16 @@ func resourceSegmentGroup() *schema.Resource {
 				Optional:    true,
 				Elem: &schema.Resource{
 					Schema: map[string]*schema.Schema{
-						"id": {
-							Type:     schema.TypeList,
-							Optional: true,
-							Elem:     &schema.Schema{Type: schema.TypeString},
-						},
-						// "name": {
+						// "id": {
 						// 	Type:     schema.TypeList,
-						// 	Required: true,
+						// 	Optional: true,
 						// 	Elem:     &schema.Schema{Type: schema.TypeString},
 						// },
+						"name": {
+							Type:     schema.TypeList,
+							Required: true,
+							Elem:     &schema.Schema{Type: schema.TypeString},
+						},
 					},
 				},
 			},

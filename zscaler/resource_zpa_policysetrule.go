@@ -1,5 +1,6 @@
 package zscaler
 
+/*
 import (
 	"log"
 	"strconv"
@@ -219,6 +220,7 @@ func resourcePolicySetCreate(d *schema.ResourceData, m interface{}) error {
 		return err
 	}
 	d.SetId(strconv.FormatInt(int64(policysetrule.ID), 10))
+
 	return resourcePolicySetRead(d, m)
 }
 
@@ -378,3 +380,4 @@ func flattenPolicyRuleOperands(conditionOperand []policysetrule.Operands) []inte
 
 // Need to flatten the Operands menu, which is a slice inside the slice Conditions
 //https://help.zscaler.com/zpa/api-reference#/policy-set-controller/addRuleToPolicySet
+*/

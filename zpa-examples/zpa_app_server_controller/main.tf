@@ -14,8 +14,13 @@ data "zpa_server_group" "example" {
   //name = "SGIO-CORP-Server-Group"
 }
 
+data "zpa_server_group" "example1" {
+  id = 216196257331282476
+  //name = "SGIO-CORP-Server-Group"
+}
+
 output "all_server_group" {
-  value = data.zscaler_server_group.example.name
+  value = data.zpa_server_group.example.name
 }
 
 resource "zpa_application_server" "example1" {
@@ -23,7 +28,10 @@ resource "zpa_application_server" "example1" {
   description                   = "example1"
   address                       = "1.1.1.2"
   enabled                       = true
-  appservergroupids             = [ data.zscaler_server_group.example.id ]
+  appservergroupids             = [ 
+    data.zpa_server_group.example.id,
+    data.zpa_server_group.example1.id
+    ]
 }
 
 /*

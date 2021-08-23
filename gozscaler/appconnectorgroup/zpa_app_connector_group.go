@@ -85,16 +85,9 @@ type Connectors struct {
 	// PreviousVersion          string       `json:"previousVersion"`
 	// PrivateIp                string       `json:"privateIp"`
 	// PublicIp                 string       `json:"publicIp"`
-	SigningCert    *SigningCert `json:"signingCert"`
-	UpgradeAttempt int32        `json:"upgradeAttempt,string"`
+	UpgradeAttempt int32 `json:"upgradeAttempt,string"`
 	// UpgradeStatus            string       `json:"upgradeStatus"`
 }
-type SigningCert struct {
-	AdditionalProp1 string `json:"additionalProp1"`
-	AdditionalProp2 string `json:"additionalProp2"`
-	AdditionalProp3 string `json:"additionalProp3"`
-}
-
 type AppServerGroup struct {
 	ConfigSpace      string `json:"configSpace"`
 	CreationTime     int32  `json:"creationTime,string"`
