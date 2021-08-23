@@ -150,7 +150,7 @@ func resourceServerGroupRead(d *schema.ResourceData, m interface{}) error {
 	_ = d.Set("modifiedby", resp.ModifiedBy)
 	_ = d.Set("modifiedtime", resp.ModifiedTime)
 	_ = d.Set("name", resp.Name)
-	_ = d.Set("applications", flattenServerGroupApplications(resp))
+	_ = d.Set("applications", flattenServerGroupApplications(resp.Applications))
 	_ = d.Set("appconnectorgroups", flattenAppConnectorGroups(resp))
 	//_ = d.Set("connectors", flattenAppConnectorGroupInServerGroup())
 	_ = d.Set("servers", flattenServers(resp.ApplicationServers))
@@ -185,8 +185,8 @@ func resourceServerGroupDelete(d *schema.ResourceData, m interface{}) error {
 	return nil
 }
 
-func expandCreateAppServerGroupRequest(d *schema.ResourceData) servergroup.ServerGroupRequest {
-	serverGroup := servergroup.ServerGroupRequest{
+func expandCreateAppServerGroupRequest(d *schema.ResourceData) servergroup.ServerGroup {
+	serverGroup := servergroup.ServerGroup{
 		Name:               d.Get("name").(string),
 		Description:        d.Get("description").(string),
 		Enabled:            d.Get("enabled").(bool),
@@ -259,9 +259,9 @@ func expandServerGroupApplications(d *schema.ResourceData) []servergroup.Applica
 	return serverGroupApplications
 }
 
-func flattenServerGroupApplications(serverGroup *servergroup.ServerGroupResponse) []interface{} {
-	serverGroupApplications := make([]interface{}, len(serverGroup.Applications))
-	for i, srvApplication := range serverGroup.Applications {
+func flattenServerGroupApplications(applications []servergroup.Applications) []interface{} {
+	serverGroupApplications := make([]interface{}, len(applications))
+	for i, srvApplication := range applications {
 		serverGroupApplications[i] = map[string]interface{}{
 			"id":   srvApplication.ID,
 			"name": srvApplication.Name,
@@ -304,7 +304,7 @@ func expandAppConnectorGroups(d *schema.ResourceData) []servergroup.AppConnector
 	return appConnectorGroups
 }
 
-func flattenAppConnectorGroups(appConnectorGroup *servergroup.ServerGroupResponse) []interface{} {
+func flattenAppConnectorGroups(appConnectorGroup *servergroup.ServerGroup) []interface{} {
 	appConnectorGroups := make([]interface{}, len(appConnectorGroup.AppConnectorGroups))
 	for i, appConnectorGroup := range appConnectorGroup.AppConnectorGroups {
 		appConnectorGroups[i] = map[string]interface{}{
@@ -326,8 +326,46 @@ func flattenAppConnectorGroups(appConnectorGroup *servergroup.ServerGroupRespons
 			"upgradeday":            appConnectorGroup.UpgradeDay,
 			"upgradetimeinsecs":     appConnectorGroup.UpgradeTimeinSecs,
 			"versionprofileid":      appConnectorGroup.VersionProfileId,
+			"servergroups":          flattenAppConnectorServerGroups(appConnectorGroup),
+			"connectors":            flattenAppConnectors(appConnectorGroup),
 		}
 	}
 
 	return appConnectorGroups
+}
+
+func flattenAppConnectorServerGroups(serverGroup servergroup.AppConnectorGroups) []interface{} {
+	serverGroups := make([]interface{}, len(*serverGroup.AppServerGroups))
+	for i, serverGroup := range *serverGroup.AppServerGroups {
+		serverGroups[i] = map[string]interface{}{
+			"configSpace":      serverGroup.ConfigSpace,
+			"creationtime":     serverGroup.CreationTime,
+			"description":      serverGroup.Description,
+			"enabled":          serverGroup.Enabled,
+			"id":               serverGroup.ID,
+			"dynamicdiscovery": serverGroup.DynamicDiscovery,
+			"modifiedby":       serverGroup.ModifiedBy,
+			"modifiedtime":     serverGroup.ModifiedTime,
+			"name":             serverGroup.Name,
+		}
+	}
+
+	return serverGroups
+}
+
+func flattenAppConnectors(connector servergroup.AppConnectorGroups) []interface{} {
+	appConnectors := make([]interface{}, len(*connector.Connectors))
+	for i, appConnector := range *connector.Connectors {
+		appConnectors[i] = map[string]interface{}{
+			"creationtime": appConnector.CreationTime,
+			"description":  appConnector.Description,
+			"enabled":      appConnector.Enabled,
+			"id":           appConnector.ID,
+			"modifiedby":   appConnector.ModifiedBy,
+			"modifiedtime": appConnector.ModifiedTime,
+			"name":         appConnector.Name,
+		}
+	}
+
+	return appConnectors
 }

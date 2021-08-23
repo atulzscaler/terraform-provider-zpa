@@ -205,7 +205,11 @@ func resourceConnectorGroupRead(d *schema.ResourceData, m interface{}) error {
 	_ = d.Set("upgradetimeinsecs", resp.UpgradeTimeInSecs)
 	_ = d.Set("versionprofileid", resp.VersionProfileID)
 	_ = d.Set("connectors", flattenConnectors(resp))
-	_ = d.Set("servergroups", flattenServerGroups(resp))
+	//_ = d.Set("servergroups", flattenServerGroups(resp.AppServerGroup))
+
+	if err := d.Set("servergroups", flattenServerGroups(resp)); err != nil {
+		return err
+	}
 
 	return nil
 

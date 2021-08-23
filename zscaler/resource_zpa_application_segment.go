@@ -81,6 +81,10 @@ func resourceApplicationSegment() *schema.Resource {
 				Optional:    true,
 				Description: "Whether health reporting for the app is Continuous or On Access. Supported values: NONE, ON_ACCESS, CONTINUOUS.",
 			},
+			"icmpaccesstype": {
+				Type:     schema.TypeString,
+				Optional: true,
+			},
 			"id": {
 				Type:     schema.TypeString,
 				Computed: true,
@@ -120,6 +124,10 @@ func resourceApplicationSegment() *schema.Resource {
 					Schema: map[string]*schema.Schema{
 						"name": {
 							Type:     schema.TypeString,
+							Optional: true,
+						},
+						"id": {
+							Type:     schema.TypeInt,
 							Optional: true,
 						},
 					},
@@ -178,6 +186,7 @@ func resourceApplicationSegmentRead(d *schema.ResourceData, m interface{}) error
 	_ = d.Set("enabled", resp.Enabled)
 	_ = d.Set("healthchecktype", resp.HealthCheckType)
 	_ = d.Set("healthreporting", resp.HealthReporting)
+	_ = d.Set("icmpaccesstype", resp.IcmpAccessType)
 	_ = d.Set("ipanchored", resp.IpAnchored)
 	_ = d.Set("iscnameenabled", resp.IsCnameEnabled)
 	_ = d.Set("modifiedby", resp.ModifiedBy)

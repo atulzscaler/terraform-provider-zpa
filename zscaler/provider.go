@@ -1,6 +1,7 @@
 package zscaler
 
 import (
+	"log"
 	"os"
 
 	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/schema"
@@ -69,17 +70,14 @@ func Provider() *schema.Provider {
 	}
 }
 
-func envDefaultFunc(k string) schema.SchemaDefaultFunc {
-	return func() (interface{}, error) {
-		if v := os.Getenv(k); v != "" {
-			return v, nil
-		}
-
-		return nil, nil
-	}
-}
+/*
+func deprecateIncorrectNaming(d *schema.Resource, newResource string) *schema.Resource {
+	d.DeprecationMessage = fmt.Sprintf("Resource is deprecated due to a correction in naming conventions, please use '%s' instead.", newResource)
+	return d
+}*/
 
 func zscalerConfigure(d *schema.ResourceData) (interface{}, error) {
+	log.Printf("[INFO] Initializing ZPA client")
 	config := Config{
 		ClientID:     d.Get("client_id").(string),
 		ClientSecret: d.Get("client_secret").(string),
@@ -88,4 +86,14 @@ func zscalerConfigure(d *schema.ResourceData) (interface{}, error) {
 	}
 
 	return config.Client()
+}
+
+func envDefaultFunc(k string) schema.SchemaDefaultFunc {
+	return func() (interface{}, error) {
+		if v := os.Getenv(k); v != "" {
+			return v, nil
+		}
+
+		return nil, nil
+	}
 }

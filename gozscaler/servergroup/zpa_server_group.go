@@ -10,17 +10,7 @@ const (
 	serverGroupEndpoint = "/serverGroup"
 )
 
-type ServerGroupRequest struct {
-	Name               string               `json:"name"`
-	Description        string               `json:"description"`
-	Enabled            bool                 `json:"enabled"`
-	DynamicDiscovery   bool                 `json:"dynamicDiscovery"`
-	IpAnchored         bool                 `json:"ipAnchored"`
-	AppConnectorGroups []AppConnectorGroups `json:"appConnectorGroups,omitempty"`
-	ApplicationServers []ApplicationServers `json:"servers,omitempty"`
-	Applications       []Applications       `json:"applications,omitempty"`
-}
-type ServerGroupResponse struct {
+type ServerGroup struct {
 	ID                 string               `json:"id"`
 	Enabled            bool                 `json:"enabled"`
 	Name               string               `json:"name"`
@@ -36,6 +26,24 @@ type ServerGroupResponse struct {
 	Applications       []Applications       `json:"applications,omitempty"`
 }
 
+/*}
+type ServerGroupResponse struct {
+	ID                 string               `json:"id"`
+	Enabled            bool                 `json:"enabled"`
+	Name               string               `json:"name"`
+	Description        string               `json:"description"`
+	IpAnchored         bool                 `json:"ipAnchored"`
+	ConfigSpace        string               `json:"configSpace"`
+	DynamicDiscovery   bool                 `json:"dynamicDiscovery"`
+	CreationTime       int32                `json:"creationTime,string"`
+	ModifiedBy         string               `json:"modifiedBy"`
+	ModifiedTime       int32                `json:"modifiedTime,string"`
+	AppConnectorGroups []AppConnectorGroups `json:"appConnectorGroups,omitempty"`
+	ApplicationServers []ApplicationServers `json:"servers,omitempty"`
+	Applications       []Applications       `json:"applications,omitempty"`
+}
+*/
+
 type Applications struct {
 	ID   int64  `json:"id,string"`
 	Name string `json:"name"`
@@ -48,19 +56,19 @@ type AppConnectorGroups struct {
 	DnsqueryType string `json:"dnsQueryType"`
 	Enabled      bool   `json:"enabled"`
 	//GeolocationId         int64                `json:"geoLocationId,string"`
-	ID                    int64  `json:"id,string"`
-	Latitude              string `json:"latitude"`
-	Location              string `json:"location"`
-	Longitude             string `json:"longitude"`
-	ModifiedBy            int64  `json:"modifiedBy,string"`
-	ModifiedTime          int32  `json:"modifiedTime,string"`
-	Name                  string `json:"name"`
-	SiemAppconnectorGroup bool   `json:"siemAppConnectorGroup"`
-	UpgradeDay            string `json:"upgradeDay"`
-	UpgradeTimeinSecs     string `json:"upgradeTimeInSecs"`
-	VersionProfileId      int64  `json:"versionProfileId,string"`
-	//	ApplicationServers    []ApplicationServers `json:"serverGroups"`
-	Connectors []Connectors `json:"connectors"`
+	ID                    int64              `json:"id,string"`
+	Latitude              string             `json:"latitude"`
+	Location              string             `json:"location"`
+	Longitude             string             `json:"longitude"`
+	ModifiedBy            int64              `json:"modifiedBy,string"`
+	ModifiedTime          int32              `json:"modifiedTime,string"`
+	Name                  string             `json:"name"`
+	SiemAppconnectorGroup bool               `json:"siemAppConnectorGroup"`
+	UpgradeDay            string             `json:"upgradeDay"`
+	UpgradeTimeinSecs     string             `json:"upgradeTimeInSecs"`
+	VersionProfileId      int64              `json:"versionProfileId,string"`
+	AppServerGroups       *[]AppServerGroups `json:"serverGroups"`
+	Connectors            *[]Connectors      `json:"connectors"`
 }
 
 type Connectors struct {
@@ -92,17 +100,21 @@ type Connectors struct {
 	PreviousVersion          string   `json:"previousVersion"`
 	PrivateIp                string   `json:"privateIp"`
 	PublicIp                 string   `json:"publicIp"`
-	//	SigningCert              SigningCert `json:"signingCert"` // May be unecessay for Terraform. Will re-assess in the future and implement as new feature
-	UpgradeAttempt int32  `json:"upgradeAttempt,string"`
-	UpgradeStatus  string `json:"upgradeStatus"`
+	UpgradeAttempt           int32    `json:"upgradeAttempt,string"`
+	UpgradeStatus            string   `json:"upgradeStatus"`
 }
 
-/*type SigningCert struct {
-	AdditionalProp1 string `json:"additionalProp1"`
-	AdditionalProp2 string `json:"additionalProp2"`
-	AdditionalProp3 string `json:"additionalProp3"`
+type AppServerGroups struct {
+	ConfigSpace      string `json:"configSpace"`
+	CreationTime     int32  `json:"creationTime,string"`
+	Description      string `json:"description"`
+	Enabled          bool   `json:"enabled"`
+	ID               int64  `json:"id,string"`
+	DynamicDiscovery bool   `json:"dynamicDiscovery"`
+	ModifiedBy       int64  `json:"modifiedBy,string"`
+	ModifiedTime     int32  `json:"modifiedTime,string"`
+	Name             string `json:"name"`
 }
-*/
 
 type ApplicationServers struct {
 	Address           string   `json:"address"`
@@ -117,8 +129,8 @@ type ApplicationServers struct {
 	Name              string   `json:"name"`
 }
 
-func (service *Service) Get(id string) (*ServerGroupResponse, *http.Response, error) {
-	v := new(ServerGroupResponse)
+func (service *Service) Get(id string) (*ServerGroup, *http.Response, error) {
+	v := new(ServerGroup)
 	relativeURL := fmt.Sprintf("%s/%s", mgmtConfig+service.Client.Config.CustomerID+serverGroupEndpoint, id)
 	resp, err := service.Client.NewRequestDo("GET", relativeURL, nil, nil, v)
 	if err != nil {
@@ -127,8 +139,8 @@ func (service *Service) Get(id string) (*ServerGroupResponse, *http.Response, er
 	return v, resp, nil
 }
 
-func (service *Service) GetAll() (*[]ServerGroupResponse, *http.Response, error) {
-	v := new([]ServerGroupResponse)
+func (service *Service) GetAll() (*[]ServerGroup, *http.Response, error) {
+	v := new([]ServerGroup)
 	resp, err := service.Client.NewRequestDo("GET", mgmtConfig+service.Client.Config.CustomerID+serverGroupEndpoint, nil, nil, v)
 	if err != nil {
 		return nil, nil, err
@@ -136,8 +148,8 @@ func (service *Service) GetAll() (*[]ServerGroupResponse, *http.Response, error)
 	return v, resp, nil
 }
 
-func (service *Service) Create(serverGroupRequest ServerGroupRequest) (*ServerGroupResponse, *http.Response, error) {
-	v := new(ServerGroupResponse)
+func (service *Service) Create(serverGroupRequest ServerGroup) (*ServerGroup, *http.Response, error) {
+	v := new(ServerGroup)
 	resp, err := service.Client.NewRequestDo("POST", mgmtConfig+service.Client.Config.CustomerID+serverGroupEndpoint, nil, serverGroupRequest, &v)
 	if err != nil {
 		return nil, nil, err
@@ -145,7 +157,7 @@ func (service *Service) Create(serverGroupRequest ServerGroupRequest) (*ServerGr
 	return v, resp, nil
 }
 
-func (service *Service) Update(id string, serverGroupRequest ServerGroupRequest) (*http.Response, error) {
+func (service *Service) Update(id string, serverGroupRequest ServerGroup) (*http.Response, error) {
 	path := fmt.Sprintf("%s/%s", mgmtConfig+service.Client.Config.CustomerID+serverGroupEndpoint, id)
 	resp, err := service.Client.NewRequestDo("PUT", path, nil, serverGroupRequest, nil)
 	if err != nil {

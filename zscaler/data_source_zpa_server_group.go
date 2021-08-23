@@ -87,6 +87,98 @@ func dataSourceServerGroup() *schema.Resource {
 							Type:     schema.TypeString,
 							Computed: true,
 						},
+						"connectors": {
+							Type:     schema.TypeList,
+							Computed: true,
+							Elem: &schema.Resource{
+								Schema: map[string]*schema.Schema{
+									"creationtime": {
+										Type:     schema.TypeInt,
+										Computed: true,
+									},
+									"description": {
+										Type:     schema.TypeString,
+										Computed: true,
+									},
+									"enabled": {
+										Type:     schema.TypeBool,
+										Computed: true,
+									},
+									"fingerprint": {
+										Type:     schema.TypeString,
+										Computed: true,
+									},
+									"id": {
+										Type:     schema.TypeInt,
+										Computed: true,
+									},
+									"issuedcertid": {
+										Type:     schema.TypeInt,
+										Computed: true,
+									},
+									"modifiedby": {
+										Type:     schema.TypeInt,
+										Computed: true,
+									},
+									"modifiedtime": {
+										Type:     schema.TypeInt,
+										Computed: true,
+									},
+									"name": {
+										Type:     schema.TypeString,
+										Optional: true,
+									},
+									"upgradeattempt": {
+										Type:     schema.TypeInt,
+										Computed: true,
+									},
+								},
+							},
+						},
+						"servergroups": {
+							Type:     schema.TypeList,
+							Computed: true,
+							Elem: &schema.Resource{
+								Schema: map[string]*schema.Schema{
+									"configspace": {
+										Type:     schema.TypeString,
+										Computed: true,
+									},
+									"creationtime": {
+										Type:     schema.TypeString,
+										Computed: true,
+									},
+									"description": {
+										Type:     schema.TypeString,
+										Computed: true,
+									},
+									"enabled": {
+										Type:     schema.TypeBool,
+										Computed: true,
+									},
+									"id": {
+										Type:     schema.TypeInt,
+										Computed: true,
+									},
+									"dynamicdiscovery": {
+										Type:     schema.TypeBool,
+										Computed: true,
+									},
+									"modifiedby": {
+										Type:     schema.TypeString,
+										Computed: true,
+									},
+									"modifiedtime": {
+										Type:     schema.TypeInt,
+										Computed: true,
+									},
+									"name": {
+										Type:     schema.TypeString,
+										Optional: true,
+									},
+								},
+							},
+						},
 						"siemappconnectorgroup": {
 							Type:     schema.TypeBool,
 							Computed: true,
@@ -220,9 +312,13 @@ func dataSourceServerGroupRead(d *schema.ResourceData, m interface{}) error {
 	_ = d.Set("modifiedby", resp.ModifiedBy)
 	_ = d.Set("modifiedtime", resp.ModifiedTime)
 	_ = d.Set("name", resp.Name)
-	_ = d.Set("applications", flattenServerGroupApplications(resp))
-	_ = d.Set("appconnectorgroups", flattenAppConnectorGroups(resp))
+	_ = d.Set("applications", flattenServerGroupApplications(resp.Applications))
 	_ = d.Set("servers", flattenServers(resp.ApplicationServers))
+	//_ = d.Set("appconnectorgroups", flattenAppConnectorGroups(resp))
+
+	if err := d.Set("appconnectorgroups", flattenAppConnectorGroups(resp)); err != nil {
+		return err
+	}
 
 	return nil
 }

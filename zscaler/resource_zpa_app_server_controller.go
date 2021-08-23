@@ -47,10 +47,10 @@ func resourceApplicationServer() *schema.Resource {
 				Type:     schema.TypeInt,
 				Computed: true,
 			},
-			// "id": {
-			//  Type:     schema.TypeString,
-			//  Computed: true,
-			// },
+			"id": {
+				Type:     schema.TypeString,
+				Computed: true,
+			},
 			"modifiedby": {
 				Type:     schema.TypeInt,
 				Computed: true,

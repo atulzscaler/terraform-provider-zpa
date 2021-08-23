@@ -17,5 +17,5 @@ data "zpa_app_connector_group" "example" {
 }
 
 output "all_app_connector_group" {
-  value = data.zpa_app_connector_group.example.name
+  value = data.zpa_app_connector_group.example
 }

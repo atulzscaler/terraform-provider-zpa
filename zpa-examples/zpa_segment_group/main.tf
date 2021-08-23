@@ -21,9 +21,10 @@ data "zpa_application_segment" "all" {
   id = 216196257331282483
 }
 
-// output "application_segment" {
-//     value = data.zpa_application_segment.all.id
-// }
+output "application_segment" {
+    value = data.zpa_application_segment.all.name
+}
+
 
  resource "zpa_segment_group" "example" {
    name = "example"
@@ -31,7 +32,7 @@ data "zpa_application_segment" "all" {
    enabled = true
    policymigrated = false
     applications {
-        name = [data.zpa_application_segment.all.name]
-        //id = [data.zpa_application_segment.all.id]
+        //name = [data.zpa_application_segment.application_segment.name]
+        id = [216196257331282483]
     }
  }
