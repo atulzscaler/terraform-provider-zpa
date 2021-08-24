@@ -12,60 +12,59 @@ const (
 
 type ApplicationSegmentRequest struct {
 	//ID              string            `json:"id,string"`
-	Name                 string                 `json:"name"`
-	Description          string                 `json:"description"`
-	Enabled              bool                   `json:"enabled"`
-	HealthReporting      string                 `json:"healthReporting"`
-	IpAnchored           bool                   `json:"ipAnchored"`
-	DoubleEncrypt        bool                   `json:"doubleEncrypt"`
-	BypassType           string                 `json:"bypassType"`
-	IsCnameEnabled       bool                   `json:"isCnameEnabled"`
-	DomainNames          []string               `json:"domainNames"`
-	AppServerGroups      []AppServerGroups      `json:"serverGroups,omitempty"`
-	TcpPortRanges        []interface{}          `json:"tcpPortRanges"` // Need to fix for conversion - json: cannot unmarshal string into Go struct field ApplicationSegmentResponse.tcpPortRanges of type int32
-	UdpPortRanges        []interface{}          `json:"udpPortRanges"` // Need to fix for conversion - json: cannot unmarshal string into Go struct field ApplicationSegmentResponse.tcpPortRanges of type int32
-	ClientlessApps       []ClientlessApps       `json:"clientlessApps"`
-	CommonApplicationDto []CommonApplicationDto `json:"commonAppsDto"`
-	InspectionApps       []InspectionApps       `json:"inspectionApps"`
-	// SegmentGroupId   string            `json:"segmentGroupId"`
-	// SegmentGroupName string            `json:"segmentGroupName"`
+	Name             string            `json:"name"`
+	Description      string            `json:"description"`
+	Enabled          bool              `json:"enabled"`
+	HealthReporting  string            `json:"healthReporting"`
+	IpAnchored       bool              `json:"ipAnchored"`
+	DoubleEncrypt    bool              `json:"doubleEncrypt"`
+	BypassType       string            `json:"bypassType"`
+	IsCnameEnabled   bool              `json:"isCnameEnabled"`
+	DomainNames      []string          `json:"domainNames"`
+	AppServerGroups  []AppServerGroups `json:"serverGroups,omitempty"`
+	TcpPortRanges    []interface{}     `json:"tcpPortRanges"` // Need to fix for conversion - json: cannot unmarshal string into Go struct field ApplicationSegmentResponse.tcpPortRanges of type int32
+	UdpPortRanges    []interface{}     `json:"udpPortRanges"` // Need to fix for conversion - json: cannot unmarshal string into Go struct field ApplicationSegmentResponse.tcpPortRanges of type int32
+	ClientlessApps   []ClientlessApps  `json:"clientlessApps"`
+	SegmentGroupId   int               `json:"segmentGroupId,string"`
+	SegmentGroupName string            `json:"segmentGroupName"`
 }
 
 type ApplicationSegmentResponse struct {
-	ID                   string           `json:"id"`
-	DomainNames          []string         `json:"domainNames"`
-	Name                 string           `json:"name"`
-	Description          string           `json:"description"`
-	Enabled              bool             `json:"enabled"`
-	PassiveHealthEnabled bool             `json:"passiveHealthEnabled"`
-	DoubleEncrypt        bool             `json:"doubleEncrypt"`
-	ConfigSpace          string           `json:"configSpace"`
-	BypassType           string           `json:"bypassType"`
-	HealthCheckType      string           `json:"healthCheckType"`
-	IsCnameEnabled       bool             `json:"isCnameEnabled"`
-	IpAnchored           bool             `json:"ipAnchored"`
-	HealthReporting      string           `json:"healthReporting"`
-	IcmpAccessType       string           `json:"icmpAccessType"`
-	SegmentGroupId       string           `json:"segmentGroupId"`
-	SegmentGroupName     string           `json:"segmentGroupName"`
-	CreationTime         int              `json:"creationTime,string"`
-	ModifiedBy           string           `json:"modifiedBy"`
-	ModifiedTime         int              `json:"modifiedTime,string"`
-	TcpPortRanges        []interface{}    `json:"tcpPortRanges"`
-	ClientlessApps       []ClientlessApps `json:"clientlessApps"`
-	// CommonApplicationDto []CommonApplicationDto `json:"commonAppsDto"`
-	AppServerGroups    []AppServerGroups `json:"serverGroups,omitempty"`
-	DefaultIdleTimeout int32             `json:"defaultIdleTimeout,string"`
-	DefaultMaxAge      int32             `json:"defaultMaxAge,string"`
+	ID                   string            `json:"id"`
+	DomainNames          []string          `json:"domainNames"`
+	Name                 string            `json:"name"`
+	Description          string            `json:"description"`
+	Enabled              bool              `json:"enabled"`
+	PassiveHealthEnabled bool              `json:"passiveHealthEnabled"`
+	DoubleEncrypt        bool              `json:"doubleEncrypt"`
+	ConfigSpace          string            `json:"configSpace"`
+	Applications         string            `json:"applications"`
+	BypassType           string            `json:"bypassType"`
+	HealthCheckType      string            `json:"healthCheckType"`
+	IsCnameEnabled       bool              `json:"isCnameEnabled"`
+	IpAnchored           bool              `json:"ipAnchored"`
+	HealthReporting      string            `json:"healthReporting"`
+	IcmpAccessType       string            `json:"icmpAccessType"`
+	SegmentGroupId       int               `json:"segmentGroupId,string"`
+	SegmentGroupName     string            `json:"segmentGroupName"`
+	CreationTime         int               `json:"creationTime,string"`
+	ModifiedBy           string            `json:"modifiedBy"`
+	ModifiedTime         int               `json:"modifiedTime,string"`
+	TcpPortRanges        []interface{}     `json:"tcpPortRanges"`
+	UdpPortRanges        []interface{}     `json:"udpPortRanges"`
+	ClientlessApps       []ClientlessApps  `json:"clientlessApps"`
+	AppServerGroups      []AppServerGroups `json:"serverGroups,omitempty"`
+	DefaultIdleTimeout   int32             `json:"defaultIdleTimeout,string"`
+	DefaultMaxAge        int32             `json:"defaultMaxAge,string"`
 	//	TcpPortRanges        []interface{}     `json:"tcpPortRanges"` // Need to fix for conversion - json: cannot unmarshal string into Go struct field ApplicationSegmentResponse.tcpPortRanges of type int32
 	//	UdpPortRanges        []interface{}     `json:"udpPortRanges"` // Need to fix for conversion - json: cannot unmarshal string into Go struct field ApplicationSegmentResponse.tcpPortRanges of type int32
 }
 type ClientlessApps struct {
 	AllowOptions        bool   `json:"allowOptions"`
-	AppId               int64  `json:"appId,string"`
-	ApplicationPort     int32  `json:"applicationPort,string"`
+	AppId               int    `json:"appId,string"`
+	ApplicationPort     int    `json:"applicationPort,string"`
 	ApplicationProtocol string `json:"applicationProtocol"`
-	CertificateId       int64  `json:"certificateId,string"`
+	CertificateId       int    `json:"certificateId,string"`
 	CertificateName     string `json:"certificateName"`
 	Cname               string `json:"cname"`
 	CreationTime        int32  `json:"creationTime,string"`
@@ -80,59 +79,17 @@ type ClientlessApps struct {
 	Name                string `json:"name"`
 	Path                string `json:"path"`
 	TrustUntrustedCert  bool   `json:"trustUntrustedCert"`
-}
-
-type CommonApplicationDto struct {
-	AppsConfig         []AppsConfig `json:"appsConfig"`
-	DeletedBaApps      int64        `json:"deletedBaApps,string"`
-	DeletedInspectApps int64        `json:"deletedInspectApps,string"`
-}
-
-type AppsConfig struct {
-	AllowOptions        bool   `json:"allowOptions"`
-	AppId               int64  `json:"appId,string"`
-	AppTypes            string `json:"appTypes"`
-	ApplicationPort     int32  `json:"applicationPort,string"`
-	ApplicationProtocol string `json:"applicationProtocol"`
-	CertificateId       int64  `json:"certificateId,string"`
-	CertificateName     string `json:"certificateName"`
-	Cname               string `json:"cname"`
-	CreationTime        int32  `json:"creationTime,string"`
-	Description         string `json:"description"`
-	Domain              string `json:"domain"`
-	Enabled             bool   `json:"enabled"`
-	Hidden              bool   `json:"hidden"`
-	ID                  int64  `json:"id,string"`
-	LocalDomain         string `json:"localDomain"`
-	ModifiedBy          int64  `json:"modifiedBy,string"`
-	ModifiedTime        int32  `json:"modifiedTime,string"`
-	Name                string `json:"name"`
-	Path                string `json:"path"`
-	TrustUntrustedCert  bool   `json:"trustUntrustedCert"`
-}
-
-type InspectionApps struct {
-	ConfigSpace         int64  `json:"appId,string"`
-	ApplicationPort     int32  `json:"applicationPort,string"`
-	ApplicationProtocol string `json:"applicationProtocol"`
-	CertificateId       int64  `json:"certificateId,string"`
-	CertificateName     string `json:"certificateName"`
-	Description         string `json:"description"`
-	Domain              string `json:"domain"`
-	Enabled             bool   `json:"enabled"`
-	ID                  int64  `json:"id,string"`
-	Name                string `json:"name"`
 }
 type AppServerGroups struct {
-	ConfigSpace      string `json:"configSpace"`
-	CreationTime     int32  `json:"creationTime,string"`
-	Description      string `json:"description"`
-	Enabled          bool   `json:"enabled"`
-	ID               int    `json:"id,string"`
-	DynamicDiscovery bool   `json:"dynamicDiscovery"`
-	ModifiedBy       int64  `json:"modifiedBy,string"`
-	ModifiedTime     int32  `json:"modifiedTime,string"`
-	Name             string `json:"name"`
+	ConfigSpace      string        `json:"configSpace"`
+	CreationTime     int32         `json:"creationTime,string"`
+	Description      string        `json:"description"`
+	Enabled          bool          `json:"enabled"`
+	ID               []interface{} `json:"id"`
+	DynamicDiscovery bool          `json:"dynamicDiscovery"`
+	ModifiedBy       int64         `json:"modifiedBy,string"`
+	ModifiedTime     int32         `json:"modifiedTime,string"`
+	Name             string        `json:"name"`
 }
 
 func (service *Service) Get(applicationId string) (*ApplicationSegmentResponse, *http.Response, error) {

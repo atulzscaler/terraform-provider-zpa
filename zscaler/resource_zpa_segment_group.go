@@ -113,7 +113,7 @@ func resourceSegmentGroupRead(d *schema.ResourceData, m interface{}) error {
 	}
 
 	log.Printf("[INFO] Getting segment group:\n%+v\n", resp)
-	// d.SetId(strconv.Itoa(resp.ID))
+	//d.SetId(strconv.Itoa(resp.ID))
 	d.SetId(strconv.FormatInt(int64(resp.ID), 10))
 	_ = d.Set("configspace", resp.ConfigSpace)
 	_ = d.Set("creationtime", resp.CreationTime)
@@ -200,7 +200,7 @@ func expandSegmentGroupApplications(d *schema.ResourceData) []segmentgroup.Appli
 				// ModifiedBy:           segmentGroupApplication["modifiedby"].(int64),
 				// ModifiedTime:         segmentGroupApplication["modifiedtime"].(int32),
 				Name: segmentGroupApplication["name"].([]interface{}),
-				// ID:   segmentGroupApplication["id"].(int64),
+				ID:   segmentGroupApplication["id"].(int64),
 				// PassiveHealthEnabled: segmentGroupApplication["passivehealthenabled"].(bool),
 				// TCPPortRanges:        segmentGroupApplication["tcpportranges"].([]int32),
 				// TCPPortsIn:           segmentGroupApplication["tcpportsin"].([]int32),
@@ -226,6 +226,7 @@ func expandServerGroups(d *schema.ResourceData) []segmentgroup.AppServerGroup {
 				CreationTime: segmentServerGroup["creationtime"].(int32),
 				Description:  segmentServerGroup["description"].(string),
 				Enabled:      segmentServerGroup["enabled"].(bool),
+				ID:           segmentServerGroup["id"].(int64),
 				ModifiedBy:   segmentServerGroup["modifiedby"].(int64),
 				ModifiedTime: segmentServerGroup["modifiedtime"].(int32),
 				Name:         segmentServerGroup["name"].(string),
@@ -256,6 +257,7 @@ func flattenSegmentGroupApplications(segmentGroup *segmentgroup.SegmentGroupResp
 			"modifiedby":           segmentGroupApplication.ModifiedBy,
 			"modifiedtime":         segmentGroupApplication.ModifiedTime,
 			"name":                 segmentGroupApplication.Name,
+			"id":                   segmentGroupApplication.ID,
 			"passivehealthenabled": segmentGroupApplication.PassiveHealthEnabled,
 			"tcpportranges":        segmentGroupApplication.TCPPortRanges,
 			"tcpportsin":           segmentGroupApplication.TCPPortsIn,
@@ -275,6 +277,7 @@ func flattenAppServerGroup(segmentGroup segmentgroup.Applications) []interface{}
 			"creationtime": segmentServerGroup.CreationTime,
 			"description":  segmentServerGroup.Description,
 			"enabled":      segmentServerGroup.Enabled,
+			"id":           segmentServerGroup.ID,
 			"modifiedby":   segmentServerGroup.ModifiedBy,
 			"modifiedtime": segmentServerGroup.ModifiedTime,
 			"name":         segmentServerGroup.Name,

@@ -27,7 +27,7 @@ type SegmentGroupResponse struct {
 	CreationTime   int32          `json:"creationTime,string"`
 	Description    string         `json:"description"`
 	Enabled        bool           `json:"enabled"`
-	ID             int64          `json:"id,string"`
+	ID             int            `json:"id,string"`
 	ModifiedBy     int64          `json:"modifiedBy,string"`
 	ModifiedTime   int32          `json:"modifiedTime,string"`
 	Name           string         `json:"name"`
