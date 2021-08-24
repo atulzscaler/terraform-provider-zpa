@@ -29,7 +29,7 @@ func resourceApplicationServer() *schema.Resource {
 			},
 			"enabled": {
 				Type:        schema.TypeBool,
-				Required:    true,
+				Optional:    true,
 				Description: "This field defines the status of the server.",
 			},
 			// App Server Group ID can only be attached if Dynamic Server Discovery in Server Group is False
@@ -43,20 +43,8 @@ func resourceApplicationServer() *schema.Resource {
 				Type:     schema.TypeString,
 				Computed: true,
 			},
-			"creationtime": {
-				Type:     schema.TypeInt,
-				Computed: true,
-			},
 			"id": {
 				Type:     schema.TypeString,
-				Computed: true,
-			},
-			"modifiedby": {
-				Type:     schema.TypeInt,
-				Computed: true,
-			},
-			"modifiedtime": {
-				Type:     schema.TypeInt,
 				Computed: true,
 			},
 		},
@@ -107,11 +95,8 @@ func resourceApplicationServerRead(d *schema.ResourceData, m interface{}) error 
 	_ = d.Set("address", resp.Address)
 	_ = d.Set("appservergroupids", resp.AppServerGroupIds)
 	_ = d.Set("configspace", resp.ConfigSpace)
-	_ = d.Set("creationtime", resp.CreationTime)
 	_ = d.Set("description", resp.Description)
 	_ = d.Set("enabled", resp.Enabled)
-	_ = d.Set("modifiedby", resp.ModifiedBy)
-	_ = d.Set("modifiedtime", resp.ModifiedTime)
 	_ = d.Set("name", resp.Name)
 	return nil
 
@@ -122,16 +107,17 @@ func resourceApplicationServerUpdate(d *schema.ResourceData, m interface{}) erro
 
 	log.Println("An updated occurred")
 
-	if d.HasChange("name") || d.HasChange("address") {
-		log.Println("The name or ID has been changed")
+	if d.HasChange("appservergroupids") || d.HasChange("name") || d.HasChange("address") {
+		log.Println("The name or parent ID has been changed")
 
-		if _, err := zClient.appservercontroller.Update(d.Id(), appservercontroller.ApplicationServerRequest{
-			Name:    d.Get("name").(string),
-			Address: d.Get("address").(string),
+		if _, err := zClient.appservercontroller.Update(d.Id(), appservercontroller.ApplicationServer{
+			AppServerGroupIds: resourceTypeSetToStringSlice(d.Get("appservergroupids").(*schema.Set)),
+			Name:              d.Get("name").(string),
+			Address:           d.Get("address").(string),
+			Enabled:           d.Get("enabled").(bool),
 		}); err != nil {
 			return err
 		}
-		return resourceApplicationServerRead(d, m)
 	}
 
 	return nil
@@ -149,17 +135,14 @@ func resourceApplicationServerDelete(d *schema.ResourceData, m interface{}) erro
 	return nil
 }
 
-func expandCreateAppServerRequest(d *schema.ResourceData) appservercontroller.ApplicationServerRequest {
-	applicationServer := appservercontroller.ApplicationServerRequest{
+func expandCreateAppServerRequest(d *schema.ResourceData) appservercontroller.ApplicationServer {
+	applicationServer := appservercontroller.ApplicationServer{
 		Address:           d.Get("address").(string),
+		ConfigSpace:       d.Get("configspace").(string),
 		AppServerGroupIds: resourceTypeSetToStringSlice(d.Get("appservergroupids").(*schema.Set)),
-		// ConfigSpace:       d.Get("configspace").(string),
-		// CreationTime:      d.Get("creationtime").(int),
-		Description: d.Get("description").(string),
-		Enabled:     d.Get("enabled").(bool),
-		// ModifiedBy:        d.Get("modifiedby").(int),
-		// ModifiedTime:      d.Get("modifiedtime").(int),
-		Name: d.Get("name").(string),
+		Description:       d.Get("description").(string),
+		Enabled:           d.Get("enabled").(bool),
+		Name:              d.Get("name").(string),
 	}
 	return applicationServer
 }
