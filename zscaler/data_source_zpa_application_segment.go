@@ -12,7 +12,7 @@ func dataSourceApplicationSegment() *schema.Resource {
 		Read: dataSourceApplicationSegmentRead,
 		Schema: map[string]*schema.Schema{
 			"segmentgroupid": {
-				Type:     schema.TypeString,
+				Type:     schema.TypeInt,
 				Computed: true,
 			},
 			"segmentgroupname": {
@@ -272,11 +272,12 @@ func dataSourceApplicationSegmentRead(d *schema.ResourceData, m interface{}) err
 	if err := d.Set("servergroups", flattenAppServerGroups(resp)); err != nil {
 		return err
 	}
+
 	return nil
 
 }
 
-func flattenClientlessApps(clientlessApp *applicationsegment.ApplicationSegmentResponse) []interface{} {
+func flattenClientlessApps(clientlessApp *applicationsegment.ApplicationSegmentResource) []interface{} {
 	clientlessApps := make([]interface{}, len(clientlessApp.ClientlessApps))
 	for i, clientlessApp := range clientlessApp.ClientlessApps {
 		clientlessApps[i] = map[string]interface{}{
@@ -305,19 +306,19 @@ func flattenClientlessApps(clientlessApp *applicationsegment.ApplicationSegmentR
 	return clientlessApps
 }
 
-func flattenAppServerGroups(serverGroup *applicationsegment.ApplicationSegmentResponse) []interface{} {
-	serverGroups := make([]interface{}, len(serverGroup.AppServerGroups))
-	for i, serverGroup := range serverGroup.AppServerGroups {
+func flattenAppServerGroups(serverGroup *applicationsegment.ApplicationSegmentResource) []interface{} {
+	serverGroups := make([]interface{}, len(serverGroup.ServerGroups))
+	for i, val := range serverGroup.ServerGroups {
 		serverGroups[i] = map[string]interface{}{
-			"name":             serverGroup.Name,
-			"id":               serverGroup.ID,
-			"configspace":      serverGroup.ConfigSpace,
-			"creationtime":     serverGroup.CreationTime,
-			"description":      serverGroup.Description,
-			"enabled":          serverGroup.Enabled,
-			"dynamicdiscovery": serverGroup.DynamicDiscovery,
-			"modifiedby":       serverGroup.ModifiedBy,
-			"modifiedtime":     serverGroup.ModifiedTime,
+			"name":             val.Name,
+			"id":               val.ID,
+			"configspace":      val.ConfigSpace,
+			"creationtime":     val.CreationTime,
+			"description":      val.Description,
+			"enabled":          val.Enabled,
+			"dynamicdiscovery": val.DynamicDiscovery,
+			"modifiedby":       val.ModifiedBy,
+			"modifiedtime":     val.ModifiedTime,
 		}
 	}
 

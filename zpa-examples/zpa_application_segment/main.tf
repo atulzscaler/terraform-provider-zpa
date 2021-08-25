@@ -9,17 +9,17 @@ terraform {
 
 provider "zpa" {}
 
-/*
-// data "zpa_app_connector_group" "example" {
-//   id = 216196257331281931
-//   //name = "SGIO-Vancouver"
-// }
 
-// output "all_app_connector_group" {
-//   value = data.zpa_app_connector_group.example
-// }
+data "zpa_application_segment" "example" {
+  id = 216196257331282477
+  //name = "SGIO-Vancouver"
+}
 
-*/
+output "all_application_segment" {
+  value = data.zpa_application_segment.example
+}
+
+
 
 // resource "zpa_server_group" "example" {
 //   name = "example"

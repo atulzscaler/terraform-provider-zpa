@@ -1,15 +1,22 @@
 package zscaler
 
-/*
 import (
 	"log"
 
-	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/schema"
+	"github.com/SecurityGeekIO/terraform-provider-zpa/gozscaler/browseraccess"
 	"github.com/SecurityGeekIO/terraform-provider-zpa/gozscaler/client"
+	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/schema"
 )
 
 func resourceBrowserAccess() *schema.Resource {
 	return &schema.Resource{
+		Create: resourceBrowserAccessCreate,
+		Read:   resourceBrowserAccessRead,
+		Update: resourceBrowserAccessUpdate,
+		Delete: resourceBrowserAccessDelete,
+		Importer: &schema.ResourceImporter{
+			State: schema.ImportStatePassthrough,
+		},
 		Schema: map[string]*schema.Schema{
 			"segmentgroupid": {
 				Type:     schema.TypeString,
@@ -25,24 +32,20 @@ func resourceBrowserAccess() *schema.Resource {
 				Description: "Indicates whether users can bypass ZPA to access applications.",
 			},
 			"tcpportranges": {
-				Type:        schema.TypeSet,
+				Type:        schema.TypeList,
 				Optional:    true,
 				Description: "TCP port ranges used to access the app.",
-				Elem:        &schema.Schema{Type: schema.TypeString},
+				Elem:        &schema.Schema{Type: schema.TypeInt},
 			},
 			"udpportranges": {
-				Type:        schema.TypeSet,
+				Type:        schema.TypeList,
 				Optional:    true,
 				Description: "UDP port ranges used to access the app.",
-				Elem:        &schema.Schema{Type: schema.TypeString},
+				Elem:        &schema.Schema{Type: schema.TypeInt},
 			},
 			"configspace": {
 				Type:     schema.TypeString,
 				Optional: true,
-			},
-			"creationtime": {
-				Type:     schema.TypeInt,
-				Computed: true,
 			},
 			"description": {
 				Type:        schema.TypeString,
@@ -60,6 +63,10 @@ func resourceBrowserAccess() *schema.Resource {
 				Optional:    true,
 				Description: "Whether Double Encryption is enabled or disabled for the app.",
 			},
+			"enabled": {
+				Type:     schema.TypeBool,
+				Optional: true,
+			},
 			"healthreporting": {
 				Type:        schema.TypeString,
 				Optional:    true,
@@ -74,32 +81,10 @@ func resourceBrowserAccess() *schema.Resource {
 				Optional:    true,
 				Description: "Indicates if the Zscaler Client Connector (formerly Zscaler App or Z App) receives CNAME DNS records from the connectors.",
 			},
-			"modifiedby": {
-				Type:     schema.TypeString,
-				Computed: true,
-			},
-			"modifiedtime": {
-				Type:     schema.TypeInt,
-				Computed: true,
-			},
 			"name": {
 				Type:        schema.TypeString,
 				Required:    true,
 				Description: "Name of the application.",
-			},
-			// Server Group only takes one ID as int64
-			"servergroups": {
-				Type:        schema.TypeList,
-				Optional:    true,
-				Description: "ID of the server group.",
-				Elem: &schema.Resource{
-					Schema: map[string]*schema.Schema{
-						"id": {
-							Type:     schema.TypeInt,
-							Optional: true,
-						},
-					},
-				},
 			},
 			"clientlessapps": {
 				Type:     schema.TypeList,
@@ -110,7 +95,7 @@ func resourceBrowserAccess() *schema.Resource {
 							Type:     schema.TypeBool,
 							Optional: true,
 						},
-						"applicationid": {
+						"appid": {
 							Type:     schema.TypeInt,
 							Computed: true,
 						},
@@ -134,10 +119,6 @@ func resourceBrowserAccess() *schema.Resource {
 							Type:     schema.TypeString,
 							Optional: true,
 						},
-						"creationtime": {
-							Type:     schema.TypeInt,
-							Computed: true,
-						},
 						"description": {
 							Type:     schema.TypeString,
 							Optional: true,
@@ -155,20 +136,12 @@ func resourceBrowserAccess() *schema.Resource {
 							Optional: true,
 						},
 						"id": {
-							Type:     schema.TypeString,
+							Type:     schema.TypeInt,
 							Computed: true,
 						},
 						"localdomain": {
 							Type:     schema.TypeString,
 							Optional: true,
-						},
-						"modifiedby": {
-							Type:     schema.TypeInt,
-							Computed: true,
-						},
-						"modifiedtime": {
-							Type:     schema.TypeInt,
-							Computed: true,
 						},
 						"name": {
 							Type:     schema.TypeString,
@@ -176,19 +149,26 @@ func resourceBrowserAccess() *schema.Resource {
 						},
 						"path": {
 							Type:     schema.TypeString,
-							Computed: true,
+							Optional: true,
 						},
 						"trustuntrustedcert": {
 							Type:     schema.TypeBool,
 							Optional: true,
 						},
 					},
-					Create: resourceBrowserAccessCreate,
-					Read:   resourceBrowserAccessRead,
-					Update: resourceBrowserAccessUpdate,
-					Delete: resourceBrowserAccessDelete,
-					Importer: &schema.ResourceImporter{
-						State: schema.ImportStatePassthrough,
+				},
+			},
+			// Server Group only takes one ID as int64
+			"servergroups": {
+				Type:        schema.TypeList,
+				Optional:    true,
+				Description: "ID of the server group.",
+				Elem: &schema.Resource{
+					Schema: map[string]*schema.Schema{
+						"id": {
+							Type:     schema.TypeInt,
+							Optional: true,
+						},
 					},
 				},
 			},
@@ -199,10 +179,10 @@ func resourceBrowserAccess() *schema.Resource {
 func resourceBrowserAccessCreate(d *schema.ResourceData, m interface{}) error {
 	zClient := m.(*Client)
 
-	//req := expandApplicationSegmentRequest(d)
-	log.Printf("[INFO] Creating application segment request\n%+v\n", req)
+	req := expandBrowserAccess(d)
+	log.Printf("[INFO] Creating browser access request\n%+v\n", req)
 
-	resp, _, err := zClient.applicationsegment.Create(req)
+	resp, _, err := zClient.browseraccess.Create(req)
 	if err != nil {
 		return err
 	}
@@ -238,9 +218,9 @@ func resourceBrowserAccessRead(d *schema.ResourceData, m interface{}) error {
 	_ = d.Set("name", resp.Name)
 	_ = d.Set("description", resp.Description)
 	_ = d.Set("enabled", resp.Enabled)
-	_ = d.Set("creationtime", resp.CreationTime)
-	_ = d.Set("modifiedby", resp.ModifiedBy)
-	_ = d.Set("modifiedtime", resp.ModifiedTime)
+	// _ = d.Set("creationtime", resp.CreationTime)
+	// _ = d.Set("modifiedby", resp.ModifiedBy)
+	// _ = d.Set("modifiedtime", resp.ModifiedTime)
 	_ = d.Set("passivehealthenabled", resp.PassiveHealthEnabled)
 	_ = d.Set("doubleencrypt", resp.DoubleEncrypt)
 	_ = d.Set("healthchecktype", resp.HealthCheckType)
@@ -249,7 +229,14 @@ func resourceBrowserAccessRead(d *schema.ResourceData, m interface{}) error {
 	_ = d.Set("healthreporting", resp.HealthReporting)
 	_ = d.Set("tcpportranges", resp.TcpPortRanges)
 	_ = d.Set("udpportranges", resp.UdpPortRanges)
-	_ = d.Set("clientlessapps", resp.ClientlessApps)
+	// _ = d.Set("clientlessapps", resp.ClientlessApps)
+
+	if err := d.Set("clientlessapps", flattenBaClientlessApps(resp)); err != nil {
+		return err
+	}
+	if err := d.Set("servergroups", flattenClientlessAppServerGroups(resp)); err != nil {
+		return err
+	}
 
 	return nil
 
@@ -258,75 +245,150 @@ func resourceBrowserAccessRead(d *schema.ResourceData, m interface{}) error {
 func resourceBrowserAccessUpdate(d *schema.ResourceData, m interface{}) error {
 	zClient := m.(*Client)
 
+	id := d.Id()
+	log.Printf("[INFO] Updating role ID: %v\n", id)
+	req := expandBrowserAccess(d)
+
+	if _, err := zClient.browseraccess.Update(id, req); err != nil {
+		return err
+	}
+
 	return resourceBrowserAccessRead(d, m)
 }
 
 func resourceBrowserAccessDelete(d *schema.ResourceData, m interface{}) error {
 	zClient := m.(*Client)
+	log.Printf("[INFO] Deleting browser access application with id %v\n", d.Id())
 
-}
-*/
-/*
-func expandClientlessApps(d *schema.ResourceData) []applicationsegment.ClientlessApps {
-    var clientlessApps []applicationsegment.ClientlessApps
-    if clientlessInterface, ok := d.GetOk("clientlessapps"); ok {
-        clientless := clientlessInterface.([]interface{})
-        clientlessApps = make([]applicationsegment.ClientlessApps, len(clientless))
-        for i, app := range clientless {
-            clientlessApp := app.(map[string]interface{})
-            clientlessApps[i] = applicationsegment.ClientlessApps{
-                AllowOptions:        clientlessApp["allowoptions"].(bool),
-                AppId:               clientlessApp["appid"].(int),
-                ApplicationPort:     clientlessApp["applicationport"].(int),
-                ApplicationProtocol: clientlessApp["applicationprotocol"].(string), // │ Error: clientlessapps.0.applicationprotocol: '': source data must be an array or slice, got string
-                CertificateId:       clientlessApp["certificateid"].(int),
-                CertificateName:     clientlessApp["certificatename"].(string),
-                Cname:               clientlessApp["cname"].(string),
-                // CreationTime:        clientlessApp["creationtime"].(int32),
-                Description: clientlessApp["description"].(string),
-                Domain:      clientlessApp["domain"].(string),
-                Enabled:     clientlessApp["enabled"].(bool),
-                Hidden:      clientlessApp["hidden"].(bool),
-                // ID:                  clientlessApp["id"].(int64),
-                LocalDomain: clientlessApp["localdomain"].(string),
-                // ModifiedBy:          clientlessApp["modifiedby"].(int64),
-                // ModifiedTime:        clientlessApp["modifiedtime"].(int32),
-                Name: clientlessApp["name"].(string),
-                // Path:               clientlessApp["path"].(string),
-                TrustUntrustedCert: clientlessApp["trustuntrustedcert"].(bool),
-            }
-        }
-    }
+	if _, err := zClient.browseraccess.Delete(d.Id()); err != nil {
+		return err
+	}
 
-    return clientlessApps
+	return nil
 }
 
-func flattenClientlessApps(clientlessApp *applicationsegment.ApplicationSegmentResponse) []interface{} {
-    clientlessApps := make([]interface{}, len(clientlessApp.ClientlessApps))
-    for i, clientlessApp := range clientlessApp.ClientlessApps {
-        clientlessApps[i] = map[string]interface{}{
-            "allowoptions":        clientlessApp.AllowOptions,
-            "appid":               clientlessApp.AppId,
-            "applicationport":     clientlessApp.ApplicationPort,
-            "applicationprotocol": clientlessApp.ApplicationProtocol,
-            "certificateid":       clientlessApp.CertificateId,
-            "certificatename":     clientlessApp.CertificateName,
-            "cname":               clientlessApp.Cname,
-            "creationtime":        clientlessApp.CreationTime,
-            "description":         clientlessApp.Description,
-            "domain":              clientlessApp.Domain,
-            "enabled":             clientlessApp.Enabled,
-            "hidden":              clientlessApp.Hidden,
-            "id":                  clientlessApp.ID,
-            "localdomain":         clientlessApp.LocalDomain,
-            "modifiedby":          clientlessApp.ModifiedBy,
-            "modifiedtime":        clientlessApp.ModifiedTime,
-            "name":                clientlessApp.Name,
-            "path":                clientlessApp.Path,
-            "trustuntrustedcert":  clientlessApp.TrustUntrustedCert,
-        }
-    }
-
-    return clientlessApps
+func expandBrowserAccess(d *schema.ResourceData) browseraccess.BrowserAccess {
+	return browseraccess.BrowserAccess{
+		SegmentGroupId:   d.Get("segmentgroupid").(string),
+		SegmentGroupName: d.Get("segmentgroupname").(string),
+		BypassType:       d.Get("bypasstype").(string),
+		Description:      d.Get("description").(string),
+		DomainNames:      expandStringInSlice(d, "domainnames"),
+		DoubleEncrypt:    d.Get("doubleencrypt").(bool),
+		Enabled:          d.Get("enabled").(bool),
+		HealthReporting:  d.Get("healthreporting").(string),
+		IpAnchored:       d.Get("ipanchored").(bool),
+		IsCnameEnabled:   d.Get("iscnameenabled").(bool),
+		Name:             d.Get("name").(string),
+		TcpPortRanges:    d.Get("tcpportranges").([]interface{}),
+		UdpPortRanges:    d.Get("udpportranges").([]interface{}),
+		ClientlessApps:   expandClientlessApps(d),
+		AppServerGroups:  expandClientlessAppServerGroups(d),
+	}
 }
-*/
+
+func expandClientlessApps(d *schema.ResourceData) []browseraccess.ClientlessApps {
+	var clientlessApps []browseraccess.ClientlessApps
+	if clientlessInterface, ok := d.GetOk("clientlessapps"); ok {
+		clientless := clientlessInterface.([]interface{})
+		clientlessApps = make([]browseraccess.ClientlessApps, len(clientless))
+		for i, app := range clientless {
+			clientlessApp := app.(map[string]interface{})
+			clientlessApps[i] = browseraccess.ClientlessApps{
+				AllowOptions:        clientlessApp["allowoptions"].(bool),
+				AppId:               clientlessApp["appid"].(int),
+				ApplicationPort:     clientlessApp["applicationport"].(int),
+				ApplicationProtocol: clientlessApp["applicationprotocol"].(string), // │ Error: clientlessapps.0.applicationprotocol: '': source data must be an array or slice, got string
+				CertificateId:       clientlessApp["certificateid"].(int),
+				CertificateName:     clientlessApp["certificatename"].(string),
+				Cname:               clientlessApp["cname"].(string),
+				// CreationTime:        clientlessApp["creationtime"].(int32),
+				Description: clientlessApp["description"].(string),
+				Domain:      clientlessApp["domain"].(string),
+				Enabled:     clientlessApp["enabled"].(bool),
+				Hidden:      clientlessApp["hidden"].(bool),
+				// ID:                  clientlessApp["id"].(int64),
+				LocalDomain: clientlessApp["localdomain"].(string),
+				// ModifiedBy:          clientlessApp["modifiedby"].(int64),
+				// ModifiedTime:        clientlessApp["modifiedtime"].(int32),
+				Name:               clientlessApp["name"].(string),
+				Path:               clientlessApp["path"].(string),
+				TrustUntrustedCert: clientlessApp["trustuntrustedcert"].(bool),
+			}
+		}
+	}
+
+	return clientlessApps
+}
+
+func expandClientlessAppServerGroups(d *schema.ResourceData) []browseraccess.AppServerGroups {
+	var serverGroups []browseraccess.AppServerGroups
+	if serverGroupInterface, ok := d.GetOk("servergroups"); ok {
+		servers := serverGroupInterface.([]interface{})
+		serverGroups = make([]browseraccess.AppServerGroups, len(servers))
+		for i, srvGroup := range servers {
+			serverGroup := srvGroup.(map[string]interface{})
+			serverGroups[i] = browseraccess.AppServerGroups{
+				// Name: serverGroup["name"].(string),
+				ID: serverGroup["id"].(int),
+				// ConfigSpace:      serverGroup["configspace"].(string),
+				// CreationTime:     serverGroup["creationtime"].(int32),
+				// Description:      serverGroup["description"].(string),
+				// Enabled:          serverGroup["enabled"].(bool),
+				// DynamicDiscovery: serverGroup["dynamicdiscovery"].(bool),
+				// ModifiedBy:       serverGroup["modifiedby"].(int64),
+				// ModifiedTime:     serverGroup["modifiedtime"].(int32),
+			}
+		}
+	}
+
+	return serverGroups
+}
+
+func flattenBaClientlessApps(clientlessApp *browseraccess.BrowserAccess) []interface{} {
+	clientlessApps := make([]interface{}, len(clientlessApp.ClientlessApps))
+	for i, clientlessApp := range clientlessApp.ClientlessApps {
+		clientlessApps[i] = map[string]interface{}{
+			"allowoptions":        clientlessApp.AllowOptions,
+			"appid":               clientlessApp.AppId,
+			"applicationport":     clientlessApp.ApplicationPort,
+			"applicationprotocol": clientlessApp.ApplicationProtocol,
+			"certificateid":       clientlessApp.CertificateId,
+			"certificatename":     clientlessApp.CertificateName,
+			"cname":               clientlessApp.Cname,
+			//"creationtime":        clientlessApp.CreationTime,
+			"description": clientlessApp.Description,
+			"domain":      clientlessApp.Domain,
+			"enabled":     clientlessApp.Enabled,
+			"hidden":      clientlessApp.Hidden,
+			"id":          clientlessApp.ID,
+			"localdomain": clientlessApp.LocalDomain,
+			//"modifiedby":          clientlessApp.ModifiedBy,
+			//"modifiedtime":        clientlessApp.ModifiedTime,
+			"name":               clientlessApp.Name,
+			"path":               clientlessApp.Path,
+			"trustuntrustedcert": clientlessApp.TrustUntrustedCert,
+		}
+	}
+
+	return clientlessApps
+}
+
+func flattenClientlessAppServerGroups(serverGroup *browseraccess.BrowserAccess) []interface{} {
+	serverGroups := make([]interface{}, len(serverGroup.AppServerGroups))
+	for i, val := range serverGroup.AppServerGroups {
+		serverGroups[i] = map[string]interface{}{
+			// "name":             val.Name,
+			"id": val.ID,
+			// "configspace":      val.ConfigSpace,
+			// "creationtime":     val.CreationTime,
+			// "description":      val.Description,
+			// "enabled":          val.Enabled,
+			// "dynamicdiscovery": val.DynamicDiscovery,
+			// "modifiedby":       val.ModifiedBy,
+			// "modifiedtime":     val.ModifiedTime,
+		}
+	}
+
+	return serverGroups
+}

@@ -26,10 +26,6 @@ func resourceApplicationSegment() *schema.Resource {
 				Type:     schema.TypeString,
 				Optional: true,
 			},
-			"applicationgroupid": {
-				Type:     schema.TypeString,
-				Optional: true,
-			},
 			"bypasstype": {
 				Type:        schema.TypeString,
 				Optional:    true,
@@ -238,8 +234,8 @@ func expandStringInSlice(d *schema.ResourceData, key string) []string {
 	return applicationSegmentList
 }
 
-func expandApplicationSegmentRequest(d *schema.ResourceData) applicationsegment.ApplicationSegmentRequest {
-	return applicationsegment.ApplicationSegmentRequest{
+func expandApplicationSegmentRequest(d *schema.ResourceData) applicationsegment.ApplicationSegmentResource {
+	return applicationsegment.ApplicationSegmentResource{
 		SegmentGroupId:   d.Get("segmentgroupid").(int),
 		SegmentGroupName: d.Get("segmentgroupname").(string),
 		BypassType:       d.Get("bypasstype").(string),
@@ -253,7 +249,7 @@ func expandApplicationSegmentRequest(d *schema.ResourceData) applicationsegment.
 		Name:             d.Get("name").(string),
 		TcpPortRanges:    d.Get("tcpportranges").([]interface{}),
 		UdpPortRanges:    d.Get("udpportranges").([]interface{}),
-		AppServerGroups:  expandAppServerGroups(d),
+		ServerGroups:     expandAppServerGroups(d),
 	}
 }
 

@@ -10,52 +10,33 @@ const (
 	appSegmentEndpoint = "/application"
 )
 
-type ApplicationSegmentRequest struct {
-	//ID              string            `json:"id,string"`
-	Name             string            `json:"name"`
-	Description      string            `json:"description"`
-	Enabled          bool              `json:"enabled"`
-	HealthReporting  string            `json:"healthReporting"`
-	IpAnchored       bool              `json:"ipAnchored"`
-	DoubleEncrypt    bool              `json:"doubleEncrypt"`
-	BypassType       string            `json:"bypassType"`
-	IsCnameEnabled   bool              `json:"isCnameEnabled"`
-	DomainNames      []string          `json:"domainNames"`
-	AppServerGroups  []AppServerGroups `json:"serverGroups,omitempty"`
-	TcpPortRanges    []interface{}     `json:"tcpPortRanges"` // Need to fix for conversion - json: cannot unmarshal string into Go struct field ApplicationSegmentResponse.tcpPortRanges of type int32
-	UdpPortRanges    []interface{}     `json:"udpPortRanges"` // Need to fix for conversion - json: cannot unmarshal string into Go struct field ApplicationSegmentResponse.tcpPortRanges of type int32
-	ClientlessApps   []ClientlessApps  `json:"clientlessApps"`
-	SegmentGroupId   int               `json:"segmentGroupId,string"`
-	SegmentGroupName string            `json:"segmentGroupName"`
-}
-
-type ApplicationSegmentResponse struct {
-	ID                   string            `json:"id"`
-	DomainNames          []string          `json:"domainNames"`
-	Name                 string            `json:"name"`
-	Description          string            `json:"description"`
-	Enabled              bool              `json:"enabled"`
-	PassiveHealthEnabled bool              `json:"passiveHealthEnabled"`
-	DoubleEncrypt        bool              `json:"doubleEncrypt"`
-	ConfigSpace          string            `json:"configSpace"`
-	Applications         string            `json:"applications"`
-	BypassType           string            `json:"bypassType"`
-	HealthCheckType      string            `json:"healthCheckType"`
-	IsCnameEnabled       bool              `json:"isCnameEnabled"`
-	IpAnchored           bool              `json:"ipAnchored"`
-	HealthReporting      string            `json:"healthReporting"`
-	IcmpAccessType       string            `json:"icmpAccessType"`
+type ApplicationSegmentResource struct {
+	ID                   string            `json:"id,omitempty"`
+	DomainNames          []string          `json:"domainNames,omitempty"`
+	Name                 string            `json:"name,omitempty"`
+	Description          string            `json:"description,omitempty"`
+	Enabled              bool              `json:"enabled,omitempty"`
+	PassiveHealthEnabled bool              `json:"passiveHealthEnabled,omitempty"`
+	DoubleEncrypt        bool              `json:"doubleEncrypt,omitempty"`
+	ConfigSpace          string            `json:"configSpace,omitempty"`
+	Applications         string            `json:"applications,omitempty"`
+	BypassType           string            `json:"bypassType,omitempty"`
+	HealthCheckType      string            `json:"healthCheckType,omitempty"`
+	IsCnameEnabled       bool              `json:"isCnameEnabled,omitempty"`
+	IpAnchored           bool              `json:"ipAnchored,omitempty"`
+	HealthReporting      string            `json:"healthReporting,omitempty"`
+	IcmpAccessType       string            `json:"icmpAccessType,omitempty"`
 	SegmentGroupId       int               `json:"segmentGroupId,string"`
-	SegmentGroupName     string            `json:"segmentGroupName"`
+	SegmentGroupName     string            `json:"segmentGroupName,omitempty"`
 	CreationTime         int               `json:"creationTime,string"`
-	ModifiedBy           string            `json:"modifiedBy"`
+	ModifiedBy           string            `json:"modifiedBy,omitempty"`
 	ModifiedTime         int               `json:"modifiedTime,string"`
-	TcpPortRanges        []interface{}     `json:"tcpPortRanges"`
-	UdpPortRanges        []interface{}     `json:"udpPortRanges"`
-	ClientlessApps       []ClientlessApps  `json:"clientlessApps"`
-	AppServerGroups      []AppServerGroups `json:"serverGroups,omitempty"`
-	DefaultIdleTimeout   int32             `json:"defaultIdleTimeout,string"`
-	DefaultMaxAge        int32             `json:"defaultMaxAge,string"`
+	TcpPortRanges        []interface{}     `json:"tcpPortRanges,omitempty"`
+	UdpPortRanges        []interface{}     `json:"udpPortRanges,omitempty"`
+	ClientlessApps       []ClientlessApps  `json:"clientlessApps,omitempty"`
+	ServerGroups         []AppServerGroups `json:"serverGroups,omitempty"`
+	DefaultIdleTimeout   int32             `json:"defaultIdleTimeout,string,omitempty"`
+	DefaultMaxAge        int32             `json:"defaultMaxAge,string,omitempty"`
 }
 type ClientlessApps struct {
 	AllowOptions        bool   `json:"allowOptions"`
@@ -74,10 +55,12 @@ type ClientlessApps struct {
 	LocalDomain         string `json:"localDomain"`
 	ModifiedBy          int64  `json:"modifiedBy,string"`
 	ModifiedTime        int32  `json:"modifiedTime,string"`
-	Name                string `json:"name"`
-	Path                string `json:"path"`
+	Name                string `json:"name,omitempty"`
+	Path                string `json:"path,omitempty"`
+	Portal              bool   `json:"portal,omitempty"`
 	TrustUntrustedCert  bool   `json:"trustUntrustedCert"`
 }
+
 type AppServerGroups struct {
 	ConfigSpace      string `json:"configSpace"`
 	CreationTime     int32  `json:"creationTime,string"`
@@ -90,8 +73,8 @@ type AppServerGroups struct {
 	Name             string `json:"name"`
 }
 
-func (service *Service) Get(applicationId string) (*ApplicationSegmentResponse, *http.Response, error) {
-	v := new(ApplicationSegmentResponse)
+func (service *Service) Get(applicationId string) (*ApplicationSegmentResource, *http.Response, error) {
+	v := new(ApplicationSegmentResource)
 	relativeURL := fmt.Sprintf("%s/%s", mgmtConfig+service.Client.Config.CustomerID+appSegmentEndpoint, applicationId)
 	resp, err := service.Client.NewRequestDo("GET", relativeURL, nil, nil, v)
 	if err != nil {
@@ -101,8 +84,8 @@ func (service *Service) Get(applicationId string) (*ApplicationSegmentResponse, 
 	return v, resp, nil
 }
 
-func (service *Service) Create(appSegment ApplicationSegmentRequest) (*ApplicationSegmentResponse, *http.Response, error) {
-	v := new(ApplicationSegmentResponse)
+func (service *Service) Create(appSegment ApplicationSegmentResource) (*ApplicationSegmentResource, *http.Response, error) {
+	v := new(ApplicationSegmentResource)
 	resp, err := service.Client.NewRequestDo("POST", mgmtConfig+service.Client.Config.CustomerID+appSegmentEndpoint, nil, appSegment, &v)
 	if err != nil {
 		return nil, nil, err
@@ -111,8 +94,7 @@ func (service *Service) Create(appSegment ApplicationSegmentRequest) (*Applicati
 	return v, resp, nil
 }
 
-func (service *Service) Update(applicationId string, appSegmentRequest ApplicationSegmentRequest) (*http.Response, error) {
-	//v := new(ApplicationSegmentResponse)
+func (service *Service) Update(applicationId string, appSegmentRequest ApplicationSegmentResource) (*http.Response, error) {
 	relativeURL := fmt.Sprintf("%s/%s", mgmtConfig+service.Client.Config.CustomerID+appSegmentEndpoint, applicationId)
 	resp, err := service.Client.NewRequestDo("PUT", relativeURL, nil, appSegmentRequest, nil)
 	if err != nil {

@@ -10,85 +10,67 @@ const (
 	browserAccessEndpoint = "/application"
 )
 
-type BrowserAccessRequest struct {
-	SegmentGroupId   string            `json:"segmentGroupId"`
-	SegmentGroupName string            `json:"segmentGroupName"`
-	Name             string            `json:"name"`
-	Description      string            `json:"description"`
-	Enabled          bool              `json:"enabled"`
-	HealthReporting  string            `json:"healthReporting"`
-	IpAnchored       bool              `json:"ipAnchored"`
-	DoubleEncrypt    bool              `json:"doubleEncrypt"`
-	BypassType       string            `json:"bypassType"`
-	IsCnameEnabled   bool              `json:"isCnameEnabled"`
-	DomainNames      []string          `json:"domainNames"`
-	AppServerGroups  []AppServerGroups `json:"serverGroups"`
-	ClientlessApps   []ClientlessApps  `json:"clientlessApps"`
-	TcpPortRanges    []interface{}     `json:"tcpPortRanges"`
-	UdpPortRanges    []interface{}     `json:"udpPortRanges"`
-}
-
-type BrowserAccessResponse struct {
-	ID                   string            `json:"id"`
-	SegmentGroupId       string            `json:"segmentGroupId"`
-	SegmentGroupName     string            `json:"segmentGroupName"`
-	BypassType           string            `json:"bypassType"`
-	ConfigSpace          string            `json:"configSpace"`
-	DomainNames          []string          `json:"domainNames"`
+type BrowserAccess struct {
+	ID                   string            `json:"id,omitempty"`
+	SegmentGroupId       string            `json:"segmentGroupId,omitempty"`
+	SegmentGroupName     string            `json:"segmentGroupName,omitempty"`
+	BypassType           string            `json:"bypassType,omitempty"`
+	ConfigSpace          string            `json:"configSpace,omitempty"`
+	DomainNames          []string          `json:"domainNames,omitempty"`
 	Name                 string            `json:"name"`
-	Description          string            `json:"description"`
-	Enabled              bool              `json:"enabled"`
-	PassiveHealthEnabled bool              `json:"passiveHealthEnabled"`
-	DoubleEncrypt        bool              `json:"doubleEncrypt"`
-	HealthCheckType      string            `json:"healthCheckType"`
-	IsCnameEnabled       bool              `json:"isCnameEnabled"`
-	IpAnchored           bool              `json:"ipAnchored"`
-	HealthReporting      string            `json:"healthReporting"`
-	CreationTime         int               `json:"creationTime,string"`
-	ModifiedBy           string            `json:"modifiedBy"`
-	ModifiedTime         int               `json:"modifiedTime,string"`
-	TcpPortRanges        []interface{}     `json:"tcpPortRanges"`
-	UdpPortRanges        []interface{}     `json:"udpPortRanges"`
-	ClientlessApps       []ClientlessApps  `json:"clientlessApps"`
-	AppServerGroups      []AppServerGroups `json:"serverGroups"`
+	Description          string            `json:"description,omitempty"`
+	Enabled              bool              `json:"enabled,omitempty"`
+	PassiveHealthEnabled bool              `json:"passiveHealthEnabled,omitempty"`
+	DoubleEncrypt        bool              `json:"doubleEncrypt,omitempty"`
+	HealthCheckType      string            `json:"healthCheckType,omitempty"`
+	IsCnameEnabled       bool              `json:"isCnameEnabled,omitempty"`
+	IpAnchored           bool              `json:"ipAnchored,omitempty"`
+	HealthReporting      string            `json:"healthReporting,omitempty"`
+	CreationTime         int32             `json:"creationTime,string,omitempty"`
+	ModifiedBy           string            `json:"modifiedBy,omitempty"`
+	ModifiedTime         int               `json:"modifiedTime,string,omitempty"`
+	TcpPortRanges        []interface{}     `json:"tcpPortRanges,omitempty"`
+	UdpPortRanges        []interface{}     `json:"udpPortRanges,omitempty"`
+	ClientlessApps       []ClientlessApps  `json:"clientlessApps,omitempty"`
+	AppServerGroups      []AppServerGroups `json:"serverGroups,omitempty"`
 }
 
 type ClientlessApps struct {
-	AllowOptions        bool   `json:"allowOptions"`
-	AppId               int64  `json:"appId,string"`
-	ApplicationPort     int32  `json:"applicationPort,string"`
-	ApplicationProtocol string `json:"applicationProtocol"`
-	CertificateId       int64  `json:"certificateId,string"`
-	CertificateName     string `json:"certificateName"`
-	Cname               string `json:"cname"`
-	CreationTime        int32  `json:"creationTime,string"`
-	Description         string `json:"description"`
-	Domain              string `json:"domain"`
-	Enabled             bool   `json:"enabled"`
-	Hidden              bool   `json:"hidden"`
-	ID                  int64  `json:"id,string"`
-	LocalDomain         string `json:"localDomain"`
-	ModifiedBy          int64  `json:"modifiedBy,string"`
-	ModifiedTime        int32  `json:"modifiedTime,string"`
+	AllowOptions        bool   `json:"allowOptions,omitempty"`
+	AppId               int    `json:"appId,string,omitempty"`
+	ApplicationPort     int    `json:"applicationPort,string,omitempty"`
+	ApplicationProtocol string `json:"applicationProtocol,omitempty"`
+	CertificateId       int    `json:"certificateId,string,omitempty"`
+	CertificateName     string `json:"certificateName,omitempty"`
+	Cname               string `json:"cname,omitempty"`
+	CreationTime        int    `json:"creationTime,string,omitempty"`
+	Description         string `json:"description,omitempty"`
+	Domain              string `json:"domain,omitempty"`
+	Enabled             bool   `json:"enabled,omitempty"`
+	Hidden              bool   `json:"hidden,omitempty"`
+	ID                  int    `json:"id,string,omitempty"`
+	LocalDomain         string `json:"localDomain,omitempty"`
+	ModifiedBy          int    `json:"modifiedBy,string,omitempty"`
+	ModifiedTime        int    `json:"modifiedTime,string,omitempty"`
 	Name                string `json:"name"`
-	Path                string `json:"path"`
-	TrustUntrustedCert  bool   `json:"trustUntrustedCert"`
+	Path                string `json:"path,omitempty"`
+	TrustUntrustedCert  bool   `json:"trustUntrustedCert,omitempty"`
 }
 
 type AppServerGroups struct {
-	// ConfigSpace      string `json:"configSpace"`
-	// CreationTime     int32  `json:"creationTime,string"`
-	// Description      string `json:"description"`
-	// Enabled          bool   `json:"enabled"`
-	ID int64 `json:"id,string"`
-	// DynamicDiscovery bool   `json:"dynamicDiscovery"`
-	// ModifiedBy       int64  `json:"modifiedBy,string"`
-	// ModifiedTime     int32  `json:"modifiedTime,string"`
+	// ConfigSpace      string `json:"configSpace,omitempty"`
+	// CreationTime     int32  `json:"creationTime,string,omitempty"`
+	// Description      string `json:"description,omitempty"`
+	// Enabled          bool   `json:"enabled,omitempty"`
+	ID int `json:"id,string,omitempty"`
+	// DynamicDiscovery bool   `json:"dynamicDiscovery,omitempty"`
+	// ModifiedBy       int64  `json:"modifiedBy,string,omitempty"`
+	// ModifiedTime     int32  `json:"modifiedTime,string,omitempty"`
 	// Name             string `json:"name"`
 }
 
-func (service *Service) Get(id string) (*BrowserAccessResponse, *http.Response, error) {
-	v := new(BrowserAccessResponse)
+func (service *Service) Get(id string) (*BrowserAccess, *http.Response, error) {
+	v := new(BrowserAccess)
 	relativeURL := fmt.Sprintf("%s/%s", mgmtConfig+service.Client.Config.CustomerID+browserAccessEndpoint, id)
 	resp, err := service.Client.NewRequestDo("GET", relativeURL, nil, nil, v)
 	if err != nil {
@@ -97,25 +79,16 @@ func (service *Service) Get(id string) (*BrowserAccessResponse, *http.Response, 
 	return v, resp, nil
 }
 
-func (service *Service) GetAll() (*[]BrowserAccessResponse, *http.Response, error) {
-	v := new([]BrowserAccessResponse)
-	resp, err := service.Client.NewRequestDo("GET", mgmtConfig+service.Client.Config.CustomerID+browserAccessEndpoint, nil, nil, v)
+func (service *Service) Create(browserAccess BrowserAccess) (*BrowserAccess, *http.Response, error) {
+	v := new(BrowserAccess)
+	resp, err := service.Client.NewRequestDo("POST", mgmtConfig+service.Client.Config.CustomerID+browserAccessEndpoint, nil, browserAccess, &v)
 	if err != nil {
 		return nil, nil, err
 	}
 	return v, resp, nil
 }
 
-func (service *Service) Create(browserAccess BrowserAccessRequest) (*BrowserAccessResponse, *http.Response, error) {
-	v := new(BrowserAccessResponse)
-	resp, err := service.Client.NewRequestDo("POST", mgmtConfig+service.Client.Config.CustomerID+browserAccessEndpoint, nil, browserAccess, v)
-	if err != nil {
-		return nil, nil, err
-	}
-	return v, resp, nil
-}
-
-func (service *Service) Update(id string, browserAccess BrowserAccessRequest) (*http.Response, error) {
+func (service *Service) Update(id string, browserAccess BrowserAccess) (*http.Response, error) {
 	path := fmt.Sprintf("%s/%s", mgmtConfig+service.Client.Config.CustomerID+browserAccessEndpoint, id)
 	resp, err := service.Client.NewRequestDo("PUT", path, nil, browserAccess, nil)
 	if err != nil {
