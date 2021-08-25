@@ -9,23 +9,34 @@ terraform {
 
 provider "zpa" {}
 
+// data "zpa_app_connector_group" "example" {
+//   id = 216196257331281931
+//   //name = "SGIO-Vancouver"
+// }
+
+// output "all_app_connector_group" {
+//   value = data.zpa_app_connector_group.example
+// }
+
+resource "zpa_server_group" "example" {
+  name = "example"
+  description = "example"
+  enabled = true
+  dynamicdiscovery = true
+//   appconnectorgroups {
+//     id = [data.zpa_app_connector_group.example.id]
+//   }
+}
 /*
-data "zpa_application_segment" "all" { 
-  //id = 216196257331282452
-  id = 216196257331282477
-}
-
-output "application_segment" {
-    value = data.zpa_application_segment.all
-}
-*/
-
  resource "zpa_segment_group" "example" {
    name = "example"
    description = "example"
    enabled = true
    policymigrated = false
  }
+
+
+
 
 resource "zpa_application_segment" "example" {
     name = "example"
@@ -39,7 +50,8 @@ resource "zpa_application_segment" "example" {
     tcpportranges = ["8080", "8080"]
     domainnames = ["acme.com"]
     segmentgroupid = zpa_segment_group.example.id
-    // servergroups {
-    //     id = [216196257331282482]
-    // }
+    servergroups {
+        id = [zpa_server_group.example.id]
+    }
 }
+*/

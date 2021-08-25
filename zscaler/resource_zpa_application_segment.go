@@ -51,10 +51,10 @@ func resourceApplicationSegment() *schema.Resource {
 				Type:     schema.TypeString,
 				Optional: true,
 			},
-			"creationtime": {
-				Type:     schema.TypeInt,
-				Computed: true,
-			},
+			// "creationtime": {
+			// 	Type:     schema.TypeInt,
+			// 	Computed: true,
+			// },
 			"description": {
 				Type:        schema.TypeString,
 				Optional:    true,
@@ -126,10 +126,10 @@ func resourceApplicationSegment() *schema.Resource {
 				Description: "ID of the server group.",
 				Elem: &schema.Resource{
 					Schema: map[string]*schema.Schema{
-						"name": {
-							Type:     schema.TypeString,
-							Optional: true,
-						},
+						// "name": {
+						// 	Type:     schema.TypeString,
+						// 	Optional: true,
+						// },
 						"id": {
 							Type:     schema.TypeList,
 							Optional: true,
