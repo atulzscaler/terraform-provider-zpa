@@ -108,7 +108,7 @@ func resourceApplicationServerUpdate(d *schema.ResourceData, m interface{}) erro
 	log.Println("An updated occurred")
 
 	if d.HasChange("appservergroupids") || d.HasChange("name") || d.HasChange("address") {
-		log.Println("The name or parent ID has been changed")
+		log.Println("The AppServerGroupID, name or address has been changed")
 
 		if _, err := zClient.appservercontroller.Update(d.Id(), appservercontroller.ApplicationServer{
 			AppServerGroupIds: resourceTypeSetToStringSlice(d.Get("appservergroupids").(*schema.Set)),
