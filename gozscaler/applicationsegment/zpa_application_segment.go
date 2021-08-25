@@ -56,8 +56,6 @@ type ApplicationSegmentResponse struct {
 	AppServerGroups      []AppServerGroups `json:"serverGroups,omitempty"`
 	DefaultIdleTimeout   int32             `json:"defaultIdleTimeout,string"`
 	DefaultMaxAge        int32             `json:"defaultMaxAge,string"`
-	//	TcpPortRanges        []interface{}     `json:"tcpPortRanges"` // Need to fix for conversion - json: cannot unmarshal string into Go struct field ApplicationSegmentResponse.tcpPortRanges of type int32
-	//	UdpPortRanges        []interface{}     `json:"udpPortRanges"` // Need to fix for conversion - json: cannot unmarshal string into Go struct field ApplicationSegmentResponse.tcpPortRanges of type int32
 }
 type ClientlessApps struct {
 	AllowOptions        bool   `json:"allowOptions"`
@@ -81,31 +79,21 @@ type ClientlessApps struct {
 	TrustUntrustedCert  bool   `json:"trustUntrustedCert"`
 }
 type AppServerGroups struct {
-	ConfigSpace      string        `json:"configSpace"`
-	CreationTime     int32         `json:"creationTime,string"`
-	Description      string        `json:"description"`
-	Enabled          bool          `json:"enabled"`
-	ID               []interface{} `json:"id"`
-	DynamicDiscovery bool          `json:"dynamicDiscovery"`
-	ModifiedBy       int64         `json:"modifiedBy,string"`
-	ModifiedTime     int32         `json:"modifiedTime,string"`
-	Name             string        `json:"name"`
+	ConfigSpace      string `json:"configSpace"`
+	CreationTime     int32  `json:"creationTime,string"`
+	Description      string `json:"description"`
+	Enabled          bool   `json:"enabled"`
+	ID               int64  `json:"id,string"`
+	DynamicDiscovery bool   `json:"dynamicDiscovery"`
+	ModifiedBy       int64  `json:"modifiedBy,string"`
+	ModifiedTime     int32  `json:"modifiedTime,string"`
+	Name             string `json:"name"`
 }
 
 func (service *Service) Get(applicationId string) (*ApplicationSegmentResponse, *http.Response, error) {
 	v := new(ApplicationSegmentResponse)
 	relativeURL := fmt.Sprintf("%s/%s", mgmtConfig+service.Client.Config.CustomerID+appSegmentEndpoint, applicationId)
 	resp, err := service.Client.NewRequestDo("GET", relativeURL, nil, nil, v)
-	if err != nil {
-		return nil, nil, err
-	}
-
-	return v, resp, nil
-}
-
-func (service *Service) GetAll() (*[]ApplicationSegmentResponse, *http.Response, error) {
-	v := new([]ApplicationSegmentResponse)
-	resp, err := service.Client.NewRequestDo("GET", mgmtConfig+service.Client.Config.CustomerID+appSegmentEndpoint, nil, nil, v)
 	if err != nil {
 		return nil, nil, err
 	}

@@ -16,6 +16,14 @@ func resourceTypeSetToStringSlice(s *schema.Set) []string {
 	return values
 }
 
+func convertStringArrToInterface(strs []string) []interface{} {
+	arr := make([]interface{}, len(strs))
+	for i, str := range strs {
+		arr[i] = str
+	}
+	return arr
+}
+
 func ListToStringSlice(v []interface{}) []string {
 	if len(v) == 0 {
 		return []string{}

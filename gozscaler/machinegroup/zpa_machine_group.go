@@ -17,35 +17,29 @@ type MachineGroupsResponse struct {
 }
 
 type MachineGroup struct {
-	CreationTime int32      `json:"creationTime,string"`
-	Description  string     `json:"description"`
-	Enabled      bool       `json:"enabled"`
-	ID           int64      `json:"id,string"`
-	Machines     []Machines `json:"machines"`
-	ModifiedBy   int64      `json:"modifiedBy,string"`
-	ModifiedTime int32      `json:"modifiedTime,string"`
+	CreationTime int32      `json:"creationTime,string,omitempty"`
+	Description  string     `json:"description,omitempty"`
+	Enabled      bool       `json:"enabled,omitempty"`
+	ID           int64      `json:"id,string,omitempty"`
+	Machines     []Machines `json:"machines,omitempty"`
+	ModifiedBy   int64      `json:"modifiedBy,string,omitempty"`
+	ModifiedTime int32      `json:"modifiedTime,string,omitempty"`
 	Name         string     `json:"name"`
 }
 
 type Machines struct {
-	CreationTime     int32       `json:"creationTime,string"`
-	Description      string      `json:"description"`
-	Fingerprint      string      `json:"fingerprint"`
-	ID               int64       `json:"id,string"`
-	IssuedCertID     int64       `json:"issuedCertId,string"`
-	MachineGroupID   string      `json:"machineGroupId"`
-	MachineGroupName string      `json:"machineGroupName"`
-	MachineTokenID   int64       `json:"machineTokenId,string"`
-	ModifiedBy       int64       `json:"modifiedBy,string"`
-	ModifiedTime     int32       `json:"modifiedTime,string"`
-	Name             string      `json:"name"`
-	SigningCert      SigningCert `json:"signingCert"`
-}
-
-type SigningCert struct {
-	AdditionalProp1 string `json:"additionalProp1"`
-	AdditionalProp2 string `json:"additionalProp2"`
-	AdditionalProp3 string `json:"additionalProp3"`
+	CreationTime     int32             `json:"creationTime,string,omitempty"`
+	Description      string            `json:"description,omitempty"`
+	Fingerprint      string            `json:"fingerprint,omitempty"`
+	ID               int64             `json:"id,string,omitempty"`
+	IssuedCertID     int64             `json:"issuedCertId,string,omitempty"`
+	MachineGroupID   string            `json:"machineGroupId,omitempty"`
+	MachineGroupName string            `json:"machineGroupName,omitempty"`
+	MachineTokenID   int64             `json:"machineTokenId,string,omitempty"`
+	ModifiedBy       int64             `json:"modifiedBy,string,omitempty"`
+	ModifiedTime     int32             `json:"modifiedTime,string,omitempty"`
+	Name             string            `json:"name"`
+	SigningCert      map[string]string `json:"signingCert,omitempty"`
 }
 
 // Get ...

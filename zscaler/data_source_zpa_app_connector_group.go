@@ -17,8 +17,32 @@ func dataSourceAppConnectorGroup() *schema.Resource {
 				Computed: true,
 				Elem: &schema.Resource{
 					Schema: map[string]*schema.Schema{
+						"applicationstarttime": {
+							Type:     schema.TypeInt,
+							Computed: true,
+						},
+						"appconnectorgroupid": {
+							Type:     schema.TypeString,
+							Computed: true,
+						},
+						"appconnectorgroupname": {
+							Type:     schema.TypeString,
+							Computed: true,
+						},
+						"controlchannelstatus": {
+							Type:     schema.TypeString,
+							Computed: true,
+						},
 						"creationtime": {
 							Type:     schema.TypeInt,
+							Computed: true,
+						},
+						"ctrlbrokername": {
+							Type:     schema.TypeString,
+							Computed: true,
+						},
+						"currentversion": {
+							Type:     schema.TypeString,
 							Computed: true,
 						},
 						"description": {
@@ -29,6 +53,14 @@ func dataSourceAppConnectorGroup() *schema.Resource {
 							Type:     schema.TypeBool,
 							Computed: true,
 						},
+						"expectedupgradetime": {
+							Type:     schema.TypeInt,
+							Computed: true,
+						},
+						"expectedversion": {
+							Type:     schema.TypeString,
+							Computed: true,
+						},
 						"fingerprint": {
 							Type:     schema.TypeString,
 							Computed: true,
@@ -37,7 +69,35 @@ func dataSourceAppConnectorGroup() *schema.Resource {
 							Type:     schema.TypeInt,
 							Computed: true,
 						},
+						"ipacl": {
+							Type:     schema.TypeString,
+							Computed: true,
+						},
 						"issuedcertid": {
+							Type:     schema.TypeInt,
+							Computed: true,
+						},
+						"lastbrokerconnecttime": {
+							Type:     schema.TypeInt,
+							Computed: true,
+						},
+						"lastbrokerdisconnecttime": {
+							Type:     schema.TypeInt,
+							Computed: true,
+						},
+						"lastupgradetime": {
+							Type:     schema.TypeInt,
+							Computed: true,
+						},
+						"latitude": {
+							Type:     schema.TypeInt,
+							Computed: true,
+						},
+						"location": {
+							Type:     schema.TypeString,
+							Computed: true,
+						},
+						"longitude": {
 							Type:     schema.TypeInt,
 							Computed: true,
 						},
@@ -53,9 +113,32 @@ func dataSourceAppConnectorGroup() *schema.Resource {
 							Type:     schema.TypeString,
 							Optional: true,
 						},
+						"platform": {
+							Type:     schema.TypeString,
+							Optional: true,
+						},
+						"previousversion": {
+							Type:     schema.TypeString,
+							Optional: true,
+						},
+						"privateip": {
+							Type:     schema.TypeString,
+							Optional: true,
+						},
+						"publicip": {
+							Type:     schema.TypeString,
+							Optional: true,
+						},
 						"upgradeattempt": {
 							Type:     schema.TypeInt,
 							Computed: true,
+						},
+						"signingcert": {
+							Type:     schema.TypeMap,
+							Computed: true,
+							Elem: &schema.Schema{
+								Type: schema.TypeString,
+							},
 						},
 					},
 				},
@@ -187,7 +270,8 @@ func resourceConnectorGroupRead(d *schema.ResourceData, m interface{}) error {
 		return err
 	}
 
-	d.SetId(strconv.Itoa(resp.ID))
+	//d.SetId(strconv.Itoa(resp.ID))
+	d.SetId(strconv.FormatInt(int64(resp.ID), 10))
 	_ = d.Set("citycountry", resp.CityCountry)
 	_ = d.Set("countrycode", resp.CountryCode)
 	_ = d.Set("creationtime", resp.CreationTime)
@@ -204,9 +288,11 @@ func resourceConnectorGroupRead(d *schema.ResourceData, m interface{}) error {
 	_ = d.Set("upgradeday", resp.UpgradeDay)
 	_ = d.Set("upgradetimeinsecs", resp.UpgradeTimeInSecs)
 	_ = d.Set("versionprofileid", resp.VersionProfileID)
-	_ = d.Set("connectors", flattenConnectors(resp))
-	//_ = d.Set("servergroups", flattenServerGroups(resp.AppServerGroup))
+	//_ = d.Set("connectors", flattenConnectors(resp))
 
+	if err := d.Set("connectors", flattenConnectors(resp)); err != nil {
+		return err
+	}
 	if err := d.Set("servergroups", flattenServerGroups(resp)); err != nil {
 		return err
 	}
@@ -215,26 +301,47 @@ func resourceConnectorGroupRead(d *schema.ResourceData, m interface{}) error {
 
 }
 
-func flattenConnectors(appConnector *appconnectorgroup.AppConnectorGroupRequest) []interface{} {
+func flattenConnectors(appConnector *appconnectorgroup.AppConnectorGroup) []interface{} {
 	appConnectors := make([]interface{}, len(appConnector.Connectors))
 	for i, appConnector := range appConnector.Connectors {
 		appConnectors[i] = map[string]interface{}{
-			"creationtime": appConnector.CreationTime,
-			"description":  appConnector.Description,
-			"enabled":      appConnector.Enabled,
-			"fingerprint":  appConnector.Fingerprint,
-			"id":           appConnector.ID,
-			"issuedcertid": appConnector.IssuedCertID,
-			"modifiedby":   appConnector.ModifiedBy,
-			"modifiedtime": appConnector.ModifiedTime,
-			"name":         appConnector.Name,
+			"applicationstarttime":     appConnector.ApplicationStartTime,
+			"appconnectorgroupid":      appConnector.AppConnectorGroupID,
+			"controlchannelstatus":     appConnector.ControlChannelStatus,
+			"creationtime":             appConnector.CreationTime,
+			"ctrlbrokername":           appConnector.CtrlBrokerName,
+			"currentversion":           appConnector.CurrentVersion,
+			"description":              appConnector.Description,
+			"enabled":                  appConnector.Enabled,
+			"expectedupgradetime":      appConnector.ExpectedUpgradeTime,
+			"expectedversion":          appConnector.ExpectedVersion,
+			"fingerprint":              appConnector.Fingerprint,
+			"id":                       appConnector.ID,
+			"ipacl":                    appConnector.IpAcl,
+			"issuedcertid":             appConnector.IssuedCertID,
+			"lastbrokerconnecttime":    appConnector.LastBrokerConnectTime,
+			"lastbrokerdisconnecttime": appConnector.LastBrokerDisconnectTime,
+			"lastupgradetime":          appConnector.LastUpgradeTime,
+			"latitude":                 appConnector.Latitude,
+			"location":                 appConnector.Location,
+			"longitude":                appConnector.Longitude,
+			"modifiedby":               appConnector.ModifiedBy,
+			"modifiedtime":             appConnector.ModifiedTime,
+			"name":                     appConnector.Name,
+			"platform":                 appConnector.Platform,
+			"previousversion":          appConnector.PreviousVersion,
+			"privateip":                appConnector.PrivateIp,
+			"publicip":                 appConnector.PublicIp,
+			"signingcert":              appConnector.SigningCert,
+			"upgradeattempt":           appConnector.UpgradeAttempt,
+			"upgradestatus":            appConnector.UpgradeStatus,
 		}
 	}
 
 	return appConnectors
 }
 
-func flattenServerGroups(serverGroup *appconnectorgroup.AppConnectorGroupRequest) []interface{} {
+func flattenServerGroups(serverGroup *appconnectorgroup.AppConnectorGroup) []interface{} {
 	serverGroups := make([]interface{}, len(serverGroup.AppServerGroup))
 	for i, serverGroup := range serverGroup.AppServerGroup {
 		serverGroups[i] = map[string]interface{}{

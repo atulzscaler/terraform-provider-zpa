@@ -88,26 +88,13 @@ func dataSourceMachineGroup() *schema.Resource {
 										Type:     schema.TypeString,
 										Computed: true,
 									},
-									// Placeholder
-									// I am not sure if this is the proper structure to hold this data
-									/*"signingcert": {
+									"signingcert": {
 										Type:     schema.TypeMap,
 										Computed: true,
-										Elem: map[string]*schema.Schema{
-											"additionalProp1": {
-												Type:     schema.TypeString,
-												Computed: true,
-											},
-											"additionalProp2": {
-												Type:     schema.TypeString,
-												Computed: true,
-											},
-											"additionalProp3": {
-												Type:     schema.TypeString,
-												Computed: true,
-											},
+										Elem: &schema.Schema{
+											Type: schema.TypeString,
 										},
-									},*/
+									},
 								},
 							},
 						},
@@ -126,11 +113,6 @@ func dataSourceMachineGroup() *schema.Resource {
 					},
 				},
 			},
-			// May not be necessary for Terraform.
-			// "totalpages": {
-			// 	Type:     schema.TypeInt,
-			// 	Optional: true,
-			// },
 		},
 	}
 }
@@ -181,10 +163,10 @@ func flattenMachineGroups(machineGroups []machinegroup.MachineGroup) []interface
 			"description":  machineGroupItem.Description,
 			"enabled":      machineGroupItem.Enabled,
 			"id":           machineGroupItem.ID,
-			"machines":     flattenMachines(machineGroupItem),
 			"modifiedby":   machineGroupItem.ModifiedBy,
 			"modifiedtime": machineGroupItem.ModifiedTime,
 			"name":         machineGroupItem.Name,
+			"machines":     flattenMachines(machineGroupItem),
 		}
 	}
 

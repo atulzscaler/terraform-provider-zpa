@@ -13,20 +13,13 @@ func resourceSegmentGroup() *schema.Resource {
 	return &schema.Resource{
 		Schema: map[string]*schema.Schema{
 			"applications": {
-				Type:        schema.TypeList,
-				Description: "The App ID.",
-				Optional:    true,
+				Type:     schema.TypeList,
+				Optional: true,
 				Elem: &schema.Resource{
 					Schema: map[string]*schema.Schema{
 						"id": {
-							Type:     schema.TypeList,
+							Type:     schema.TypeInt,
 							Optional: true,
-							Elem:     &schema.Schema{Type: schema.TypeString},
-						},
-						"name": {
-							Type:     schema.TypeList,
-							Optional: true,
-							Elem:     &schema.Schema{Type: schema.TypeString},
 						},
 					},
 				},
@@ -70,6 +63,10 @@ func resourceSegmentGroup() *schema.Resource {
 				Type:     schema.TypeBool,
 				Optional: true,
 			},
+			"tcpkeepaliveenabled": {
+				Type:     schema.TypeInt,
+				Computed: true,
+			},
 		},
 		Create: resourceSegmentGroupCreate,
 		Read:   resourceSegmentGroupRead,
@@ -84,7 +81,7 @@ func resourceSegmentGroup() *schema.Resource {
 func resourceSegmentGroupCreate(d *schema.ResourceData, m interface{}) error {
 	zClient := m.(*Client)
 
-	req := expandCreateSegmentGroupRequest(d)
+	req := expandSegmentGroup(d)
 	log.Printf("[INFO] Creating segment group with request\n%+v\n", req)
 
 	segmentgroup, _, err := zClient.segmentgroup.Create(req)
@@ -101,7 +98,18 @@ func resourceSegmentGroupCreate(d *schema.ResourceData, m interface{}) error {
 func resourceSegmentGroupRead(d *schema.ResourceData, m interface{}) error {
 	zClient := m.(*Client)
 
-	resp, _, err := zClient.segmentgroup.Get(d.Id())
+	// resp, _, err := zClient.segmentgroup.Get(d.Id())
+
+	id, err := strconv.ParseInt(d.Get("id").(string), 10, 64)
+	if err != nil {
+		return err
+	}
+
+	resp, _, err := zClient.segmentgroup.Get(id)
+	if err != nil {
+		return err
+	}
+
 	if err != nil {
 		if err.(*client.ErrorResponse).IsObjectNotFound() {
 			log.Printf("[WARN] Removing segment group %s from state because it no longer exists in ZPA", d.Id())
@@ -123,6 +131,7 @@ func resourceSegmentGroupRead(d *schema.ResourceData, m interface{}) error {
 	_ = d.Set("modifiedtime", resp.ModifiedTime)
 	_ = d.Set("name", resp.Name)
 	_ = d.Set("policymigrated", resp.PolicyMigrated)
+	_ = d.Set("tcpkeepaliveenabled", resp.TcpKeepAliveEnabled)
 
 	if err := d.Set("applications", flattenSegmentGroupApplications(resp)); err != nil {
 		return err
@@ -133,41 +142,46 @@ func resourceSegmentGroupRead(d *schema.ResourceData, m interface{}) error {
 func resourceSegmentGroupUpdate(d *schema.ResourceData, m interface{}) error {
 	zClient := m.(*Client)
 
-	log.Println("An updated occurred")
-
-	if d.HasChange("name") {
-		log.Println("The name or ID has been changed")
-
-		if _, err := zClient.segmentgroup.Update(d.Id(), segmentgroup.SegmentGroupRequest{
-			Name: d.Get("name").(string),
-		}); err != nil {
-			return err
-		}
-		return resourceSegmentGroupRead(d, m)
+	id, err := strconv.ParseInt(d.Id(), 10, 64)
+	if err != nil {
+		return err
 	}
 
-	return nil
+	segmentGroupRequest := expandSegmentGroup(d)
+	segmentGroupRequest.ID = id
+	log.Printf("[INFO] Updating IpList with name %s\n", segmentGroupRequest.Name)
+
+	if _, err := zClient.segmentgroup.Update(id, segmentGroupRequest); err != nil {
+		return err
+	}
+	return resourceSegmentGroupRead(d, m)
 }
 
 func resourceSegmentGroupDelete(d *schema.ResourceData, m interface{}) error {
 	zClient := m.(*Client)
 
-	log.Printf("[INFO] Deleting segment group with id %v\n", d.Id())
+	id, err := strconv.ParseInt(d.Id(), 10, 64)
+	if err != nil {
+		return err
+	}
 
-	if _, err := zClient.segmentgroup.Delete(d.Id()); err != nil {
+	log.Printf("[INFO] Deleting segment group with id %v\n", id)
+
+	if _, err := zClient.segmentgroup.Delete(id); err != nil {
 		return err
 	}
 
 	return nil
 }
 
-func expandCreateSegmentGroupRequest(d *schema.ResourceData) segmentgroup.SegmentGroupRequest {
-	segmentGroup := segmentgroup.SegmentGroupRequest{
-		Name:           d.Get("name").(string),
-		Description:    d.Get("description").(string),
-		Enabled:        d.Get("enabled").(bool),
-		PolicyMigrated: d.Get("policymigrated").(bool),
-		Applications:   expandSegmentGroupApplications(d),
+func expandSegmentGroup(d *schema.ResourceData) segmentgroup.SegmentGroup {
+	segmentGroup := segmentgroup.SegmentGroup{
+		Name:                d.Get("name").(string),
+		Description:         d.Get("description").(string),
+		Enabled:             d.Get("enabled").(bool),
+		PolicyMigrated:      d.Get("policymigrated").(bool),
+		TcpKeepAliveEnabled: d.Get("tcpkeepaliveenabled").(int),
+		Applications:        expandSegmentGroupApplications(d),
 		// CreationTime:   d.Get("creationtime").(int32),
 		// ModifiedBy:     d.Get("modifiedby").(int64),
 		// ModifiedTime:   d.Get("modifiedtime").(int32),
@@ -176,19 +190,19 @@ func expandCreateSegmentGroupRequest(d *schema.ResourceData) segmentgroup.Segmen
 	return segmentGroup
 }
 
-func expandSegmentGroupApplications(d *schema.ResourceData) []segmentgroup.Applications {
-	var segmentGroupApplications []segmentgroup.Applications
+func expandSegmentGroupApplications(d *schema.ResourceData) []segmentgroup.Application {
+	var segmentGroupApplications []segmentgroup.Application
 	if applicationsInterface, ok := d.GetOk("applications"); ok {
 		applications := applicationsInterface.([]interface{})
-		segmentGroupApplications = make([]segmentgroup.Applications, len(applications))
+		segmentGroupApplications = make([]segmentgroup.Application, len(applications))
 		for i, application := range applications {
 			segmentGroupApplication := application.(map[string]interface{})
-			segmentGroupApplications[i] = segmentgroup.Applications{
+			segmentGroupApplications[i] = segmentgroup.Application{
 				// BypassType:           segmentGroupApplication["bypasstype"].(string),
 				// ConfigSpace:          segmentGroupApplication["configspace"].(string),
-				// CreationTime:         segmentGroupApplication["creationtime"].(int32),
-				// DefaultIdleTimeout:   segmentGroupApplication["defaultidletimeout"].(int32),
-				// DefaultMaxAge:        segmentGroupApplication["defaultmaxage"].(int32),
+				// CreationTime:         segmentGroupApplication["creationtime"].(int),
+				// DefaultIdleTimeout:   segmentGroupApplication["defaultidletimeout"].(int),
+				// DefaultMaxAge:        segmentGroupApplication["defaultmaxage"].(int),
 				// Description:          segmentGroupApplication["description"].(string),
 				// DomainName:           segmentGroupApplication["domainname"].(string),
 				// DomainNames:          segmentGroupApplication["domainnames"].([]string),
@@ -197,16 +211,16 @@ func expandSegmentGroupApplications(d *schema.ResourceData) []segmentgroup.Appli
 				// HealthCheckType:      segmentGroupApplication["healthchecktype"].(string),
 				// IPAnchored:           segmentGroupApplication["ipanchored"].(bool),
 				// LogFeatures:          segmentGroupApplication["logfeatures"].([]string),
-				// ModifiedBy:           segmentGroupApplication["modifiedby"].(int64),
-				// ModifiedTime:         segmentGroupApplication["modifiedtime"].(int32),
-				Name: segmentGroupApplication["name"].([]interface{}),
-				ID:   segmentGroupApplication["id"].(int64),
+				// ModifiedBy:           segmentGroupApplication["modifiedby"].(int),
+				// ModifiedTime:         segmentGroupApplication["modifiedtime"].(int),
+				// Name:                 segmentGroupApplication["name"].(string),
+				ID: segmentGroupApplication["id"].(int),
 				// PassiveHealthEnabled: segmentGroupApplication["passivehealthenabled"].(bool),
 				// TCPPortRanges:        segmentGroupApplication["tcpportranges"].([]int32),
 				// TCPPortsIn:           segmentGroupApplication["tcpportsin"].([]int32),
 				// TCPPortsOut:          segmentGroupApplication["tcpportsout"].([]int32),
 				// UDPPortRanges:        segmentGroupApplication["udpportranges"].([]int32),
-				AppServerGroup: expandServerGroups(d),
+				ServerGroup: expandServerGroups(d),
 			}
 		}
 	}
@@ -231,56 +245,6 @@ func expandServerGroups(d *schema.ResourceData) []segmentgroup.AppServerGroup {
 				ModifiedTime: segmentServerGroup["modifiedtime"].(int32),
 				Name:         segmentServerGroup["name"].(string),
 			}
-		}
-	}
-
-	return segmentServerGroups
-}
-
-func flattenSegmentGroupApplications(segmentGroup *segmentgroup.SegmentGroupResponse) []interface{} {
-	segmentGroupApplications := make([]interface{}, len(segmentGroup.Applications))
-	for i, segmentGroupApplication := range segmentGroup.Applications {
-		segmentGroupApplications[i] = map[string]interface{}{
-			"bypasstype":           segmentGroupApplication.BypassType,
-			"configspace":          segmentGroupApplication.ConfigSpace,
-			"creationtime":         segmentGroupApplication.CreationTime,
-			"defaultidletimeout":   segmentGroupApplication.DefaultIdleTimeout,
-			"defaultmaxage":        segmentGroupApplication.DefaultMaxAge,
-			"description":          segmentGroupApplication.Description,
-			"domainname":           segmentGroupApplication.DomainName,
-			"domainnames":          segmentGroupApplication.DomainNames,
-			"doubleencrypt":        segmentGroupApplication.DoubleEncrypt,
-			"enabled":              segmentGroupApplication.Enabled,
-			"healthchecktype":      segmentGroupApplication.HealthCheckType,
-			"ipanchored":           segmentGroupApplication.IPAnchored,
-			"logfeatures":          segmentGroupApplication.LogFeatures,
-			"modifiedby":           segmentGroupApplication.ModifiedBy,
-			"modifiedtime":         segmentGroupApplication.ModifiedTime,
-			"name":                 segmentGroupApplication.Name,
-			"id":                   segmentGroupApplication.ID,
-			"passivehealthenabled": segmentGroupApplication.PassiveHealthEnabled,
-			"tcpportranges":        segmentGroupApplication.TCPPortRanges,
-			"tcpportsin":           segmentGroupApplication.TCPPortsIn,
-			"tcpportsout":          segmentGroupApplication.TCPPortsOut,
-			"servergroups":         flattenAppServerGroup(segmentGroupApplication),
-		}
-	}
-
-	return segmentGroupApplications
-}
-
-func flattenAppServerGroup(segmentGroup segmentgroup.Applications) []interface{} {
-	segmentServerGroups := make([]interface{}, len(segmentGroup.AppServerGroup))
-	for i, segmentServerGroup := range segmentGroup.AppServerGroup {
-		segmentServerGroups[i] = map[string]interface{}{
-			"configspace":  segmentServerGroup.ConfigSpace,
-			"creationtime": segmentServerGroup.CreationTime,
-			"description":  segmentServerGroup.Description,
-			"enabled":      segmentServerGroup.Enabled,
-			"id":           segmentServerGroup.ID,
-			"modifiedby":   segmentServerGroup.ModifiedBy,
-			"modifiedtime": segmentServerGroup.ModifiedTime,
-			"name":         segmentServerGroup.Name,
 		}
 	}
 

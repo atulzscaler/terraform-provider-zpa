@@ -9,30 +9,22 @@ terraform {
 
 provider "zpa" {}
 
-// data "zpa_segment_group" "all" {
-//     id = "216196257331282481"
+// data "zpa_segment_group" "all" { 
+//   id = 216196257331282475
 // }
 
-// output "all_segment_group" {
+// output "segment_group" {
 //     value = data.zpa_segment_group.all
 // }
-
-data "zpa_application_segment" "all" { 
-  id = 216196257331282483
-}
-
-output "application_segment" {
-    value = data.zpa_application_segment.all.name
-}
 
 
  resource "zpa_segment_group" "example" {
    name = "example"
    description = "example"
    enabled = true
-   policymigrated = false
-    applications {
+   policymigrated = true
+    applications  {
         //name = [data.zpa_application_segment.application_segment.name]
-        id = [216196257331282483]
+        id = 216196257331282544
     }
  }

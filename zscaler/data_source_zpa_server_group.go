@@ -3,6 +3,7 @@ package zscaler
 import (
 	"log"
 
+	"github.com/SecurityGeekIO/terraform-provider-zpa/gozscaler/servergroup"
 	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/schema"
 )
 
@@ -313,7 +314,7 @@ func dataSourceServerGroupRead(d *schema.ResourceData, m interface{}) error {
 	_ = d.Set("modifiedtime", resp.ModifiedTime)
 	_ = d.Set("name", resp.Name)
 	_ = d.Set("applications", flattenServerGroupApplications(resp.Applications))
-	_ = d.Set("servers", flattenServers(resp.ApplicationServers))
+	_ = d.Set("servers", flattenServers(resp.Servers))
 	//_ = d.Set("appconnectorgroups", flattenAppConnectorGroups(resp))
 
 	if err := d.Set("appconnectorgroups", flattenAppConnectorGroups(resp)); err != nil {
@@ -321,4 +322,101 @@ func dataSourceServerGroupRead(d *schema.ResourceData, m interface{}) error {
 	}
 
 	return nil
+}
+
+func flattenServerGroupApplications(applications []servergroup.Applications) []interface{} {
+	serverGroupApplications := make([]interface{}, len(applications))
+	for i, srvApplication := range applications {
+		serverGroupApplications[i] = map[string]interface{}{
+			"id":   srvApplication.ID,
+			"name": srvApplication.Name,
+		}
+	}
+
+	return serverGroupApplications
+}
+
+func flattenAppConnectorGroups(appConnectorGroup *servergroup.ServerGroup) []interface{} {
+	appConnectorGroups := make([]interface{}, len(appConnectorGroup.AppConnectorGroups))
+	for i, appConnectorGroup := range appConnectorGroup.AppConnectorGroups {
+		appConnectorGroups[i] = map[string]interface{}{
+			"citycountry":           appConnectorGroup.Citycountry,
+			"countrycode":           appConnectorGroup.CountryCode,
+			"creationtime":          appConnectorGroup.CreationTime,
+			"description":           appConnectorGroup.Description,
+			"dnsquerytype":          appConnectorGroup.DnsqueryType,
+			"enabled":               appConnectorGroup.Enabled,
+			"geolocationid":         appConnectorGroup.GeolocationId,
+			"id":                    appConnectorGroup.ID,
+			"latitude":              appConnectorGroup.Latitude,
+			"location":              appConnectorGroup.Location,
+			"longitude":             appConnectorGroup.Longitude,
+			"modifiedby":            appConnectorGroup.ModifiedBy,
+			"modifiedtime":          appConnectorGroup.ModifiedTime,
+			"name":                  appConnectorGroup.Name,
+			"siemappconnectorgroup": appConnectorGroup.SiemAppconnectorGroup,
+			"upgradeday":            appConnectorGroup.UpgradeDay,
+			"upgradetimeinsecs":     appConnectorGroup.UpgradeTimeinSecs,
+			"versionprofileid":      appConnectorGroup.VersionProfileId,
+			"servergroups":          flattenAppConnectorServerGroups(appConnectorGroup),
+			"connectors":            flattenAppConnectors(appConnectorGroup),
+		}
+	}
+
+	return appConnectorGroups
+}
+
+func flattenAppConnectorServerGroups(serverGroup servergroup.AppConnectorGroups) []interface{} {
+	serverGroups := make([]interface{}, len(serverGroup.AppServerGroups))
+	for i, serverGroup := range serverGroup.AppServerGroups {
+		serverGroups[i] = map[string]interface{}{
+			"configSpace":      serverGroup.ConfigSpace,
+			"creationtime":     serverGroup.CreationTime,
+			"description":      serverGroup.Description,
+			"enabled":          serverGroup.Enabled,
+			"id":               serverGroup.ID,
+			"dynamicdiscovery": serverGroup.DynamicDiscovery,
+			"modifiedby":       serverGroup.ModifiedBy,
+			"modifiedtime":     serverGroup.ModifiedTime,
+			"name":             serverGroup.Name,
+		}
+	}
+
+	return serverGroups
+}
+
+func flattenAppConnectors(connector servergroup.AppConnectorGroups) []interface{} {
+	appConnectors := make([]interface{}, len(connector.Connectors))
+	for i, appConnector := range connector.Connectors {
+		appConnectors[i] = map[string]interface{}{
+			"creationtime": appConnector.CreationTime,
+			"description":  appConnector.Description,
+			"enabled":      appConnector.Enabled,
+			"id":           appConnector.ID,
+			"modifiedby":   appConnector.ModifiedBy,
+			"modifiedtime": appConnector.ModifiedTime,
+			"name":         appConnector.Name,
+		}
+	}
+
+	return appConnectors
+}
+
+func flattenServers(applicationServer []servergroup.ApplicationServer) []interface{} {
+	applicationServers := make([]interface{}, len(applicationServer))
+	for i, appServerItem := range applicationServer {
+		applicationServers[i] = map[string]interface{}{
+			"address":           appServerItem.Address,
+			"appservergroupids": appServerItem.AppServerGroupIds,
+			"configspace":       appServerItem.ConfigSpace,
+			"creationtime":      appServerItem.CreationTime,
+			"description":       appServerItem.Description,
+			"enabled":           appServerItem.Enabled,
+			"id":                appServerItem.ID,
+			"modifiedby":        appServerItem.ModifiedBy,
+			"modifiedtime":      appServerItem.ModifiedTime,
+			"name":              appServerItem.Name,
+		}
+	}
+	return applicationServers
 }

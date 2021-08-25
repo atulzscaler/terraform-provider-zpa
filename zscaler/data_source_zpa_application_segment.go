@@ -3,6 +3,7 @@ package zscaler
 import (
 	"log"
 
+	"github.com/SecurityGeekIO/terraform-provider-zpa/gozscaler/applicationsegment"
 	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/schema"
 )
 
@@ -263,7 +264,8 @@ func dataSourceApplicationSegmentRead(d *schema.ResourceData, m interface{}) err
 	_ = d.Set("name", resp.Name)
 	_ = d.Set("passivehealthenabled", resp.PassiveHealthEnabled)
 	_ = d.Set("tcpportranges", resp.TcpPortRanges)
-	//_ = d.Set("udpportranges", resp.UdpPortRanges)
+	_ = d.Set("udpportranges", resp.UdpPortRanges)
+
 	if err := d.Set("clientlessapps", flattenClientlessApps(resp)); err != nil {
 		return err
 	}
@@ -272,4 +274,52 @@ func dataSourceApplicationSegmentRead(d *schema.ResourceData, m interface{}) err
 	}
 	return nil
 
+}
+
+func flattenClientlessApps(clientlessApp *applicationsegment.ApplicationSegmentResponse) []interface{} {
+	clientlessApps := make([]interface{}, len(clientlessApp.ClientlessApps))
+	for i, clientlessApp := range clientlessApp.ClientlessApps {
+		clientlessApps[i] = map[string]interface{}{
+			"allowoptions":        clientlessApp.AllowOptions,
+			"appid":               clientlessApp.AppId,
+			"applicationport":     clientlessApp.ApplicationPort,
+			"applicationprotocol": clientlessApp.ApplicationProtocol,
+			"certificateid":       clientlessApp.CertificateId,
+			"certificatename":     clientlessApp.CertificateName,
+			"cname":               clientlessApp.Cname,
+			"creationtime":        clientlessApp.CreationTime,
+			"description":         clientlessApp.Description,
+			"domain":              clientlessApp.Domain,
+			"enabled":             clientlessApp.Enabled,
+			"hidden":              clientlessApp.Hidden,
+			"id":                  clientlessApp.ID,
+			"localdomain":         clientlessApp.LocalDomain,
+			"modifiedby":          clientlessApp.ModifiedBy,
+			"modifiedtime":        clientlessApp.ModifiedTime,
+			"name":                clientlessApp.Name,
+			"path":                clientlessApp.Path,
+			"trustuntrustedcert":  clientlessApp.TrustUntrustedCert,
+		}
+	}
+
+	return clientlessApps
+}
+
+func flattenAppServerGroups(serverGroup *applicationsegment.ApplicationSegmentResponse) []interface{} {
+	serverGroups := make([]interface{}, len(serverGroup.AppServerGroups))
+	for i, serverGroup := range serverGroup.AppServerGroups {
+		serverGroups[i] = map[string]interface{}{
+			"name":             serverGroup.Name,
+			"id":               serverGroup.ID,
+			"configspace":      serverGroup.ConfigSpace,
+			"creationtime":     serverGroup.CreationTime,
+			"description":      serverGroup.Description,
+			"enabled":          serverGroup.Enabled,
+			"dynamicdiscovery": serverGroup.DynamicDiscovery,
+			"modifiedby":       serverGroup.ModifiedBy,
+			"modifiedtime":     serverGroup.ModifiedTime,
+		}
+	}
+
+	return serverGroups
 }

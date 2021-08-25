@@ -39,14 +39,14 @@ func resourceServerGroup() *schema.Resource {
 					},
 				},
 			},
-			// "configspace": {
-			// 	Type:     schema.TypeString,
-			// 	Computed: true,
-			// },
-			// "creationtime": {
-			// 	Type:     schema.TypeInt,
-			// 	Computed: true,
-			// },
+			"configspace": {
+				Type:     schema.TypeString,
+				Computed: true,
+			},
+			"creationtime": {
+				Type:     schema.TypeInt,
+				Computed: true,
+			},
 			"description": {
 				Type:        schema.TypeString,
 				Optional:    true,
@@ -70,14 +70,14 @@ func resourceServerGroup() *schema.Resource {
 				Optional:    true,
 				Description: "This field controls dynamic discovery of the servers.",
 			},
-			// "modifiedby": {
-			// 	Type:     schema.TypeString,
-			// 	Computed: true,
-			// },
-			// "modifiedtime": {
-			// 	Type:     schema.TypeInt,
-			// 	Computed: true,
-			// },
+			"modifiedby": {
+				Type:     schema.TypeString,
+				Computed: true,
+			},
+			"modifiedtime": {
+				Type:     schema.TypeInt,
+				Computed: true,
+			},
 			"name": {
 				Type:        schema.TypeString,
 				Required:    true,
@@ -139,23 +139,23 @@ func resourceServerGroupRead(d *schema.ResourceData, m interface{}) error {
 
 	log.Printf("[INFO] Getting server group:\n%+v\n", resp)
 	d.SetId(resp.ID)
-	// _ = d.Set("configspace", resp.ConfigSpace)
-	// _ = d.Set("creationtime", resp.CreationTime)
+	_ = d.Set("configspace", resp.ConfigSpace)
+	_ = d.Set("creationtime", resp.CreationTime)
 	_ = d.Set("description", resp.Description)
 	_ = d.Set("enabled", resp.Enabled)
 	_ = d.Set("ipanchored", resp.IpAnchored)
 	_ = d.Set("dynamicdiscovery", resp.DynamicDiscovery)
 	_ = d.Set("enabled", resp.Enabled)
-	// _ = d.Set("modifiedby", resp.ModifiedBy)
-	// _ = d.Set("modifiedtime", resp.ModifiedTime)
+	_ = d.Set("modifiedby", resp.ModifiedBy)
+	_ = d.Set("modifiedtime", resp.ModifiedTime)
 	_ = d.Set("name", resp.Name)
 	_ = d.Set("applications", flattenServerGroupApplications(resp.Applications))
-	_ = d.Set("servers", flattenServers(resp.ApplicationServers))
+	_ = d.Set("servers", flattenServers(resp.Servers))
 
 	if err := d.Set("appconnectorgroups", flattenAppConnectorGroups(resp)); err != nil {
 		return err
 	}
-	//_ = d.Set("appconnectorgroups", flattenAppConnectorGroups(resp))
+
 	return nil
 
 }
@@ -168,7 +168,7 @@ func resourceServerGroupUpdate(d *schema.ResourceData, m interface{}) error {
 	if d.HasChange("name") {
 		log.Println("The name or ID has been changed")
 
-		if _, err := zClient.servergroup.Update(d.Id(), servergroup.ServerGroupRequest{
+		if _, err := zClient.servergroup.Update(d.Id(), servergroup.ServerGroup{
 			Name: d.Get("name").(string),
 		}); err != nil {
 			return err
@@ -191,23 +191,22 @@ func resourceServerGroupDelete(d *schema.ResourceData, m interface{}) error {
 	return nil
 }
 
-func expandCreateAppServerGroupRequest(d *schema.ResourceData) servergroup.ServerGroupRequest {
-	serverGroup := servergroup.ServerGroupRequest{
-		//ID:                 d.Get("id").(string),
-		Enabled:          d.Get("enabled").(bool),
-		Name:             d.Get("name").(string),
-		Description:      d.Get("description").(string),
-		IpAnchored:       d.Get("ipanchored").(bool),
-		ConfigSpace:      d.Get("configspace").(string),
-		DynamicDiscovery: d.Get("dynamicdiscovery").(bool),
-		//Applications:       expandServerGroupApplications(d),
+func expandCreateAppServerGroupRequest(d *schema.ResourceData) servergroup.ServerGroup {
+	serverGroup := servergroup.ServerGroup{
+		ID:                 d.Get("id").(string),
+		Enabled:            d.Get("enabled").(bool),
+		Name:               d.Get("name").(string),
+		Description:        d.Get("description").(string),
+		IpAnchored:         d.Get("ipanchored").(bool),
+		ConfigSpace:        d.Get("configspace").(string),
+		DynamicDiscovery:   d.Get("dynamicdiscovery").(bool),
+		Applications:       expandServerGroupApplications(d),
 		AppConnectorGroups: expandAppConnectorGroups(d),
 		//ApplicationServers: expandServers(d),
 	}
 	return serverGroup
 }
 
-/*
 func expandServerGroupApplications(d *schema.ResourceData) []servergroup.Applications {
 	var serverGroupApplications []servergroup.Applications
 	if applicationsInterface, ok := d.GetOk("applications"); ok {
@@ -224,7 +223,7 @@ func expandServerGroupApplications(d *schema.ResourceData) []servergroup.Applica
 
 	return serverGroupApplications
 }
-*/
+
 func expandAppConnectorGroups(d *schema.ResourceData) []servergroup.AppConnectorGroups {
 	var appConnectorGroups []servergroup.AppConnectorGroups
 	if appConnectorGroupsInterface, ok := d.GetOk("appconnectorgroups"); ok {
@@ -239,7 +238,7 @@ func expandAppConnectorGroups(d *schema.ResourceData) []servergroup.AppConnector
 				// Description:  connectorGroup["description"].(string),
 				// DnsqueryType: connectorGroup["dnsquerytype"].(string),
 				// Enabled:      connectorGroup["enabled"].(bool),
-				//GeolocationId:         connectorGroup["geolocationid"].(int64),
+				// GeolocationId:         connectorGroup["geolocationid"].(int64),
 				ID: connectorGroup["id"].(int64),
 				// Latitude:              connectorGroup["latitude"].(string),
 				// Location:              connectorGroup["location"].(string),
@@ -284,99 +283,3 @@ func expandServers(d *schema.ResourceData) []servergroup.ApplicationServers {
 	return applicationServers
 }
 */
-func flattenServerGroupApplications(applications []servergroup.Applications) []interface{} {
-	serverGroupApplications := make([]interface{}, len(applications))
-	for i, srvApplication := range applications {
-		serverGroupApplications[i] = map[string]interface{}{
-			"id":   srvApplication.ID,
-			"name": srvApplication.Name,
-		}
-	}
-
-	return serverGroupApplications
-}
-
-func flattenAppConnectorGroups(appConnectorGroup *servergroup.ServerGroupResponse) []interface{} {
-	appConnectorGroups := make([]interface{}, len(appConnectorGroup.AppConnectorGroups))
-	for i, appConnectorGroup := range appConnectorGroup.AppConnectorGroups {
-		appConnectorGroups[i] = map[string]interface{}{
-			"citycountry":  appConnectorGroup.Citycountry,
-			"countrycode":  appConnectorGroup.CountryCode,
-			"creationtime": appConnectorGroup.CreationTime,
-			"description":  appConnectorGroup.Description,
-			"dnsquerytype": appConnectorGroup.DnsqueryType,
-			"enabled":      appConnectorGroup.Enabled,
-			//"geolocationid":         appConnectorGroup.GeolocationId,
-			//"id":                    appConnectorGroup.ID,
-			"latitude":              appConnectorGroup.Latitude,
-			"location":              appConnectorGroup.Location,
-			"longitude":             appConnectorGroup.Longitude,
-			"modifiedby":            appConnectorGroup.ModifiedBy,
-			"modifiedtime":          appConnectorGroup.ModifiedTime,
-			"name":                  appConnectorGroup.Name,
-			"siemappconnectorgroup": appConnectorGroup.SiemAppconnectorGroup,
-			"upgradeday":            appConnectorGroup.UpgradeDay,
-			"upgradetimeinsecs":     appConnectorGroup.UpgradeTimeinSecs,
-			"versionprofileid":      appConnectorGroup.VersionProfileId,
-			"servergroups":          flattenAppConnectorServerGroups(appConnectorGroup),
-			"connectors":            flattenAppConnectors(appConnectorGroup),
-		}
-	}
-
-	return appConnectorGroups
-}
-
-func flattenAppConnectorServerGroups(serverGroup servergroup.AppConnectorGroups) []interface{} {
-	serverGroups := make([]interface{}, len(serverGroup.AppServerGroups))
-	for i, serverGroup := range serverGroup.AppServerGroups {
-		serverGroups[i] = map[string]interface{}{
-			"configSpace":  serverGroup.ConfigSpace,
-			"creationtime": serverGroup.CreationTime,
-			"description":  serverGroup.Description,
-			"enabled":      serverGroup.Enabled,
-			//"id":               serverGroup.ID,
-			"dynamicdiscovery": serverGroup.DynamicDiscovery,
-			"modifiedby":       serverGroup.ModifiedBy,
-			"modifiedtime":     serverGroup.ModifiedTime,
-			"name":             serverGroup.Name,
-		}
-	}
-
-	return serverGroups
-}
-
-func flattenAppConnectors(connector servergroup.AppConnectorGroups) []interface{} {
-	appConnectors := make([]interface{}, len(connector.Connectors))
-	for i, appConnector := range connector.Connectors {
-		appConnectors[i] = map[string]interface{}{
-			"creationtime": appConnector.CreationTime,
-			"description":  appConnector.Description,
-			"enabled":      appConnector.Enabled,
-			//"id":           appConnector.ID,
-			"modifiedby":   appConnector.ModifiedBy,
-			"modifiedtime": appConnector.ModifiedTime,
-			"name":         appConnector.Name,
-		}
-	}
-
-	return appConnectors
-}
-
-func flattenServers(applicationServer []servergroup.ApplicationServers) []interface{} {
-	applicationServers := make([]interface{}, len(applicationServer))
-	for i, appServerItem := range applicationServer {
-		applicationServers[i] = map[string]interface{}{
-			"address":           appServerItem.Address,
-			"appservergroupids": appServerItem.AppServerGroupIds,
-			"configspace":       appServerItem.ConfigSpace,
-			"creationtime":      appServerItem.CreationTime,
-			"description":       appServerItem.Description,
-			"enabled":           appServerItem.Enabled,
-			//"id":                appServerItem.ID,
-			"modifiedby":   appServerItem.ModifiedBy,
-			"modifiedtime": appServerItem.ModifiedTime,
-			"name":         appServerItem.Name,
-		}
-	}
-	return applicationServers
-}

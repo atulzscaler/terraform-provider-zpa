@@ -51,10 +51,10 @@ func resourceApplicationSegment() *schema.Resource {
 				Type:     schema.TypeString,
 				Optional: true,
 			},
-			// "creationtime": {
-			// 	Type:     schema.TypeInt,
-			// 	Computed: true,
-			// },
+			"creationtime": {
+				Type:     schema.TypeInt,
+				Computed: true,
+			},
 			"description": {
 				Type:        schema.TypeString,
 				Optional:    true,
@@ -126,10 +126,6 @@ func resourceApplicationSegment() *schema.Resource {
 				Description: "ID of the server group.",
 				Elem: &schema.Resource{
 					Schema: map[string]*schema.Schema{
-						// "name": {
-						// 	Type:     schema.TypeString,
-						// 	Optional: true,
-						// },
 						"id": {
 							Type:     schema.TypeList,
 							Optional: true,
@@ -155,8 +151,6 @@ func resourceApplicationSegmentCreate(d *schema.ResourceData, m interface{}) err
 
 	log.Printf("[INFO] Created application segment request. ID: %v\n", resp.ID)
 	d.SetId(resp.ID)
-	//d.SetId(strconv.FormatInt(int64(applicationsegment.ID), 10))
-	//d.SetId(strconv.Itoa(resp.ID))
 
 	return resourceApplicationSegmentRead(d, m)
 }
@@ -177,7 +171,6 @@ func resourceApplicationSegmentRead(d *schema.ResourceData, m interface{}) error
 	}
 
 	log.Printf("[INFO] Reading application segment and settings states: %+v\n", resp)
-	//d.SetId(strconv.Itoa(resp.ID))
 	_ = d.Set("segmentgroupId", resp.SegmentGroupId)
 	_ = d.Set("segmentgroupname", resp.SegmentGroupName)
 	_ = d.Set("bypasstype", resp.BypassType)
@@ -192,6 +185,7 @@ func resourceApplicationSegmentRead(d *schema.ResourceData, m interface{}) error
 	_ = d.Set("healthchecktype", resp.HealthCheckType)
 	_ = d.Set("healthreporting", resp.HealthReporting)
 	_ = d.Set("icmpaccesstype", resp.IcmpAccessType)
+	_ = d.Set("id", resp.ID)
 	_ = d.Set("ipanchored", resp.IpAnchored)
 	_ = d.Set("iscnameenabled", resp.IsCnameEnabled)
 	_ = d.Set("modifiedby", resp.ModifiedBy)
@@ -201,12 +195,7 @@ func resourceApplicationSegmentRead(d *schema.ResourceData, m interface{}) error
 	_ = d.Set("ipanchored", resp.IpAnchored)
 	_ = d.Set("tcpportranges", resp.TcpPortRanges)
 	_ = d.Set("udpportranges", resp.UdpPortRanges)
-	// _ = d.Set("clientlessapps", flattenClientlessApps(resp))
-	// _ = d.Set("servergroups", flattenAppServerGroups(resp))
 
-	// if err := d.Set("clientlessapps", flattenClientlessApps(resp)); err != nil {
-	// 	return err
-	// }
 	if err := d.Set("servergroups", flattenAppServerGroups(resp)); err != nil {
 		return err
 	}
@@ -216,6 +205,7 @@ func resourceApplicationSegmentRead(d *schema.ResourceData, m interface{}) error
 
 func resourceApplicationSegmentUpdate(d *schema.ResourceData, m interface{}) error {
 	zClient := m.(*Client)
+
 	id := d.Id()
 	log.Printf("[INFO] Updating role ID: %v\n", id)
 	req := expandApplicationSegmentRequest(d)
@@ -250,86 +240,21 @@ func expandStringInSlice(d *schema.ResourceData, key string) []string {
 
 func expandApplicationSegmentRequest(d *schema.ResourceData) applicationsegment.ApplicationSegmentRequest {
 	return applicationsegment.ApplicationSegmentRequest{
-		BypassType:      d.Get("bypasstype").(string),
-		Description:     d.Get("description").(string),
-		DomainNames:     expandStringInSlice(d, "domainnames"),
-		DoubleEncrypt:   d.Get("doubleencrypt").(bool),
-		Enabled:         d.Get("enabled").(bool),
-		HealthReporting: d.Get("healthreporting").(string),
-		IpAnchored:      d.Get("ipanchored").(bool),
-		IsCnameEnabled:  d.Get("iscnameenabled").(bool),
-		Name:            d.Get("name").(string),
-		AppServerGroups: expandAppServerGroups(d),
-		//ClientlessApps:  expandClientlessApps(d),
-		TcpPortRanges:    d.Get("tcpportranges").([]interface{}),
-		UdpPortRanges:    d.Get("udpportranges").([]interface{}),
 		SegmentGroupId:   d.Get("segmentgroupid").(int),
 		SegmentGroupName: d.Get("segmentgroupname").(string),
+		BypassType:       d.Get("bypasstype").(string),
+		Description:      d.Get("description").(string),
+		DomainNames:      expandStringInSlice(d, "domainnames"),
+		DoubleEncrypt:    d.Get("doubleencrypt").(bool),
+		Enabled:          d.Get("enabled").(bool),
+		HealthReporting:  d.Get("healthreporting").(string),
+		IpAnchored:       d.Get("ipanchored").(bool),
+		IsCnameEnabled:   d.Get("iscnameenabled").(bool),
+		Name:             d.Get("name").(string),
+		TcpPortRanges:    d.Get("tcpportranges").([]interface{}),
+		UdpPortRanges:    d.Get("udpportranges").([]interface{}),
+		AppServerGroups:  expandAppServerGroups(d),
 	}
-}
-
-/*
-func expandClientlessApps(d *schema.ResourceData) []applicationsegment.ClientlessApps {
-	var clientlessApps []applicationsegment.ClientlessApps
-	if clientlessInterface, ok := d.GetOk("clientlessapps"); ok {
-		clientless := clientlessInterface.([]interface{})
-		clientlessApps = make([]applicationsegment.ClientlessApps, len(clientless))
-		for i, app := range clientless {
-			clientlessApp := app.(map[string]interface{})
-			clientlessApps[i] = applicationsegment.ClientlessApps{
-				AllowOptions:        clientlessApp["allowoptions"].(bool),
-				AppId:               clientlessApp["appid"].(int),
-				ApplicationPort:     clientlessApp["applicationport"].(int),
-				ApplicationProtocol: clientlessApp["applicationprotocol"].(string), // │ Error: clientlessapps.0.applicationprotocol: '': source data must be an array or slice, got string
-				CertificateId:       clientlessApp["certificateid"].(int),
-				CertificateName:     clientlessApp["certificatename"].(string),
-				Cname:               clientlessApp["cname"].(string),
-				// CreationTime:        clientlessApp["creationtime"].(int32),
-				Description: clientlessApp["description"].(string),
-				Domain:      clientlessApp["domain"].(string),
-				Enabled:     clientlessApp["enabled"].(bool),
-				Hidden:      clientlessApp["hidden"].(bool),
-				// ID:                  clientlessApp["id"].(int64),
-				LocalDomain: clientlessApp["localdomain"].(string),
-				// ModifiedBy:          clientlessApp["modifiedby"].(int64),
-				// ModifiedTime:        clientlessApp["modifiedtime"].(int32),
-				Name: clientlessApp["name"].(string),
-				// Path:               clientlessApp["path"].(string),
-				TrustUntrustedCert: clientlessApp["trustuntrustedcert"].(bool),
-			}
-		}
-	}
-
-	return clientlessApps
-}
-*/
-func flattenClientlessApps(clientlessApp *applicationsegment.ApplicationSegmentResponse) []interface{} {
-	clientlessApps := make([]interface{}, len(clientlessApp.ClientlessApps))
-	for i, clientlessApp := range clientlessApp.ClientlessApps {
-		clientlessApps[i] = map[string]interface{}{
-			"allowoptions":        clientlessApp.AllowOptions,
-			"appid":               clientlessApp.AppId,
-			"applicationport":     clientlessApp.ApplicationPort,
-			"applicationprotocol": clientlessApp.ApplicationProtocol,
-			"certificateid":       clientlessApp.CertificateId,
-			"certificatename":     clientlessApp.CertificateName,
-			"cname":               clientlessApp.Cname,
-			"creationtime":        clientlessApp.CreationTime,
-			"description":         clientlessApp.Description,
-			"domain":              clientlessApp.Domain,
-			"enabled":             clientlessApp.Enabled,
-			"hidden":              clientlessApp.Hidden,
-			"id":                  clientlessApp.ID,
-			"localdomain":         clientlessApp.LocalDomain,
-			"modifiedby":          clientlessApp.ModifiedBy,
-			"modifiedtime":        clientlessApp.ModifiedTime,
-			"name":                clientlessApp.Name,
-			"path":                clientlessApp.Path,
-			"trustuntrustedcert":  clientlessApp.TrustUntrustedCert,
-		}
-	}
-
-	return clientlessApps
 }
 
 func expandAppServerGroups(d *schema.ResourceData) []applicationsegment.AppServerGroups {
@@ -340,8 +265,8 @@ func expandAppServerGroups(d *schema.ResourceData) []applicationsegment.AppServe
 		for i, srvGroup := range servers {
 			serverGroup := srvGroup.(map[string]interface{})
 			serverGroups[i] = applicationsegment.AppServerGroups{
-				Name: serverGroup["name"].(string),
-				ID:   serverGroup["id"].([]interface{}),
+				// Name: serverGroup["name"].(string),
+				ID: serverGroup["id"].(int64),
 				// ConfigSpace:      serverGroup["configspace"].(string),
 				// CreationTime:     serverGroup["creationtime"].(int32),
 				// Description:      serverGroup["description"].(string),
@@ -350,25 +275,6 @@ func expandAppServerGroups(d *schema.ResourceData) []applicationsegment.AppServe
 				// ModifiedBy:       serverGroup["modifiedby"].(int64),
 				// ModifiedTime:     serverGroup["modifiedtime"].(int32),
 			}
-		}
-	}
-
-	return serverGroups
-}
-
-func flattenAppServerGroups(serverGroup *applicationsegment.ApplicationSegmentResponse) []interface{} {
-	serverGroups := make([]interface{}, len(serverGroup.AppServerGroups))
-	for i, serverGroup := range serverGroup.AppServerGroups {
-		serverGroups[i] = map[string]interface{}{
-			"name": serverGroup.Name,
-			//"id":   serverGroup.ID,
-			// "configspace":      serverGroup.ConfigSpace,
-			// "creationtime":     serverGroup.CreationTime,
-			// "description":      serverGroup.Description,
-			// "enabled":          serverGroup.Enabled,
-			// "dynamicdiscovery": serverGroup.DynamicDiscovery,
-			// "modifiedby":       serverGroup.ModifiedBy,
-			// "modifiedtime":     serverGroup.ModifiedTime,
 		}
 	}
 

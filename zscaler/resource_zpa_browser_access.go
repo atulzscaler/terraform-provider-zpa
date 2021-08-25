@@ -266,3 +266,67 @@ func resourceBrowserAccessDelete(d *schema.ResourceData, m interface{}) error {
 
 }
 */
+/*
+func expandClientlessApps(d *schema.ResourceData) []applicationsegment.ClientlessApps {
+    var clientlessApps []applicationsegment.ClientlessApps
+    if clientlessInterface, ok := d.GetOk("clientlessapps"); ok {
+        clientless := clientlessInterface.([]interface{})
+        clientlessApps = make([]applicationsegment.ClientlessApps, len(clientless))
+        for i, app := range clientless {
+            clientlessApp := app.(map[string]interface{})
+            clientlessApps[i] = applicationsegment.ClientlessApps{
+                AllowOptions:        clientlessApp["allowoptions"].(bool),
+                AppId:               clientlessApp["appid"].(int),
+                ApplicationPort:     clientlessApp["applicationport"].(int),
+                ApplicationProtocol: clientlessApp["applicationprotocol"].(string), // │ Error: clientlessapps.0.applicationprotocol: '': source data must be an array or slice, got string
+                CertificateId:       clientlessApp["certificateid"].(int),
+                CertificateName:     clientlessApp["certificatename"].(string),
+                Cname:               clientlessApp["cname"].(string),
+                // CreationTime:        clientlessApp["creationtime"].(int32),
+                Description: clientlessApp["description"].(string),
+                Domain:      clientlessApp["domain"].(string),
+                Enabled:     clientlessApp["enabled"].(bool),
+                Hidden:      clientlessApp["hidden"].(bool),
+                // ID:                  clientlessApp["id"].(int64),
+                LocalDomain: clientlessApp["localdomain"].(string),
+                // ModifiedBy:          clientlessApp["modifiedby"].(int64),
+                // ModifiedTime:        clientlessApp["modifiedtime"].(int32),
+                Name: clientlessApp["name"].(string),
+                // Path:               clientlessApp["path"].(string),
+                TrustUntrustedCert: clientlessApp["trustuntrustedcert"].(bool),
+            }
+        }
+    }
+
+    return clientlessApps
+}
+
+func flattenClientlessApps(clientlessApp *applicationsegment.ApplicationSegmentResponse) []interface{} {
+    clientlessApps := make([]interface{}, len(clientlessApp.ClientlessApps))
+    for i, clientlessApp := range clientlessApp.ClientlessApps {
+        clientlessApps[i] = map[string]interface{}{
+            "allowoptions":        clientlessApp.AllowOptions,
+            "appid":               clientlessApp.AppId,
+            "applicationport":     clientlessApp.ApplicationPort,
+            "applicationprotocol": clientlessApp.ApplicationProtocol,
+            "certificateid":       clientlessApp.CertificateId,
+            "certificatename":     clientlessApp.CertificateName,
+            "cname":               clientlessApp.Cname,
+            "creationtime":        clientlessApp.CreationTime,
+            "description":         clientlessApp.Description,
+            "domain":              clientlessApp.Domain,
+            "enabled":             clientlessApp.Enabled,
+            "hidden":              clientlessApp.Hidden,
+            "id":                  clientlessApp.ID,
+            "localdomain":         clientlessApp.LocalDomain,
+            "modifiedby":          clientlessApp.ModifiedBy,
+            "modifiedtime":        clientlessApp.ModifiedTime,
+            "name":                clientlessApp.Name,
+            "path":                clientlessApp.Path,
+            "trustuntrustedcert":  clientlessApp.TrustUntrustedCert,
+        }
+    }
+
+    return clientlessApps
+}
+*/
