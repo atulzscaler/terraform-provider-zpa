@@ -24,31 +24,6 @@ type SegmentGroup struct {
 	TcpKeepAliveEnabled int           `json:"tcpKeepAliveEnabled,string,omitempty"`
 }
 
-/*
-type SegmentGroupResponse struct {
-	Applications   []Applications `json:"applications,omitempty"`
-	ConfigSpace    string         `json:"configSpace"`
-	CreationTime   int32          `json:"creationTime,string"`
-	Description    string         `json:"description"`
-	Enabled        bool           `json:"enabled"`
-	ID             int            `json:"id,string"`
-	ModifiedBy     int64          `json:"modifiedBy,string"`
-	ModifiedTime   int32          `json:"modifiedTime,string"`
-	Name           string         `json:"name"`
-	PolicyMigrated bool           `json:"policyMigrated"`
-}
-*/
-type AppServerGroup struct {
-	ConfigSpace      string `json:"configSpace,omitempty"`
-	CreationTime     int32  `json:"creationTime,string,omitempty"`
-	Description      string `json:"description,omitempty"`
-	Enabled          bool   `json:"enabled,omitempty"`
-	ID               int64  `json:"id,string,omitempty"`
-	DynamicDiscovery bool   `json:"dynamicDiscovery,omitempty"`
-	ModifiedBy       int64  `json:"modifiedBy,string,omitempty"`
-	ModifiedTime     int32  `json:"modifiedTime,string,omitempty"`
-	Name             string `json:"name"`
-}
 type Application struct {
 	BypassType           string           `json:"bypassType,omitempty"`
 	ConfigSpace          string           `json:"configSpace,omitempty"`
@@ -61,7 +36,7 @@ type Application struct {
 	DoubleEncrypt        bool             `json:"doubleEncrypt,omitempty"`
 	Enabled              bool             `json:"enabled,omitempty"`
 	HealthCheckType      string           `json:"healthCheckType,omitempty"`
-	ID                   int              `json:"id,string,omitempty"`
+	ID                   int64            `json:"id,string,omitempty"`
 	IPAnchored           bool             `json:"ipAnchored,omitempty"`
 	LogFeatures          []string         `json:"logFeatures,omitempty"`
 	ModifiedBy           int64            `json:"modifiedBy,string,omitempty"`
@@ -73,6 +48,17 @@ type Application struct {
 	TCPPortsIn           interface{}      `json:"tcpPortsIn,omitempty"`
 	TCPPortsOut          interface{}      `json:"tcpPortsOut,omitempty"`
 	UDPPortRanges        interface{}      `json:"udpPortRangesg,omitempty"`
+}
+type AppServerGroup struct {
+	ConfigSpace      string `json:"configSpace,omitempty"`
+	CreationTime     int32  `json:"creationTime,string,omitempty"`
+	Description      string `json:"description,omitempty"`
+	Enabled          bool   `json:"enabled,omitempty"`
+	ID               int64  `json:"id,string,omitempty"`
+	DynamicDiscovery bool   `json:"dynamicDiscovery,omitempty"`
+	ModifiedBy       int64  `json:"modifiedBy,string,omitempty"`
+	ModifiedTime     int32  `json:"modifiedTime,string,omitempty"`
+	Name             string `json:"name"`
 }
 
 func (service *Service) Get(segmentGroupId int64) (*SegmentGroup, *http.Response, error) {

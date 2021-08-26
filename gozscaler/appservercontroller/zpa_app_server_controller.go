@@ -15,7 +15,7 @@ type ApplicationServer struct {
 	Description       string   `json:"description,omitempty"`
 	Enabled           bool     `json:"enabled,omitempty"`
 	Address           string   `json:"address,omitempty"`
-	ID                int      `json:"id,string,omitempty"`
+	ID                int64    `json:"id,string,omitempty"`
 	CreationTime      int32    `json:"creationTime,string,omitempty"`
 	ModifiedBy        int64    `json:"modifiedBy,string,omitempty"`
 	ModifiedTime      int32    `json:"modifiedTime,string,omitempty"`
@@ -27,15 +27,6 @@ func (service *Service) Get(appServerID int64) (*ApplicationServer, *http.Respon
 	v := new(ApplicationServer)
 	relativeURL := fmt.Sprintf("%v/%v", mgmtConfig+service.Client.Config.CustomerID+appServerControllerEndpoint, appServerID)
 	resp, err := service.Client.NewRequestDo("GET", relativeURL, nil, nil, v)
-	if err != nil {
-		return nil, nil, err
-	}
-	return v, resp, nil
-}
-
-func (service *Service) GetAll() (*[]ApplicationServer, *http.Response, error) {
-	v := new([]ApplicationServer)
-	resp, err := service.Client.NewRequestDo("GET", mgmtConfig+service.Client.Config.CustomerID+appServerControllerEndpoint, nil, nil, v)
 	if err != nil {
 		return nil, nil, err
 	}

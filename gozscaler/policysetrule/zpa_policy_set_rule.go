@@ -1,10 +1,8 @@
 package policysetrule
 
-/*
 import (
 	"fmt"
 	"net/http"
-	"strings"
 )
 
 const (
@@ -77,7 +75,8 @@ type ServerGroups struct {
 	ID   int64  `json:"id,string"`
 }
 
-func (service *Service) Get(policySetId, ruleId string) (*PolicyRule, *http.Response, error) {
+// GET --> mgmtconfig​/v1​/admin​/customers​/{customerId}​/policySet​/{policySetId}​/rule​/{ruleId}
+func (service *Service) Get(policySetId string, ruleId string) (*PolicyRule, *http.Response, error) {
 	v := new(PolicyRule)
 	url := fmt.Sprintf(mgmtConfig+service.Client.Config.CustomerID+"/policySet/%v/rule/%v", policySetId, ruleId)
 	resp, err := service.Client.NewRequestDo("GET", url, nil, nil, &v)
@@ -87,19 +86,18 @@ func (service *Service) Get(policySetId, ruleId string) (*PolicyRule, *http.Resp
 	return v, resp, nil
 }
 
-func (service *Service) Create(customerId int64, policySetId int64, rule PolicyRule) (PolicyRule, *http.Response, error) {
+// POST --> mgmtconfig​/v1​/admin​/customers​/{customerId}​/policySet​/{policySetId}​/rule
+func (service *Service) Create(policySetId PolicyRule) (*PolicyRule, *http.Response, error) {
 	v := new(PolicyRule)
-	localVarPath := a.client.cfg.BasePath + "/mgmtconfig/v1/admin/customers/{customerId}/policySet/{policySetId}/rule"
-	localVarPath = strings.Replace(localVarPath, "{"+"customerId"+"}", fmt.Sprintf("%v", customerId), -1)
-	localVarPath = strings.Replace(localVarPath, "{"+"policySetId"+"}", fmt.Sprintf("%v", policySetId), -1)
-
-	resp, err := service.Client.NewRequestDo("POST", mgmtConfig+service.Client.Config.CustomerID+"/policySet/%v/rule", policySetId, nil, &v)
+	path := fmt.Sprintf(mgmtConfig+service.Client.Config.CustomerID+"/policySet/%v/rule", policySetId)
+	resp, err := service.Client.NewRequestDo("POST", path, nil, &v, nil)
 	if err != nil {
 		return nil, nil, err
 	}
 	return v, resp, nil
 }
 
+// PUT --> mgmtconfig​/v1​/admin​/customers​/{customerId}​/policySet​/{policySetId}​/rule​/{ruleId}
 func (service *Service) Update(policySetId, ruleId string, policySetRule PolicyRule) (*http.Response, error) {
 	path := fmt.Sprintf(mgmtConfig+service.Client.Config.CustomerID+"/policySet/%v/rule/%v", policySetId, ruleId)
 	resp, err := service.Client.NewRequestDo("PUT", path, nil, policySetRule, nil)
@@ -109,6 +107,7 @@ func (service *Service) Update(policySetId, ruleId string, policySetRule PolicyR
 	return resp, err
 }
 
+// DELETE --> mgmtconfig​/v1​/admin​/customers​/{customerId}​/policySet​/{policySetId}​/rule​/{ruleId}
 func (service *Service) Delete(policySetId, ruleId string) (*http.Response, error) {
 	path := fmt.Sprintf(mgmtConfig+service.Client.Config.CustomerID+"/policySet/%v/rule/%v", policySetId, ruleId)
 	resp, err := service.Client.NewRequestDo("DELETE", path, nil, nil, nil)
@@ -117,4 +116,3 @@ func (service *Service) Delete(policySetId, ruleId string) (*http.Response, erro
 	}
 	return resp, err
 }
-*/

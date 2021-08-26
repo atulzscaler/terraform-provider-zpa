@@ -37,7 +37,7 @@ func dataSourceApplicationServer() *schema.Resource {
 			},
 			"id": {
 				Type:     schema.TypeString,
-				Required: true,
+				Computed: true,
 			},
 			"modifiedby": {
 				Type:     schema.TypeInt,
@@ -49,7 +49,7 @@ func dataSourceApplicationServer() *schema.Resource {
 			},
 			"name": {
 				Type:     schema.TypeString,
-				Computed: true,
+				Optional: true,
 			},
 		},
 	}
@@ -58,13 +58,6 @@ func dataSourceApplicationServer() *schema.Resource {
 func dataSourceApplicationServerRead(d *schema.ResourceData, m interface{}) error {
 	zClient := m.(*Client)
 
-	// id := d.Get("id").(string)
-	// log.Printf("[INFO] Getting data for application server %s\n", id)
-
-	// resp, _, err := zClient.appservercontroller.Get(id)
-	// if err != nil {
-	//  return err
-	// }
 	id, err := strconv.ParseInt(d.Get("id").(string), 10, 64)
 	if err != nil {
 		return err

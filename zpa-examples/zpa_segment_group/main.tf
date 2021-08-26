@@ -23,8 +23,8 @@ provider "zpa" {}
    description = "example"
    enabled = true
    policymigrated = true
-    applications  {
-        //name = [data.zpa_application_segment.application_segment.name]
-        id = 216196257331282544
-    }
+    // applications  {
+    //     //name = [data.zpa_application_segment.application_segment.name]
+    //     id = 216196257331282544
+    // }
  }

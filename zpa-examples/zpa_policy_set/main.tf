@@ -10,18 +10,16 @@ terraform {
 provider "zpa" {}
 
 
+// data "zpa_policy_set_global" "all" {
+// }
 
-data "zpa_policy_set_global" "all" {
-}
-
-output "all_policy_set_global" {
-  value = data.zpa_policy_set_global.all
-}
+// output "all_policy_set_global" {
+//   value = data.zpa_policy_set_global.all
+// }
 
 
-/*
+
 resource "zpa_policyset_rule" "test" {
-  policysetid                   = data.zpa_policy_set_global.all.id
   name                          = "example1"
   description                   = "example1"
   action                        = "ALLOW"
@@ -39,4 +37,3 @@ resource "zpa_policyset_rule" "test" {
   //   }
   // }
 }
-*/

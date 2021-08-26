@@ -28,10 +28,10 @@ func resourceSegmentGroup() *schema.Resource {
 				Type:     schema.TypeString,
 				Optional: true,
 			},
-			"creationtime": {
-				Type:     schema.TypeInt,
-				Computed: true,
-			},
+			// "creationtime": {
+			// 	Type:     schema.TypeInt,
+			// 	Computed: true,
+			// },
 			"description": {
 				Type:        schema.TypeString,
 				Description: "Description of the app group.",
@@ -46,14 +46,14 @@ func resourceSegmentGroup() *schema.Resource {
 				Type:     schema.TypeString,
 				Computed: true,
 			},
-			"modifiedby": {
-				Type:     schema.TypeInt,
-				Computed: true,
-			},
-			"modifiedtime": {
-				Type:     schema.TypeInt,
-				Computed: true,
-			},
+			// "modifiedby": {
+			// 	Type:     schema.TypeInt,
+			// 	Computed: true,
+			// },
+			// "modifiedtime": {
+			// 	Type:     schema.TypeInt,
+			// 	Computed: true,
+			// },
 			"name": {
 				Type:        schema.TypeString,
 				Description: "Name of the app group.",
@@ -124,11 +124,11 @@ func resourceSegmentGroupRead(d *schema.ResourceData, m interface{}) error {
 	//d.SetId(strconv.Itoa(resp.ID))
 	d.SetId(strconv.FormatInt(int64(resp.ID), 10))
 	_ = d.Set("configspace", resp.ConfigSpace)
-	_ = d.Set("creationtime", resp.CreationTime)
+	// _ = d.Set("creationtime", resp.CreationTime)
 	_ = d.Set("description", resp.Description)
 	_ = d.Set("enabled", resp.Enabled)
-	_ = d.Set("modifiedby", resp.ModifiedBy)
-	_ = d.Set("modifiedtime", resp.ModifiedTime)
+	// _ = d.Set("modifiedby", resp.ModifiedBy)
+	// _ = d.Set("modifiedtime", resp.ModifiedTime)
 	_ = d.Set("name", resp.Name)
 	_ = d.Set("policymigrated", resp.PolicyMigrated)
 	_ = d.Set("tcpkeepaliveenabled", resp.TcpKeepAliveEnabled)
@@ -214,7 +214,7 @@ func expandSegmentGroupApplications(d *schema.ResourceData) []segmentgroup.Appli
 				// ModifiedBy:           segmentGroupApplication["modifiedby"].(int),
 				// ModifiedTime:         segmentGroupApplication["modifiedtime"].(int),
 				// Name:                 segmentGroupApplication["name"].(string),
-				ID: segmentGroupApplication["id"].(int),
+				ID: segmentGroupApplication["id"].(int64),
 				// PassiveHealthEnabled: segmentGroupApplication["passivehealthenabled"].(bool),
 				// TCPPortRanges:        segmentGroupApplication["tcpportranges"].([]int32),
 				// TCPPortsIn:           segmentGroupApplication["tcpportsin"].([]int32),
