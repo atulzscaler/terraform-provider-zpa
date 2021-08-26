@@ -202,7 +202,7 @@ func expandSegmentGroupApplications(d *schema.ResourceData) []segmentgroup.Appli
 				// ConfigSpace:          segmentGroupApplication["configspace"].(string),
 				// CreationTime:         segmentGroupApplication["creationtime"].(int),
 				// DefaultIdleTimeout:   segmentGroupApplication["defaultidletimeout"].(int),
-				// DefaultMaxAge:        segmentGroupApplication["defaultmaxage"].(int),
+				//DefaultMaxAge: segmentGroupApplication["defaultmaxage"].(int),
 				// Description:          segmentGroupApplication["description"].(string),
 				// DomainName:           segmentGroupApplication["domainname"].(string),
 				// DomainNames:          segmentGroupApplication["domainnames"].([]string),

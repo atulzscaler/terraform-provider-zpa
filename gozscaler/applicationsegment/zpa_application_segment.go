@@ -39,37 +39,37 @@ type ApplicationSegmentResource struct {
 	DefaultMaxAge        int32             `json:"defaultMaxAge,string,omitempty"`
 }
 type ClientlessApps struct {
-	AllowOptions        bool   `json:"allowOptions"`
-	AppId               int    `json:"appId,string"`
-	ApplicationPort     int    `json:"applicationPort,string"`
-	ApplicationProtocol string `json:"applicationProtocol"`
-	CertificateId       int    `json:"certificateId,string"`
-	CertificateName     string `json:"certificateName"`
-	Cname               string `json:"cname"`
-	CreationTime        int32  `json:"creationTime,string"`
-	Description         string `json:"description"`
-	Domain              string `json:"domain"`
-	Enabled             bool   `json:"enabled"`
-	Hidden              bool   `json:"hidden"`
-	ID                  int64  `json:"id,string"`
-	LocalDomain         string `json:"localDomain"`
-	ModifiedBy          int64  `json:"modifiedBy,string"`
-	ModifiedTime        int32  `json:"modifiedTime,string"`
-	Name                string `json:"name,omitempty"`
+	AllowOptions        bool   `json:"allowOptions,omitempty"`
+	AppId               int    `json:"appId,string,omitempty"`
+	ApplicationPort     int    `json:"applicationPort,string,omitempty"`
+	ApplicationProtocol string `json:"applicationProtocol,omitempty"`
+	CertificateId       int    `json:"certificateId,string,omitempty"`
+	CertificateName     string `json:"certificateName,omitempty"`
+	Cname               string `json:"cname,omitempty"`
+	CreationTime        int32  `json:"creationTime,string,omitempty"`
+	Description         string `json:"description,omitempty"`
+	Domain              string `json:"domain,omitempty"`
+	Enabled             bool   `json:"enabled,omitempty"`
+	Hidden              bool   `json:"hidden,omitempty"`
+	ID                  int64  `json:"id,string,omitempty"`
+	LocalDomain         string `json:"localDomain,omitempty"`
+	ModifiedBy          int64  `json:"modifiedBy,string,omitempty"`
+	ModifiedTime        int32  `json:"modifiedTime,string,omitempty"`
+	Name                string `json:"name"`
 	Path                string `json:"path,omitempty"`
 	Portal              bool   `json:"portal,omitempty"`
-	TrustUntrustedCert  bool   `json:"trustUntrustedCert"`
+	TrustUntrustedCert  bool   `json:"trustUntrustedCert,omitempty"`
 }
 
 type AppServerGroups struct {
-	ConfigSpace      string `json:"configSpace"`
-	CreationTime     int32  `json:"creationTime,string"`
-	Description      string `json:"description"`
-	Enabled          bool   `json:"enabled"`
-	ID               int64  `json:"id,string"`
-	DynamicDiscovery bool   `json:"dynamicDiscovery"`
-	ModifiedBy       int64  `json:"modifiedBy,string"`
-	ModifiedTime     int32  `json:"modifiedTime,string"`
+	ConfigSpace      string `json:"configSpace,omitempty"`
+	CreationTime     int32  `json:"creationTime,string,omitempty"`
+	Description      string `json:"description,omitempty"`
+	Enabled          bool   `json:"enabled,omitempty"`
+	ID               int    `json:"id,string,omitempty"`
+	DynamicDiscovery bool   `json:"dynamicDiscovery,omitempty"`
+	ModifiedBy       int64  `json:"modifiedBy,string,omitempty"`
+	ModifiedTime     int32  `json:"modifiedTime,string,omitempty"`
 	Name             string `json:"name"`
 }
 

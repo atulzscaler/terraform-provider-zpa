@@ -36,11 +36,11 @@ type BrowserAccess struct {
 }
 
 type ClientlessApps struct {
-	AllowOptions        bool   `json:"allowOptions,omitempty"`
-	AppId               int64  `json:"appId,string,omitempty"`
-	ApplicationPort     int32  `json:"applicationPort,string,omitempty"`
+	AllowOptions bool `json:"allowOptions,omitempty"`
+	//AppId               int    `json:"appId"`
+	ApplicationPort     int    `json:"applicationPort,string,omitempty"`
 	ApplicationProtocol string `json:"applicationProtocol,omitempty"`
-	CertificateId       int64  `json:"certificateId,string,omitempty"`
+	CertificateId       int    `json:"certificateId,string,omitempty"`
 	CertificateName     string `json:"certificateName,omitempty"`
 	Cname               string `json:"cname,omitempty"`
 	CreationTime        int32  `json:"creationTime,string,omitempty"`

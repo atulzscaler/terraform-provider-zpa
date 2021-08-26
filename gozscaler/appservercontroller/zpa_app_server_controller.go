@@ -12,13 +12,13 @@ const (
 
 type ApplicationServer struct {
 	Name              string   `json:"name"`
-	Description       string   `json:"description"`
-	Enabled           bool     `json:"enabled"`
-	Address           string   `json:"address"`
-	ID                int      `json:"id,string"`
-	CreationTime      int32    `json:"creationTime,string"`
-	ModifiedBy        int64    `json:"modifiedBy,string"`
-	ModifiedTime      int32    `json:"modifiedTime,string"`
+	Description       string   `json:"description,omitempty"`
+	Enabled           bool     `json:"enabled,omitempty"`
+	Address           string   `json:"address,omitempty"`
+	ID                int      `json:"id,string,omitempty"`
+	CreationTime      int32    `json:"creationTime,string,omitempty"`
+	ModifiedBy        int64    `json:"modifiedBy,string,omitempty"`
+	ModifiedTime      int32    `json:"modifiedTime,string,omitempty"`
 	AppServerGroupIds []string `json:"appServerGroupIds,omitempty"`
 	ConfigSpace       string   `json:"configSpace,omitempty"`
 }

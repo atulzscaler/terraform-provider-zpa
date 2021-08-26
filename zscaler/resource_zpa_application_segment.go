@@ -123,9 +123,8 @@ func resourceApplicationSegment() *schema.Resource {
 				Elem: &schema.Resource{
 					Schema: map[string]*schema.Schema{
 						"id": {
-							Type:     schema.TypeList,
+							Type:     schema.TypeInt,
 							Optional: true,
-							Elem:     &schema.Schema{Type: schema.TypeInt},
 						},
 					},
 				},
@@ -262,7 +261,7 @@ func expandAppServerGroups(d *schema.ResourceData) []applicationsegment.AppServe
 			serverGroup := srvGroup.(map[string]interface{})
 			serverGroups[i] = applicationsegment.AppServerGroups{
 				// Name: serverGroup["name"].(string),
-				ID: serverGroup["id"].(int64),
+				ID: serverGroup["id"].(int),
 				// ConfigSpace:      serverGroup["configspace"].(string),
 				// CreationTime:     serverGroup["creationtime"].(int32),
 				// Description:      serverGroup["description"].(string),

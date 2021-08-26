@@ -63,6 +63,10 @@ func resourceBrowserAccess() *schema.Resource {
 				Optional:    true,
 				Description: "Whether Double Encryption is enabled or disabled for the app.",
 			},
+			"healthchecktype": {
+				Type:     schema.TypeString,
+				Optional: true,
+			},
 			"enabled": {
 				Type:     schema.TypeBool,
 				Optional: true,
@@ -95,10 +99,10 @@ func resourceBrowserAccess() *schema.Resource {
 							Type:     schema.TypeBool,
 							Optional: true,
 						},
-						"appid": {
-							Type:     schema.TypeInt,
-							Computed: true,
-						},
+						// "appid": {
+						// 	Type:     schema.TypeInt,
+						// 	Computed: true,
+						// },
 						"applicationport": {
 							Type:     schema.TypeInt,
 							Optional: true,
@@ -295,11 +299,11 @@ func expandClientlessApps(d *schema.ResourceData) []browseraccess.ClientlessApps
 		for i, app := range clientless {
 			clientlessApp := app.(map[string]interface{})
 			clientlessApps[i] = browseraccess.ClientlessApps{
-				AllowOptions:        clientlessApp["allowoptions"].(bool),
-				AppId:               clientlessApp["appid"].(int64),
-				ApplicationPort:     clientlessApp["applicationport"].(int32),
+				AllowOptions: clientlessApp["allowoptions"].(bool),
+				//AppId:               clientlessApp["appid"].(int),
+				ApplicationPort:     clientlessApp["applicationport"].(int),
 				ApplicationProtocol: clientlessApp["applicationprotocol"].(string),
-				CertificateId:       clientlessApp["certificateid"].(int64),
+				CertificateId:       clientlessApp["certificateid"].(int),
 				CertificateName:     clientlessApp["certificatename"].(string),
 				Cname:               clientlessApp["cname"].(string),
 				Description:         clientlessApp["description"].(string),
@@ -345,8 +349,8 @@ func flattenBaClientlessApps(clientlessApp *browseraccess.BrowserAccess) []inter
 	clientlessApps := make([]interface{}, len(clientlessApp.ClientlessApps))
 	for i, clientlessApp := range clientlessApp.ClientlessApps {
 		clientlessApps[i] = map[string]interface{}{
-			"allowoptions":        clientlessApp.AllowOptions,
-			"appid":               clientlessApp.AppId,
+			"allowoptions": clientlessApp.AllowOptions,
+			//"appid":               clientlessApp.AppId,
 			"applicationport":     clientlessApp.ApplicationPort,
 			"applicationprotocol": clientlessApp.ApplicationProtocol,
 			"certificateid":       clientlessApp.CertificateId,
