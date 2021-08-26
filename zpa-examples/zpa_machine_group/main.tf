@@ -11,7 +11,7 @@ provider "zpa" {}
 
 
 data "zpa_machine_group" "all" {
-  //id = 216196257331282185
+  id = 216196257331282185
 }
 
 output "all_machine_group" {

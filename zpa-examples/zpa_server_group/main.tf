@@ -42,11 +42,13 @@ resource "zpa_server_group" "example" {
   name = "example"
   description = "example"
   enabled = true
-  dynamicdiscovery = true
-  // servers {
-  //   id = [data.zpa_application_server.example.id]
-  // }
-  appconnectorgroups {
-    id = [216196257331281931]
+  dynamicdiscovery = false
+  servers {
+    id = [216196257331282445]
   }
+  // appconnectorgroups {
+  //   id = [
+  //     216196257331281931
+  //     ]
+  // }
 }

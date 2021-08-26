@@ -28,7 +28,7 @@ type BrowserAccess struct {
 	HealthReporting      string            `json:"healthReporting,omitempty"`
 	CreationTime         int32             `json:"creationTime,string,omitempty"`
 	ModifiedBy           string            `json:"modifiedBy,omitempty"`
-	ModifiedTime         int               `json:"modifiedTime,string,omitempty"`
+	ModifiedTime         int32             `json:"modifiedTime,string,omitempty"`
 	TcpPortRanges        []interface{}     `json:"tcpPortRanges,omitempty"`
 	UdpPortRanges        []interface{}     `json:"udpPortRanges,omitempty"`
 	ClientlessApps       []ClientlessApps  `json:"clientlessApps,omitempty"`
@@ -37,36 +37,28 @@ type BrowserAccess struct {
 
 type ClientlessApps struct {
 	AllowOptions        bool   `json:"allowOptions,omitempty"`
-	AppId               int    `json:"appId,string,omitempty"`
-	ApplicationPort     int    `json:"applicationPort,string,omitempty"`
+	AppId               int64  `json:"appId,string,omitempty"`
+	ApplicationPort     int32  `json:"applicationPort,string,omitempty"`
 	ApplicationProtocol string `json:"applicationProtocol,omitempty"`
-	CertificateId       int    `json:"certificateId,string,omitempty"`
+	CertificateId       int64  `json:"certificateId,string,omitempty"`
 	CertificateName     string `json:"certificateName,omitempty"`
 	Cname               string `json:"cname,omitempty"`
-	CreationTime        int    `json:"creationTime,string,omitempty"`
+	CreationTime        int32  `json:"creationTime,string,omitempty"`
 	Description         string `json:"description,omitempty"`
 	Domain              string `json:"domain,omitempty"`
 	Enabled             bool   `json:"enabled,omitempty"`
 	Hidden              bool   `json:"hidden,omitempty"`
-	ID                  int    `json:"id,string,omitempty"`
+	ID                  int64  `json:"id,string,omitempty"`
 	LocalDomain         string `json:"localDomain,omitempty"`
-	ModifiedBy          int    `json:"modifiedBy,string,omitempty"`
-	ModifiedTime        int    `json:"modifiedTime,string,omitempty"`
+	ModifiedBy          int64  `json:"modifiedBy,string,omitempty"`
+	ModifiedTime        int32  `json:"modifiedTime,string,omitempty"`
 	Name                string `json:"name"`
 	Path                string `json:"path,omitempty"`
 	TrustUntrustedCert  bool   `json:"trustUntrustedCert,omitempty"`
 }
 
 type AppServerGroups struct {
-	// ConfigSpace      string `json:"configSpace,omitempty"`
-	// CreationTime     int32  `json:"creationTime,string,omitempty"`
-	// Description      string `json:"description,omitempty"`
-	// Enabled          bool   `json:"enabled,omitempty"`
 	ID int `json:"id,string,omitempty"`
-	// DynamicDiscovery bool   `json:"dynamicDiscovery,omitempty"`
-	// ModifiedBy       int64  `json:"modifiedBy,string,omitempty"`
-	// ModifiedTime     int32  `json:"modifiedTime,string,omitempty"`
-	// Name             string `json:"name"`
 }
 
 func (service *Service) Get(id string) (*BrowserAccess, *http.Response, error) {

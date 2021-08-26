@@ -12,7 +12,7 @@ func resourceServerGroup() *schema.Resource {
 	return &schema.Resource{
 		Schema: map[string]*schema.Schema{
 			"applications": {
-				Type:        schema.TypeSet,
+				Type:        schema.TypeList,
 				Optional:    true,
 				Description: "This field is a json array of app-connector-id only.",
 				Elem: &schema.Resource{
@@ -20,13 +20,13 @@ func resourceServerGroup() *schema.Resource {
 						"id": {
 							Type:     schema.TypeList,
 							Optional: true,
-							Elem:     &schema.Schema{Type: schema.TypeString},
+							Elem:     &schema.Schema{Type: schema.TypeInt},
 						},
 					},
 				},
 			},
 			"appconnectorgroups": {
-				Type:        schema.TypeSet,
+				Type:        schema.TypeList,
 				Optional:    true,
 				Description: "This field is a json array of app-connector-id only.",
 				Elem: &schema.Resource{
@@ -34,7 +34,7 @@ func resourceServerGroup() *schema.Resource {
 						"id": {
 							Type:     schema.TypeList,
 							Optional: true,
-							Elem:     &schema.Schema{Type: schema.TypeString},
+							Elem:     &schema.Schema{Type: schema.TypeInt},
 						},
 					},
 				},
@@ -43,10 +43,10 @@ func resourceServerGroup() *schema.Resource {
 				Type:     schema.TypeString,
 				Computed: true,
 			},
-			"creationtime": {
-				Type:     schema.TypeInt,
-				Computed: true,
-			},
+			// "creationtime": {
+			// 	Type:     schema.TypeInt,
+			// 	Computed: true,
+			// },
 			"description": {
 				Type:        schema.TypeString,
 				Optional:    true,
@@ -70,29 +70,29 @@ func resourceServerGroup() *schema.Resource {
 				Optional:    true,
 				Description: "This field controls dynamic discovery of the servers.",
 			},
-			"modifiedby": {
-				Type:     schema.TypeString,
-				Computed: true,
-			},
-			"modifiedtime": {
-				Type:     schema.TypeInt,
-				Computed: true,
-			},
+			// "modifiedby": {
+			// 	Type:     schema.TypeString,
+			// 	Computed: true,
+			// },
+			// "modifiedtime": {
+			// 	Type:     schema.TypeInt,
+			// 	Computed: true,
+			// },
 			"name": {
 				Type:        schema.TypeString,
 				Required:    true,
 				Description: "This field defines the name of the server group.",
 			},
 			"servers": {
-				Type:        schema.TypeSet,
+				Type:        schema.TypeList,
 				Optional:    true,
 				Description: "This field is a list of servers that are applicable only when dynamic discovery is disabled. Server name is required only in cases where the new servers need to be created in this API. For existing servers, pass only the serverId.",
 				Elem: &schema.Resource{
 					Schema: map[string]*schema.Schema{
 						"id": {
 							Type:     schema.TypeList,
-							Computed: true,
-							Elem:     &schema.Schema{Type: schema.TypeString},
+							Optional: true,
+							Elem:     &schema.Schema{Type: schema.TypeInt},
 						},
 					},
 					Create: resourceServerGroupCreate,
@@ -118,6 +118,7 @@ func resourceServerGroupCreate(d *schema.ResourceData, m interface{}) error {
 	if err != nil {
 		return err
 	}
+	log.Printf("[INFO] Created server group request. ID: %v\n", resp)
 	d.SetId(resp.ID)
 
 	return resourceServerGroupRead(d, m)
@@ -138,24 +139,32 @@ func resourceServerGroupRead(d *schema.ResourceData, m interface{}) error {
 	}
 
 	log.Printf("[INFO] Getting server group:\n%+v\n", resp)
-	d.SetId(resp.ID)
+	//d.SetId(resp.ID)
 	_ = d.Set("configspace", resp.ConfigSpace)
-	_ = d.Set("creationtime", resp.CreationTime)
+	// _ = d.Set("creationtime", resp.CreationTime)
 	_ = d.Set("description", resp.Description)
 	_ = d.Set("enabled", resp.Enabled)
 	_ = d.Set("ipanchored", resp.IpAnchored)
 	_ = d.Set("dynamicdiscovery", resp.DynamicDiscovery)
 	_ = d.Set("enabled", resp.Enabled)
-	_ = d.Set("modifiedby", resp.ModifiedBy)
-	_ = d.Set("modifiedtime", resp.ModifiedTime)
+	// _ = d.Set("modifiedby", resp.ModifiedBy)
+	// _ = d.Set("modifiedtime", resp.ModifiedTime)
 	_ = d.Set("name", resp.Name)
+	_ = d.Set("appconnectorgroups", flattenAppConnectorGroups(resp.AppConnectorGroups))
 	_ = d.Set("applications", flattenServerGroupApplications(resp.Applications))
 	_ = d.Set("servers", flattenServers(resp.Servers))
 
-	if err := d.Set("appconnectorgroups", flattenAppConnectorGroups(resp)); err != nil {
-		return err
-	}
+	// if err := d.Set("applications", flattenServerGroupApplications(resp.Applications)); err != nil {
+	// 	return err
+	// }
 
+	// if err := d.Set("appconnectorgroups", flattenAppConnectorGroups(resp.AppConnectorGroups)); err != nil {
+	// 	return err
+	// }
+
+	// if err := d.Set("servers", flattenServers(resp.Servers)); err != nil {
+	// 	return err
+	// }
 	return nil
 
 }
@@ -163,26 +172,20 @@ func resourceServerGroupRead(d *schema.ResourceData, m interface{}) error {
 func resourceServerGroupUpdate(d *schema.ResourceData, m interface{}) error {
 	zClient := m.(*Client)
 
-	log.Println("An updated occurred")
+	id := d.Id()
+	log.Printf("[INFO] Updating server group ID: %v\n", id)
+	req := expandCreateAppServerGroupRequest(d)
 
-	if d.HasChange("name") {
-		log.Println("The name or ID has been changed")
-
-		if _, err := zClient.servergroup.Update(d.Id(), servergroup.ServerGroup{
-			Name: d.Get("name").(string),
-		}); err != nil {
-			return err
-		}
-		return resourceServerGroupRead(d, m)
+	if _, err := zClient.servergroup.Update(id, req); err != nil {
+		return err
 	}
-
-	return nil
+	return resourceServerGroupRead(d, m)
 }
 
 func resourceServerGroupDelete(d *schema.ResourceData, m interface{}) error {
 	zClient := m.(*Client)
 
-	log.Printf("[INFO] Updating server group ID: %v\n", d.Id())
+	log.Printf("[INFO] Deleting server group ID: %v\n", d.Id())
 
 	if _, err := zClient.servergroup.Delete(d.Id()); err != nil {
 		return err
@@ -192,8 +195,8 @@ func resourceServerGroupDelete(d *schema.ResourceData, m interface{}) error {
 }
 
 func expandCreateAppServerGroupRequest(d *schema.ResourceData) servergroup.ServerGroup {
-	serverGroup := servergroup.ServerGroup{
-		ID:                 d.Get("id").(string),
+	return servergroup.ServerGroup{
+		//ID:               d.Get("id").(string),
 		Enabled:            d.Get("enabled").(bool),
 		Name:               d.Get("name").(string),
 		Description:        d.Get("description").(string),
@@ -202,9 +205,8 @@ func expandCreateAppServerGroupRequest(d *schema.ResourceData) servergroup.Serve
 		DynamicDiscovery:   d.Get("dynamicdiscovery").(bool),
 		Applications:       expandServerGroupApplications(d),
 		AppConnectorGroups: expandAppConnectorGroups(d),
-		//ApplicationServers: expandServers(d),
+		Servers:            expandServers(d),
 	}
-	return serverGroup
 }
 
 func expandServerGroupApplications(d *schema.ResourceData) []servergroup.Applications {
@@ -257,29 +259,27 @@ func expandAppConnectorGroups(d *schema.ResourceData) []servergroup.AppConnector
 	return appConnectorGroups
 }
 
-/*
-func expandServers(d *schema.ResourceData) []servergroup.ApplicationServers {
-	var applicationServers []servergroup.ApplicationServers
+func expandServers(d *schema.ResourceData) []servergroup.ApplicationServer {
+	var applicationServers []servergroup.ApplicationServer
 	if appServersInterface, ok := d.GetOk("servers"); ok {
 		appservers := appServersInterface.([]interface{})
-		applicationServers = make([]servergroup.ApplicationServers, len(appservers))
+		applicationServers = make([]servergroup.ApplicationServer, len(appservers))
 		for i, appserver := range appservers {
 			appSrv := appserver.(map[string]interface{})
-			applicationServers[i] = servergroup.ApplicationServers{
-				Address:           appSrv["address"].(string),
-				AppServerGroupIds: appSrv["appservergroupids"].([]string),
-				ConfigSpace:       appSrv["configspace"].(string),
+			applicationServers[i] = servergroup.ApplicationServer{
+				// Address:           appSrv["address"].(string),
+				// AppServerGroupIds: appSrv["appservergroupids"].([]string),
+				// ConfigSpace:       appSrv["configspace"].(string),
 				// CreationTime:      appSrv["creationtime"].(int32),
-				Description: appSrv["description"].(string),
-				ID:          appSrv["id"].(int64),
-				Enabled:     appSrv["enabled"].(bool),
+				// Description: appSrv["description"].(string),
+				ID: appSrv["id"].(int64),
+				// Enabled:     appSrv["enabled"].(bool),
 				// ModifiedBy:        appSrv["modifiedby"].(int64),
 				// ModifiedTime:      appSrv["modifiedtime"].(int32),
-				Name: appSrv["name"].(string),
+				// Name: appSrv["name"].(string),
 			}
 		}
 	}
 
 	return applicationServers
 }
-*/

@@ -313,14 +313,18 @@ func dataSourceServerGroupRead(d *schema.ResourceData, m interface{}) error {
 	_ = d.Set("modifiedby", resp.ModifiedBy)
 	_ = d.Set("modifiedtime", resp.ModifiedTime)
 	_ = d.Set("name", resp.Name)
-	_ = d.Set("applications", flattenServerGroupApplications(resp.Applications))
-	_ = d.Set("servers", flattenServers(resp.Servers))
-	//_ = d.Set("appconnectorgroups", flattenAppConnectorGroups(resp))
 
-	if err := d.Set("appconnectorgroups", flattenAppConnectorGroups(resp)); err != nil {
+	if err := d.Set("applications", flattenServerGroupApplications(resp.Applications)); err != nil {
 		return err
 	}
 
+	if err := d.Set("appconnectorgroups", flattenAppConnectorGroups(resp.AppConnectorGroups)); err != nil {
+		return err
+	}
+
+	if err := d.Set("servers", flattenServers(resp.Servers)); err != nil {
+		return err
+	}
 	return nil
 }
 
@@ -336,9 +340,9 @@ func flattenServerGroupApplications(applications []servergroup.Applications) []i
 	return serverGroupApplications
 }
 
-func flattenAppConnectorGroups(appConnectorGroup *servergroup.ServerGroup) []interface{} {
-	appConnectorGroups := make([]interface{}, len(appConnectorGroup.AppConnectorGroups))
-	for i, appConnectorGroup := range appConnectorGroup.AppConnectorGroups {
+func flattenAppConnectorGroups(appConnectorGroup []servergroup.AppConnectorGroups) []interface{} {
+	appConnectorGroups := make([]interface{}, len(appConnectorGroup))
+	for i, appConnectorGroup := range appConnectorGroup {
 		appConnectorGroups[i] = map[string]interface{}{
 			"citycountry":           appConnectorGroup.Citycountry,
 			"countrycode":           appConnectorGroup.CountryCode,

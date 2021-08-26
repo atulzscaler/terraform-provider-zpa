@@ -21,9 +21,9 @@ type ServerGroup struct {
 	CreationTime       int32                `json:"creationTime,string,omitempty"`
 	ModifiedBy         string               `json:"modifiedBy,omitempty"`
 	ModifiedTime       int32                `json:"modifiedTime,string,omitempty"`
-	AppConnectorGroups []AppConnectorGroups `json:"appConnectorGroups,omitempty"`
-	Servers            []ApplicationServer  `json:"servers,omitempty"`
-	Applications       []Applications       `json:"applications,omitempty"`
+	AppConnectorGroups []AppConnectorGroups `json:"appConnectorGroups"`
+	Servers            []ApplicationServer  `json:"servers"`
+	Applications       []Applications       `json:"applications"`
 }
 
 type Applications struct {
@@ -72,9 +72,9 @@ type Connectors struct {
 	LastBrokerConnecttime    int64             `json:"lastBrokerConnectTime,string,omitempty"`
 	LastBrokerDisconnectTime int64             `json:"lastBrokerDisconnectTime,string,omitempty"`
 	LastUpgradeTime          int64             `json:"lastUpgradeTime,string,omitempty"`
-	Latitude                 float64           `json:"latitude,string,omitempty"` // Swagger shows number($double)
+	Latitude                 float64           `json:"latitude,string,omitempty"`
 	Location                 string            `json:"location,omitempty"`
-	Longitude                float64           `json:"longitude,string,omitempty"` // Swagger shows number($double)
+	Longitude                float64           `json:"longitude,string,omitempty"`
 	ModifiedBy               int64             `json:"modifiedBy,string,omitempty"`
 	ModifiedTime             int32             `json:"modifiedTime,omitempty"`
 	Name                     string            `json:"name"`

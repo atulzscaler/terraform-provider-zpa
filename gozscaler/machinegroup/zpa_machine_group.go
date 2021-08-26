@@ -28,18 +28,19 @@ type MachineGroup struct {
 }
 
 type Machines struct {
-	CreationTime     int32             `json:"creationTime,string,omitempty"`
-	Description      string            `json:"description,omitempty"`
-	Fingerprint      string            `json:"fingerprint,omitempty"`
-	ID               int64             `json:"id,string,omitempty"`
-	IssuedCertID     int64             `json:"issuedCertId,string,omitempty"`
-	MachineGroupID   string            `json:"machineGroupId,omitempty"`
-	MachineGroupName string            `json:"machineGroupName,omitempty"`
-	MachineTokenID   int64             `json:"machineTokenId,string,omitempty"`
-	ModifiedBy       int64             `json:"modifiedBy,string,omitempty"`
-	ModifiedTime     int32             `json:"modifiedTime,string,omitempty"`
-	Name             string            `json:"name"`
-	SigningCert      map[string]string `json:"signingCert,omitempty"`
+	CreationTime     int32                  `json:"creationTime,string,omitempty"`
+	Description      string                 `json:"description,omitempty"`
+	Fingerprint      string                 `json:"fingerprint,omitempty"`
+	ID               int64                  `json:"id,string,omitempty"`
+	IssuedCertID     int64                  `json:"issuedCertId,string,omitempty"`
+	MachineGroupID   string                 `json:"machineGroupId,omitempty"`
+	MachineGroupName string                 `json:"machineGroupName,omitempty"`
+	MachineTokenID   int64                  `json:"machineTokenId,string,omitempty"`
+	ModifiedBy       int64                  `json:"modifiedBy,string,omitempty"`
+	ModifiedTime     int32                  `json:"modifiedTime,string,omitempty"`
+	Name             string                 `json:"name"`
+	SigningCert      map[string]interface{} `json:"signingCert,omitempty"`
+	//SigningCert      map[string]string `json:"signingCert,omitempty"`
 }
 
 // Get ...

@@ -246,7 +246,7 @@ func resourceBrowserAccessUpdate(d *schema.ResourceData, m interface{}) error {
 	zClient := m.(*Client)
 
 	id := d.Id()
-	log.Printf("[INFO] Updating role ID: %v\n", id)
+	log.Printf("[INFO] Updating browser access ID: %v\n", id)
 	req := expandBrowserAccess(d)
 
 	if _, err := zClient.browseraccess.Update(id, req); err != nil {
@@ -296,24 +296,20 @@ func expandClientlessApps(d *schema.ResourceData) []browseraccess.ClientlessApps
 			clientlessApp := app.(map[string]interface{})
 			clientlessApps[i] = browseraccess.ClientlessApps{
 				AllowOptions:        clientlessApp["allowoptions"].(bool),
-				AppId:               clientlessApp["appid"].(int),
-				ApplicationPort:     clientlessApp["applicationport"].(int),
-				ApplicationProtocol: clientlessApp["applicationprotocol"].(string), // │ Error: clientlessapps.0.applicationprotocol: '': source data must be an array or slice, got string
-				CertificateId:       clientlessApp["certificateid"].(int),
+				AppId:               clientlessApp["appid"].(int64),
+				ApplicationPort:     clientlessApp["applicationport"].(int32),
+				ApplicationProtocol: clientlessApp["applicationprotocol"].(string),
+				CertificateId:       clientlessApp["certificateid"].(int64),
 				CertificateName:     clientlessApp["certificatename"].(string),
 				Cname:               clientlessApp["cname"].(string),
-				// CreationTime:        clientlessApp["creationtime"].(int32),
-				Description: clientlessApp["description"].(string),
-				Domain:      clientlessApp["domain"].(string),
-				Enabled:     clientlessApp["enabled"].(bool),
-				Hidden:      clientlessApp["hidden"].(bool),
-				// ID:                  clientlessApp["id"].(int64),
-				LocalDomain: clientlessApp["localdomain"].(string),
-				// ModifiedBy:          clientlessApp["modifiedby"].(int64),
-				// ModifiedTime:        clientlessApp["modifiedtime"].(int32),
-				Name:               clientlessApp["name"].(string),
-				Path:               clientlessApp["path"].(string),
-				TrustUntrustedCert: clientlessApp["trustuntrustedcert"].(bool),
+				Description:         clientlessApp["description"].(string),
+				Domain:              clientlessApp["domain"].(string),
+				Enabled:             clientlessApp["enabled"].(bool),
+				Hidden:              clientlessApp["hidden"].(bool),
+				LocalDomain:         clientlessApp["localdomain"].(string),
+				Name:                clientlessApp["name"].(string),
+				Path:                clientlessApp["path"].(string),
+				TrustUntrustedCert:  clientlessApp["trustuntrustedcert"].(bool),
 			}
 		}
 	}
