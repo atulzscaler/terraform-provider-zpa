@@ -87,9 +87,9 @@ func (service *Service) Get(policySetId string, ruleId string) (*PolicyRule, *ht
 }
 
 // POST --> mgmtconfig​/v1​/admin​/customers​/{customerId}​/policySet​/{policySetId}​/rule
-func (service *Service) Create(policySetId PolicyRule) (*PolicyRule, *http.Response, error) {
+func (service *Service) Create(policySetID PolicyRule) (*PolicyRule, *http.Response, error) {
 	v := new(PolicyRule)
-	path := fmt.Sprintf(mgmtConfig+service.Client.Config.CustomerID+"/policySet/%v/rule", policySetId)
+	path := fmt.Sprintf(mgmtConfig+service.Client.Config.CustomerID+"/policySet/%v/rule", policySetID.PolicySetID)
 	resp, err := service.Client.NewRequestDo("POST", path, nil, &v, nil)
 	if err != nil {
 		return nil, nil, err
