@@ -21,7 +21,7 @@ func resourcePolicySetRule() *schema.Resource {
 		Schema: map[string]*schema.Schema{
 			"action": {
 				Type:     schema.TypeString,
-				Required: true,
+				Optional: true,
 				Description: "	This is for providing the rule action.",
 			},
 			"actionid": {
@@ -29,119 +29,119 @@ func resourcePolicySetRule() *schema.Resource {
 				Optional:    true,
 				Description: "This field defines the description of the server.",
 			},
-			"servergroups": {
-				Type:        schema.TypeList,
-				Optional:    true,
-				Description: "ID of the server group.",
-				Elem: &schema.Resource{
-					Schema: map[string]*schema.Schema{
-						"id": {
-							Type:     schema.TypeInt,
-							Optional: true,
-						},
-					},
-				},
-			},
-			"appconnectorgroups": {
-				Type:        schema.TypeSet,
-				Optional:    true,
-				Description: "This field is a json array of app-connector-id only.",
-				Elem: &schema.Resource{
-					Schema: map[string]*schema.Schema{
-						"id": {
-							Type:     schema.TypeList,
-							Optional: true,
-							Elem:     &schema.Schema{Type: schema.TypeString},
-						},
-					},
-				},
-			},
-			"conditions": {
-				Type:        schema.TypeSet,
-				Optional:    true,
-				Description: "This is for proviidng the set of conditions for the policy.",
-				Elem: &schema.Resource{
-					Schema: map[string]*schema.Schema{
-						"creationtime": {
-							Type:     schema.TypeInt,
-							Computed: true,
-						},
-						"id": {
-							Type:     schema.TypeInt,
-							Computed: true,
-						},
-						"modifiedby": {
-							Type:     schema.TypeInt,
-							Computed: true,
-						},
-						"modifiedtime": {
-							Type:     schema.TypeInt,
-							Computed: true,
-						},
-						"negated": {
-							Type:     schema.TypeBool,
-							Optional: true,
-						},
-						"operator": {
-							Type:     schema.TypeList,
-							Optional: true,
-							Elem:     &schema.Schema{Type: schema.TypeString},
-						},
-						"operands": {
-							Type:        schema.TypeSet,
-							Optional:    true,
-							Description: "This signifies the various policy criteria.",
-							Elem: &schema.Resource{
-								Schema: map[string]*schema.Schema{
-									"creationtime": {
-										Type:     schema.TypeInt,
-										Computed: true,
-									},
-									"id": {
-										Type:     schema.TypeInt,
-										Computed: true,
-									},
-									"idpid": {
-										Type:     schema.TypeInt,
-										Computed: true,
-									},
-									"lhs": {
-										Type:     schema.TypeString,
-										Computed: true,
-									},
-									"modifiedby": {
-										Type:     schema.TypeInt,
-										Computed: true,
-									},
-									"modifiedtime": {
-										Type:     schema.TypeInt,
-										Computed: true,
-									},
-									"name": {
-										Type:     schema.TypeString,
-										Computed: true,
-									},
-									"objecttype": {
-										Type:     schema.TypeList,
-										Optional: true,
-										Elem:     &schema.Schema{Type: schema.TypeString},
-										Description: "	This is for specifying the policy critiera.",
-									},
-									"rhs": {
-										Type:        schema.TypeString,
-										Optional:    true,
-										Description: "This denotes the value for the given object type. Its value depends upon the key.",
-									},
-								},
-							},
-						},
-					},
-				},
-			},
-			"creationtime": {
-				Type:     schema.TypeInt,
-				Computed: true,
-			},
+			// "servergroups": {
+			// 	Type:        schema.TypeList,
+			// 	Optional:    true,
+			// 	Description: "ID of the server group.",
+			// 	Elem: &schema.Resource{
+			// 		Schema: map[string]*schema.Schema{
+			// 			"id": {
+			// 				Type:     schema.TypeInt,
+			// 				Optional: true,
+			// 			},
+			// 		},
+			// 	},
+			// },
+			// "appconnectorgroups": {
+			// 	Type:        schema.TypeList,
+			// 	Optional:    true,
+			// 	Description: "This field is a json array of app-connector-id only.",
+			// 	Elem: &schema.Resource{
+			// 		Schema: map[string]*schema.Schema{
+			// 			"id": {
+			// 				Type:     schema.TypeList,
+			// 				Optional: true,
+			// 				Elem:     &schema.Schema{Type: schema.TypeString},
+			// 			},
+			// 		},
+			// 	},
+			// },
+			// "conditions": {
+			// 	Type:        schema.TypeList,
+			// 	Optional:    true,
+			// 	Description: "This is for proviidng the set of conditions for the policy.",
+			// 	Elem: &schema.Resource{
+			// 		Schema: map[string]*schema.Schema{
+			// 			"creationtime": {
+			// 				Type:     schema.TypeInt,
+			// 				Computed: true,
+			// 			},
+			// 			"id": {
+			// 				Type:     schema.TypeInt,
+			// 				Computed: true,
+			// 			},
+			// 			"modifiedby": {
+			// 				Type:     schema.TypeInt,
+			// 				Computed: true,
+			// 			},
+			// 			"modifiedtime": {
+			// 				Type:     schema.TypeInt,
+			// 				Computed: true,
+			// 			},
+			// 			"negated": {
+			// 				Type:     schema.TypeBool,
+			// 				Optional: true,
+			// 			},
+			// 			"operator": {
+			// 				Type:     schema.TypeList,
+			// 				Optional: true,
+			// 				Elem:     &schema.Schema{Type: schema.TypeString},
+			// 			},
+			// 			"operands": {
+			// 				Type:        schema.TypeList,
+			// 				Optional:    true,
+			// 				Description: "This signifies the various policy criteria.",
+			// 				Elem: &schema.Resource{
+			// 					Schema: map[string]*schema.Schema{
+			// 						"creationtime": {
+			// 							Type:     schema.TypeInt,
+			// 							Computed: true,
+			// 						},
+			// 						"id": {
+			// 							Type:     schema.TypeInt,
+			// 							Computed: true,
+			// 						},
+			// 						"idpid": {
+			// 							Type:     schema.TypeInt,
+			// 							Computed: true,
+			// 						},
+			// 						"lhs": {
+			// 							Type:     schema.TypeString,
+			// 							Computed: true,
+			// 						},
+			// 						"modifiedby": {
+			// 							Type:     schema.TypeInt,
+			// 							Computed: true,
+			// 						},
+			// 						"modifiedtime": {
+			// 							Type:     schema.TypeInt,
+			// 							Computed: true,
+			// 						},
+			// 						"name": {
+			// 							Type:     schema.TypeString,
+			// 							Computed: true,
+			// 						},
+			// 						"objecttype": {
+			// 							Type:     schema.TypeList,
+			// 							Optional: true,
+			// 							Elem:     &schema.Schema{Type: schema.TypeString},
+			// 							Description: "	This is for specifying the policy critiera.",
+			// 						},
+			// 						"rhs": {
+			// 							Type:        schema.TypeString,
+			// 							Optional:    true,
+			// 							Description: "This denotes the value for the given object type. Its value depends upon the key.",
+			// 						},
+			// 					},
+			// 				},
+			// 			},
+			// 		},
+			// 	},
+			// },
+			// "creationtime": {
+			// 	Type:     schema.TypeInt,
+			// 	Computed: true,
+			// },
 			"custommsg": {
 				Type:        schema.TypeString,
 				Optional:    true,
@@ -156,14 +156,14 @@ func resourcePolicySetRule() *schema.Resource {
 				Type:     schema.TypeString,
 				Computed: true,
 			},
-			"modifiedby": {
-				Type:     schema.TypeInt,
-				Computed: true,
-			},
-			"modifiedtime": {
-				Type:     schema.TypeInt,
-				Computed: true,
-			},
+			// "modifiedby": {
+			// 	Type:     schema.TypeInt,
+			// 	Computed: true,
+			// },
+			// "modifiedtime": {
+			// 	Type:     schema.TypeInt,
+			// 	Computed: true,
+			// },
 			"name": {
 				Type:        schema.TypeString,
 				Required:    true,
@@ -244,11 +244,11 @@ func resourcePolicySetRead(d *schema.ResourceData, m interface{}) error {
 	d.SetId(strconv.FormatInt(int64(resp.ID), 10))
 	_ = d.Set("action", resp.Action)
 	_ = d.Set("actionid", resp.ActionID)
-	_ = d.Set("creationtime", resp.CreationTime)
+	// _ = d.Set("creationtime", resp.CreationTime)
 	_ = d.Set("custommsg", resp.CustomMsg)
 	_ = d.Set("description", resp.Description)
-	_ = d.Set("modifiedby", resp.ModifiedBy)
-	_ = d.Set("modifiedtime", resp.ModifiedTime)
+	// _ = d.Set("modifiedby", resp.ModifiedBy)
+	// _ = d.Set("modifiedtime", resp.ModifiedTime)
 	_ = d.Set("name", resp.Name)
 	_ = d.Set("operator", resp.Operator)
 	_ = d.Set("policysetid", resp.PolicySetID)
@@ -304,7 +304,7 @@ func expandCreatePolicyRule(d *schema.ResourceData) policysetrule.PolicyRule {
 		// CreationTime: d.Get("creationtime").(int),
 		CustomMsg:   d.Get("custommsg").(string),
 		Description: d.Get("description").(string),
-		// ID:                d.Get("id").(int),
+		// ID:          d.Get("id").(int),
 		// ModifiedBy:        d.Get("modifiedby").(int),
 		// ModifiedTime:      d.Get("Modifiedtime").(int),
 		Name: d.Get("name").(string),
@@ -314,9 +314,9 @@ func expandCreatePolicyRule(d *schema.ResourceData) policysetrule.PolicyRule {
 		Priority:    d.Get("priority").(int),
 		// ReauthIdleTimeout: d.Get("reauthidletimeout").(int),
 		// ReauthTimeout:     d.Get("reauthtimeout").(int),
-		RuleOrder: d.Get("ruleorder").(int),
-		// ZpnCbiProfileID: d.Get("zpncbiprofileid").(int),
-		Conditions: expandConditionSet(d),
+		RuleOrder:       d.Get("ruleorder").(int),
+		ZpnCbiProfileID: d.Get("zpncbiprofileid").(int),
+		Conditions:      expandConditionSet(d),
 	}
 }
 

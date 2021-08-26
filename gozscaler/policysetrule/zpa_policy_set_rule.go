@@ -10,26 +10,26 @@ const (
 )
 
 type PolicyRule struct {
-	Action             string               `json:"action,omitempty"`
-	ActionID           int                  `json:"actionId,string,omitempty"`
-	CreationTime       int                  `json:"creationTime,string,omitempty"`
-	CustomMsg          string               `json:"customMsg,omitempty"`
-	Description        string               `json:"description,omitempty"`
-	ID                 int                  `json:"id,string,omitempty"`
-	ModifiedBy         int                  `json:"modifiedBy,string,omitempty"`
-	ModifiedTime       int                  `json:"modifiedTime,string,omitempty"`
+	Action             string               `json:"action"`
+	ActionID           int                  `json:"actionId,string"`
+	CreationTime       int                  `json:"creationTime,string"`
+	CustomMsg          string               `json:"customMsg"`
+	Description        string               `json:"description"`
+	ID                 int                  `json:"id,string"`
+	ModifiedBy         int                  `json:"modifiedBy,string"`
+	ModifiedTime       int                  `json:"modifiedTime,string"`
 	Name               string               `json:"name"`
-	Operator           string               `json:"operator,omitempty"`
-	PolicySetID        int                  `json:"policySetId,string,omitempty"`
-	PolicyType         int                  `json:"policyType,string,omitempty"`
-	Priority           int                  `json:"priority,string,omitempty"`
-	ReauthIdleTimeout  int                  `json:"reauthIdleTimeout,string,omitempty"`
-	ReauthTimeout      int                  `json:"reauthTimeout,string,omitempty"`
-	RuleOrder          int                  `json:"ruleOrder,string,omitempty"`
-	ZpnCbiProfileID    int                  `json:"zpnCbiProfileId,string,omitempty"`
-	Conditions         []Conditions         `json:"conditions,omitempty"`
-	AppServerGroups    []AppServerGroups    `json:"appServerGroups,omitempty"`
-	AppConnectorGroups []AppConnectorGroups `json:"appConnectorGroups,omitempty"`
+	Operator           string               `json:"operator"`
+	PolicySetID        int                  `json:"policySetId,string"`
+	PolicyType         int                  `json:"policyType,string"`
+	Priority           int                  `json:"priority,string"`
+	ReauthIdleTimeout  int                  `json:"reauthIdleTimeout,string"`
+	ReauthTimeout      int                  `json:"reauthTimeout,string"`
+	RuleOrder          int                  `json:"ruleOrder,string"`
+	ZpnCbiProfileID    int                  `json:"zpnCbiProfileId,string"`
+	Conditions         []Conditions         `json:"conditions"`
+	AppServerGroups    []AppServerGroups    `json:"appServerGroups"`
+	AppConnectorGroups []AppConnectorGroups `json:"appConnectorGroups"`
 }
 
 type Conditions struct {
