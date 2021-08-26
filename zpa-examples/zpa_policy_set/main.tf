@@ -19,7 +19,7 @@ provider "zpa" {}
 
 
 
-resource "zpa_policy_set_rule" "example" {
+resource "zpa_policyset_rule" "example" {
   name                          = "example1"
   description                   = "example1"
   action                        = "ALLOW"
