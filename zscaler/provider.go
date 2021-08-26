@@ -47,7 +47,7 @@ func Provider() *schema.Provider {
 			"zpa_server_group":        resourceServerGroup(),
 			"zpa_segment_group":       resourceSegmentGroup(),
 			"zpa_browser_access":      resourceBrowserAccess(),
-			"zpa_policy_set_rule":     resourcePolicySetRule(),
+			"zpa_policyset_rule":      resourcePolicySetRule(),
 		},
 		DataSourcesMap: map[string]*schema.Resource{
 			// terraform date source name: data source schema
