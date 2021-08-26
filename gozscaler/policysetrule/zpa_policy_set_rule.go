@@ -10,69 +10,69 @@ const (
 )
 
 type PolicyRule struct {
-	Action             string               `json:"action"`
-	ActionID           int                  `json:"actionId,string"`
-	CreationTime       int                  `json:"creationTime,string"`
-	CustomMsg          string               `json:"customMsg"`
-	Description        string               `json:"description"`
-	ID                 int                  `json:"id,string"`
-	ModifiedBy         int                  `json:"modifiedBy,string"`
-	ModifiedTime       int                  `json:"modifiedTime,string"`
+	Action             string               `json:"action,omitempty"`
+	ActionID           int                  `json:"actionId,string,omitempty"`
+	CreationTime       int                  `json:"creationTime,string,omitempty"`
+	CustomMsg          string               `json:"customMsg,omitempty"`
+	Description        string               `json:"description,omitempty"`
+	ID                 int                  `json:"id,string,omitempty"`
+	ModifiedBy         int                  `json:"modifiedBy,string,omitempty"`
+	ModifiedTime       int                  `json:"modifiedTime,string,omitempty"`
 	Name               string               `json:"name"`
-	Operator           string               `json:"operator"`
-	PolicySetID        int                  `json:"policySetId,string"`
-	PolicyType         int                  `json:"policyType,string"`
-	Priority           int                  `json:"priority,string"`
-	ReauthIdleTimeout  int                  `json:"reauthIdleTimeout,string"`
-	ReauthTimeout      int                  `json:"reauthTimeout,string"`
-	RuleOrder          int                  `json:"ruleOrder,string"`
-	ZpnCbiProfileID    int                  `json:"zpnCbiProfileId,string"`
-	Conditions         []Conditions         `json:"conditions"`
-	AppServerGroups    []AppServerGroups    `json:"appServerGroups"`
-	AppConnectorGroups []AppConnectorGroups `json:"appConnectorGroups"`
+	Operator           string               `json:"operator,omitempty"`
+	PolicySetID        int                  `json:"policySetId,string,omitempty"`
+	PolicyType         int                  `json:"policyType,string,omitempty"`
+	Priority           int                  `json:"priority,string,omitempty"`
+	ReauthIdleTimeout  int                  `json:"reauthIdleTimeout,string,omitempty"`
+	ReauthTimeout      int                  `json:"reauthTimeout,string,omitempty"`
+	RuleOrder          int                  `json:"ruleOrder,string,omitempty"`
+	ZpnCbiProfileID    int                  `json:"zpnCbiProfileId,string,omitempty"`
+	Conditions         []Conditions         `json:"conditions,omitempty"`
+	AppServerGroups    []AppServerGroups    `json:"appServerGroups,omitempty"`
+	AppConnectorGroups []AppConnectorGroups `json:"appConnectorGroups,omitempty"`
 }
 
 type Conditions struct {
-	CreationTime int        `json:"creationTime,string"`
-	ID           int        `json:"id,string"`
-	ModifiedBy   int        `json:"modifiedBy,string"`
-	ModifiedTime int        `json:"modifiedTime,string"`
-	Negated      bool       `json:"negated"`
-	Operands     []Operands `json:"operands"`
-	Operator     string     `json:"operator"`
+	CreationTime int32      `json:"creationTime,string,omitempty"`
+	ID           int64      `json:"id,string,omitempty"`
+	ModifiedBy   int64      `json:"modifiedBy,string,omitempty"`
+	ModifiedTime int32      `json:"modifiedTime,string,omitempty"`
+	Negated      bool       `json:"negated,omitempty"`
+	Operands     []Operands `json:"operands,omitempty"`
+	Operator     string     `json:"operator,omitempty"`
 }
 type Operands struct {
-	CreationTime int    `json:"creationTime,string"`
-	ID           int    `json:"id,string"`
-	IdpID        int    `json:"idpId,string"`
-	LHS          string `json:"lhs"`
-	ModifiedBy   int    `json:"modifiedBy,string"`
-	ModifiedTime int    `json:"modifiedTime,string"`
+	CreationTime int32  `json:"creationTime,string,omitempty"`
+	ID           int64  `json:"id,string,omitempty"`
+	IdpID        int64  `json:"idpId,string,omitempty"`
+	LHS          string `json:"lhs,omitempty"`
+	ModifiedBy   int64  `json:"modifiedBy,string,omitempty"`
+	ModifiedTime int32  `json:"modifiedTime,string,omitempty"`
 	Name         string `json:"name"`
-	ObjectType   string `json:"objectType"`
-	RHS          string `json:"rhs"`
+	ObjectType   string `json:"objectType,omitempty"`
+	RHS          string `json:"rhs,omitempty"`
 }
 
 type AppServerGroups struct {
-	ID   int    `json:"id,string"`
+	ID   int64  `json:"id,string,omitempty"`
 	Name string `json:"name"`
 }
 
 type AppConnectorGroups struct {
-	ID           int            `json:"id,string"`
+	ID           int64          `json:"id,string,omitempty"`
 	Name         string         `json:"name"`
-	Connectors   []Connectors   `json:"connectors"`
-	ServerGroups []ServerGroups `json:"serverGroups"`
+	Connectors   []Connectors   `json:"connectors,omitempty"`
+	ServerGroups []ServerGroups `json:"serverGroups,omitempty"`
 }
 
 type Connectors struct {
 	Name string `json:"name"`
-	ID   int    `json:"id,string"`
+	ID   int64  `json:"id,string,omitempty"`
 }
 
 type ServerGroups struct {
 	Name string `json:"name"`
-	ID   int64  `json:"id,string"`
+	ID   int64  `json:"id,string,omitempty"`
 }
 
 // GET --> mgmtconfig​/v1​/admin​/customers​/{customerId}​/policySet​/{policySetId}​/rule​/{ruleId}

@@ -316,7 +316,7 @@ func expandCreatePolicyRule(d *schema.ResourceData) policysetrule.PolicyRule {
 		// ReauthTimeout:     d.Get("reauthtimeout").(int),
 		RuleOrder: d.Get("ruleorder").(int),
 		// ZpnCbiProfileID: d.Get("zpncbiprofileid").(int),
-		// Conditions:      expandConditionSet(d),
+		Conditions: expandConditionSet(d),
 	}
 }
 
