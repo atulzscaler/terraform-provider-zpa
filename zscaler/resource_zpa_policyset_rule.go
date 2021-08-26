@@ -11,6 +11,13 @@ import (
 
 func resourcePolicySetRule() *schema.Resource {
 	return &schema.Resource{
+		Create: resourcePolicySetCreate,
+		Read:   resourcePolicySetRead,
+		Update: resourcePolicySetUpdate,
+		Delete: resourcePolicySetDelete,
+		Importer: &schema.ResourceImporter{
+			State: schema.ImportStatePassthrough,
+		},
 		Schema: map[string]*schema.Schema{
 			"action": {
 				Type:     schema.TypeString,
@@ -196,13 +203,6 @@ func resourcePolicySetRule() *schema.Resource {
 				Type:     schema.TypeInt,
 				Optional: true,
 			},
-		},
-		Create: resourcePolicySetCreate,
-		Read:   resourcePolicySetRead,
-		Update: resourcePolicySetUpdate,
-		Delete: resourcePolicySetDelete,
-		Importer: &schema.ResourceImporter{
-			State: schema.ImportStatePassthrough,
 		},
 	}
 }
