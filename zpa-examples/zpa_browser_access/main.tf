@@ -42,8 +42,8 @@ resource "zpa_browser_access" "browser_access_apps" {
     enabled = true
     healthreporting = "ON_ACCESS"
     bypasstype = "NEVER"
-    tcpportranges = ["80", "80", "8080", "8080"]
-    domainnames = ["sales.securitygeek.io", "qa.securitygeek.io", "jenkins.securitygeek.io"]
+    tcpportranges = ["80", "80"]
+    domainnames = ["sales.securitygeek.io"]
     segmentgroupid = zpa_segment_group.sg_sgio_browser_access.id
 
     clientlessapps {
