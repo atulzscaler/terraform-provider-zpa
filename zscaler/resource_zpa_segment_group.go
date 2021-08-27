@@ -81,10 +81,6 @@ func resourceSegmentGroup() *schema.Resource {
 func resourceSegmentGroupCreate(d *schema.ResourceData, m interface{}) error {
 	zClient := m.(*Client)
 
-	if zClient == nil {
-		return resourceNotSupportedError()
-	}
-
 	req := expandSegmentGroup(d)
 	log.Printf("[INFO] Creating segment group with request\n%+v\n", req)
 
@@ -94,6 +90,7 @@ func resourceSegmentGroupCreate(d *schema.ResourceData, m interface{}) error {
 	}
 
 	d.SetId(strconv.FormatInt(int64(segmentgroup.ID), 10))
+	//d.SetId(strconv.Itoa(segmentGroup.ID))
 	return resourceSegmentGroupRead(d, m)
 
 }
@@ -101,9 +98,7 @@ func resourceSegmentGroupCreate(d *schema.ResourceData, m interface{}) error {
 func resourceSegmentGroupRead(d *schema.ResourceData, m interface{}) error {
 	zClient := m.(*Client)
 
-	if zClient == nil {
-		return resourceNotSupportedError()
-	}
+	// resp, _, err := zClient.segmentgroup.Get(d.Id())
 
 	id, err := strconv.ParseInt(d.Get("id").(string), 10, 64)
 	if err != nil {
@@ -126,10 +121,14 @@ func resourceSegmentGroupRead(d *schema.ResourceData, m interface{}) error {
 	}
 
 	log.Printf("[INFO] Getting segment group:\n%+v\n", resp)
+	//d.SetId(strconv.Itoa(resp.ID))
 	d.SetId(strconv.FormatInt(int64(resp.ID), 10))
 	_ = d.Set("configspace", resp.ConfigSpace)
+	// _ = d.Set("creationtime", resp.CreationTime)
 	_ = d.Set("description", resp.Description)
 	_ = d.Set("enabled", resp.Enabled)
+	// _ = d.Set("modifiedby", resp.ModifiedBy)
+	// _ = d.Set("modifiedtime", resp.ModifiedTime)
 	_ = d.Set("name", resp.Name)
 	_ = d.Set("policymigrated", resp.PolicyMigrated)
 	_ = d.Set("tcpkeepaliveenabled", resp.TcpKeepAliveEnabled)
@@ -143,10 +142,6 @@ func resourceSegmentGroupRead(d *schema.ResourceData, m interface{}) error {
 func resourceSegmentGroupUpdate(d *schema.ResourceData, m interface{}) error {
 	zClient := m.(*Client)
 
-	if zClient == nil {
-		return resourceNotSupportedError()
-	}
-
 	id, err := strconv.ParseInt(d.Id(), 10, 64)
 	if err != nil {
 		return err
@@ -154,7 +149,7 @@ func resourceSegmentGroupUpdate(d *schema.ResourceData, m interface{}) error {
 
 	segmentGroupRequest := expandSegmentGroup(d)
 	segmentGroupRequest.ID = id
-	log.Printf("[INFO] Updating Segment Group with name %s\n", segmentGroupRequest.Name)
+	log.Printf("[INFO] Updating IpList with name %s\n", segmentGroupRequest.Name)
 
 	if _, err := zClient.segmentgroup.Update(id, segmentGroupRequest); err != nil {
 		return err
@@ -164,10 +159,6 @@ func resourceSegmentGroupUpdate(d *schema.ResourceData, m interface{}) error {
 
 func resourceSegmentGroupDelete(d *schema.ResourceData, m interface{}) error {
 	zClient := m.(*Client)
-
-	if zClient == nil {
-		return resourceNotSupportedError()
-	}
 
 	id, err := strconv.ParseInt(d.Id(), 10, 64)
 	if err != nil {

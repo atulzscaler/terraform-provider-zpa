@@ -12,7 +12,7 @@ import (
 func main() {
 	var debugMode bool
 
-	flag.BoolVar(&debugMode, "debuggable", true, "set to true to run the provider with support for debuggers like delve")
+	flag.BoolVar(&debugMode, "debuggable", false, "set to true to run the provider with support for debuggers like delve")
 	flag.Parse()
 
 	if debugMode {
@@ -28,9 +28,3 @@ func main() {
 			ProviderFunc: zscaler.Provider})
 	}
 }
-
-// func main() {
-// 	plugin.Serve(&plugin.ServeOpts{
-// 		ProviderFunc: zscaler.Provider,
-// 	})
-// }

@@ -48,9 +48,9 @@ type ClientlessApps struct {
 	Domain              string `json:"domain,omitempty"`
 	Enabled             bool   `json:"enabled,omitempty"`
 	Hidden              bool   `json:"hidden,omitempty"`
-	ID                  int    `json:"id,string,omitempty"`
+	ID                  int64  `json:"id,string,omitempty"`
 	LocalDomain         string `json:"localDomain,omitempty"`
-	ModifiedBy          int    `json:"modifiedBy,string,omitempty"`
+	ModifiedBy          int64  `json:"modifiedBy,string,omitempty"`
 	ModifiedTime        int32  `json:"modifiedTime,string,omitempty"`
 	Name                string `json:"name"`
 	Path                string `json:"path,omitempty"`

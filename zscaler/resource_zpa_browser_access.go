@@ -111,16 +111,6 @@ func resourceBrowserAccess() *schema.Resource {
 							Type:     schema.TypeString,
 							Optional: true,
 						},
-						// "applicationprotocol": {
-						// 	Type:     schema.TypeString,
-						// 	Optional: true,
-						// 	ValidateFunc: validation.StringInSlice([]string{
-						// 		"HTTP",
-						// 		"HTTPS",
-						// 		"FTP",
-						// 		"RDP",
-						// 	}, false),
-						// },
 						"certificateid": {
 							Type:     schema.TypeInt,
 							Optional: true,
@@ -193,10 +183,6 @@ func resourceBrowserAccess() *schema.Resource {
 func resourceBrowserAccessCreate(d *schema.ResourceData, m interface{}) error {
 	zClient := m.(*Client)
 
-	if zClient == nil {
-		return resourceNotSupportedError()
-	}
-
 	req := expandBrowserAccess(d)
 	log.Printf("[INFO] Creating browser access request\n%+v\n", req)
 
@@ -262,10 +248,6 @@ func resourceBrowserAccessRead(d *schema.ResourceData, m interface{}) error {
 
 func resourceBrowserAccessUpdate(d *schema.ResourceData, m interface{}) error {
 	zClient := m.(*Client)
-
-	if zClient == nil {
-		return resourceNotSupportedError()
-	}
 
 	id := d.Id()
 	log.Printf("[INFO] Updating browser access ID: %v\n", id)

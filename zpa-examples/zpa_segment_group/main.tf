@@ -18,13 +18,32 @@ provider "zpa" {}
 // }
 
 
- resource "zpa_segment_group" "example" {
-   name = "example2"
-   description = "example2"
-   enabled = true
-   policymigrated = true
-    // applications  {
-    //     //name = [data.zpa_application_segment.application_segment.name]
-    //     id = 216196257331282544
-    // }
- }
+//  resource "zpa_segment_group" "example1" {
+//    name = "example"
+//    description = "example"
+//    enabled = true
+//    policymigrated = true
+//     // applications  {
+//     //     //name = [data.zpa_application_segment.application_segment.name]
+//     //     id = 216196257331282544
+//     // }
+//  }
+
+resource "zpa_policyset_rule" "example" {
+  name                          = "example1"
+  description                   = "example1"
+  action                        = "ALLOW"
+  ruleorder                     = 1
+  // conditions {
+  //   operands {
+  //       name = "Example"
+  //       objecttype = "APP"
+  //       operator = "AND"
+  //   }
+  //   operands {
+  //       name = "SGIO-User-Okta"
+  //       objecttype = ["SCIM_GROUP"]
+  //       operator = "AND"  
+  //   }
+  // }
+}

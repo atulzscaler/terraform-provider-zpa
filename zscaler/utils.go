@@ -6,14 +6,6 @@ import (
 	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/schema"
 )
 
-func resourceNotSupportedError() error {
-	return fmt.Errorf("This resource is not supported with given provider settings")
-}
-
-func dataSourceNotSupportedError() error {
-	return fmt.Errorf("This data source is not supported with given provider settings")
-}
-
 func resourceTypeSetToStringSlice(s *schema.Set) []string {
 	valuesList := s.List()
 	values := make([]string, len(valuesList))
@@ -70,6 +62,15 @@ func getStringSet(d *schema.ResourceData, k string) []string {
 
 // intInSlice checks if the needle is in the haystack
 func intInSlice(needle int, haystack []int) bool {
+	for _, element := range haystack {
+		if element == needle {
+			return true
+		}
+	}
+	return false
+}
+
+func stringInSlice(needle string, haystack []string) bool {
 	for _, element := range haystack {
 		if element == needle {
 			return true

@@ -61,10 +61,6 @@ func resourceApplicationServer() *schema.Resource {
 func resourceApplicationServerCreate(d *schema.ResourceData, m interface{}) error {
 	zClient := m.(*Client)
 
-	if zClient == nil {
-		return resourceNotSupportedError()
-	}
-
 	req := expandCreateAppServerRequest(d)
 	log.Printf("[INFO] Creating zpa application server with request\n%+v\n", req)
 
@@ -72,9 +68,8 @@ func resourceApplicationServerCreate(d *schema.ResourceData, m interface{}) erro
 	if err != nil {
 		return err
 	}
-
+	//d.SetId(strconv.Itoa(appservercontroller.ID))
 	d.SetId(strconv.FormatInt(int64(appservercontroller.ID), 10))
-
 	return resourceApplicationServerRead(d, m)
 }
 
