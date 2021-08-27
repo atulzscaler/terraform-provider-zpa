@@ -37,14 +37,14 @@ type BrowserAccess struct {
 }
 
 type ClientlessApps struct {
-	AllowOptions        bool   `json:"allowOptions,omitempty"`
-	AppId               int64  `json:"appId,string,omitempty"`
-	ApplicationPort     int32  `json:"applicationPort,string,omitempty"`
+	AllowOptions bool `json:"allowOptions,omitempty"`
+	// AppId               int64  `json:"appId,string,omitempty"`
+	ApplicationPort     int    `json:"applicationPort,string,omitempty"`
 	ApplicationProtocol string `json:"applicationProtocol,omitempty"`
-	CertificateId       int64  `json:"certificateId,string,omitempty"`
+	CertificateId       int    `json:"certificateId,string,omitempty"`
 	CertificateName     string `json:"certificateName,omitempty"`
 	Cname               string `json:"cname,omitempty"`
-	CreationTime        int32  `json:"creationTime,string,omitempty"`
+	CreationTime        int    `json:"creationTime,string,omitempty"`
 	Description         string `json:"description,omitempty"`
 	Domain              string `json:"domain,omitempty"`
 	Enabled             bool   `json:"enabled,omitempty"`
@@ -59,7 +59,7 @@ type ClientlessApps struct {
 }
 
 type AppServerGroups struct {
-	ID int64 `json:"id,string,omitempty"`
+	ID int `json:"id,string,omitempty"`
 }
 
 func (service *Service) Get(id string) (*BrowserAccess, *http.Response, error) {
