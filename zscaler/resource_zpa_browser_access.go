@@ -99,10 +99,10 @@ func resourceBrowserAccess() *schema.Resource {
 							Type:     schema.TypeBool,
 							Optional: true,
 						},
-						// "appid": {
-						// 	Type:     schema.TypeInt,
-						// 	Computed: true,
-						// },
+						"appid": {
+							Type:     schema.TypeInt,
+							Computed: true,
+						},
 						"applicationport": {
 							Type:     schema.TypeInt,
 							Optional: true,
@@ -111,16 +111,6 @@ func resourceBrowserAccess() *schema.Resource {
 							Type:     schema.TypeString,
 							Optional: true,
 						},
-						// "applicationprotocol": {
-						// 	Type:     schema.TypeString,
-						// 	Optional: true,
-						// 	ValidateFunc: validation.StringInSlice([]string{
-						// 		"HTTP",
-						// 		"HTTPS",
-						// 		"FTP",
-						// 		"RDP",
-						// 	}, false),
-						// },
 						"certificateid": {
 							Type:     schema.TypeInt,
 							Optional: true,
@@ -317,11 +307,11 @@ func expandClientlessApps(d *schema.ResourceData) []browseraccess.ClientlessApps
 		for i, app := range clientless {
 			clientlessApp := app.(map[string]interface{})
 			clientlessApps[i] = browseraccess.ClientlessApps{
-				AllowOptions: clientlessApp["allowoptions"].(bool),
-				//AppId:               clientlessApp["appid"].(int),
-				ApplicationPort:     clientlessApp["applicationport"].(int),
+				AllowOptions:        clientlessApp["allowoptions"].(bool),
+				AppId:               clientlessApp["appid"].(int64),
+				ApplicationPort:     clientlessApp["applicationport"].(int32),
 				ApplicationProtocol: clientlessApp["applicationprotocol"].(string),
-				CertificateId:       clientlessApp["certificateid"].(int),
+				CertificateId:       clientlessApp["certificateid"].(int64),
 				CertificateName:     clientlessApp["certificatename"].(string),
 				Cname:               clientlessApp["cname"].(string),
 				Description:         clientlessApp["description"].(string),
@@ -348,7 +338,7 @@ func expandClientlessAppServerGroups(d *schema.ResourceData) []browseraccess.App
 			serverGroup := srvGroup.(map[string]interface{})
 			serverGroups[i] = browseraccess.AppServerGroups{
 				// Name: serverGroup["name"].(string),
-				ID: serverGroup["id"].(int),
+				ID: serverGroup["id"].(int64),
 				// ConfigSpace:      serverGroup["configspace"].(string),
 				// CreationTime:     serverGroup["creationtime"].(int32),
 				// Description:      serverGroup["description"].(string),
@@ -367,8 +357,8 @@ func flattenBaClientlessApps(clientlessApp *browseraccess.BrowserAccess) []inter
 	clientlessApps := make([]interface{}, len(clientlessApp.ClientlessApps))
 	for i, clientlessApp := range clientlessApp.ClientlessApps {
 		clientlessApps[i] = map[string]interface{}{
-			"allowoptions": clientlessApp.AllowOptions,
-			//"appid":               clientlessApp.AppId,
+			"allowoptions":        clientlessApp.AllowOptions,
+			"appid":               clientlessApp.AppId,
 			"applicationport":     clientlessApp.ApplicationPort,
 			"applicationprotocol": clientlessApp.ApplicationProtocol,
 			"certificateid":       clientlessApp.CertificateId,

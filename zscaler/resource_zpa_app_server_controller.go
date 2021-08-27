@@ -81,6 +81,10 @@ func resourceApplicationServerCreate(d *schema.ResourceData, m interface{}) erro
 func resourceApplicationServerRead(d *schema.ResourceData, m interface{}) error {
 	zClient := m.(*Client)
 
+	if zClient == nil {
+		return resourceNotSupportedError()
+	}
+
 	id, err := strconv.ParseInt(d.Id(), 10, 64)
 	if err != nil {
 		return err
@@ -131,8 +135,11 @@ func resourceApplicationServerUpdate(d *schema.ResourceData, m interface{}) erro
 func resourceApplicationServerDelete(d *schema.ResourceData, m interface{}) error {
 	zClient := m.(*Client)
 
-	log.Printf("[INFO] Deleting application server ID: %v\n", d.Id())
+	if zClient == nil {
+		return resourceNotSupportedError()
+	}
 
+	log.Printf("[INFO] Deleting application server ID: %v\n", d.Id())
 	if _, err := zClient.appservercontroller.Delete(d.Id()); err != nil {
 		return err
 	}
