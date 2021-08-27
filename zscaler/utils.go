@@ -6,6 +6,14 @@ import (
 	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/schema"
 )
 
+func resourceNotSupportedError() error {
+	return fmt.Errorf("This resource is not supported with given provider settings")
+}
+
+func dataSourceNotSupportedError() error {
+	return fmt.Errorf("This data source is not supported with given provider settings")
+}
+
 func resourceTypeSetToStringSlice(s *schema.Set) []string {
 	valuesList := s.List()
 	values := make([]string, len(valuesList))
