@@ -1,5 +1,6 @@
 package zscaler
 
+/*
 import (
 	"log"
 	"strconv"
@@ -24,124 +25,10 @@ func resourcePolicySetRule() *schema.Resource {
 				Optional: true,
 				Description: "	This is for providing the rule action.",
 			},
-			"actionid": {
-				Type:        schema.TypeInt,
-				Optional:    true,
-				Description: "This field defines the description of the server.",
+			"bypassdefaultrule": {
+				Type:     schema.TypeBool,
+				Optional: true,
 			},
-			// "servergroups": {
-			// 	Type:        schema.TypeList,
-			// 	Optional:    true,
-			// 	Description: "ID of the server group.",
-			// 	Elem: &schema.Resource{
-			// 		Schema: map[string]*schema.Schema{
-			// 			"id": {
-			// 				Type:     schema.TypeInt,
-			// 				Optional: true,
-			// 			},
-			// 		},
-			// 	},
-			// },
-			// "appconnectorgroups": {
-			// 	Type:        schema.TypeList,
-			// 	Optional:    true,
-			// 	Description: "This field is a json array of app-connector-id only.",
-			// 	Elem: &schema.Resource{
-			// 		Schema: map[string]*schema.Schema{
-			// 			"id": {
-			// 				Type:     schema.TypeList,
-			// 				Optional: true,
-			// 				Elem:     &schema.Schema{Type: schema.TypeString},
-			// 			},
-			// 		},
-			// 	},
-			// },
-			// "conditions": {
-			// 	Type:        schema.TypeList,
-			// 	Optional:    true,
-			// 	Description: "This is for proviidng the set of conditions for the policy.",
-			// 	Elem: &schema.Resource{
-			// 		Schema: map[string]*schema.Schema{
-			// 			"creationtime": {
-			// 				Type:     schema.TypeInt,
-			// 				Computed: true,
-			// 			},
-			// 			"id": {
-			// 				Type:     schema.TypeInt,
-			// 				Computed: true,
-			// 			},
-			// 			"modifiedby": {
-			// 				Type:     schema.TypeInt,
-			// 				Computed: true,
-			// 			},
-			// 			"modifiedtime": {
-			// 				Type:     schema.TypeInt,
-			// 				Computed: true,
-			// 			},
-			// 			"negated": {
-			// 				Type:     schema.TypeBool,
-			// 				Optional: true,
-			// 			},
-			// 			"operator": {
-			// 				Type:     schema.TypeList,
-			// 				Optional: true,
-			// 				Elem:     &schema.Schema{Type: schema.TypeString},
-			// 			},
-			// 			"operands": {
-			// 				Type:        schema.TypeList,
-			// 				Optional:    true,
-			// 				Description: "This signifies the various policy criteria.",
-			// 				Elem: &schema.Resource{
-			// 					Schema: map[string]*schema.Schema{
-			// 						"creationtime": {
-			// 							Type:     schema.TypeInt,
-			// 							Computed: true,
-			// 						},
-			// 						"id": {
-			// 							Type:     schema.TypeInt,
-			// 							Computed: true,
-			// 						},
-			// 						"idpid": {
-			// 							Type:     schema.TypeInt,
-			// 							Computed: true,
-			// 						},
-			// 						"lhs": {
-			// 							Type:     schema.TypeString,
-			// 							Computed: true,
-			// 						},
-			// 						"modifiedby": {
-			// 							Type:     schema.TypeInt,
-			// 							Computed: true,
-			// 						},
-			// 						"modifiedtime": {
-			// 							Type:     schema.TypeInt,
-			// 							Computed: true,
-			// 						},
-			// 						"name": {
-			// 							Type:     schema.TypeString,
-			// 							Computed: true,
-			// 						},
-			// 						"objecttype": {
-			// 							Type:     schema.TypeList,
-			// 							Optional: true,
-			// 							Elem:     &schema.Schema{Type: schema.TypeString},
-			// 							Description: "	This is for specifying the policy critiera.",
-			// 						},
-			// 						"rhs": {
-			// 							Type:        schema.TypeString,
-			// 							Optional:    true,
-			// 							Description: "This denotes the value for the given object type. Its value depends upon the key.",
-			// 						},
-			// 					},
-			// 				},
-			// 			},
-			// 		},
-			// 	},
-			// },
-			// "creationtime": {
-			// 	Type:     schema.TypeInt,
-			// 	Computed: true,
-			// },
 			"custommsg": {
 				Type:        schema.TypeString,
 				Optional:    true,
@@ -156,14 +43,10 @@ func resourcePolicySetRule() *schema.Resource {
 				Type:     schema.TypeString,
 				Computed: true,
 			},
-			// "modifiedby": {
-			// 	Type:     schema.TypeInt,
-			// 	Computed: true,
-			// },
-			// "modifiedtime": {
-			// 	Type:     schema.TypeInt,
-			// 	Computed: true,
-			// },
+			"isolationdefaultrule": {
+				Type:     schema.TypeBool,
+				Computed: true,
+			},
 			"name": {
 				Type:        schema.TypeString,
 				Required:    true,
@@ -187,6 +70,10 @@ func resourcePolicySetRule() *schema.Resource {
 				Type:     schema.TypeInt,
 				Optional: true,
 			},
+			"reauthdefaultrule": {
+				Type:     schema.TypeBool,
+				Optional: true,
+			},
 			"reauthidletimeout": {
 				Type:     schema.TypeInt,
 				Optional: true,
@@ -199,10 +86,106 @@ func resourcePolicySetRule() *schema.Resource {
 				Type:     schema.TypeInt,
 				Optional: true,
 			},
-			"zpncbiprofileid": {
-				Type:     schema.TypeInt,
+			// "zpncbiprofileid": {
+			// 	Type:     schema.TypeInt,
+			// 	Optional: true,
+			// },
+			"zpnInspectionProfileName": {
+				Type:     schema.TypeString,
 				Optional: true,
 			},
+			// "actionid": {
+			// 	Type:        schema.TypeInt,
+			// 	Optional:    true,
+			// 	Description: "This field defines the description of the server.",
+			// },
+			// "servergroups": {
+			// 	Type:        schema.TypeList,
+			// 	Optional:    true,
+			// 	Description: "ID of the server group.",
+			// 	Elem: &schema.Resource{
+			// 		Schema: map[string]*schema.Schema{
+			// 			"id": {
+			// 				Type:     schema.TypeList,
+			// 				Optional: true,
+			// 				Elem:     &schema.Schema{Type: schema.TypeInt},
+			// 			},
+			// 		},
+			// 	},
+			// },
+			// "appconnectorgroups": {
+			// 	Type:        schema.TypeList,
+			// 	Optional:    true,
+			// 	Description: "This field is a json array of app-connector-id only.",
+			// 	Elem: &schema.Resource{
+			// 		Schema: map[string]*schema.Schema{
+			// 			"id": {
+			// 				Type:     schema.TypeList,
+			// 				Optional: true,
+			// 				Elem:     &schema.Schema{Type: schema.TypeInt},
+			// 			},
+			// 		},
+			// 	},
+			// },
+			// "conditions": {
+			// 	Type:        schema.TypeList,
+			// 	Optional:    true,
+			// 	Description: "This is for proviidng the set of conditions for the policy.",
+			// 	Elem: &schema.Resource{
+			// 		Schema: map[string]*schema.Schema{
+			// 			"id": {
+			// 				Type:     schema.TypeInt,
+			// 				Computed: true,
+			// 			},
+			// 			"negated": {
+			// 				Type:     schema.TypeBool,
+			// 				Optional: true,
+			// 			},
+			// 			"operator": {
+			// 				Type:     schema.TypeList,
+			// 				Optional: true,
+			// 				Elem:     &schema.Schema{Type: schema.TypeString},
+			// 			},
+			// 			"operands": {
+			// 				Type:        schema.TypeList,
+			// 				Optional:    true,
+			// 				Description: "This signifies the various policy criteria.",
+			// 				Elem: &schema.Resource{
+			// 					Schema: map[string]*schema.Schema{
+			// 						"id": {
+			// 							Type:     schema.TypeInt,
+			// 							Computed: true,
+			// 						},
+			// 						"idpid": {
+			// 							Type:     schema.TypeInt,
+			// 							Computed: true,
+			// 						},
+			// 						"lhs": {
+			// 							Type:     schema.TypeString,
+			// 							Computed: true,
+			// 						},
+			// 						"name": {
+			// 							Type:     schema.TypeString,
+			// 							Computed: true,
+			// 						},
+			// 						"objecttype": {
+			// 							Type:     schema.TypeList,
+			// 							Optional: true,
+			// 							Elem:     &schema.Schema{Type: schema.TypeString},
+			// 							Description: "	This is for specifying the policy critiera.",
+			// 						},
+			// 						"rhs": {
+			// 							Type:        schema.TypeString,
+			// 							Optional:    true,
+			// 							Description: "This denotes the value for the given object type. Its value depends upon the key.",
+			// 						},
+			// 					},
+			// 				},
+			// 			},
+			// 		},
+			// 	},
+			// },
+
 		},
 	}
 }
@@ -267,12 +250,11 @@ func resourcePolicySetRead(d *schema.ResourceData, m interface{}) error {
 func resourcePolicySetUpdate(d *schema.ResourceData, m interface{}) error {
 	zClient := m.(*Client)
 
-	policySetId := d.Id()
 	ruleId := d.Id()
 	log.Printf("[INFO] Updating policy rule ID: %v\n", ruleId)
 	req := expandCreatePolicyRule(d)
 
-	if _, err := zClient.policysetrule.Update(policySetId, ruleId, req); err != nil {
+	if _, err := zClient.policysetrule.Update(ruleId, req); err != nil {
 		return err
 	}
 
@@ -283,16 +265,19 @@ func resourcePolicySetUpdate(d *schema.ResourceData, m interface{}) error {
 func resourcePolicySetDelete(d *schema.ResourceData, m interface{}) error {
 	zClient := m.(*Client)
 
-	policySetId := d.Id()
-	ruleId := d.Id()
+	id, err := strconv.ParseInt(d.Id(), 10, 64)
+	if err != nil {
+		return err
+	}
 
-	//log.Printf("[INFO] Deleting rule with id %v\n")
+	log.Printf("[INFO] Deleting IP list with id %v\n", id)
 
-	if _, err := zClient.policysetrule.Delete(policySetId, ruleId); err != nil {
+	if _, err := zClient.policysetrule.Delete(); err != nil {
 		return err
 	}
 
 	return nil
+
 }
 
 // Please review the expand and flattening functions. Condition is actually a slice inside PolicyRule
@@ -379,3 +364,4 @@ func flattenPolicyRuleOperands(conditionOperand []policysetrule.Operands) []inte
 
 // Need to flatten the Operands menu, which is a slice inside the slice Conditions
 //https://help.zscaler.com/zpa/api-reference#/policy-set-controller/addRuleToPolicySet
+*/

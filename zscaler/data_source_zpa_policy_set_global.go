@@ -57,6 +57,86 @@ func dataSourcePolicySetGlobal() *schema.Resource {
 							Type:     schema.TypeInt,
 							Computed: true,
 						},
+						"bypassdefaultrule": {
+							Type:     schema.TypeBool,
+							Computed: true,
+						},
+						"creationtime": {
+							Type:     schema.TypeInt,
+							Computed: true,
+						},
+						"custommsg": {
+							Type:     schema.TypeString,
+							Computed: true,
+						},
+						"description": {
+							Type:     schema.TypeString,
+							Computed: true,
+						},
+						"id": {
+							Type:     schema.TypeInt,
+							Computed: true,
+						},
+						"isolationdefaultrule": {
+							Type:     schema.TypeBool,
+							Computed: true,
+						},
+						"modifiedby": {
+							Type:     schema.TypeInt,
+							Computed: true,
+						},
+						"modifiedtime": {
+							Type:     schema.TypeInt,
+							Computed: true,
+						},
+						"name": {
+							Type:     schema.TypeString,
+							Computed: true,
+						},
+						"operator": {
+							Type:     schema.TypeString,
+							Computed: true,
+						},
+						"policysetid": {
+							Type:     schema.TypeInt,
+							Computed: true,
+						},
+						"policytype": {
+							Type:     schema.TypeInt,
+							Computed: true,
+						},
+						"priority": {
+							Type:     schema.TypeInt,
+							Computed: true,
+						},
+						"reauthdefaultrule": {
+							Type:     schema.TypeBool,
+							Computed: true,
+						},
+						"reauthidletimeout": {
+							Type:     schema.TypeInt,
+							Computed: true,
+						},
+						"reauthtimeout": {
+							Type:     schema.TypeInt,
+							Computed: true,
+						},
+						"ruleorder": {
+							Type:     schema.TypeInt,
+							Computed: true,
+						},
+						"zpncbiprofileid": {
+							Type:     schema.TypeInt,
+							Computed: true,
+						},
+						"zpninspectionprofileid": {
+							Type:     schema.TypeInt,
+							Computed: true,
+						},
+						"zpninspectionprofilename": {
+							Type:     schema.TypeString,
+							Computed: true,
+						},
 						"conditions": {
 							Type:     schema.TypeList,
 							Computed: true,
@@ -133,66 +213,6 @@ func dataSourcePolicySetGlobal() *schema.Resource {
 								},
 							},
 						},
-						"creationtime": {
-							Type:     schema.TypeInt,
-							Computed: true,
-						},
-						"custommsg": {
-							Type:     schema.TypeString,
-							Computed: true,
-						},
-						"description": {
-							Type:     schema.TypeString,
-							Computed: true,
-						},
-						"id": {
-							Type:     schema.TypeInt,
-							Computed: true,
-						},
-						"modifiedby": {
-							Type:     schema.TypeInt,
-							Computed: true,
-						},
-						"modifiedtime": {
-							Type:     schema.TypeInt,
-							Computed: true,
-						},
-						"name": {
-							Type:     schema.TypeString,
-							Computed: true,
-						},
-						"operator": {
-							Type:     schema.TypeString,
-							Computed: true,
-						},
-						"policysetid": {
-							Type:     schema.TypeInt,
-							Computed: true,
-						},
-						"policytype": {
-							Type:     schema.TypeInt,
-							Computed: true,
-						},
-						"priority": {
-							Type:     schema.TypeInt,
-							Computed: true,
-						},
-						"reauthidletimeout": {
-							Type:     schema.TypeInt,
-							Computed: true,
-						},
-						"reauthtimeout": {
-							Type:     schema.TypeInt,
-							Computed: true,
-						},
-						"ruleorder": {
-							Type:     schema.TypeInt,
-							Computed: true,
-						},
-						"zpncbiprofileid": {
-							Type:     schema.TypeInt,
-							Computed: true,
-						},
 					},
 				},
 			},
@@ -232,23 +252,27 @@ func flattenPolicySetRules(policySetRules *policysetglobal.PolicySet) []interfac
 	ruleItems := make([]interface{}, len(policySetRules.Rules))
 	for i, ruleItem := range policySetRules.Rules {
 		ruleItems[i] = map[string]interface{}{
-			"action":            ruleItem.Action,
-			"actionid":          ruleItem.ActionID,
-			"creationtime":      ruleItem.CreationTime,
-			"custommsg":         ruleItem.CustomMsg,
-			"description":       ruleItem.Description,
-			"id":                ruleItem.ID,
-			"modifiedby":        ruleItem.ModifiedBy,
-			"modifiedtime":      ruleItem.ModifiedTime,
-			"operator":          ruleItem.Operator,
-			"policysetid":       ruleItem.PolicySetID,
-			"policytype":        ruleItem.PolicyType,
-			"priority":          ruleItem.Priority,
-			"reauthidletimeout": ruleItem.ReauthIdleTimeout,
-			"reauthtimeout":     ruleItem.ReauthTimeout,
-			"ruleorder":         ruleItem.RuleOrder,
-			"zpncbiprofileid":   ruleItem.ZpnCbiProfileID,
-			"conditions":        flattenRuleConditions(ruleItem),
+			"action":                   ruleItem.Action,
+			"actionid":                 ruleItem.ActionID,
+			"creationtime":             ruleItem.CreationTime,
+			"custommsg":                ruleItem.CustomMsg,
+			"description":              ruleItem.Description,
+			"id":                       ruleItem.ID,
+			"isolationdefaultrule":     ruleItem.IsolationDefaultRule,
+			"modifiedby":               ruleItem.ModifiedBy,
+			"modifiedtime":             ruleItem.ModifiedTime,
+			"operator":                 ruleItem.Operator,
+			"policysetid":              ruleItem.PolicySetID,
+			"policytype":               ruleItem.PolicyType,
+			"priority":                 ruleItem.Priority,
+			"reauthdefaultrule":        ruleItem.ReauthDefaultRule,
+			"reauthidletimeout":        ruleItem.ReauthIdleTimeout,
+			"reauthtimeout":            ruleItem.ReauthTimeout,
+			"ruleorder":                ruleItem.RuleOrder,
+			"zpncbiprofileid":          ruleItem.ZpnCbiProfileID,
+			"zpninspectionprofileid":   ruleItem.ZpnInspectionProfileId,
+			"zpninspectionprofilename": ruleItem.ZpnInspectionProfileName,
+			"conditions":               flattenRuleConditions(ruleItem),
 		}
 	}
 

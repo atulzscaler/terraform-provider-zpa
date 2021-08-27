@@ -10,26 +10,31 @@ const (
 )
 
 type PolicyRule struct {
-	Action             string               `json:"action"`
-	ActionID           int                  `json:"actionId,string"`
-	CreationTime       int                  `json:"creationTime,string"`
-	CustomMsg          string               `json:"customMsg"`
-	Description        string               `json:"description"`
-	ID                 int                  `json:"id,string"`
-	ModifiedBy         int                  `json:"modifiedBy,string"`
-	ModifiedTime       int                  `json:"modifiedTime,string"`
-	Name               string               `json:"name"`
-	Operator           string               `json:"operator"`
-	PolicySetID        int                  `json:"policySetId,string"`
-	PolicyType         int                  `json:"policyType,string"`
-	Priority           int                  `json:"priority,string"`
-	ReauthIdleTimeout  int                  `json:"reauthIdleTimeout,string"`
-	ReauthTimeout      int                  `json:"reauthTimeout,string"`
-	RuleOrder          int                  `json:"ruleOrder,string"`
-	ZpnCbiProfileID    int                  `json:"zpnCbiProfileId,string"`
-	Conditions         []Conditions         `json:"conditions"`
-	AppServerGroups    []AppServerGroups    `json:"appServerGroups"`
-	AppConnectorGroups []AppConnectorGroups `json:"appConnectorGroups"`
+	Action                   string               `json:"action"`
+	ActionID                 int                  `json:"actionId,string"`
+	BypassDefaultRule        bool                 `json:"bypassDefaultRule"`
+	CreationTime             int                  `json:"creationTime,string"`
+	CustomMsg                string               `json:"customMsg"`
+	Description              string               `json:"description"`
+	ID                       int                  `json:"id,string"`
+	IsolationDefaultRule     bool                 `json:"isolationDefaultRule"`
+	ModifiedBy               int                  `json:"modifiedBy,string"`
+	ModifiedTime             int                  `json:"modifiedTime,string"`
+	Name                     string               `json:"name"`
+	Operator                 string               `json:"operator"`
+	PolicySetID              int                  `json:"policySetId,string"`
+	PolicyType               int                  `json:"policyType,string"`
+	Priority                 int                  `json:"priority,string"`
+	ReauthDefaultRule        bool                 `json:"reauthDefaultRule"`
+	ReauthIdleTimeout        int                  `json:"reauthIdleTimeout,string"`
+	ReauthTimeout            int                  `json:"reauthTimeout,string"`
+	RuleOrder                int                  `json:"ruleOrder,string"`
+	ZpnCbiProfileID          int                  `json:"zpnCbiProfileId,string"`
+	ZpnInspectionProfileId   int                  `json:"zpnInspectionProfileId,string"`
+	ZpnInspectionProfileName string               `json:"zpnInspectionProfileName,string"`
+	Conditions               []Conditions         `json:"conditions"`
+	AppServerGroups          []AppServerGroups    `json:"appServerGroups"`
+	AppConnectorGroups       []AppConnectorGroups `json:"appConnectorGroups"`
 }
 
 type Conditions struct {
@@ -76,9 +81,9 @@ type ServerGroups struct {
 }
 
 // GET --> mgmtconfig​/v1​/admin​/customers​/{customerId}​/policySet​/{policySetId}​/rule​/{ruleId}
-func (service *Service) Get(policySetId string, ruleId string) (*PolicyRule, *http.Response, error) {
+func (service *Service) Get(policySetID PolicyRule, ruleId string) (*PolicyRule, *http.Response, error) {
 	v := new(PolicyRule)
-	url := fmt.Sprintf(mgmtConfig+service.Client.Config.CustomerID+"/policySet/%v/rule/%v", policySetId, ruleId)
+	url := fmt.Sprintf(mgmtConfig+service.Client.Config.CustomerID+"/policySet/%v/rule/%v", policySetID.PolicySetID, ruleId)
 	resp, err := service.Client.NewRequestDo("GET", url, nil, nil, &v)
 	if err != nil {
 		return nil, nil, err
@@ -98,8 +103,8 @@ func (service *Service) Create(policySetID PolicyRule) (*PolicyRule, *http.Respo
 }
 
 // PUT --> mgmtconfig​/v1​/admin​/customers​/{customerId}​/policySet​/{policySetId}​/rule​/{ruleId}
-func (service *Service) Update(policySetId, ruleId string, policySetRule PolicyRule) (*http.Response, error) {
-	path := fmt.Sprintf(mgmtConfig+service.Client.Config.CustomerID+"/policySet/%v/rule/%v", policySetId, ruleId)
+func (service *Service) Update(policySetID PolicyRule, ruleId string, policySetRule PolicyRule) (*http.Response, error) {
+	path := fmt.Sprintf(mgmtConfig+service.Client.Config.CustomerID+"/policySet/%v/rule/%v", policySetID.PolicySetID, ruleId)
 	resp, err := service.Client.NewRequestDo("PUT", path, nil, policySetRule, nil)
 	if err != nil {
 		return nil, err
@@ -108,8 +113,8 @@ func (service *Service) Update(policySetId, ruleId string, policySetRule PolicyR
 }
 
 // DELETE --> mgmtconfig​/v1​/admin​/customers​/{customerId}​/policySet​/{policySetId}​/rule​/{ruleId}
-func (service *Service) Delete(policySetId, ruleId string) (*http.Response, error) {
-	path := fmt.Sprintf(mgmtConfig+service.Client.Config.CustomerID+"/policySet/%v/rule/%v", policySetId, ruleId)
+func (service *Service) Delete(policySetID PolicyRule, ruleId string) (*http.Response, error) {
+	path := fmt.Sprintf(mgmtConfig+service.Client.Config.CustomerID+"/policySet/%v/rule/%v", policySetID.PolicySetID, ruleId)
 	resp, err := service.Client.NewRequestDo("DELETE", path, nil, nil, nil)
 	if err != nil {
 		return nil, err
