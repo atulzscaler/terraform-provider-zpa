@@ -2,7 +2,6 @@ package client
 
 import (
 	"bytes"
-	"context"
 	"encoding/json"
 	"fmt"
 	"io"
@@ -22,7 +21,6 @@ type AuthToken struct {
 type Client struct {
 	Config    *gozscaler.Config
 	AuthToken *AuthToken
-	Context   context.Context
 }
 
 // NewClient returns a new client for the specified apiKey.

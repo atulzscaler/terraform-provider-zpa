@@ -11,22 +11,21 @@ const (
 )
 
 type ServerGroup struct {
-	ID               string `json:"id"`
-	Enabled          bool   `json:"enabled"`
-	Name             string `json:"name"`
-	Description      string `json:"description"`
-	IpAnchored       bool   `json:"ipAnchored"`
-	ConfigSpace      string `json:"configSpace"`
-	DynamicDiscovery bool   `json:"dynamicDiscovery"`
-	CreationTime     int32  `json:"creationTime,string"`
-	ModifiedBy       string `json:"modifiedBy"`
-	ModifiedTime     int32  `json:"modifiedTime,string"`
-	// AppConnectorGroups []AppConnectorGroups `json:"appConnectorGroups"`
-	// Servers            []ApplicationServer  `json:"servers"`
-	// Applications       []Applications       `json:"applications"`
+	ID                 string               `json:"id,omitempty"`
+	Enabled            bool                 `json:"enabled,omitempty"`
+	Name               string               `json:"name,omitempty"`
+	Description        string               `json:"description,omitempty"`
+	IpAnchored         bool                 `json:"ipAnchored,omitempty"`
+	ConfigSpace        string               `json:"configSpace,omitempty"`
+	DynamicDiscovery   bool                 `json:"dynamicDiscovery,omitempty"`
+	CreationTime       int32                `json:"creationTime,string,omitempty"`
+	ModifiedBy         string               `json:"modifiedBy,omitempty"`
+	ModifiedTime       int32                `json:"modifiedTime,string,omitempty"`
+	AppConnectorGroups []AppConnectorGroups `json:"appConnectorGroups"`
+	Servers            []ApplicationServer  `json:"servers"`
+	Applications       []Applications       `json:"applications"`
 }
 
-/*
 type Applications struct {
 	ID   int64  `json:"id,string,omitempty"`
 	Name string `json:"name,omitempty"`
@@ -112,7 +111,7 @@ type ApplicationServer struct {
 	ModifiedTime      int32    `json:"modifiedTime,string,omitempty"`
 	Name              string   `json:"name"`
 }
-*/
+
 func (service *Service) Get(groupId string) (*ServerGroup, *http.Response, error) {
 	v := new(ServerGroup)
 	relativeURL := fmt.Sprintf("%s/%s", mgmtConfig+service.Client.Config.CustomerID+serverGroupEndpoint, groupId)

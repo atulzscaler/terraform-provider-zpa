@@ -136,10 +136,6 @@ func resourceApplicationSegment() *schema.Resource {
 func resourceApplicationSegmentCreate(d *schema.ResourceData, m interface{}) error {
 	zClient := m.(*Client)
 
-	if zClient == nil {
-		return resourceNotSupportedError()
-	}
-
 	req := expandApplicationSegmentRequest(d)
 	log.Printf("[INFO] Creating application segment request\n%+v\n", req)
 
@@ -204,10 +200,6 @@ func resourceApplicationSegmentRead(d *schema.ResourceData, m interface{}) error
 
 func resourceApplicationSegmentUpdate(d *schema.ResourceData, m interface{}) error {
 	zClient := m.(*Client)
-
-	if zClient == nil {
-		return resourceNotSupportedError()
-	}
 
 	id := d.Id()
 	log.Printf("[INFO] Updating role ID: %v\n", id)

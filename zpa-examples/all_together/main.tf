@@ -9,12 +9,20 @@ terraform {
 
 provider "zpa" {}
 
+resource "zpa_application_server" "sales" {
+  name                          = "sales.securitygeek.io"
+  description                   = "sales.securitygeek.io"
+  address                       = "sales.securitygeek.io"
+  enabled                       = true
+  appservergroupids             = [ for a in each.value.app_server_appconnectorgroups : metanetworks_group.this[a].id ]
+}
+
 resource "zpa_application_server" "intranet" {
   name                          = "intranet.securitygeek.io"
   description                   = "intranet.securitygeek.io"
   address                       = "intranet.securitygeek.io"
   enabled                       = true
-  appservergroupids             = [ 216196257331282097]
+  appservergroupids             = [ for a in each.value.app_server_appconnectorgroups : metanetworks_group.this[a].id ]
 }
 
 resource "zpa_application_server" "qa" {
@@ -22,7 +30,7 @@ resource "zpa_application_server" "qa" {
   description                   = "qa.securitygeek.io"
   address                       = "qa.securitygeek.io"
   enabled                       = true
-  appservergroupids             = [ 216196257331282097 ]
+  appservergroupids             = [ for a in each.value.app_server_appconnectorgroups : metanetworks_group.this[a].id ]
 }
 
 resource "zpa_application_server" "jenkins" {
@@ -30,7 +38,15 @@ resource "zpa_application_server" "jenkins" {
   description                   = "jenkins.securitygeek.io"
   address                       = "jenkins.securitygeek.io"
   enabled                       = true
-  appservergroupids             = [ 216196257331282100 ]
+  appservergroupids             = [ for a in each.value.app_server_appconnectorgroups : metanetworks_group.this[a].id ]
+}
+
+resource "zpa_application_server" "pan220" {
+  name                          = "pan220.securitygeek.io"
+  description                   = "pan220.securitygeek.io"
+  address                       = "pan220.securitygeek.io"
+  enabled                       = true
+  appservergroupids             = [ for a in each.value.app_server_appconnectorgroups : metanetworks_group.this[a].id ]
 }
 
 resource "zpa_application_server" "vcenter" {
@@ -38,7 +54,7 @@ resource "zpa_application_server" "vcenter" {
   description                   = "vcenter.securitygeek.io"
   address                       = "vcenter.securitygeek.io"
   enabled                       = true
-  appservergroupids             = [ 216196257331282435 ]
+  appservergroupids             = [ for a in each.value.app_server_appconnectorgroups : metanetworks_group.this[a].id ]
 }
 
 resource "zpa_application_server" "cahlesx01" {
@@ -46,21 +62,13 @@ resource "zpa_application_server" "cahlesx01" {
   description                   = "cahlesx01.securitygeek.io"
   address                       = "cahlesx01.securitygeek.io"
   enabled                       = true
-  appservergroupids             = [ 216196257331282435 ]
+  appservergroupids             = [ for a in each.value.app_server_appconnectorgroups : metanetworks_group.this[a].id ]
 }
 
 resource "zpa_application_server" "cahlesx02" {
   name                          = "cahlesx02.securitygeek.io"
   description                   = "cahlesx02.securitygeek.io"
   address                       = "cahlesx02.securitygeek.io"
-  enabled                       = true
-  appservergroupids             = [ 216196257331282435 ]
-}
-
-resource "zpa_application_server" "pan220" {
-  name                          = "pan220.securitygeek.io"
-  description                   = "pan220.securitygeek.io"
-  address                       = "pan220.securitygeek.io"
   enabled                       = true
   appservergroupids             = [ for a in each.value.app_server_appconnectorgroups : metanetworks_group.this[a].id ]
 }

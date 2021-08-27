@@ -1,7 +1,6 @@
 package zscaler
 
 import (
-	"fmt"
 	"log"
 
 	"github.com/SecurityGeekIO/terraform-provider-zpa/gozscaler/client"
@@ -11,22 +10,43 @@ import (
 
 func resourceServerGroup() *schema.Resource {
 	return &schema.Resource{
-		Create: resourceServerGroupCreate,
-		Read:   resourceServerGroupRead,
-		Update: resourceServerGroupUpdate,
-		Delete: resourceServerGroupDelete,
-		Importer: &schema.ResourceImporter{
-			State: schema.ImportStatePassthrough,
-		},
 		Schema: map[string]*schema.Schema{
+			"applications": {
+				Type:        schema.TypeList,
+				Optional:    true,
+				Description: "This field is a json array of app-connector-id only.",
+				Elem: &schema.Resource{
+					Schema: map[string]*schema.Schema{
+						"id": {
+							Type:     schema.TypeList,
+							Optional: true,
+							Elem:     &schema.Schema{Type: schema.TypeInt},
+						},
+					},
+				},
+			},
+			"appconnectorgroups": {
+				Type:        schema.TypeList,
+				Optional:    true,
+				Description: "This field is a json array of app-connector-id only.",
+				Elem: &schema.Resource{
+					Schema: map[string]*schema.Schema{
+						"id": {
+							Type:     schema.TypeList,
+							Optional: true,
+							Elem:     &schema.Schema{Type: schema.TypeInt},
+						},
+					},
+				},
+			},
 			"configspace": {
 				Type:     schema.TypeString,
-				Optional: true,
-			},
-			"creationtime": {
-				Type:     schema.TypeInt,
 				Computed: true,
 			},
+			// "creationtime": {
+			// 	Type:     schema.TypeInt,
+			// 	Computed: true,
+			// },
 			"description": {
 				Type:        schema.TypeString,
 				Optional:    true,
@@ -50,18 +70,39 @@ func resourceServerGroup() *schema.Resource {
 				Optional:    true,
 				Description: "This field controls dynamic discovery of the servers.",
 			},
-			"modifiedby": {
-				Type:     schema.TypeString,
-				Computed: true,
-			},
-			"modifiedtime": {
-				Type:     schema.TypeInt,
-				Computed: true,
-			},
+			// "modifiedby": {
+			// 	Type:     schema.TypeString,
+			// 	Computed: true,
+			// },
+			// "modifiedtime": {
+			// 	Type:     schema.TypeInt,
+			// 	Computed: true,
+			// },
 			"name": {
 				Type:        schema.TypeString,
 				Required:    true,
 				Description: "This field defines the name of the server group.",
+			},
+			"servers": {
+				Type:        schema.TypeList,
+				Optional:    true,
+				Description: "This field is a list of servers that are applicable only when dynamic discovery is disabled. Server name is required only in cases where the new servers need to be created in this API. For existing servers, pass only the serverId.",
+				Elem: &schema.Resource{
+					Schema: map[string]*schema.Schema{
+						"id": {
+							Type:     schema.TypeList,
+							Optional: true,
+							Elem:     &schema.Schema{Type: schema.TypeInt},
+						},
+					},
+					Create: resourceServerGroupCreate,
+					Read:   resourceServerGroupRead,
+					Update: resourceServerGroupUpdate,
+					Delete: resourceServerGroupDelete,
+					Importer: &schema.ResourceImporter{
+						State: schema.ImportStatePassthrough,
+					},
+				},
 			},
 		},
 	}
@@ -70,19 +111,14 @@ func resourceServerGroup() *schema.Resource {
 func resourceServerGroupCreate(d *schema.ResourceData, m interface{}) error {
 	zClient := m.(*Client)
 
-	if zClient == nil {
-		return resourceNotSupportedError()
-	}
-
 	req := expandCreateAppServerGroupRequest(d)
-	// log.Printf("[INFO] Creating zpa server group with request\n%+v\n", req)
+	log.Printf("[INFO] Creating zpa server group with request\n%+v\n", req)
 
 	resp, _, err := zClient.servergroup.Create(req)
 	if err != nil {
 		return err
 	}
-
-	// log.Printf("[INFO] Created zpa server group request. ID: %v\n", resp)
+	log.Printf("[INFO] Created server group request. ID: %v\n", resp)
 	d.SetId(resp.ID)
 
 	return resourceServerGroupRead(d, m)
@@ -90,15 +126,6 @@ func resourceServerGroupCreate(d *schema.ResourceData, m interface{}) error {
 
 func resourceServerGroupRead(d *schema.ResourceData, m interface{}) error {
 	zClient := m.(*Client)
-
-	if zClient == nil {
-		return resourceNotSupportedError()
-	}
-
-	id := d.Id()
-	if id == "" {
-		return fmt.Errorf("error obtaining server group id")
-	}
 
 	resp, _, err := zClient.servergroup.Get(d.Id())
 	if err != nil {
@@ -112,21 +139,20 @@ func resourceServerGroupRead(d *schema.ResourceData, m interface{}) error {
 	}
 
 	log.Printf("[INFO] Getting server group:\n%+v\n", resp)
-	d.SetId(resp.ID)
-
+	//d.SetId(resp.ID)
 	_ = d.Set("configspace", resp.ConfigSpace)
-	_ = d.Set("creationtime", resp.CreationTime)
+	// _ = d.Set("creationtime", resp.CreationTime)
 	_ = d.Set("description", resp.Description)
 	_ = d.Set("enabled", resp.Enabled)
 	_ = d.Set("ipanchored", resp.IpAnchored)
 	_ = d.Set("dynamicdiscovery", resp.DynamicDiscovery)
 	_ = d.Set("enabled", resp.Enabled)
-	_ = d.Set("modifiedby", resp.ModifiedBy)
-	_ = d.Set("modifiedtime", resp.ModifiedTime)
+	// _ = d.Set("modifiedby", resp.ModifiedBy)
+	// _ = d.Set("modifiedtime", resp.ModifiedTime)
 	_ = d.Set("name", resp.Name)
-	// _ = d.Set("appconnectorgroups", flattenAppConnectorGroups(resp.AppConnectorGroups))
-	// _ = d.Set("applications", flattenServerGroupApplications(resp.Applications))
-	// _ = d.Set("servers", flattenServers(resp.Servers))
+	_ = d.Set("appconnectorgroups", flattenAppConnectorGroups(resp.AppConnectorGroups))
+	_ = d.Set("applications", flattenServerGroupApplications(resp.Applications))
+	_ = d.Set("servers", flattenServers(resp.Servers))
 
 	// if err := d.Set("applications", flattenServerGroupApplications(resp.Applications)); err != nil {
 	// 	return err
@@ -146,10 +172,6 @@ func resourceServerGroupRead(d *schema.ResourceData, m interface{}) error {
 func resourceServerGroupUpdate(d *schema.ResourceData, m interface{}) error {
 	zClient := m.(*Client)
 
-	if zClient == nil {
-		return resourceNotSupportedError()
-	}
-
 	id := d.Id()
 	log.Printf("[INFO] Updating server group ID: %v\n", id)
 	req := expandCreateAppServerGroupRequest(d)
@@ -163,16 +185,8 @@ func resourceServerGroupUpdate(d *schema.ResourceData, m interface{}) error {
 func resourceServerGroupDelete(d *schema.ResourceData, m interface{}) error {
 	zClient := m.(*Client)
 
-	if zClient == nil {
-		return resourceNotSupportedError()
-	}
-
-	id := d.Id()
-	if id == "" {
-		return fmt.Errorf("error obtaining server group id")
-	}
-
 	log.Printf("[INFO] Deleting server group ID: %v\n", d.Id())
+
 	if _, err := zClient.servergroup.Delete(d.Id()); err != nil {
 		return err
 	}
@@ -182,25 +196,19 @@ func resourceServerGroupDelete(d *schema.ResourceData, m interface{}) error {
 
 func expandCreateAppServerGroupRequest(d *schema.ResourceData) servergroup.ServerGroup {
 	return servergroup.ServerGroup{
-		// serverGroup := servergroup.ServerGroup{
-		ID:               d.Get("id").(string),
-		Enabled:          d.Get("enabled").(bool),
-		Name:             d.Get("name").(string),
-		Description:      d.Get("description").(string),
-		IpAnchored:       d.Get("ipanchored").(bool),
-		ConfigSpace:      d.Get("configspace").(string),
-		DynamicDiscovery: d.Get("dynamicdiscovery").(bool),
-		CreationTime:     d.Get("creationtime").(int32),
-		ModifiedBy:       d.Get("modifiedby").(string),
-		ModifiedTime:     d.Get("Modifiedtime").(int32),
-		// Applications:       expandServerGroupApplications(d),
-		// AppConnectorGroups: expandAppConnectorGroups(d),
-		// Servers:            expandServers(d),
+		//ID:               d.Get("id").(string),
+		Enabled:            d.Get("enabled").(bool),
+		Name:               d.Get("name").(string),
+		Description:        d.Get("description").(string),
+		IpAnchored:         d.Get("ipanchored").(bool),
+		ConfigSpace:        d.Get("configspace").(string),
+		DynamicDiscovery:   d.Get("dynamicdiscovery").(bool),
+		Applications:       expandServerGroupApplications(d),
+		AppConnectorGroups: expandAppConnectorGroups(d),
+		Servers:            expandServers(d),
 	}
-	// return serverGroup
 }
 
-/*
 func expandServerGroupApplications(d *schema.ResourceData) []servergroup.Applications {
 	var serverGroupApplications []servergroup.Applications
 	if applicationsInterface, ok := d.GetOk("applications"); ok {
@@ -275,4 +283,3 @@ func expandServers(d *schema.ResourceData) []servergroup.ApplicationServer {
 
 	return applicationServers
 }
-*/

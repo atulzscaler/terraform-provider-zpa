@@ -28,9 +28,3 @@ func main() {
 			ProviderFunc: zscaler.Provider})
 	}
 }
-
-// func main() {
-// 	plugin.Serve(&plugin.ServeOpts{
-// 		ProviderFunc: zscaler.Provider,
-// 	})
-// }

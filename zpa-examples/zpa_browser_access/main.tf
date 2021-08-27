@@ -21,7 +21,7 @@ provider "zpa" {}
  }
 
 
-//Sales Portal Browser Access
+// Sales Portal Browser Access
 data "zpa_ba_certificate" "sales_ba" {
     id = 216196257331282584
 }
@@ -42,8 +42,8 @@ resource "zpa_browser_access" "browser_access_apps" {
     enabled = true
     healthreporting = "ON_ACCESS"
     bypasstype = "NEVER"
-    tcpportranges = ["80", "80"]
-    domainnames = ["sales.securitygeek.io"]
+    tcpportranges = ["80", "80", "8080", "8080"]
+    domainnames = ["sales.securitygeek.io", "qa.securitygeek.io", "jenkins.securitygeek.io"]
     segmentgroupid = zpa_segment_group.sg_sgio_browser_access.id
 
     clientlessapps {

@@ -193,10 +193,6 @@ func resourcePolicySetRule() *schema.Resource {
 func resourcePolicySetCreate(d *schema.ResourceData, m interface{}) error {
 	zClient := m.(*Client)
 
-	if zClient == nil {
-		return resourceNotSupportedError()
-	}
-
 	req := expandCreatePolicyRule(d)
 	log.Printf("[INFO] Creating zpa policy rule with request\n%+v\n", req)
 
@@ -253,10 +249,6 @@ func resourcePolicySetRead(d *schema.ResourceData, m interface{}) error {
 // Please review Update operations. It needs to pull the policySetId and RuleId in order to update a specific rule.
 func resourcePolicySetUpdate(d *schema.ResourceData, m interface{}) error {
 	zClient := m.(*Client)
-
-		if zClient == nil {
-		return resourceNotSupportedError()
-	}
 
 	ruleId := d.Id()
 	log.Printf("[INFO] Updating policy rule ID: %v\n", ruleId)
