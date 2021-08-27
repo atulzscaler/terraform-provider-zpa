@@ -111,6 +111,16 @@ func resourceBrowserAccess() *schema.Resource {
 							Type:     schema.TypeString,
 							Optional: true,
 						},
+						// "applicationprotocol": {
+						// 	Type:     schema.TypeString,
+						// 	Optional: true,
+						// 	ValidateFunc: validation.StringInSlice([]string{
+						// 		"HTTP",
+						// 		"HTTPS",
+						// 		"FTP",
+						// 		"RDP",
+						// 	}, false),
+						// },
 						"certificateid": {
 							Type:     schema.TypeInt,
 							Optional: true,

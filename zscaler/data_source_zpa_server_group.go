@@ -3,7 +3,6 @@ package zscaler
 import (
 	"log"
 
-	"github.com/SecurityGeekIO/terraform-provider-zpa/gozscaler/servergroup"
 	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/schema"
 )
 
@@ -11,194 +10,194 @@ func dataSourceServerGroup() *schema.Resource {
 	return &schema.Resource{
 		Read: dataSourceServerGroupRead,
 		Schema: map[string]*schema.Schema{
-			"applications": {
-				Type:     schema.TypeList,
-				Computed: true,
-				Elem: &schema.Resource{
-					Schema: map[string]*schema.Schema{
-						"id": {
-							Type:     schema.TypeInt,
-							Computed: true,
-						},
-						"name": {
-							Type:     schema.TypeString,
-							Computed: true,
-						},
-					},
-				},
-			},
-			"appconnectorgroups": {
-				Type:     schema.TypeList,
-				Computed: true,
-				Elem: &schema.Resource{
-					Schema: map[string]*schema.Schema{
-						"citycountry": {
-							Type:     schema.TypeString,
-							Computed: true,
-						},
-						"countrycode": {
-							Type:     schema.TypeString,
-							Computed: true,
-						},
-						"creationtime": {
-							Type:     schema.TypeInt,
-							Computed: true,
-						},
-						"description": {
-							Type:     schema.TypeString,
-							Computed: true,
-						},
-						"dnsquerytype": {
-							Type:     schema.TypeString,
-							Computed: true,
-						},
-						"enabled": {
-							Type:     schema.TypeBool,
-							Computed: true,
-						},
-						"geolocationid": {
-							Type:     schema.TypeInt,
-							Computed: true,
-						},
-						"id": {
-							Type:     schema.TypeInt,
-							Computed: true,
-						},
-						"latitude": {
-							Type:     schema.TypeString,
-							Computed: true,
-						},
-						"location": {
-							Type:     schema.TypeString,
-							Computed: true,
-						},
-						"longitude": {
-							Type:     schema.TypeString,
-							Computed: true,
-						},
-						"modifiedby": {
-							Type:     schema.TypeInt,
-							Computed: true,
-						},
-						"modifiedtime": {
-							Type:     schema.TypeInt,
-							Computed: true,
-						},
-						"name": {
-							Type:     schema.TypeString,
-							Computed: true,
-						},
-						"connectors": {
-							Type:     schema.TypeList,
-							Computed: true,
-							Elem: &schema.Resource{
-								Schema: map[string]*schema.Schema{
-									"creationtime": {
-										Type:     schema.TypeInt,
-										Computed: true,
-									},
-									"description": {
-										Type:     schema.TypeString,
-										Computed: true,
-									},
-									"enabled": {
-										Type:     schema.TypeBool,
-										Computed: true,
-									},
-									"fingerprint": {
-										Type:     schema.TypeString,
-										Computed: true,
-									},
-									"id": {
-										Type:     schema.TypeInt,
-										Computed: true,
-									},
-									"issuedcertid": {
-										Type:     schema.TypeInt,
-										Computed: true,
-									},
-									"modifiedby": {
-										Type:     schema.TypeInt,
-										Computed: true,
-									},
-									"modifiedtime": {
-										Type:     schema.TypeInt,
-										Computed: true,
-									},
-									"name": {
-										Type:     schema.TypeString,
-										Optional: true,
-									},
-									"upgradeattempt": {
-										Type:     schema.TypeInt,
-										Computed: true,
-									},
-								},
-							},
-						},
-						"servergroups": {
-							Type:     schema.TypeList,
-							Computed: true,
-							Elem: &schema.Resource{
-								Schema: map[string]*schema.Schema{
-									"configspace": {
-										Type:     schema.TypeString,
-										Computed: true,
-									},
-									"creationtime": {
-										Type:     schema.TypeString,
-										Computed: true,
-									},
-									"description": {
-										Type:     schema.TypeString,
-										Computed: true,
-									},
-									"enabled": {
-										Type:     schema.TypeBool,
-										Computed: true,
-									},
-									"id": {
-										Type:     schema.TypeInt,
-										Computed: true,
-									},
-									"dynamicdiscovery": {
-										Type:     schema.TypeBool,
-										Computed: true,
-									},
-									"modifiedby": {
-										Type:     schema.TypeString,
-										Computed: true,
-									},
-									"modifiedtime": {
-										Type:     schema.TypeInt,
-										Computed: true,
-									},
-									"name": {
-										Type:     schema.TypeString,
-										Optional: true,
-									},
-								},
-							},
-						},
-						"siemappconnectorgroup": {
-							Type:     schema.TypeBool,
-							Computed: true,
-						},
-						"upgradetimeinsecs": {
-							Type:     schema.TypeString,
-							Computed: true,
-						},
-						"upgradeday": {
-							Type:     schema.TypeString,
-							Computed: true,
-						},
-						"versionprofileid": {
-							Type:     schema.TypeInt,
-							Computed: true,
-						},
-					},
-				},
-			},
+			// "applications": {
+			// 	Type:     schema.TypeList,
+			// 	Computed: true,
+			// 	Elem: &schema.Resource{
+			// 		Schema: map[string]*schema.Schema{
+			// 			"id": {
+			// 				Type:     schema.TypeInt,
+			// 				Computed: true,
+			// 			},
+			// 			"name": {
+			// 				Type:     schema.TypeString,
+			// 				Computed: true,
+			// 			},
+			// 		},
+			// 	},
+			// },
+			// "appconnectorgroups": {
+			// 	Type:     schema.TypeList,
+			// 	Computed: true,
+			// 	Elem: &schema.Resource{
+			// 		Schema: map[string]*schema.Schema{
+			// 			"citycountry": {
+			// 				Type:     schema.TypeString,
+			// 				Computed: true,
+			// 			},
+			// 			"countrycode": {
+			// 				Type:     schema.TypeString,
+			// 				Computed: true,
+			// 			},
+			// 			"creationtime": {
+			// 				Type:     schema.TypeInt,
+			// 				Computed: true,
+			// 			},
+			// 			"description": {
+			// 				Type:     schema.TypeString,
+			// 				Computed: true,
+			// 			},
+			// 			"dnsquerytype": {
+			// 				Type:     schema.TypeString,
+			// 				Computed: true,
+			// 			},
+			// 			"enabled": {
+			// 				Type:     schema.TypeBool,
+			// 				Computed: true,
+			// 			},
+			// 			"geolocationid": {
+			// 				Type:     schema.TypeInt,
+			// 				Computed: true,
+			// 			},
+			// 			"id": {
+			// 				Type:     schema.TypeInt,
+			// 				Computed: true,
+			// 			},
+			// 			"latitude": {
+			// 				Type:     schema.TypeString,
+			// 				Computed: true,
+			// 			},
+			// 			"location": {
+			// 				Type:     schema.TypeString,
+			// 				Computed: true,
+			// 			},
+			// 			"longitude": {
+			// 				Type:     schema.TypeString,
+			// 				Computed: true,
+			// 			},
+			// 			"modifiedby": {
+			// 				Type:     schema.TypeInt,
+			// 				Computed: true,
+			// 			},
+			// 			"modifiedtime": {
+			// 				Type:     schema.TypeInt,
+			// 				Computed: true,
+			// 			},
+			// 			"name": {
+			// 				Type:     schema.TypeString,
+			// 				Computed: true,
+			// 			},
+			// 			"connectors": {
+			// 				Type:     schema.TypeList,
+			// 				Computed: true,
+			// 				Elem: &schema.Resource{
+			// 					Schema: map[string]*schema.Schema{
+			// 						"creationtime": {
+			// 							Type:     schema.TypeInt,
+			// 							Computed: true,
+			// 						},
+			// 						"description": {
+			// 							Type:     schema.TypeString,
+			// 							Computed: true,
+			// 						},
+			// 						"enabled": {
+			// 							Type:     schema.TypeBool,
+			// 							Computed: true,
+			// 						},
+			// 						"fingerprint": {
+			// 							Type:     schema.TypeString,
+			// 							Computed: true,
+			// 						},
+			// 						"id": {
+			// 							Type:     schema.TypeInt,
+			// 							Computed: true,
+			// 						},
+			// 						"issuedcertid": {
+			// 							Type:     schema.TypeInt,
+			// 							Computed: true,
+			// 						},
+			// 						"modifiedby": {
+			// 							Type:     schema.TypeInt,
+			// 							Computed: true,
+			// 						},
+			// 						"modifiedtime": {
+			// 							Type:     schema.TypeInt,
+			// 							Computed: true,
+			// 						},
+			// 						"name": {
+			// 							Type:     schema.TypeString,
+			// 							Optional: true,
+			// 						},
+			// 						"upgradeattempt": {
+			// 							Type:     schema.TypeInt,
+			// 							Computed: true,
+			// 						},
+			// 					},
+			// 				},
+			// 			},
+			// 			"servergroups": {
+			// 				Type:     schema.TypeList,
+			// 				Computed: true,
+			// 				Elem: &schema.Resource{
+			// 					Schema: map[string]*schema.Schema{
+			// 						"configspace": {
+			// 							Type:     schema.TypeString,
+			// 							Computed: true,
+			// 						},
+			// 						"creationtime": {
+			// 							Type:     schema.TypeString,
+			// 							Computed: true,
+			// 						},
+			// 						"description": {
+			// 							Type:     schema.TypeString,
+			// 							Computed: true,
+			// 						},
+			// 						"enabled": {
+			// 							Type:     schema.TypeBool,
+			// 							Computed: true,
+			// 						},
+			// 						"id": {
+			// 							Type:     schema.TypeInt,
+			// 							Computed: true,
+			// 						},
+			// 						"dynamicdiscovery": {
+			// 							Type:     schema.TypeBool,
+			// 							Computed: true,
+			// 						},
+			// 						"modifiedby": {
+			// 							Type:     schema.TypeString,
+			// 							Computed: true,
+			// 						},
+			// 						"modifiedtime": {
+			// 							Type:     schema.TypeInt,
+			// 							Computed: true,
+			// 						},
+			// 						"name": {
+			// 							Type:     schema.TypeString,
+			// 							Optional: true,
+			// 						},
+			// 					},
+			// 				},
+			// 			},
+			// 			"siemappconnectorgroup": {
+			// 				Type:     schema.TypeBool,
+			// 				Computed: true,
+			// 			},
+			// 			"upgradetimeinsecs": {
+			// 				Type:     schema.TypeString,
+			// 				Computed: true,
+			// 			},
+			// 			"upgradeday": {
+			// 				Type:     schema.TypeString,
+			// 				Computed: true,
+			// 			},
+			// 			"versionprofileid": {
+			// 				Type:     schema.TypeInt,
+			// 				Computed: true,
+			// 			},
+			// 		},
+			// 	},
+			// },
 			"configspace": {
 				Type:     schema.TypeString,
 				Computed: true,
@@ -239,55 +238,55 @@ func dataSourceServerGroup() *schema.Resource {
 				Type:     schema.TypeString,
 				Optional: true,
 			},
-			"servers": {
-				Type:     schema.TypeList,
-				Computed: true,
-				Elem: &schema.Resource{
-					Schema: map[string]*schema.Schema{
-						"address": {
-							Type:     schema.TypeString,
-							Computed: true,
-						},
-						"appservergroupids": {
-							Type:     schema.TypeList,
-							Computed: true,
-							Elem:     &schema.Schema{Type: schema.TypeString},
-						},
-						"configspace": {
-							Type:     schema.TypeString,
-							Computed: true,
-						},
-						"creationtime": {
-							Type:     schema.TypeInt,
-							Computed: true,
-						},
-						"description": {
-							Type:     schema.TypeString,
-							Computed: true,
-						},
-						"enabled": {
-							Type:     schema.TypeBool,
-							Computed: true,
-						},
-						"id": {
-							Type:     schema.TypeInt,
-							Computed: true,
-						},
-						"modifiedby": {
-							Type:     schema.TypeInt,
-							Computed: true,
-						},
-						"modifiedtime": {
-							Type:     schema.TypeInt,
-							Computed: true,
-						},
-						"name": {
-							Type:     schema.TypeString,
-							Computed: true,
-						},
-					},
-				},
-			},
+			// "servers": {
+			// 	Type:     schema.TypeList,
+			// 	Computed: true,
+			// 	Elem: &schema.Resource{
+			// 		Schema: map[string]*schema.Schema{
+			// 			"address": {
+			// 				Type:     schema.TypeString,
+			// 				Computed: true,
+			// 			},
+			// 			"appservergroupids": {
+			// 				Type:     schema.TypeList,
+			// 				Computed: true,
+			// 				Elem:     &schema.Schema{Type: schema.TypeString},
+			// 			},
+			// 			"configspace": {
+			// 				Type:     schema.TypeString,
+			// 				Computed: true,
+			// 			},
+			// 			"creationtime": {
+			// 				Type:     schema.TypeInt,
+			// 				Computed: true,
+			// 			},
+			// 			"description": {
+			// 				Type:     schema.TypeString,
+			// 				Computed: true,
+			// 			},
+			// 			"enabled": {
+			// 				Type:     schema.TypeBool,
+			// 				Computed: true,
+			// 			},
+			// 			"id": {
+			// 				Type:     schema.TypeInt,
+			// 				Computed: true,
+			// 			},
+			// 			"modifiedby": {
+			// 				Type:     schema.TypeInt,
+			// 				Computed: true,
+			// 			},
+			// 			"modifiedtime": {
+			// 				Type:     schema.TypeInt,
+			// 				Computed: true,
+			// 			},
+			// 			"name": {
+			// 				Type:     schema.TypeString,
+			// 				Computed: true,
+			// 			},
+			// 		},
+			// 	},
+			// },
 		},
 	}
 }
@@ -314,19 +313,21 @@ func dataSourceServerGroupRead(d *schema.ResourceData, m interface{}) error {
 	_ = d.Set("modifiedtime", resp.ModifiedTime)
 	_ = d.Set("name", resp.Name)
 
-	if err := d.Set("applications", flattenServerGroupApplications(resp.Applications)); err != nil {
-		return err
-	}
+	// if err := d.Set("applications", flattenServerGroupApplications(resp.Applications)); err != nil {
+	// 	return err
+	// }
 
-	if err := d.Set("appconnectorgroups", flattenAppConnectorGroups(resp.AppConnectorGroups)); err != nil {
-		return err
-	}
+	// if err := d.Set("appconnectorgroups", flattenAppConnectorGroups(resp.AppConnectorGroups)); err != nil {
+	// 	return err
+	// }
 
-	if err := d.Set("servers", flattenServers(resp.Servers)); err != nil {
-		return err
-	}
+	// if err := d.Set("servers", flattenServers(resp.Servers)); err != nil {
+	// 	return err
+	// }
 	return nil
 }
+
+/*
 
 func flattenServerGroupApplications(applications []servergroup.Applications) []interface{} {
 	serverGroupApplications := make([]interface{}, len(applications))
@@ -424,3 +425,4 @@ func flattenServers(applicationServer []servergroup.ApplicationServer) []interfa
 	}
 	return applicationServers
 }
+*/
