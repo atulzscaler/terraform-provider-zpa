@@ -38,7 +38,7 @@ type AppConnectorGroups struct {
 	DnsqueryType          string            `json:"dnsQueryType,omitempty"`
 	Enabled               bool              `json:"enabled,omitempty"`
 	GeolocationId         int64             `json:"geoLocationId,string,omitempty"`
-	ID                    int64             `json:"id,string,omitempty"`
+	ID                    int               `json:"id,string,omitempty"`
 	Latitude              string            `json:"latitude,omitempty"`
 	Location              string            `json:"location,omitempty"`
 	Longitude             string            `json:"longitude,omitempty"`
