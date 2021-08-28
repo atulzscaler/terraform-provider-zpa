@@ -47,8 +47,8 @@ resource "zpa_server_group" "example" {
   //   id = [216196257331282445]
   // }
   appconnectorgroups {
-    id = [
-      216196257331281931
+    name = [
+      "SGIO-Vancouver"
       ]
   }
 }

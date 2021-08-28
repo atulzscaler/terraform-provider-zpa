@@ -21,7 +21,7 @@ type ServerGroup struct {
 	CreationTime       int32                `json:"creationTime,string,omitempty"`
 	ModifiedBy         string               `json:"modifiedBy,omitempty"`
 	ModifiedTime       int32                `json:"modifiedTime,string,omitempty"`
-	AppConnectorGroups []AppConnectorGroups `json:"appConnectorGroups"`
+	AppConnectorGroups []AppConnectorGroups `json:"appConnectorGroups,omitempty"`
 	Servers            []ApplicationServer  `json:"servers"`
 	Applications       []Applications       `json:"applications"`
 }
@@ -38,7 +38,7 @@ type AppConnectorGroups struct {
 	DnsqueryType          string            `json:"dnsQueryType,omitempty"`
 	Enabled               bool              `json:"enabled,omitempty"`
 	GeolocationId         int64             `json:"geoLocationId,string,omitempty"`
-	ID                    int               `json:"id,string,omitempty"`
+	ID                    int64             `json:"id,omitempty"`
 	Latitude              string            `json:"latitude,omitempty"`
 	Location              string            `json:"location,omitempty"`
 	Longitude             string            `json:"longitude,omitempty"`

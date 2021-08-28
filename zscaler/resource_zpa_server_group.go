@@ -38,10 +38,10 @@ func resourceServerGroup() *schema.Resource {
 				Description: "This field is a json array of app-connector-id only.",
 				Elem: &schema.Resource{
 					Schema: map[string]*schema.Schema{
-						"id": {
+						"name": {
 							Type:     schema.TypeList,
 							Optional: true,
-							Elem:     &schema.Schema{Type: schema.TypeInt},
+							Elem:     &schema.Schema{Type: schema.TypeString},
 						},
 					},
 				},
@@ -224,13 +224,13 @@ func expandAppConnectorGroups(d *schema.ResourceData) []servergroup.AppConnector
 				// DnsqueryType: connectorGroup["dnsquerytype"].(string),
 				// Enabled:      connectorGroup["enabled"].(bool),
 				// GeolocationId:         connectorGroup["geolocationid"].(int64),
-				ID: connectorGroup["id"].(int),
+				// ID: connectorGroup["id"].(int64),
 				// Latitude:              connectorGroup["latitude"].(string),
 				// Location:              connectorGroup["location"].(string),
 				// Longitude:             connectorGroup["longitude"].(string),
 				// ModifiedBy:            connectorGroup["modifiedby"].(int64),
 				// ModifiedTime:          connectorGroup["modifiedtime"].(int32),
-				// Name:                  connectorGroup["name"].(string),
+				Name: connectorGroup["name"].(string),
 				// SiemAppconnectorGroup: connectorGroup["siemappconnectorgroup"].(bool),
 				// UpgradeDay:            connectorGroup["upgradeday"].(string),
 				// UpgradeTimeinSecs:     connectorGroup["upgradetimeinsecs"].(string),
