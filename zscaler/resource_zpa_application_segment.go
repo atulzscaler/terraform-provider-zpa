@@ -7,6 +7,7 @@ import (
 	"github.com/SecurityGeekIO/terraform-provider-zpa/gozscaler/applicationsegment"
 	"github.com/SecurityGeekIO/terraform-provider-zpa/gozscaler/client"
 	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/schema"
+	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/validation"
 )
 
 func resourceApplicationSegment() *schema.Resource {
@@ -31,6 +32,11 @@ func resourceApplicationSegment() *schema.Resource {
 				Type:        schema.TypeString,
 				Optional:    true,
 				Description: "Indicates whether users can bypass ZPA to access applications.",
+				ValidateFunc: validation.StringInSlice([]string{
+					"ALWAYS",
+					"NEVER",
+					"ON_NET",
+				}, false),
 			},
 			"tcpportranges": {
 				Type:        schema.TypeList,
@@ -47,6 +53,10 @@ func resourceApplicationSegment() *schema.Resource {
 			"configspace": {
 				Type:     schema.TypeString,
 				Optional: true,
+				ValidateFunc: validation.StringInSlice([]string{
+					"DEFAULT",
+					"SIEM",
+				}, false),
 			},
 			"creationtime": {
 				Type:     schema.TypeInt,
@@ -81,6 +91,11 @@ func resourceApplicationSegment() *schema.Resource {
 				Type:        schema.TypeString,
 				Optional:    true,
 				Description: "Whether health reporting for the app is Continuous or On Access. Supported values: NONE, ON_ACCESS, CONTINUOUS.",
+				ValidateFunc: validation.StringInSlice([]string{
+					"NONE",
+					"ON_ACCESS",
+					"CONTINUOUS",
+				}, false),
 			},
 			"icmpaccesstype": {
 				Type:     schema.TypeString,
@@ -93,6 +108,14 @@ func resourceApplicationSegment() *schema.Resource {
 			"ipanchored": {
 				Type:     schema.TypeBool,
 				Optional: true,
+			},
+			"logfeatures": {
+				Type:     schema.TypeString,
+				Optional: true,
+				ValidateFunc: validation.StringInSlice([]string{
+					"skip_discovery",
+					"full_wildcard",
+				}, false),
 			},
 			"iscnameenabled": {
 				Type:        schema.TypeBool,

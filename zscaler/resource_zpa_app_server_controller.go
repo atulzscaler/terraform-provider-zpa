@@ -7,6 +7,7 @@ import (
 	"github.com/SecurityGeekIO/terraform-provider-zpa/gozscaler/appservercontroller"
 	"github.com/SecurityGeekIO/terraform-provider-zpa/gozscaler/client"
 	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/schema"
+	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/validation"
 )
 
 func resourceApplicationServer() *schema.Resource {
@@ -41,7 +42,11 @@ func resourceApplicationServer() *schema.Resource {
 			},
 			"configspace": {
 				Type:     schema.TypeString,
-				Computed: true,
+				Optional: true,
+				ValidateFunc: validation.StringInSlice([]string{
+					"DEFAULT",
+					"SIEM",
+				}, false),
 			},
 			"id": {
 				Type:     schema.TypeString,

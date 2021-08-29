@@ -6,6 +6,7 @@ import (
 	"github.com/SecurityGeekIO/terraform-provider-zpa/gozscaler/client"
 	"github.com/SecurityGeekIO/terraform-provider-zpa/gozscaler/servergroup"
 	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/schema"
+	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/validation"
 )
 
 func resourceServerGroup() *schema.Resource {
@@ -52,7 +53,11 @@ func resourceServerGroup() *schema.Resource {
 			},
 			"configspace": {
 				Type:     schema.TypeString,
-				Computed: true,
+				Optional: true,
+				ValidateFunc: validation.StringInSlice([]string{
+					"DEFAULT",
+					"SIEM",
+				}, false),
 			},
 			// "creationtime": {
 			// 	Type:     schema.TypeInt,
@@ -246,7 +251,7 @@ func expandAppConnectorGroups(d *schema.ResourceData) []servergroup.AppConnector
 				// DnsqueryType: connectorGroup["dnsquerytype"].(string),
 				// Enabled:      connectorGroup["enabled"].(bool),
 				// GeolocationId:         connectorGroup["geolocationid"].(int64),
-				ID: connectorGroup["id"].(int),
+				ID: connectorGroup.Int64(int64(d.Get["id"].(int))),
 				// Latitude:              connectorGroup["latitude"].(string),
 				// Location:              connectorGroup["location"].(string),
 				// Longitude:             connectorGroup["longitude"].(string),

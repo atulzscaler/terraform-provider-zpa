@@ -26,16 +26,42 @@ data "zpa_ba_certificate" "sales_ba" {
     id = 216196257331282584
 }
 
-// QA Browser Access
-data "zpa_ba_certificate" "qa_ba" {
-    id = 216196257331282583
+// // QA Browser Access
+// data "zpa_ba_certificate" "qa_ba" {
+//     id = 216196257331282583
+// }
+
+// // DevOps Browser Access
+// data "zpa_ba_certificate" "jenkins_ba" {
+//     id = 216196257331282582
+// }
+
+
+resource "zpa_browser_access" "browser_access_apps" {
+    name = "Browser Access Apps"
+    description = "Browser Access Apps"
+    enabled = true
+    healthreporting = "ON_ACCESS"
+    bypasstype = "NEVER"
+    tcpportranges = ["80", "80"]
+    domainnames = ["sales.securitygeek.io"]
+    segmentgroupid = zpa_segment_group.sg_sgio_browser_access.id
+
+    clientlessapps {
+        name = "sales.securitygeek.io"
+        applicationprotocol = "HTTP"
+        applicationport = "80"
+        certificateid = data.zpa_ba_certificate.sales_ba.id
+        trustuntrustedcert = true
+        enabled = true
+        domain = "sales.securitygeek.io"
+    }
+    servergroups {
+        id = 216196257331282476
+    }
 }
 
-// DevOps Browser Access
-data "zpa_ba_certificate" "jenkins_ba" {
-    id = 216196257331282582
-}
-
+/*
 resource "zpa_browser_access" "browser_access_apps" {
     name = "Browser Access Apps"
     description = "Browser Access Apps"
@@ -79,7 +105,8 @@ resource "zpa_browser_access" "browser_access_apps" {
         id = 216196257331282476
     }
 }
-
+*/
+/*
  resource "zpa_segment_group" "sg_all_other_services" {
    name = "All Other Services"
    description = "All Other Services"
@@ -104,3 +131,4 @@ resource "zpa_application_segment" "all_other_services" {
     //     id = 216196257331282438
     // }
 }
+*/

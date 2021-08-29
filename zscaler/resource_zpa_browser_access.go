@@ -110,10 +110,6 @@ func resourceBrowserAccess() *schema.Resource {
 							Type:     schema.TypeInt,
 							Optional: true,
 						},
-						// "applicationprotocol": {
-						// 	Type:     schema.TypeString,
-						// 	Optional: true,
-						// },
 						"applicationprotocol": {
 							Type:     schema.TypeString,
 							Optional: true,
@@ -122,8 +118,7 @@ func resourceBrowserAccess() *schema.Resource {
 								"HTTPS",
 								"FTP",
 								"RDP",
-								}, false),
-							},
+							}, false),
 						},
 						"certificateid": {
 							Type:     schema.TypeInt,
