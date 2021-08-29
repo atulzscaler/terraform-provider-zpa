@@ -19,20 +19,24 @@ func resourceServerGroup() *schema.Resource {
 			State: schema.ImportStatePassthrough,
 		},
 		Schema: map[string]*schema.Schema{
-			// "applications": {
-			// 	Type:        schema.TypeList,
-			// 	Optional:    true,
-			// 	Description: "This field is a json array of app-connector-id only.",
-			// 	Elem: &schema.Resource{
-			// 		Schema: map[string]*schema.Schema{
-			// 			"id": {
-			// 				Type:     schema.TypeList,
-			// 				Optional: true,
-			// 				Elem:     &schema.Schema{Type: schema.TypeInt},
-			// 			},
-			// 		},
-			// 	},
-			// },
+			"applications": {
+				Type:        schema.TypeList,
+				Optional:    true,
+				Description: "This field is a json array of app-connector-id only.",
+				Elem: &schema.Resource{
+					Schema: map[string]*schema.Schema{
+						"id": {
+							Type:     schema.TypeInt,
+							Optional: true,
+						},
+						// "id": {
+						// 	Type:     schema.TypeSet,
+						// 	Optional: true,
+						// 	Elem:     &schema.Schema{Type: schema.TypeInt},
+						// },
+					},
+				},
+			},
 			"appconnectorgroups": {
 				Type:        schema.TypeList,
 				Optional:    true,
@@ -99,20 +103,24 @@ func resourceServerGroup() *schema.Resource {
 				Required:    true,
 				Description: "This field defines the name of the server group.",
 			},
-			// "servers": {
-			// 	Type:        schema.TypeList,
-			// 	Optional:    true,
-			// 	Description: "This field is a list of servers that are applicable only when dynamic discovery is disabled. Server name is required only in cases where the new servers need to be created in this API. For existing servers, pass only the serverId.",
-			// 	Elem: &schema.Resource{
-			// 		Schema: map[string]*schema.Schema{
-			// 			"id": {
-			// 				Type:     schema.TypeList,
-			// 				Optional: true,
-			// 				Elem:     &schema.Schema{Type: schema.TypeInt},
-			// 			},
-			// 		},
-			// 	},
-			// },
+			"servers": {
+				Type:        schema.TypeList,
+				Optional:    true,
+				Description: "This field is a list of servers that are applicable only when dynamic discovery is disabled. Server name is required only in cases where the new servers need to be created in this API. For existing servers, pass only the serverId.",
+				Elem: &schema.Resource{
+					Schema: map[string]*schema.Schema{
+						// "id": {
+						// 	Type:     schema.TypeList,
+						// 	Optional: true,
+						// 	Elem:     &schema.Schema{Type: schema.TypeInt},
+						// },
+						"id": {
+							Type:     schema.TypeInt,
+							Optional: true,
+						},
+					},
+				},
+			},
 		},
 	}
 }
@@ -124,7 +132,7 @@ func resourceServerGroupCreate(d *schema.ResourceData, m interface{}) error {
 		return resourceNotSupportedError()
 	}
 
-	req := expandCreateAppServerGroupRequest(d)
+	req := expandServerGroup(d)
 	log.Printf("[INFO] Creating zpa server group with request\n%+v\n", req)
 
 	resp, _, err := zClient.servergroup.Create(&req)
@@ -168,8 +176,8 @@ func resourceServerGroupRead(d *schema.ResourceData, m interface{}) error {
 	// _ = d.Set("modifiedtime", resp.ModifiedTime)
 	_ = d.Set("name", resp.Name)
 	_ = d.Set("appconnectorgroups", flattenAppConnectorGroups(resp.AppConnectorGroups))
-	// _ = d.Set("applications", flattenServerGroupApplications(resp.Applications))
-	// _ = d.Set("servers", flattenServers(resp.Servers))
+	_ = d.Set("applications", flattenServerGroupApplications(resp.Applications))
+	_ = d.Set("servers", flattenServers(resp.Servers))
 
 	// if err := d.Set("applications", flattenServerGroupApplications(resp.Applications)); err != nil {
 	// 	return err
@@ -195,7 +203,7 @@ func resourceServerGroupUpdate(d *schema.ResourceData, m interface{}) error {
 
 	id := d.Id()
 	log.Printf("[INFO] Updating server group ID: %v\n", id)
-	req := expandCreateAppServerGroupRequest(d)
+	req := expandServerGroup(d)
 
 	if _, err := zClient.servergroup.Update(id, req); err != nil {
 		return err
@@ -219,6 +227,62 @@ func resourceServerGroupDelete(d *schema.ResourceData, m interface{}) error {
 	return nil
 }
 
+func expandServerGroup(d *schema.ResourceData) servergroup.ServerGroup {
+	req := servergroup.ServerGroup{
+		Enabled:            d.Get("enabled").(bool),
+		Name:               d.Get("name").(string),
+		Description:        d.Get("description").(string),
+		IpAnchored:         d.Get("ipanchored").(bool),
+		ConfigSpace:        d.Get("configspace").(string),
+		DynamicDiscovery:   d.Get("dynamicdiscovery").(bool),
+		AppConnectorGroups: expandAppConnectorGroups(d.Get("appconnectorgroups").([]interface{})),
+		Applications:       expandServerGroupApplications(d.Get("applications").([]interface{})),
+		Servers:            expandServers(d.Get("servers").([]interface{})),
+	}
+
+	return req
+}
+
+func expandAppConnectorGroups(appConnectorGroupRequest []interface{}) []servergroup.AppConnectorGroups {
+	appConnectorGroups := make([]servergroup.AppConnectorGroups, len(appConnectorGroupRequest))
+
+	for i, appConnectorGroup := range appConnectorGroupRequest {
+		appConnectorGroupItem := appConnectorGroup.(map[string]interface{})
+		appConnectorGroups[i] = servergroup.AppConnectorGroups{
+			ID: appConnectorGroupItem["id"].(int),
+		}
+	}
+
+	return appConnectorGroups
+}
+
+func expandServerGroupApplications(serverGroupAppRequest []interface{}) []servergroup.Applications {
+	serverGroupApplications := make([]servergroup.Applications, len(serverGroupAppRequest))
+
+	for i, serverGroupApplication := range serverGroupAppRequest {
+		serverApplicationItem := serverGroupApplication.(map[string]interface{})
+		serverGroupApplications[i] = servergroup.Applications{
+			ID: serverApplicationItem["id"].(int),
+		}
+	}
+
+	return serverGroupApplications
+}
+
+func expandServers(applicationServerRequest []interface{}) []servergroup.ApplicationServer {
+	applicationServers := make([]servergroup.ApplicationServer, len(applicationServerRequest))
+
+	for i, applicationServer := range applicationServerRequest {
+		applicationServerItem := applicationServer.(map[string]interface{})
+		applicationServers[i] = servergroup.ApplicationServer{
+			ID: applicationServerItem["id"].(int),
+		}
+	}
+
+	return applicationServers
+}
+
+/*
 func expandCreateAppServerGroupRequest(d *schema.ResourceData) servergroup.ServerGroup {
 	// serverGroup := servergroup.ServerGroup{
 	return servergroup.ServerGroup{
@@ -236,6 +300,7 @@ func expandCreateAppServerGroupRequest(d *schema.ResourceData) servergroup.Serve
 	// return serverGroup
 }
 
+/*
 func expandAppConnectorGroups(d *schema.ResourceData) []servergroup.AppConnectorGroups {
 	var appConnectorGroups []servergroup.AppConnectorGroups
 	if appConnectorGroupsInterface, ok := d.GetOk("appconnectorgroups"); ok {
@@ -251,7 +316,8 @@ func expandAppConnectorGroups(d *schema.ResourceData) []servergroup.AppConnector
 				// DnsqueryType: connectorGroup["dnsquerytype"].(string),
 				// Enabled:      connectorGroup["enabled"].(bool),
 				// GeolocationId:         connectorGroup["geolocationid"].(int64),
-				ID: connectorGroup.Int64(int64(d.Get["id"].(int))),
+				ID: connectorGroup["id"].(int),
+
 				// Latitude:              connectorGroup["latitude"].(string),
 				// Location:              connectorGroup["location"].(string),
 				// Longitude:             connectorGroup["longitude"].(string),
@@ -268,7 +334,7 @@ func expandAppConnectorGroups(d *schema.ResourceData) []servergroup.AppConnector
 
 	return appConnectorGroups
 }
-
+*/
 /*
 func expandServerGroupApplications(d *schema.ResourceData) []servergroup.Applications {
 	var serverGroupApplications []servergroup.Applications

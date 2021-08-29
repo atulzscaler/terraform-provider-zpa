@@ -38,14 +38,31 @@ provider "zpa" {}
 //   value = data.zpa_app_connector_group.example.name
 // }
 
-resource "zpa_server_group" "example" {
-  name = "example"
-  description = "example"
+/*
+resource "zpa_server_group" "example1" {
+  name = "example1"
+  description = "example1"
   enabled = true
   dynamicdiscovery = true
   // servers {
   //   id = [216196257331282445]
   // }
+  appconnectorgroups {
+    id = 216196257331281931
+  }
+}
+*/
+resource "zpa_server_group" "example1" {
+  name = "example1"
+  description = "example1"
+  enabled = true
+  dynamicdiscovery = false
+  // applications {
+  //   id = 216196257331282730
+  // }
+  servers {
+    id = 216196257331282445
+  }
   appconnectorgroups {
     id = 216196257331281931
   }

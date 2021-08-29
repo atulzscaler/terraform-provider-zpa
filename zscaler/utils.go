@@ -110,3 +110,18 @@ func ToInterfaceMap(m map[string]interface{}, k string) map[string]interface{} {
 
 	return map[string]interface{}{}
 }
+
+// Int64Slice converts a slice of int64 values into a slice of
+// int64 pointers
+func Int64Slice(src []int64) []*int64 {
+	dst := make([]*int64, len(src))
+	for i := 0; i < len(src); i++ {
+		dst[i] = &(src[i])
+	}
+	return dst
+}
+
+// Int64 returns a pointer to the int64 value passed in.
+func Int64(v int64) *int64 {
+	return &v
+}

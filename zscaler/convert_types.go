@@ -1,5 +1,6 @@
 package zscaler
 
+/*
 import "time"
 
 // String returns a pointer to the string value passed in.
@@ -916,3 +917,4 @@ func TimeValueMap(src map[string]*time.Time) map[string]time.Time {
 	}
 	return dst
 }
+*/

@@ -27,7 +27,7 @@ type ServerGroup struct {
 }
 
 type Applications struct {
-	ID   int64  `json:"id,string,omitempty"`
+	ID   int    `json:"id,string,omitempty"`
 	Name string `json:"name,omitempty"`
 }
 type AppConnectorGroups struct {
@@ -106,7 +106,7 @@ type ApplicationServer struct {
 	CreationTime      int32    `json:"creationTime,string,omitempty"`
 	Description       string   `json:"description,omitempty"`
 	Enabled           bool     `json:"enabled,omitempty"`
-	ID                int64    `json:"id,string,omitempty"`
+	ID                int      `json:"id,string,omitempty"`
 	ModifiedBy        int64    `json:"modifiedBy,string,omitempty"`
 	ModifiedTime      int32    `json:"modifiedTime,string,omitempty"`
 	Name              string   `json:"name"`
