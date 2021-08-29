@@ -114,7 +114,7 @@ func (service *Service) Update(policySetID PolicyRule, ruleId string, policySetR
 
 // DELETE --> mgmtconfig​/v1​/admin​/customers​/{customerId}​/policySet​/{policySetId}​/rule​/{ruleId}
 func (service *Service) Delete(policySetID PolicyRule, ruleId string) (*http.Response, error) {
-	path := fmt.Sprintf(mgmtConfig+service.Client.Config.CustomerID+"/policySet/%v/rule/%v", policySetID.PolicySetID, ruleId)
+	path := fmt.Sprintf(mgmtConfig+service.Client.Config.CustomerID+"/policySet/%v/rule/%v", policySetID.PolicySetID, ruleId, nil)
 	resp, err := service.Client.NewRequestDo("DELETE", path, nil, nil, nil)
 	if err != nil {
 		return nil, err

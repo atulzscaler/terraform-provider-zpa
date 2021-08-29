@@ -38,11 +38,15 @@ func resourceServerGroup() *schema.Resource {
 				Description: "This field is a json array of app-connector-id only.",
 				Elem: &schema.Resource{
 					Schema: map[string]*schema.Schema{
-						"name": {
-							Type:     schema.TypeList,
+						"id": {
+							Type:     schema.TypeInt,
 							Optional: true,
-							Elem:     &schema.Schema{Type: schema.TypeString},
 						},
+						// "id": {
+						// 	Type:     schema.TypeSet,
+						// 	Optional: true,
+						// 	Elem:     &schema.Schema{Type: schema.TypeInt},
+						// },
 					},
 				},
 			},
@@ -111,10 +115,14 @@ func resourceServerGroup() *schema.Resource {
 func resourceServerGroupCreate(d *schema.ResourceData, m interface{}) error {
 	zClient := m.(*Client)
 
+	if zClient == nil {
+		return resourceNotSupportedError()
+	}
+
 	req := expandCreateAppServerGroupRequest(d)
 	log.Printf("[INFO] Creating zpa server group with request\n%+v\n", req)
 
-	resp, _, err := zClient.servergroup.Create(req)
+	resp, _, err := zClient.servergroup.Create(&req)
 	if err != nil {
 		return err
 	}
@@ -126,6 +134,10 @@ func resourceServerGroupCreate(d *schema.ResourceData, m interface{}) error {
 
 func resourceServerGroupRead(d *schema.ResourceData, m interface{}) error {
 	zClient := m.(*Client)
+
+	if zClient == nil {
+		return resourceNotSupportedError()
+	}
 
 	resp, _, err := zClient.servergroup.Get(d.Id())
 	if err != nil {
@@ -139,7 +151,7 @@ func resourceServerGroupRead(d *schema.ResourceData, m interface{}) error {
 	}
 
 	log.Printf("[INFO] Getting server group:\n%+v\n", resp)
-	//d.SetId(resp.ID)
+	d.SetId(resp.ID)
 	_ = d.Set("configspace", resp.ConfigSpace)
 	// _ = d.Set("creationtime", resp.CreationTime)
 	_ = d.Set("description", resp.Description)
@@ -150,7 +162,7 @@ func resourceServerGroupRead(d *schema.ResourceData, m interface{}) error {
 	// _ = d.Set("modifiedby", resp.ModifiedBy)
 	// _ = d.Set("modifiedtime", resp.ModifiedTime)
 	_ = d.Set("name", resp.Name)
-	// _ = d.Set("appconnectorgroups", flattenAppConnectorGroups(resp.AppConnectorGroups))
+	_ = d.Set("appconnectorgroups", flattenAppConnectorGroups(resp.AppConnectorGroups))
 	// _ = d.Set("applications", flattenServerGroupApplications(resp.Applications))
 	// _ = d.Set("servers", flattenServers(resp.Servers))
 
@@ -158,9 +170,9 @@ func resourceServerGroupRead(d *schema.ResourceData, m interface{}) error {
 	// 	return err
 	// }
 
-	if err := d.Set("appconnectorgroups", flattenAppConnectorGroups(resp.AppConnectorGroups)); err != nil {
-		return err
-	}
+	// if err := d.Set("appconnectorgroups", flattenAppConnectorGroups(resp.AppConnectorGroups)); err != nil {
+	// 	return fmt.Errorf("failed to read application connector groups %s", err)
+	// }
 
 	// if err := d.Set("servers", flattenServers(resp.Servers)); err != nil {
 	// 	return err
@@ -171,6 +183,10 @@ func resourceServerGroupRead(d *schema.ResourceData, m interface{}) error {
 
 func resourceServerGroupUpdate(d *schema.ResourceData, m interface{}) error {
 	zClient := m.(*Client)
+
+	if zClient == nil {
+		return resourceNotSupportedError()
+	}
 
 	id := d.Id()
 	log.Printf("[INFO] Updating server group ID: %v\n", id)
@@ -185,6 +201,10 @@ func resourceServerGroupUpdate(d *schema.ResourceData, m interface{}) error {
 func resourceServerGroupDelete(d *schema.ResourceData, m interface{}) error {
 	zClient := m.(*Client)
 
+	if zClient == nil {
+		return resourceNotSupportedError()
+	}
+
 	log.Printf("[INFO] Deleting server group ID: %v\n", d.Id())
 
 	if _, err := zClient.servergroup.Delete(d.Id()); err != nil {
@@ -195,6 +215,7 @@ func resourceServerGroupDelete(d *schema.ResourceData, m interface{}) error {
 }
 
 func expandCreateAppServerGroupRequest(d *schema.ResourceData) servergroup.ServerGroup {
+	// serverGroup := servergroup.ServerGroup{
 	return servergroup.ServerGroup{
 		//ID:               d.Get("id").(string),
 		Enabled:          d.Get("enabled").(bool),
@@ -207,6 +228,7 @@ func expandCreateAppServerGroupRequest(d *schema.ResourceData) servergroup.Serve
 		AppConnectorGroups: expandAppConnectorGroups(d),
 		// Servers:            expandServers(d),
 	}
+	// return serverGroup
 }
 
 func expandAppConnectorGroups(d *schema.ResourceData) []servergroup.AppConnectorGroups {
@@ -224,13 +246,13 @@ func expandAppConnectorGroups(d *schema.ResourceData) []servergroup.AppConnector
 				// DnsqueryType: connectorGroup["dnsquerytype"].(string),
 				// Enabled:      connectorGroup["enabled"].(bool),
 				// GeolocationId:         connectorGroup["geolocationid"].(int64),
-				// ID: connectorGroup["id"].(int64),
+				ID: connectorGroup["id"].(int),
 				// Latitude:              connectorGroup["latitude"].(string),
 				// Location:              connectorGroup["location"].(string),
 				// Longitude:             connectorGroup["longitude"].(string),
 				// ModifiedBy:            connectorGroup["modifiedby"].(int64),
 				// ModifiedTime:          connectorGroup["modifiedtime"].(int32),
-				Name: connectorGroup["name"].(string),
+				// Name: connectorGroup["name"].(string),
 				// SiemAppconnectorGroup: connectorGroup["siemappconnectorgroup"].(bool),
 				// UpgradeDay:            connectorGroup["upgradeday"].(string),
 				// UpgradeTimeinSecs:     connectorGroup["upgradetimeinsecs"].(string),

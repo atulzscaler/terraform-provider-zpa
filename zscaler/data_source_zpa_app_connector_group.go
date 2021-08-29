@@ -1,7 +1,7 @@
 package zscaler
 
 import (
-	"log"
+	"fmt"
 	"strconv"
 
 	"github.com/SecurityGeekIO/terraform-provider-zpa/gozscaler/appconnectorgroup"
@@ -111,23 +111,23 @@ func dataSourceAppConnectorGroup() *schema.Resource {
 						},
 						"name": {
 							Type:     schema.TypeString,
-							Optional: true,
+							Computed: true,
 						},
 						"platform": {
 							Type:     schema.TypeString,
-							Optional: true,
+							Computed: true,
 						},
 						"previousversion": {
 							Type:     schema.TypeString,
-							Optional: true,
+							Computed: true,
 						},
 						"privateip": {
 							Type:     schema.TypeString,
-							Optional: true,
+							Computed: true,
 						},
 						"publicip": {
 							Type:     schema.TypeString,
-							Optional: true,
+							Computed: true,
 						},
 						"upgradeattempt": {
 							Type:     schema.TypeInt,
@@ -135,10 +135,12 @@ func dataSourceAppConnectorGroup() *schema.Resource {
 						},
 						"signingcert": {
 							Type:     schema.TypeMap,
+							Elem:     schema.TypeString,
 							Computed: true,
-							Elem: &schema.Schema{
-								Type: schema.TypeString,
-							},
+						},
+						"upgradestatus": {
+							Type:     schema.TypeString,
+							Computed: true,
 						},
 					},
 				},
@@ -165,6 +167,10 @@ func dataSourceAppConnectorGroup() *schema.Resource {
 			},
 			"enabled": {
 				Type:     schema.TypeBool,
+				Computed: true,
+			},
+			"geolocationid": {
+				Type:     schema.TypeInt,
 				Computed: true,
 			},
 			"id": {
@@ -262,15 +268,16 @@ func dataSourceAppConnectorGroup() *schema.Resource {
 func resourceConnectorGroupRead(d *schema.ResourceData, m interface{}) error {
 	zClient := m.(*Client)
 
-	id := d.Get("id").(string)
-	log.Printf("[INFO] Getting data for app connector group %s\n", id)
+	id, err := strconv.ParseInt(d.Get("id").(string), 10, 64)
+	if err != nil {
+		return err
+	}
 
 	resp, _, err := zClient.appconnectorgroup.Get(id)
 	if err != nil {
 		return err
 	}
 
-	//d.SetId(strconv.Itoa(resp.ID))
 	d.SetId(strconv.FormatInt(int64(resp.ID), 10))
 	_ = d.Set("citycountry", resp.CityCountry)
 	_ = d.Set("countrycode", resp.CountryCode)
@@ -291,10 +298,10 @@ func resourceConnectorGroupRead(d *schema.ResourceData, m interface{}) error {
 	//_ = d.Set("connectors", flattenConnectors(resp))
 
 	if err := d.Set("connectors", flattenConnectors(resp)); err != nil {
-		return err
+		return fmt.Errorf("failed to read connectors %s", err)
 	}
 	if err := d.Set("servergroups", flattenServerGroups(resp)); err != nil {
-		return err
+		return fmt.Errorf("failed to read server groups %s", err)
 	}
 
 	return nil

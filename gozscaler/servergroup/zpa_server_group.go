@@ -38,7 +38,7 @@ type AppConnectorGroups struct {
 	DnsqueryType          string            `json:"dnsQueryType,omitempty"`
 	Enabled               bool              `json:"enabled,omitempty"`
 	GeolocationId         int64             `json:"geoLocationId,string,omitempty"`
-	ID                    int64             `json:"id,omitempty"`
+	ID                    int               `json:"id,string"`
 	Latitude              string            `json:"latitude,omitempty"`
 	Location              string            `json:"location,omitempty"`
 	Longitude             string            `json:"longitude,omitempty"`
@@ -122,7 +122,7 @@ func (service *Service) Get(groupId string) (*ServerGroup, *http.Response, error
 	return v, resp, nil
 }
 
-func (service *Service) Create(serverGroup ServerGroup) (*ServerGroup, *http.Response, error) {
+func (service *Service) Create(serverGroup *ServerGroup) (*ServerGroup, *http.Response, error) {
 	v := new(ServerGroup)
 	resp, err := service.Client.NewRequestDo("POST", mgmtConfig+service.Client.Config.CustomerID+serverGroupEndpoint, nil, serverGroup, &v)
 	if err != nil {

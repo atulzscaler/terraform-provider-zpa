@@ -8,6 +8,7 @@ import (
 	"github.com/SecurityGeekIO/terraform-provider-zpa/gozscaler/browseraccess"
 	"github.com/SecurityGeekIO/terraform-provider-zpa/gozscaler/client"
 	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/schema"
+	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/validation"
 )
 
 func resourceBrowserAccess() *schema.Resource {
@@ -109,9 +110,20 @@ func resourceBrowserAccess() *schema.Resource {
 							Type:     schema.TypeInt,
 							Optional: true,
 						},
+						// "applicationprotocol": {
+						// 	Type:     schema.TypeString,
+						// 	Optional: true,
+						// },
 						"applicationprotocol": {
 							Type:     schema.TypeString,
 							Optional: true,
+							ValidateFunc: validation.StringInSlice([]string{
+								"HTTP",
+								"HTTPS",
+								"FTP",
+								"RDP",
+								}, false),
+							},
 						},
 						"certificateid": {
 							Type:     schema.TypeInt,
@@ -246,10 +258,10 @@ func resourceBrowserAccessRead(d *schema.ResourceData, m interface{}) error {
 	// _ = d.Set("clientlessapps", resp.ClientlessApps)
 
 	if err := d.Set("clientlessapps", flattenBaClientlessApps(resp)); err != nil {
-		return err
+		return fmt.Errorf("failed to read clientless apps %s", err)
 	}
 	if err := d.Set("servergroups", flattenClientlessAppServerGroups(resp)); err != nil {
-		return err
+		return fmt.Errorf("failed to read app server groups %s", err)
 	}
 
 	return nil
@@ -276,6 +288,7 @@ func resourceBrowserAccessUpdate(d *schema.ResourceData, m interface{}) error {
 
 func resourceBrowserAccessDelete(d *schema.ResourceData, m interface{}) error {
 	zClient := m.(*Client)
+
 	if zClient == nil {
 		return resourceNotSupportedError()
 	}

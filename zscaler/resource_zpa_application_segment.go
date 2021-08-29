@@ -1,6 +1,7 @@
 package zscaler
 
 import (
+	"fmt"
 	"log"
 
 	"github.com/SecurityGeekIO/terraform-provider-zpa/gozscaler/applicationsegment"
@@ -192,7 +193,7 @@ func resourceApplicationSegmentRead(d *schema.ResourceData, m interface{}) error
 	_ = d.Set("udpportranges", resp.UdpPortRanges)
 
 	if err := d.Set("servergroups", flattenAppServerGroups(resp)); err != nil {
-		return err
+		return fmt.Errorf("failed to read app server groups %s", err)
 	}
 
 	return nil

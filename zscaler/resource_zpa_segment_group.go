@@ -1,6 +1,7 @@
 package zscaler
 
 import (
+	"fmt"
 	"log"
 	"strconv"
 
@@ -134,7 +135,7 @@ func resourceSegmentGroupRead(d *schema.ResourceData, m interface{}) error {
 	_ = d.Set("tcpkeepaliveenabled", resp.TcpKeepAliveEnabled)
 
 	if err := d.Set("applications", flattenSegmentGroupApplications(resp)); err != nil {
-		return err
+		return fmt.Errorf("failed to read segment group applications %s", err)
 	}
 	return nil
 }

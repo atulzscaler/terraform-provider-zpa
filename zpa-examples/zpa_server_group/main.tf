@@ -11,8 +11,8 @@ provider "zpa" {}
 
 
 // data "zpa_server_group" "example" {
-//   //id = 216196257331282435
-//   id = 216196257331282097
+//   id = 216196257331282435
+//   // id = 216196257331282097
 //   //name = "SGIO-CORP-Server-Group"
 // }
 
@@ -47,8 +47,6 @@ resource "zpa_server_group" "example" {
   //   id = [216196257331282445]
   // }
   appconnectorgroups {
-    name = [
-      "SGIO-Vancouver"
-      ]
+    id = 216196257331281931
   }
 }
