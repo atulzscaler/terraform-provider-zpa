@@ -1,25 +1,17 @@
 package zscaler
 
 import (
-	"fmt"
 	"log"
 	"strconv"
 
-	"github.com/SecurityGeekIO/terraform-provider-zpa/gozscaler/appservercontroller"
+	"github.com/SecurityGeekIO/terraform-provider-zpa/gozscaler/common"
+
 	"github.com/SecurityGeekIO/terraform-provider-zpa/gozscaler/client"
 	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/schema"
-	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/validation"
 )
 
 func resourceApplicationServer() *schema.Resource {
 	return &schema.Resource{
-		Create: resourceApplicationServerCreate,
-		Read:   resourceApplicationServerRead,
-		Update: resourceApplicationServerUpdate,
-		Delete: resourceApplicationServerDelete,
-		Importer: &schema.ResourceImporter{
-			State: schema.ImportStatePassthrough,
-		},
 		Schema: map[string]*schema.Schema{
 			"name": {
 				Type:        schema.TypeString,
@@ -50,37 +42,40 @@ func resourceApplicationServer() *schema.Resource {
 			},
 			"configspace": {
 				Type:     schema.TypeString,
-				Optional: true,
-				ValidateFunc: validation.StringInSlice([]string{
-					"DEFAULT",
-					"SIEM",
-				}, false),
+				Computed: true,
 			},
 			"id": {
 				Type:     schema.TypeString,
 				Computed: true,
 			},
 		},
+		Create: resourceApplicationServerCreate,
+		Read:   resourceApplicationServerRead,
+		Update: resourceApplicationServerUpdate,
+		Delete: resourceApplicationServerDelete,
+		Importer: &schema.ResourceImporter{
+			State: schema.ImportStatePassthrough,
+		},
 	}
 }
 
-func resourceApplicationServerCreate(d *schema.ResourceData, meta interface{}) error {
-	zClient := meta.(*Client)
+func resourceApplicationServerCreate(d *schema.ResourceData, m interface{}) error {
+	zClient := m.(*Client)
 
 	req := expandCreateAppServerRequest(d)
 	log.Printf("[INFO] Creating zpa application server with request\n%+v\n", req)
 
 	appservercontroller, _, err := zClient.appservercontroller.Create(req)
 	if err != nil {
-		return fmt.Errorf("failed to create zpa application server : %s", err)
+		return err
 	}
-
+	//d.SetId(strconv.Itoa(appservercontroller.ID))
 	d.SetId(strconv.FormatInt(int64(appservercontroller.ID), 10))
-	return resourceApplicationServerRead(d, meta)
+	return resourceApplicationServerRead(d, m)
 }
 
-func resourceApplicationServerRead(d *schema.ResourceData, meta interface{}) error {
-	zClient := meta.(*Client)
+func resourceApplicationServerRead(d *schema.ResourceData, m interface{}) error {
+	zClient := m.(*Client)
 
 	id, err := strconv.ParseInt(d.Id(), 10, 64)
 	if err != nil {
@@ -108,15 +103,15 @@ func resourceApplicationServerRead(d *schema.ResourceData, meta interface{}) err
 
 }
 
-func resourceApplicationServerUpdate(d *schema.ResourceData, meta interface{}) error {
-	zClient := meta.(*Client)
+func resourceApplicationServerUpdate(d *schema.ResourceData, m interface{}) error {
+	zClient := m.(*Client)
 
 	log.Println("An updated occurred")
 
 	if d.HasChange("appservergroupids") || d.HasChange("name") || d.HasChange("address") {
 		log.Println("The AppServerGroupID, name or address has been changed")
 
-		if _, err := zClient.appservercontroller.Update(d.Id(), appservercontroller.ApplicationServer{
+		if _, err := zClient.appservercontroller.Update(d.Id(), common.ApplicationServer{
 			AppServerGroupIds: resourceTypeSetToStringSlice(d.Get("appservergroupids").(*schema.Set)),
 			Name:              d.Get("name").(string),
 			Address:           d.Get("address").(string),
@@ -129,20 +124,60 @@ func resourceApplicationServerUpdate(d *schema.ResourceData, meta interface{}) e
 	return nil
 }
 
-func resourceApplicationServerDelete(d *schema.ResourceData, meta interface{}) error {
-	zClient := meta.(*Client)
+func resourceApplicationServerDelete(d *schema.ResourceData, m interface{}) error {
+	zClient := m.(*Client)
 
 	log.Printf("[INFO] Deleting application server ID: %v\n", d.Id())
 
-	if _, err := zClient.appservercontroller.Delete(d.Id()); err != nil {
+	err := removeServerFromGroup(zClient, d.Id())
+	if err != nil {
+		return err
+	}
+
+	if _, err = zClient.appservercontroller.Delete(d.Id()); err != nil {
 		return err
 	}
 
 	return nil
 }
 
-func expandCreateAppServerRequest(d *schema.ResourceData) appservercontroller.ApplicationServer {
-	applicationServer := appservercontroller.ApplicationServer{
+func removeServerFromGroup(zClient *Client, serverID string) error {
+	// Remove the reference to this server from server groups.
+	id, err := strconv.ParseInt(serverID, 10, 64)
+	if err != nil {
+		return err
+	}
+	resp, _, err := zClient.appservercontroller.Get(id)
+	if err != nil {
+		return err
+	}
+
+	if len(resp.AppServerGroupIds) != 0 {
+		log.Printf("[INFO] Removing server group ID/s from application server: %s", serverID)
+		resp.AppServerGroupIds = make([]string, 0)
+
+		log.Printf("[INFO] Updating server group ID: %s", serverID)
+		_, err = zClient.appservercontroller.Update(serverID, *resp)
+		if err != nil {
+			log.Printf("[ERROR] Failed to update application server ID: %s", serverID)
+			return err
+		}
+	}
+
+	return nil
+}
+
+func removeServer(serversList []common.ApplicationServer, serverID int64) []common.ApplicationServer {
+	for i, server := range serversList {
+		if server.ID == serverID {
+			return append(serversList[:i], serversList[i+1:]...)
+		}
+	}
+	return serversList
+}
+
+func expandCreateAppServerRequest(d *schema.ResourceData) common.ApplicationServer {
+	applicationServer := common.ApplicationServer{
 		Address:           d.Get("address").(string),
 		ConfigSpace:       d.Get("configspace").(string),
 		AppServerGroupIds: resourceTypeSetToStringSlice(d.Get("appservergroupids").(*schema.Set)),

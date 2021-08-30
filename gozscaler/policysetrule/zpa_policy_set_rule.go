@@ -16,13 +16,13 @@ type PolicyRule struct {
 	CreationTime             int                  `json:"creationTime,string"`
 	CustomMsg                string               `json:"customMsg"`
 	Description              string               `json:"description"`
-	ID                       int                  `json:"id,string"`
+	ID                       int64                `json:"id,string"`
 	IsolationDefaultRule     bool                 `json:"isolationDefaultRule"`
 	ModifiedBy               int                  `json:"modifiedBy,string"`
 	ModifiedTime             int                  `json:"modifiedTime,string"`
 	Name                     string               `json:"name"`
 	Operator                 string               `json:"operator"`
-	PolicySetID              int                  `json:"policySetId,string"`
+	PolicySetID              int64                `json:"policySetId,string"`
 	PolicyType               int                  `json:"policyType,string"`
 	Priority                 int                  `json:"priority,string"`
 	ReauthDefaultRule        bool                 `json:"reauthDefaultRule"`
@@ -81,7 +81,7 @@ type ServerGroups struct {
 }
 
 // GET --> mgmtconfig​/v1​/admin​/customers​/{customerId}​/policySet​/{policySetId}​/rule​/{ruleId}
-func (service *Service) Get(policySetID PolicyRule, ruleId string) (*PolicyRule, *http.Response, error) {
+func (service *Service) Get(policySetID PolicyRule, ruleId int64) (*PolicyRule, *http.Response, error) {
 	v := new(PolicyRule)
 	url := fmt.Sprintf(mgmtConfig+service.Client.Config.CustomerID+"/policySet/%v/rule/%v", policySetID.PolicySetID, ruleId)
 	resp, err := service.Client.NewRequestDo("GET", url, nil, nil, &v)
@@ -92,7 +92,7 @@ func (service *Service) Get(policySetID PolicyRule, ruleId string) (*PolicyRule,
 }
 
 // POST --> mgmtconfig​/v1​/admin​/customers​/{customerId}​/policySet​/{policySetId}​/rule
-func (service *Service) Create(policySetID PolicyRule) (*PolicyRule, *http.Response, error) {
+func (service *Service) Create(policySetID *PolicyRule) (*PolicyRule, *http.Response, error) {
 	v := new(PolicyRule)
 	path := fmt.Sprintf(mgmtConfig+service.Client.Config.CustomerID+"/policySet/%v/rule", policySetID.PolicySetID)
 	resp, err := service.Client.NewRequestDo("POST", path, nil, &v, nil)
@@ -103,7 +103,7 @@ func (service *Service) Create(policySetID PolicyRule) (*PolicyRule, *http.Respo
 }
 
 // PUT --> mgmtconfig​/v1​/admin​/customers​/{customerId}​/policySet​/{policySetId}​/rule​/{ruleId}
-func (service *Service) Update(policySetID PolicyRule, ruleId string, policySetRule PolicyRule) (*http.Response, error) {
+func (service *Service) Update(policySetID PolicyRule, ruleId int64, policySetRule *PolicyRule) (*http.Response, error) {
 	path := fmt.Sprintf(mgmtConfig+service.Client.Config.CustomerID+"/policySet/%v/rule/%v", policySetID.PolicySetID, ruleId)
 	resp, err := service.Client.NewRequestDo("PUT", path, nil, policySetRule, nil)
 	if err != nil {
@@ -113,7 +113,7 @@ func (service *Service) Update(policySetID PolicyRule, ruleId string, policySetR
 }
 
 // DELETE --> mgmtconfig​/v1​/admin​/customers​/{customerId}​/policySet​/{policySetId}​/rule​/{ruleId}
-func (service *Service) Delete(policySetID PolicyRule, ruleId string) (*http.Response, error) {
+func (service *Service) Delete(policySetID PolicyRule, ruleId int64) (*http.Response, error) {
 	path := fmt.Sprintf(mgmtConfig+service.Client.Config.CustomerID+"/policySet/%v/rule/%v", policySetID.PolicySetID, ruleId, nil)
 	resp, err := service.Client.NewRequestDo("DELETE", path, nil, nil, nil)
 	if err != nil {

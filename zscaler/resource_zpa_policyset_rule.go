@@ -21,9 +21,9 @@ func resourcePolicySetRule() *schema.Resource {
 		},
 		Schema: map[string]*schema.Schema{
 			"action": {
-				Type:     schema.TypeString,
-				Optional: true,
-				Description: "	This is for providing the rule action.",
+				Type:        schema.TypeString,
+				Optional:    true,
+				Description: "  This is for providing the rule action.",
 			},
 			"bypassdefaultrule": {
 				Type:     schema.TypeBool,
@@ -87,103 +87,103 @@ func resourcePolicySetRule() *schema.Resource {
 				Optional: true,
 			},
 			// "zpncbiprofileid": {
-			// 	Type:     schema.TypeInt,
-			// 	Optional: true,
+			//  Type:     schema.TypeInt,
+			//  Optional: true,
 			// },
 			"zpnInspectionProfileName": {
 				Type:     schema.TypeString,
 				Optional: true,
 			},
 			// "actionid": {
-			// 	Type:        schema.TypeInt,
-			// 	Optional:    true,
-			// 	Description: "This field defines the description of the server.",
+			//  Type:        schema.TypeInt,
+			//  Optional:    true,
+			//  Description: "This field defines the description of the server.",
 			// },
 			// "servergroups": {
-			// 	Type:        schema.TypeList,
-			// 	Optional:    true,
-			// 	Description: "ID of the server group.",
-			// 	Elem: &schema.Resource{
-			// 		Schema: map[string]*schema.Schema{
-			// 			"id": {
-			// 				Type:     schema.TypeList,
-			// 				Optional: true,
-			// 				Elem:     &schema.Schema{Type: schema.TypeInt},
-			// 			},
-			// 		},
-			// 	},
+			//  Type:        schema.TypeList,
+			//  Optional:    true,
+			//  Description: "ID of the server group.",
+			//  Elem: &schema.Resource{
+			//      Schema: map[string]*schema.Schema{
+			//          "id": {
+			//              Type:     schema.TypeList,
+			//              Optional: true,
+			//              Elem:     &schema.Schema{Type: schema.TypeInt},
+			//          },
+			//      },
+			//  },
 			// },
 			// "appconnectorgroups": {
-			// 	Type:        schema.TypeList,
-			// 	Optional:    true,
-			// 	Description: "This field is a json array of app-connector-id only.",
-			// 	Elem: &schema.Resource{
-			// 		Schema: map[string]*schema.Schema{
-			// 			"id": {
-			// 				Type:     schema.TypeList,
-			// 				Optional: true,
-			// 				Elem:     &schema.Schema{Type: schema.TypeInt},
-			// 			},
-			// 		},
-			// 	},
+			//  Type:        schema.TypeList,
+			//  Optional:    true,
+			//  Description: "This field is a json array of app-connector-id only.",
+			//  Elem: &schema.Resource{
+			//      Schema: map[string]*schema.Schema{
+			//          "id": {
+			//              Type:     schema.TypeList,
+			//              Optional: true,
+			//              Elem:     &schema.Schema{Type: schema.TypeInt},
+			//          },
+			//      },
+			//  },
 			// },
 			// "conditions": {
-			// 	Type:        schema.TypeList,
-			// 	Optional:    true,
-			// 	Description: "This is for proviidng the set of conditions for the policy.",
-			// 	Elem: &schema.Resource{
-			// 		Schema: map[string]*schema.Schema{
-			// 			"id": {
-			// 				Type:     schema.TypeInt,
-			// 				Computed: true,
-			// 			},
-			// 			"negated": {
-			// 				Type:     schema.TypeBool,
-			// 				Optional: true,
-			// 			},
-			// 			"operator": {
-			// 				Type:     schema.TypeList,
-			// 				Optional: true,
-			// 				Elem:     &schema.Schema{Type: schema.TypeString},
-			// 			},
-			// 			"operands": {
-			// 				Type:        schema.TypeList,
-			// 				Optional:    true,
-			// 				Description: "This signifies the various policy criteria.",
-			// 				Elem: &schema.Resource{
-			// 					Schema: map[string]*schema.Schema{
-			// 						"id": {
-			// 							Type:     schema.TypeInt,
-			// 							Computed: true,
-			// 						},
-			// 						"idpid": {
-			// 							Type:     schema.TypeInt,
-			// 							Computed: true,
-			// 						},
-			// 						"lhs": {
-			// 							Type:     schema.TypeString,
-			// 							Computed: true,
-			// 						},
-			// 						"name": {
-			// 							Type:     schema.TypeString,
-			// 							Computed: true,
-			// 						},
-			// 						"objecttype": {
-			// 							Type:     schema.TypeList,
-			// 							Optional: true,
-			// 							Elem:     &schema.Schema{Type: schema.TypeString},
-			// 							Description: "	This is for specifying the policy critiera.",
-			// 						},
-			// 						"rhs": {
-			// 							Type:        schema.TypeString,
-			// 							Optional:    true,
-			// 							Description: "This denotes the value for the given object type. Its value depends upon the key.",
-			// 						},
-			// 					},
-			// 				},
-			// 			},
-			// 		},
-			// 	},
+			//  Type:        schema.TypeList,
+			//  Optional:    true,
+			//  Description: "This is for proviidng the set of conditions for the policy.",
+			//  Elem: &schema.Resource{
+			//      Schema: map[string]*schema.Schema{
+			//          "id": {
+			//              Type:     schema.TypeInt,
+			//              Computed: true,
+			//          },
+			//          "negated": {
+			//              Type:     schema.TypeBool,
+			//              Optional: true,
+			//          },
+			//          "operator": {
+			//              Type:     schema.TypeList,
+			//              Optional: true,
+			//              Elem:     &schema.Schema{Type: schema.TypeString},
+			//          },
+			//          "operands": {
+			//              Type:        schema.TypeList,
+			//              Optional:    true,
+			//              Description: "This signifies the various policy criteria.",
+			//              Elem: &schema.Resource{
+			//                  Schema: map[string]*schema.Schema{
+			//                      "id": {
+			//                          Type:     schema.TypeInt,
+			//                          Computed: true,
+			//                      },
+			//                      "idpid": {
+			//                          Type:     schema.TypeInt,
+			//                          Computed: true,
+			//                      },
+			//                      "lhs": {
+			//                          Type:     schema.TypeString,
+			//                          Computed: true,
+			//                      },
+			//                      "name": {
+			//                          Type:     schema.TypeString,
+			//                          Computed: true,
+			//                      },
+			//                      "objecttype": {
+			//                          Type:     schema.TypeList,
+			//                          Optional: true,
+			//                          Elem:     &schema.Schema{Type: schema.TypeString},
+			//                          Description: "  This is for specifying the policy critiera.",
+			//                      },
+			//                      "rhs": {
+			//                          Type:        schema.TypeString,
+			//                          Optional:    true,
+			//                          Description: "This denotes the value for the given object type. Its value depends upon the key.",
+			//                      },
+			//                  },
+			//              },
+			//          },
+			//      },
+			//  },
 			// },
 
 		},
@@ -193,15 +193,11 @@ func resourcePolicySetRule() *schema.Resource {
 func resourcePolicySetCreate(d *schema.ResourceData, m interface{}) error {
 	zClient := m.(*Client)
 
-	if zClient == nil {
-		return resourceNotSupportedError()
-	}
-
 	req := expandCreatePolicyRule(d)
 	log.Printf("[INFO] Creating zpa policy rule with request\n%+v\n", req)
 
 	// Having problems here. Cannot use req (variable of type policysetrule.PolicyRule) as string value in argument to zClient.policysetrule.Create
-	policysetrule, _, err := zClient.policysetrule.Create(req)
+	policysetrule, _, err := zClient.policysetrule.Create(&req)
 	if err != nil {
 		return err
 	}
