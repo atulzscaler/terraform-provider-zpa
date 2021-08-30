@@ -3,7 +3,6 @@ package zscaler
 import (
 	"fmt"
 	"log"
-	"net/http"
 
 	"github.com/SecurityGeekIO/terraform-provider-zpa/gozscaler/browseraccess"
 	"github.com/SecurityGeekIO/terraform-provider-zpa/gozscaler/client"
@@ -192,10 +191,6 @@ func resourceBrowserAccess() *schema.Resource {
 func resourceBrowserAccessCreate(d *schema.ResourceData, m interface{}) error {
 	zClient := m.(*Client)
 
-	if zClient == nil {
-		return resourceNotSupportedError()
-	}
-
 	req := expandBrowserAccess(d)
 	log.Printf("[INFO] Creating browser access request\n%+v\n", req)
 
@@ -214,10 +209,6 @@ func resourceBrowserAccessCreate(d *schema.ResourceData, m interface{}) error {
 
 func resourceBrowserAccessRead(d *schema.ResourceData, m interface{}) error {
 	zClient := m.(*Client)
-
-	if zClient == nil {
-		return resourceNotSupportedError()
-	}
 
 	resp, _, err := zClient.browseraccess.Get(d.Id())
 	if err != nil {
@@ -266,10 +257,6 @@ func resourceBrowserAccessRead(d *schema.ResourceData, m interface{}) error {
 func resourceBrowserAccessUpdate(d *schema.ResourceData, m interface{}) error {
 	zClient := m.(*Client)
 
-	if zClient == nil {
-		return resourceNotSupportedError()
-	}
-
 	id := d.Id()
 	log.Printf("[INFO] Updating browser access ID: %v\n", id)
 	req := expandBrowserAccess(d)
@@ -284,29 +271,25 @@ func resourceBrowserAccessUpdate(d *schema.ResourceData, m interface{}) error {
 func resourceBrowserAccessDelete(d *schema.ResourceData, m interface{}) error {
 	zClient := m.(*Client)
 
-	if zClient == nil {
-		return resourceNotSupportedError()
-	}
-
-	id := d.Id()
-	if id == "" {
-		return fmt.Errorf("error obtaining browser access id")
-	}
-
-	resp, err := zClient.browseraccess.Delete(zClient.Context, id)
-	if err != nil {
-		return fmt.Errorf("error during browser access delete: %v", err)
-	}
-
-	if resp.StatusCode == http.StatusNotFound {
-		log.Printf("[DEBUG] browser access %s not found", id)
-		d.SetId("")
-	}
-
-	// log.Printf("[INFO] Deleting browser access application with id %v\n", d.Id())
-	// if _, err := zClient.browseraccess.Delete(d.Id()); err != nil {
-	// 	return err
+	// id := d.Id()
+	// if id == "" {
+	// 	return fmt.Errorf("error obtaining browser access id")
 	// }
+
+	// resp, err := zClient.browseraccess.Delete(d.Id())
+	// if err != nil {
+	// 	return fmt.Errorf("error during browser access delete: %v", err)
+	// }
+
+	// if resp.StatusCode == http.StatusNotFound {
+	// 	log.Printf("[DEBUG] browser access %s not found", id)
+	// 	d.SetId("")
+	// }
+
+	log.Printf("[INFO] Deleting browser access application with id %v\n", d.Id())
+	if _, err := zClient.browseraccess.Delete(d.Id()); err != nil {
+		return err
+	}
 
 	return nil
 }

@@ -26,15 +26,15 @@ data "zpa_ba_certificate" "sales_ba" {
     id = 216196257331282584
 }
 
-// // QA Browser Access
-// data "zpa_ba_certificate" "qa_ba" {
-//     id = 216196257331282583
-// }
+// QA Browser Access
+data "zpa_ba_certificate" "qa_ba" {
+    id = 216196257331282583
+}
 
-// // DevOps Browser Access
-// data "zpa_ba_certificate" "jenkins_ba" {
-//     id = 216196257331282582
-// }
+// DevOps Browser Access
+data "zpa_ba_certificate" "jenkins_ba" {
+    id = 216196257331282582
+}
 
 
 resource "zpa_browser_access" "browser_access_apps" {

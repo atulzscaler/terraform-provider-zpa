@@ -6,14 +6,6 @@ import (
 	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/schema"
 )
 
-func resourceNotSupportedError() error {
-	return fmt.Errorf("This resource is not supported with given provider settings")
-}
-
-func dataSourceNotSupportedError() error {
-	return fmt.Errorf("This data source is not supported with given provider settings")
-}
-
 func resourceTypeSetToStringSlice(s *schema.Set) []string {
 	valuesList := s.List()
 	values := make([]string, len(valuesList))
@@ -57,34 +49,6 @@ func getStringList(d *schema.ResourceData, k string) []string {
 		sl = append(sl, v.(string))
 	}
 	return sl
-}
-
-// getStringSet will convert a TypeSet attribute to a slice of string
-func getStringSet(d *schema.ResourceData, k string) []string {
-	var sl []string
-	for _, v := range d.Get(k).(*schema.Set).List() {
-		sl = append(sl, v.(string))
-	}
-	return sl
-}
-
-// intInSlice checks if the needle is in the haystack
-func intInSlice(needle int, haystack []int) bool {
-	for _, element := range haystack {
-		if element == needle {
-			return true
-		}
-	}
-	return false
-}
-
-func stringInSlice(needle string, haystack []string) bool {
-	for _, element := range haystack {
-		if element == needle {
-			return true
-		}
-	}
-	return false
 }
 
 func ResourceDataInterfaceMap(d *schema.ResourceData, key string) map[string]interface{} {

@@ -128,10 +128,6 @@ func resourceServerGroup() *schema.Resource {
 func resourceServerGroupCreate(d *schema.ResourceData, m interface{}) error {
 	zClient := m.(*Client)
 
-	if zClient == nil {
-		return resourceNotSupportedError()
-	}
-
 	req := expandServerGroup(d)
 	log.Printf("[INFO] Creating zpa server group with request\n%+v\n", req)
 
@@ -147,10 +143,6 @@ func resourceServerGroupCreate(d *schema.ResourceData, m interface{}) error {
 
 func resourceServerGroupRead(d *schema.ResourceData, m interface{}) error {
 	zClient := m.(*Client)
-
-	if zClient == nil {
-		return resourceNotSupportedError()
-	}
 
 	resp, _, err := zClient.servergroup.Get(d.Id())
 	if err != nil {
@@ -197,10 +189,6 @@ func resourceServerGroupRead(d *schema.ResourceData, m interface{}) error {
 func resourceServerGroupUpdate(d *schema.ResourceData, m interface{}) error {
 	zClient := m.(*Client)
 
-	if zClient == nil {
-		return resourceNotSupportedError()
-	}
-
 	id := d.Id()
 	log.Printf("[INFO] Updating server group ID: %v\n", id)
 	req := expandServerGroup(d)
@@ -213,10 +201,6 @@ func resourceServerGroupUpdate(d *schema.ResourceData, m interface{}) error {
 
 func resourceServerGroupDelete(d *schema.ResourceData, m interface{}) error {
 	zClient := m.(*Client)
-
-	if zClient == nil {
-		return resourceNotSupportedError()
-	}
 
 	log.Printf("[INFO] Deleting server group ID: %v\n", d.Id())
 

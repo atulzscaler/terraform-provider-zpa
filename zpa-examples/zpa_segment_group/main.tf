@@ -18,32 +18,26 @@ provider "zpa" {}
 // }
 
 
-//  resource "zpa_segment_group" "example1" {
-//    name = "example"
-//    description = "example"
-//    enabled = true
-//    policymigrated = true
-//     // applications  {
-//     //     //name = [data.zpa_application_segment.application_segment.name]
-//     //     id = 216196257331282544
-//     // }
-//  }
-
-resource "zpa_policyset_rule" "example" {
-  name                          = "example1"
-  description                   = "example1"
-  action                        = "ALLOW"
-  ruleorder                     = 1
-  // conditions {
-  //   operands {
-  //       name = "Example"
-  //       objecttype = "APP"
-  //       operator = "AND"
-  //   }
-  //   operands {
-  //       name = "SGIO-User-Okta"
-  //       objecttype = ["SCIM_GROUP"]
-  //       operator = "AND"  
-  //   }
-  // }
+resource "zpa_application_segment" "all_other_services" {
+    name = "All Other Services"
+    description = "All Other Services"
+    enabled = true
+    healthreporting = "ON_ACCESS"
+    bypasstype = "NEVER"
+    tcpportranges = ["1", "52", "54", "65535"]
+    domainnames = ["*.securitygeek.io"]
+    segmentgroupid = zpa_segment_group.sg_all_other_services.id
+    // servergroups {
+    //     id = 216196257331282438
+    // }
 }
+
+ resource "zpa_segment_group" "sg_all_other_services" {
+   name = "All Other Services"
+   description = "All Other Services"
+   enabled = true
+   policymigrated = true
+    // applications  {
+    //     id = zpa_application_segment.all_other_services.id
+    // }
+ }

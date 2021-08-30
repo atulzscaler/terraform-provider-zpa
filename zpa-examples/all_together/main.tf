@@ -9,6 +9,152 @@ terraform {
 
 provider "zpa" {}
 
+// Creating Segment Groups
+
+ resource "zpa_segment_group" "example" {
+   name = "example"
+   description = "example"
+   enabled = true
+   policymigrated = false
+ }
+
+ resource "zpa_segment_group" "sg_all_other_services" {
+   name = "All Other Services"
+   description = "All Other Services"
+   enabled = true
+   policymigrated = true
+ }
+
+  resource "zpa_segment_group" "sg_sgio_browser_access" {
+   name = "Browser Access Apps"
+   description = "Browser Access Apps"
+   enabled = true
+   policymigrated = true
+ }
+
+
+// Creating Server Groups
+data "zpa_app_connector_group" "sgio-vancouver" {
+  id = 216196257331281931
+}
+
+resource "zpa_server_group" "all_other_services" {
+  name = "All Other Services"
+  description = "All Other Services"
+  enabled = true
+  dynamicdiscovery = true
+  appconnectorgroups {
+    id = data.zpa_app_connector_group.sgio-vancouver.id
+  }
+}
+
+resource "zpa_server_group" "browser_access_apps" {
+  name = "Browser Access Apps"
+  description = "Browser Access Apps"
+  enabled = true
+  dynamicdiscovery = false
+  appconnectorgroups {
+    id = data.zpa_app_connector_group.sgio-vancouver.id
+  }
+}
+
+// Creating Application Segments
+resource "zpa_application_segment" "all_other_services" {
+    name = "All Other Services"
+    description = "All Other Services"
+    enabled = true
+    healthreporting = "ON_ACCESS"
+    bypasstype = "NEVER"
+    tcpportranges = ["1", "52", "54", "65535"]
+    domainnames = ["*.securitygeek.io"]
+    segmentgroupid = zpa_segment_group.sg_all_other_services.id
+    servergroups {
+        id = zpa_server_group.all_other_services.id
+    }
+}
+
+// Creating Browser Access
+data "zpa_ba_certificate" "sales_ba" {
+    id = 216196257331282584
+}
+
+resource "zpa_browser_access" "browser_access_apps" {
+    name = "Browser Access Apps"
+    description = "Browser Access Apps"
+    enabled = true
+    healthreporting = "ON_ACCESS"
+    bypasstype = "NEVER"
+    tcpportranges = ["80", "80"]
+    domainnames = ["sales.securitygeek.io"]
+    segmentgroupid = zpa_segment_group.sg_sgio_browser_access.id
+
+    clientlessapps {
+        name = "sales.securitygeek.io"
+        applicationprotocol = "HTTP"
+        applicationport = "80"
+        certificateid = data.zpa_ba_certificate.sales_ba.id
+        trustuntrustedcert = true
+        enabled = true
+        domain = "sales.securitygeek.io"
+    }
+    servergroups {
+        id = zpa_server_group.browser_access_apps.id
+    }
+}
+
+// Creating Application Servers
+resource "zpa_application_server" "sales" {
+  name                          = "sales.securitygeek.io"
+  description                   = "sales.securitygeek.io"
+  address                       = "sales.securitygeek.io"
+  enabled                       = true
+  appservergroupids             = [ zpa_server_group.browser_access_apps.id ]
+}
+
+
+
+/*
+// Creating Browser Access
+data "zpa_ba_certificate" "sales_ba" {
+    id = 216196257331282584
+}
+
+// QA Browser Access
+data "zpa_ba_certificate" "qa_ba" {
+    id = 216196257331282583
+}
+
+// DevOps Browser Access
+data "zpa_ba_certificate" "jenkins_ba" {
+    id = 216196257331282582
+}
+
+resource "zpa_browser_access" "browser_access_apps" {
+    name = "Browser Access Apps"
+    description = "Browser Access Apps"
+    enabled = true
+    healthreporting = "ON_ACCESS"
+    bypasstype = "NEVER"
+    tcpportranges = ["80", "80"]
+    domainnames = ["sales.securitygeek.io"]
+    segmentgroupid = zpa_segment_group.sg_sgio_browser_access.id
+
+    clientlessapps {
+        name = "sales.securitygeek.io"
+        applicationprotocol = "HTTP"
+        applicationport = "80"
+        certificateid = data.zpa_ba_certificate.sales_ba.id
+        trustuntrustedcert = true
+        enabled = true
+        domain = "sales.securitygeek.io"
+    }
+    servergroups {
+        id = 216196257331282476
+    }
+}
+
+
+// Creating Application Servers
 resource "zpa_application_server" "sales" {
   name                          = "sales.securitygeek.io"
   description                   = "sales.securitygeek.io"
@@ -38,7 +184,7 @@ resource "zpa_application_server" "jenkins" {
   description                   = "jenkins.securitygeek.io"
   address                       = "jenkins.securitygeek.io"
   enabled                       = true
-  appservergroupids             = [ for a in each.value.app_server_appconnectorgroups : metanetworks_group.this[a].id ]
+  appservergroupids             = [ zpa_server_group.sgio_devops_servers.id ]
 }
 
 resource "zpa_application_server" "pan220" {
@@ -54,7 +200,7 @@ resource "zpa_application_server" "vcenter" {
   description                   = "vcenter.securitygeek.io"
   address                       = "vcenter.securitygeek.io"
   enabled                       = true
-  appservergroupids             = [ for a in each.value.app_server_appconnectorgroups : metanetworks_group.this[a].id ]
+  appservergroupids             = [ zpa_server_group.sgio_vcenter_server.id ]
 }
 
 resource "zpa_application_server" "cahlesx01" {
@@ -62,7 +208,7 @@ resource "zpa_application_server" "cahlesx01" {
   description                   = "cahlesx01.securitygeek.io"
   address                       = "cahlesx01.securitygeek.io"
   enabled                       = true
-  appservergroupids             = [ for a in each.value.app_server_appconnectorgroups : metanetworks_group.this[a].id ]
+  appservergroupids             = [ zpa_server_group.sgio_vcenter_server.id ]
 }
 
 resource "zpa_application_server" "cahlesx02" {
@@ -70,7 +216,7 @@ resource "zpa_application_server" "cahlesx02" {
   description                   = "cahlesx02.securitygeek.io"
   address                       = "cahlesx02.securitygeek.io"
   enabled                       = true
-  appservergroupids             = [ for a in each.value.app_server_appconnectorgroups : metanetworks_group.this[a].id ]
+  appservergroupids             = [ zpa_server_group.sgio_vcenter_server.id ]
 }
 
 resource "zpa_application_server" "trafficgen" {
@@ -129,18 +275,18 @@ resource "zpa_application_server" "vcd125-ad01" {
   appservergroupids             = [ for a in each.value.app_server_appconnectorgroups : metanetworks_group.this[a].id ]
 }
 
+// Creating Server Groups
 data "zpa_app_connector_group" "sgio-vancouver" {
   name = "SGIO-Vancouver"
 }
 
-// Server Groups
 resource "zpa_server_group" "all_other_services" {
   name = "all_other_services"
   description = "All Other Services"
   enabled = true
   dynamicdiscovery = true
   appconnectorgroups {
-    id = [data.zpa_app_connector_group.sgio-vancouver.id]
+    id = data.zpa_app_connector_group.sgio-vancouver.id
   }
 }
 
@@ -149,15 +295,8 @@ resource "zpa_server_group" "sgio_devops_servers" {
   description = "SGIO DevOps Servers"
   enabled = true
   dynamicdiscovery = false
-    servers {
-      id = [
-        zpa_application_server.jenkins.id
-      ]
-  }
     appconnectorgroups {
-    id = [
-      data.zpa_app_connector_group.sgio-vancouver.id
-    ]
+    id = data.zpa_app_connector_group.sgio-vancouver.id
   }
 }
 
@@ -166,17 +305,8 @@ resource "zpa_server_group" "sgio_intranet_web_apps" {
   description = "SGIO Intranet Web Apps"
   enabled = true
   dynamicdiscovery = false
-    servers {
-      id = [
-        zpa_application_server.intranet.id
-        zpa_application_server.qa.id
-        zpa_application_server.sales.id
-      ]
-    }
     appconnectorgroups {
-    id = [
-      data.zpa_app_connector_group.sgio-vancouver.id
-    ]
+    id = data.zpa_app_connector_group.sgio-vancouver.id
   }
 }
 
@@ -185,15 +315,8 @@ resource "zpa_server_group" "sgio_monitoring_tools" {
   description = "SGIO Monitoring Tools"
   enabled = true
   dynamicdiscovery = false
-    servers {
-      id = [
-        zpa_application_server.splunk.id
-      ]
-    }
     appconnectorgroups {
-    id = [
-      data.zpa_app_connector_group.sgio-vancouver.id
-    ]
+    id = data.zpa_app_connector_group.sgio-vancouver.id
   }
 }
 
@@ -202,34 +325,8 @@ resource "zpa_server_group" "sgio_rdp_servers" {
   description = "SGIO RDP Services Group"
   enabled = true
   dynamicdiscovery = false
-    servers {
-      id = [
-        zpa_application_server.rdp125.id
-        zpa_application_server.rdp126.id
-      ]
-    }
     appconnectorgroups {
-    id = [
-      data.zpa_app_connector_group.sgio-vancouver.id
-    ]
-  }
-}
-
-resource "zpa_server_group" "sgio_rdp_servers" {
-  name = "sgio_rdp_servers"
-  description = "SGIO RDP Services Group"
-  enabled = true
-  dynamicdiscovery = false
-    servers {
-      id = [
-        zpa_application_server.rdp125.id
-        zpa_application_server.rdp126.id
-      ]
-    }
-    appconnectorgroups {
-    id = [
-      data.zpa_app_connector_group.sgio-vancouver.id
-    ]
+    id = data.zpa_app_connector_group.sgio-vancouver.id
   }
 }
 
@@ -238,18 +335,8 @@ resource "zpa_server_group" "sgio_ssh_access" {
   description = "SGIO SSH Access"
   enabled = true
   dynamicdiscovery = false
-    servers {
-      id = [
-        zpa_application_server.splunk.id
-        zpa_application_server.pan220.id
-        zpa_application_server.trafficgen.id
-        zpa_application_server.nss128.id
-      ]
-    }
     appconnectorgroups {
-    id = [
-      data.zpa_app_connector_group.sgio-vancouver.id
-    ]
+    id = data.zpa_app_connector_group.sgio-vancouver.id
   }
 }
 
@@ -258,17 +345,8 @@ resource "zpa_server_group" "sgio_vcenter_server" {
   description = "SGIO vCenter Server"
   enabled = true
   dynamicdiscovery = false
-    servers {
-      id = [
-        zpa_application_server.vcenter.id
-        zpa_application_server.cahlesx01.id
-        zpa_application_server.cahlesx02.id
-      ]
-    }
     appconnectorgroups {
-    id = [
-      data.zpa_app_connector_group.sgio-vancouver.id
-    ]
+    id = data.zpa_app_connector_group.sgio-vancouver.id
   }
 }
 
@@ -278,10 +356,10 @@ resource "zpa_segment_group" "all_other_services" {
   description = "All Other Services"
   enabled = true
   policymigrated = true,
-  applications {
-    id = [
-      zpa_application_segment.all_other_services.id
-    ]
+  // applications {
+  //   id = [
+  //     zpa_application_segment.all_other_services.id
+  //   ]
   }
 }
 
@@ -290,10 +368,10 @@ resource "zpa_segment_group" "sgio_browser_access_apps" {
   description = "SGIO Browser Access Apps"
   enabled = true
   policymigrated = true,
-  applications {
-    id = [
-      zpa_application_segment.sgio_browser_access_apps.id
-    ]
+  // applications {
+  //   id = [
+  //     zpa_application_segment.sgio_browser_access_apps.id
+  //   ]
   }
 }
 
@@ -326,10 +404,10 @@ resource "zpa_segment_group" "sgio_domain_controllers" {
   description = "SGIO Domain Controllers"
   enabled = true
   policymigrated = true,
-  applications {
-    id = [
-      zpa_application_segment.sgio_domain_controllers.id
-    ]
+  // applications {
+  //   id = [
+  //     zpa_application_segment.sgio_domain_controllers.id
+  //   ]
   }
 }
 
@@ -338,10 +416,10 @@ resource "zpa_segment_group" "sgio_intranet_web_apps" {
   description = "SGIO Intranet Web Apps"
   enabled = true
   policymigrated = true,
-  applications {
-    id = [
-      zpa_application_segment.sgio_intranet_web_apps.id
-    ]
+  // applications {
+  //   id = [
+  //     zpa_application_segment.sgio_intranet_web_apps.id
+  //   ]
   }
 }
 
@@ -350,10 +428,10 @@ resource "zpa_segment_group" "sgio_monitoring_tools" {
   description = "SGIO Monitoring Tools"
   enabled = true
   policymigrated = true,
-  applications {
-    id = [
-      zpa_application_segment.sgio_monitoring_tools.id
-    ]
+  // applications {
+  //   id = [
+  //     zpa_application_segment.sgio_monitoring_tools.id
+  //   ]
   }
 }
 
@@ -363,9 +441,9 @@ resource "zpa_segment_group" "sgio_rdp_services_group" {
   enabled = true
   policymigrated = true,
   applications {
-    id = [
-      zpa_application_segment.sgio_rdp_services_group.id
-    ]
+    // id = [
+    //   zpa_application_segment.sgio_rdp_services_group.id
+    // ]
   }
 }
 
@@ -374,10 +452,10 @@ resource "zpa_segment_group" "sgio_ssh_access" {
   description = "SGIO SSH Access"
   enabled = true
   policymigrated = true,
-  applications {
-    id = [
-      zpa_application_segment.sgio_ssh_access.id
-    ]
+  // applications {
+  //   id = [
+  //     zpa_application_segment.sgio_ssh_access.id
+  //   ]
   }
 }
 
@@ -386,10 +464,10 @@ resource "zpa_segment_group" "sgio_ssh_access" {
   description = "SGIO SSH Access"
   enabled = true
   policymigrated = true,
-  applications {
-    id = [
-      zpa_application_segment.sgio_ssh_access.id
-    ]
+  // applications {
+  //   id = [
+  //     zpa_application_segment.sgio_ssh_access.id
+  //   ]
   }
 }
 
@@ -398,104 +476,10 @@ resource "zpa_segment_group" "sgio_vcenter_server" {
   description = "SGIO vCenter Server"
   enabled = true
   policymigrated = true,
-  applications {
-    id = [
-      zpa_application_segment.sgio_vcenter_server.id
-    ]
+  // applications {
+  //   id = [
+  //     zpa_application_segment.sgio_vcenter_server.id
+  //   ]
   }
 }
-
-resource "zpa_segment_group" "sgio_vcenter_server" {
-  name = "sgio_vcenter_server"
-  description = "SGIO vCenter Server"
-  enabled = true
-  policymigrated = true,
-  applications {
-    id = [
-      zpa_application_segment.sgio_vcenter_server.id
-    ]
-  }
-}
-
-output "zpa_segment_group" {
-  value = zpa_segment_group.zpa
-}
-
-// Testing Data Source Segment Group
-data "zpa_segment_group" "example" {
-  id = 216196257331282105
-}
-
-output "all_segment_group" {
-  value = data.zpa_segment_group.example
-}
-
-// Testing Data Source App Connector Group
-data "zpa_app_connector_group" "example" {
-  id = 216196257331281931
-}
-
-output "all_app_connector_group" {
-  value = data.zpa_app_connector_group.example
-}
-
-// Testing Data Source Server Group
-data "zpa_server_group" "example" {
-  id = 216196257331282100
-}
-
-output "all_server_group" {
-  value = data.zpa_server_group.example
-}
-
-// Testing Data Source Posture Profile
-data "zpa_posture_profile" "example" {
-}
-
-output "all_posture_profile" {
-  value = data.zpa_posture_profile.example
-}
-
-// Testing Data Source Trusted Network 
-data "zpa_trusted_network" "example" {
-}
-
-output "all_trusted_network" {
-  value = data.zpa_trusted_network.example
-}
-
-// Testing Data Source Machine Group
-data "zpa_machine_group" "all" {
-    // totalpages = 20
- // id = 216196257331282185
-}
-
-output "all_machine_group" {
-  value = data.zpa_machine_group.all
-}
-
-// Testing Data Source IdP Controller
-data "zpa_idp_controller" "all" {
-  id = 216196257331282178
-}
-
-output "idp_controller" {
-    value = data.zpa_idp_controller.all
-}
-
-// Testing Data Source Saml Attributes
-data "zpa_saml_attribute" "example" {
-}
-
-output "all_saml_attribute" {
-  value = data.zpa_saml_attribute.example
-}
-
-// Testing Data Source Application Management
-data "zpa_application_segment" "all" {
-  id = 216196257331282101
-}
-
-output "application_segment" {
-    value = data.zpa_application_segment.all
-}
+*/

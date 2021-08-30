@@ -1,6 +1,7 @@
 package zscaler
 
 import (
+	"fmt"
 	"log"
 	"strconv"
 
@@ -12,6 +13,13 @@ import (
 
 func resourceApplicationServer() *schema.Resource {
 	return &schema.Resource{
+		Create: resourceApplicationServerCreate,
+		Read:   resourceApplicationServerRead,
+		Update: resourceApplicationServerUpdate,
+		Delete: resourceApplicationServerDelete,
+		Importer: &schema.ResourceImporter{
+			State: schema.ImportStatePassthrough,
+		},
 		Schema: map[string]*schema.Schema{
 			"name": {
 				Type:        schema.TypeString,
@@ -53,37 +61,26 @@ func resourceApplicationServer() *schema.Resource {
 				Computed: true,
 			},
 		},
-		Create: resourceApplicationServerCreate,
-		Read:   resourceApplicationServerRead,
-		Update: resourceApplicationServerUpdate,
-		Delete: resourceApplicationServerDelete,
-		Importer: &schema.ResourceImporter{
-			State: schema.ImportStatePassthrough,
-		},
 	}
 }
 
-func resourceApplicationServerCreate(d *schema.ResourceData, m interface{}) error {
-	zClient := m.(*Client)
+func resourceApplicationServerCreate(d *schema.ResourceData, meta interface{}) error {
+	zClient := meta.(*Client)
 
 	req := expandCreateAppServerRequest(d)
 	log.Printf("[INFO] Creating zpa application server with request\n%+v\n", req)
 
 	appservercontroller, _, err := zClient.appservercontroller.Create(req)
 	if err != nil {
-		return err
+		return fmt.Errorf("failed to create zpa application server : %s", err)
 	}
-	//d.SetId(strconv.Itoa(appservercontroller.ID))
+
 	d.SetId(strconv.FormatInt(int64(appservercontroller.ID), 10))
-	return resourceApplicationServerRead(d, m)
+	return resourceApplicationServerRead(d, meta)
 }
 
-func resourceApplicationServerRead(d *schema.ResourceData, m interface{}) error {
-	zClient := m.(*Client)
-
-	if zClient == nil {
-		return resourceNotSupportedError()
-	}
+func resourceApplicationServerRead(d *schema.ResourceData, meta interface{}) error {
+	zClient := meta.(*Client)
 
 	id, err := strconv.ParseInt(d.Id(), 10, 64)
 	if err != nil {
@@ -111,8 +108,8 @@ func resourceApplicationServerRead(d *schema.ResourceData, m interface{}) error 
 
 }
 
-func resourceApplicationServerUpdate(d *schema.ResourceData, m interface{}) error {
-	zClient := m.(*Client)
+func resourceApplicationServerUpdate(d *schema.ResourceData, meta interface{}) error {
+	zClient := meta.(*Client)
 
 	log.Println("An updated occurred")
 
@@ -132,14 +129,11 @@ func resourceApplicationServerUpdate(d *schema.ResourceData, m interface{}) erro
 	return nil
 }
 
-func resourceApplicationServerDelete(d *schema.ResourceData, m interface{}) error {
-	zClient := m.(*Client)
-
-	if zClient == nil {
-		return resourceNotSupportedError()
-	}
+func resourceApplicationServerDelete(d *schema.ResourceData, meta interface{}) error {
+	zClient := meta.(*Client)
 
 	log.Printf("[INFO] Deleting application server ID: %v\n", d.Id())
+
 	if _, err := zClient.appservercontroller.Delete(d.Id()); err != nil {
 		return err
 	}

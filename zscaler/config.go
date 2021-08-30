@@ -1,7 +1,6 @@
 package zscaler
 
 import (
-	"context"
 	"log"
 
 	"github.com/SecurityGeekIO/terraform-provider-zpa/gozscaler"
@@ -45,7 +44,6 @@ type Client struct {
 	servergroup         servergroup.Service
 	trustednetwork      trustednetwork.Service
 	browseraccess       browseraccess.Service
-	Context             context.Context
 }
 
 type Config struct {

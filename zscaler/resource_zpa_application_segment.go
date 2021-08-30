@@ -1,7 +1,6 @@
 package zscaler
 
 import (
-	"fmt"
 	"log"
 
 	"github.com/SecurityGeekIO/terraform-provider-zpa/gozscaler/applicationsegment"
@@ -214,10 +213,10 @@ func resourceApplicationSegmentRead(d *schema.ResourceData, m interface{}) error
 	_ = d.Set("ipanchored", resp.IpAnchored)
 	_ = d.Set("tcpportranges", resp.TcpPortRanges)
 	_ = d.Set("udpportranges", resp.UdpPortRanges)
-
-	if err := d.Set("servergroups", flattenAppServerGroups(resp)); err != nil {
-		return fmt.Errorf("failed to read app server groups %s", err)
-	}
+	_ = d.Set("servers", flattenAppServerGroups(resp))
+	// if err := d.Set("servergroups", flattenAppServerGroups(resp)); err != nil {
+	// 	return fmt.Errorf("failed to read app server groups %s", err)
+	// }
 
 	return nil
 }
@@ -272,10 +271,25 @@ func expandApplicationSegmentRequest(d *schema.ResourceData) applicationsegment.
 		Name:             d.Get("name").(string),
 		TcpPortRanges:    d.Get("tcpportranges").([]interface{}),
 		UdpPortRanges:    d.Get("udpportranges").([]interface{}),
-		ServerGroups:     expandAppServerGroups(d),
+		ServerGroups:     expandAppServerGroups(d.Get("servergroups").([]interface{})),
+		// ServerGroups:     expandAppServerGroups(d),
 	}
 }
 
+func expandAppServerGroups(appServerGroupsRequest []interface{}) []applicationsegment.AppServerGroups {
+	appServerGroups := make([]applicationsegment.AppServerGroups, len(appServerGroupsRequest))
+
+	for i, appServerGroup := range appServerGroupsRequest {
+		appServerGroupItem := appServerGroup.(map[string]interface{})
+		appServerGroups[i] = applicationsegment.AppServerGroups{
+			ID: appServerGroupItem["id"].(int),
+		}
+	}
+
+	return appServerGroups
+}
+
+/*
 func expandAppServerGroups(d *schema.ResourceData) []applicationsegment.AppServerGroups {
 	var serverGroups []applicationsegment.AppServerGroups
 	if serverGroupInterface, ok := d.GetOk("servergroups"); ok {
@@ -299,3 +313,4 @@ func expandAppServerGroups(d *schema.ResourceData) []applicationsegment.AppServe
 
 	return serverGroups
 }
+*/

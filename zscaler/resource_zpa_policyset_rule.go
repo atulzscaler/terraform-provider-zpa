@@ -193,6 +193,10 @@ func resourcePolicySetRule() *schema.Resource {
 func resourcePolicySetCreate(d *schema.ResourceData, m interface{}) error {
 	zClient := m.(*Client)
 
+	if zClient == nil {
+		return resourceNotSupportedError()
+	}
+
 	req := expandCreatePolicyRule(d)
 	log.Printf("[INFO] Creating zpa policy rule with request\n%+v\n", req)
 

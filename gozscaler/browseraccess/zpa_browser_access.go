@@ -1,7 +1,6 @@
 package browseraccess
 
 import (
-	"context"
 	"fmt"
 	"net/http"
 )
@@ -90,7 +89,7 @@ func (service *Service) Update(id string, browserAccess BrowserAccess) (*http.Re
 	return resp, err
 }
 
-func (service *Service) Delete(ctx context.Context, id string) (*http.Response, error) {
+func (service *Service) Delete(id string) (*http.Response, error) {
 	path := fmt.Sprintf("%s/%s", mgmtConfig+service.Client.Config.CustomerID+browserAccessEndpoint, id)
 	resp, err := service.Client.NewRequestDo("DELETE", path, nil, nil, nil)
 	if err != nil {
