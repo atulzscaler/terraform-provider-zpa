@@ -12,39 +12,39 @@ const (
 type PolicySet struct {
 	CreationTime int32   `json:"creationTime,string,omitempty"`
 	Description  string  `json:"description,omitempty"`
-	Enabled      bool    `json:"enabled,omitempty"`
+	Enabled      bool    `json:"enabled"`
 	ID           int64   `json:"id,string,omitempty"`
 	ModifiedBy   int64   `json:"modifiedBy,string,omitempty"`
 	ModifiedTime int32   `json:"modifiedTime,string,omitempty"`
 	Name         string  `json:"name,omitempty"`
 	PolicyType   int32   `json:"policyType,string,omitempty"`
-	Rules        []Rules `json:"rules,omitempty"`
+	Rules        []Rules `json:"rules"`
 }
 
 type Rules struct {
-	Action                   string        `json:"action,omitempty"`
-	ActionID                 int64         `json:"actionId,string,omitempty"`
-	BypassDefaultRule        bool          `json:"bypassDefaultRule,omitempty"`
-	CreationTime             int32         `json:"creationTime,string,omitempty"`
-	CustomMsg                string        `json:"customMsg,omitempty"`
-	Description              string        `json:"description,omitempty"`
-	ID                       int64         `json:"id,string,omitempty"`
-	IsolationDefaultRule     bool          `json:"isolationDefaultRule,omitempty"`
-	ModifiedBy               int64         `json:"modifiedBy,string,omitempty"`
-	ModifiedTime             int32         `json:"modifiedTime,string,omitempty"`
-	Name                     string        `json:"name,omitempty"`
-	Operator                 string        `json:"operator,omitempty"`
-	PolicySetID              int64         `json:"policySetId,string,omitempty"`
-	PolicyType               int32         `json:"policyType,string,omitempty"`
-	Priority                 int32         `json:"priority,string,omitempty"`
-	ReauthDefaultRule        bool          `json:"reauthDefaultRule,omitempty"`
-	ReauthIdleTimeout        int32         `json:"reauthIdleTimeout,string,omitempty"`
-	ReauthTimeout            int32         `json:"reauthTimeout,string,omitempty"`
-	RuleOrder                int32         `json:"ruleOrder,string,omitempty"`
-	ZpnCbiProfileID          int64         `json:"zpnCbiProfileId,string,omitempty"`
-	ZpnInspectionProfileId   int64         `json:"zpnInspectionProfileId,string,omitempty"`
-	ZpnInspectionProfileName string        `json:"zpnInspectionProfileName,string,omitempty"`
-	Conditions               *[]Conditions `json:"conditions,omitempty"`
+	Action                   string       `json:"action,omitempty"`
+	ActionID                 int64        `json:"actionId,string,omitempty"`
+	BypassDefaultRule        bool         `json:"bypassDefaultRule,omitempty"`
+	CreationTime             int32        `json:"creationTime,string,omitempty"`
+	CustomMsg                string       `json:"customMsg,omitempty"`
+	Description              string       `json:"description,omitempty"`
+	ID                       int64        `json:"id,string,omitempty"`
+	IsolationDefaultRule     bool         `json:"isolationDefaultRule,omitempty"`
+	ModifiedBy               int64        `json:"modifiedBy,string,omitempty"`
+	ModifiedTime             int32        `json:"modifiedTime,string,omitempty"`
+	Name                     string       `json:"name,omitempty"`
+	Operator                 string       `json:"operator,omitempty"`
+	PolicySetID              int64        `json:"policySetId,string,omitempty"`
+	PolicyType               int32        `json:"policyType,string,omitempty"`
+	Priority                 int32        `json:"priority,string,omitempty"`
+	ReauthDefaultRule        bool         `json:"reauthDefaultRule,omitempty"`
+	ReauthIdleTimeout        int32        `json:"reauthIdleTimeout,string,omitempty"`
+	ReauthTimeout            int32        `json:"reauthTimeout,string,omitempty"`
+	RuleOrder                int32        `json:"ruleOrder,string,omitempty"`
+	ZpnCbiProfileID          int64        `json:"zpnCbiProfileId,string,omitempty"`
+	ZpnInspectionProfileId   int64        `json:"zpnInspectionProfileId,string,omitempty"`
+	ZpnInspectionProfileName string       `json:"zpnInspectionProfileName,string,omitempty"`
+	Conditions               []Conditions `json:"conditions,omitempty"`
 }
 type Conditions struct {
 	CreationTime int32       `json:"creationTime,string,omitempty"`

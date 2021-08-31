@@ -280,8 +280,8 @@ func flattenPolicySetRules(policySetRules *policysetglobal.PolicySet) []interfac
 }
 
 func flattenRuleConditions(conditions policysetglobal.Rules) []interface{} {
-	ruleConditions := make([]interface{}, len(*conditions.Conditions))
-	for i, ruleCondition := range *conditions.Conditions {
+	ruleConditions := make([]interface{}, len(conditions.Conditions))
+	for i, ruleCondition := range conditions.Conditions {
 		ruleConditions[i] = map[string]interface{}{
 			"creationtime": ruleCondition.CreationTime,
 			"id":           ruleCondition.ID,
