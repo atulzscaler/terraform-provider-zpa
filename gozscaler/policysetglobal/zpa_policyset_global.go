@@ -24,7 +24,7 @@ type PolicySet struct {
 type Rules struct {
 	Action                   string        `json:"action,omitempty"`
 	ActionID                 int64         `json:"actionId,string,omitempty"`
-	BypassDefaultRule        bool          `json:"bypassDefaultRule,string,omitempty"`
+	BypassDefaultRule        bool          `json:"bypassDefaultRule,omitempty"`
 	CreationTime             int32         `json:"creationTime,string,omitempty"`
 	CustomMsg                string        `json:"customMsg,omitempty"`
 	Description              string        `json:"description,omitempty"`
