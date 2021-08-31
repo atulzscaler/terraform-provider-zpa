@@ -2,6 +2,7 @@ package zscaler
 
 import (
 	"log"
+	"strconv"
 
 	"github.com/SecurityGeekIO/terraform-provider-zpa/gozscaler/client"
 	"github.com/SecurityGeekIO/terraform-provider-zpa/gozscaler/servergroup"
@@ -189,15 +190,31 @@ func resourceServerGroupRead(d *schema.ResourceData, m interface{}) error {
 func resourceServerGroupUpdate(d *schema.ResourceData, m interface{}) error {
 	zClient := m.(*Client)
 
-	id := d.Id()
-	log.Printf("[INFO] Updating server group ID: %v\n", id)
-	req := expandServerGroup(d)
-
-	if _, err := zClient.servergroup.Update(id, req); err != nil {
+	id, err := strconv.ParseInt(d.Id(), 10, 64)
+	if err != nil {
 		return err
 	}
+
+	serverGroupRequest := expandServerGroup(d)
+	serverGroupRequest.ID = id
+	log.Printf("[INFO] Updating IpList with name %s\n", serverGroupRequest.DynamicDiscovery)
+
+	if _, err := zClient.servergroup.Update(id, &serverGroupRequest); err != nil {
+		return err
+	}
+
 	return resourceServerGroupRead(d, m)
 }
+
+// id := d.Id()
+// log.Printf("[INFO] Updating server group ID: %v\n", id)
+// req := expandServerGroup(d)
+
+// if _, err := zClient.servergroup.Update(id, req); err != nil {
+// 	return err
+// }
+// return resourceServerGroupRead(d, m)
+// }
 
 func resourceServerGroupDelete(d *schema.ResourceData, m interface{}) error {
 	zClient := m.(*Client)

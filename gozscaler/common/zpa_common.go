@@ -19,11 +19,10 @@ type ApplicationServer struct {
 }
 
 type ServerGroup struct {
-	ID          string `json:"id"`
-	Enabled     bool   `json:"enabled"`
-	Name        string `json:"name"`
-	Description string `json:"description"`
-
+	ID                 string              `json:"id"`
+	Enabled            bool                `json:"enabled"`
+	Name               string              `json:"name"`
+	Description        string              `json:"description"`
 	IpAnchored         bool                `json:"ipAnchored"`
 	ConfigSpace        string              `json:"configSpace"`
 	DynamicDiscovery   bool                `json:"dynamicDiscovery"`

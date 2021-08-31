@@ -12,6 +12,10 @@ import (
 	"github.com/google/go-querystring/query"
 )
 
+// Need to implement exponential back off to comply with the API rate limit. https://help.zscaler.com/zpa/about-rate-limiting
+// 20 times in a 10 second interval for a GET call.
+// 10 times in a 10 second interval for any POST/PUT/DELETE call.
+// See example: https://github.com/okta/terraform-provider-okta/blob/master/okta/config.go
 type AuthToken struct {
 	TokenType   string `json:"token_type"`
 	AccessToken string `json:"access_token"`
