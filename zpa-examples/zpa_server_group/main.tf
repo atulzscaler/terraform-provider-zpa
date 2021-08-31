@@ -9,49 +9,14 @@ terraform {
 
 provider "zpa" {}
 
-
-// data "zpa_server_group" "example" {
-//   id = 216196257331282435
-//   // id = 216196257331282097
-//   //name = "SGIO-CORP-Server-Group"
-// }
-
-// output "all_server_group" {
-//   value = data.zpa_server_group.example
-// }
-
-// data "zpa_application_server" "example" {
-//   id = 216196257331282449
-
-// }
-
-// // output "all_application_server" {
-// //   value = data.zpa_application_server.example
-// // }
-
-// data "zpa_app_connector_group" "example" {
-//   id = 216196257331281931
-//   //name = "SGIO-Vancouver"
-// }
-
-// output "all_app_connector_group" {
-//   value = data.zpa_app_connector_group.example.name
-// }
-
-/*
-resource "zpa_server_group" "example1" {
-  name = "example1"
-  description = "example1"
-  enabled = true
-  dynamicdiscovery = true
-  // servers {
-  //   id = [216196257331282445]
-  // }
-  appconnectorgroups {
-    id = 216196257331281931
-  }
+resource "zpa_application_server" "intranet" {
+  name                          = "intranet.securitygeek.io"
+  description                   = "intranet.securitygeek.io"
+  address                       = "intranet.securitygeek.io"
+  enabled                       = true
+  appservergroupids             = [ zpa_server_group.example1.id ]
 }
-*/
+
 resource "zpa_server_group" "example1" {
   name = "example1"
   description = "example1"
@@ -60,9 +25,9 @@ resource "zpa_server_group" "example1" {
   // applications {
   //   id = 216196257331282730
   // }
-  servers {
-    id = 216196257331282445
-  }
+  // servers {
+  //   id = zpa_application_server.intranet.id
+  // }
   appconnectorgroups {
     id = 216196257331281931
   }

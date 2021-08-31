@@ -196,7 +196,6 @@ func resourcePolicySetCreate(d *schema.ResourceData, m interface{}) error {
 	req := expandCreatePolicyRule(d)
 	log.Printf("[INFO] Creating zpa policy rule with request\n%+v\n", req)
 
-	// Having problems here. Cannot use req (variable of type policysetrule.PolicyRule) as string value in argument to zClient.policysetrule.Create
 	policysetrule, _, err := zClient.policysetrule.Create(&req)
 	if err != nil {
 		return err
@@ -210,8 +209,16 @@ func resourcePolicySetCreate(d *schema.ResourceData, m interface{}) error {
 func resourcePolicySetRead(d *schema.ResourceData, m interface{}) error {
 	zClient := m.(*Client)
 
-	policySetId := d.Id()
-	ruleId := d.Id()
+	policySetId, err := strconv.ParseInt(d.Id(), 10, 64)
+	if err != nil {
+		return err
+	}
+
+	ruleId, err := strconv.ParseInt(d.Id(), 10, 64)
+	if err != nil {
+		return err
+	}
+
 	resp, _, err := zClient.policysetrule.Get(policySetId, ruleId)
 	if err != nil {
 		if err.(*client.ErrorResponse).IsObjectNotFound() {
@@ -294,7 +301,7 @@ func expandCreatePolicyRule(d *schema.ResourceData) policysetrule.PolicyRule {
 		// ModifiedTime:      d.Get("Modifiedtime").(int),
 		Name: d.Get("name").(string),
 		// Operator:    d.Get("operator").(string),
-		PolicySetID: d.Get("policysetid").(int),
+		PolicySetID: d.Get("policysetid").(int64),
 		PolicyType:  d.Get("policytype").(int),
 		Priority:    d.Get("priority").(int),
 		// ReauthIdleTimeout: d.Get("reauthidletimeout").(int),

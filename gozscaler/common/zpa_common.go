@@ -1,23 +1,5 @@
 package common
 
-type Application struct {
-	ID   int64  `json:"id,string"`
-	Name string `json:"name"`
-}
-
-type ApplicationServer struct {
-	Address           string   `json:"address"`
-	AppServerGroupIds []string `json:"appServerGroupIds"` // Don't omitempty. We need empty slice in JSON for update.
-	ConfigSpace       string   `json:"configSpace,omitempty"`
-	CreationTime      int32    `json:"creationTime,string"`
-	Description       string   `json:"description"`
-	Enabled           bool     `json:"enabled"`
-	ID                int64    `json:"id,string"`
-	ModifiedBy        int64    `json:"modifiedBy,string"`
-	ModifiedTime      int32    `json:"modifiedTime,string"`
-	Name              string   `json:"name"`
-}
-
 type ServerGroup struct {
 	ID                 string              `json:"id"`
 	Enabled            bool                `json:"enabled"`
@@ -32,6 +14,33 @@ type ServerGroup struct {
 	AppConnectorGroups []AppConnectorGroup `json:"appConnectorGroups,omitempty"`
 	ApplicationServers []ApplicationServer `json:"servers,omitempty"`
 	Applications       []Application       `json:"applications,omitempty"`
+}
+type Application struct {
+	ID   int64  `json:"id,string"`
+	Name string `json:"name"`
+}
+
+type AppConnectorGroup struct {
+	CityCountry           string        `json:"cityCountry"`
+	CountryCode           string        `json:"countryCode"`
+	CreationTime          int           `json:"creationTime,string"`
+	Description           string        `json:"description"`
+	DnsQueryType          string        `json:"dnsQueryType"`
+	Enabled               bool          `json:"enabled"`
+	GeolocationId         int64         `json:"geoLocationId,string"`
+	ID                    int64         `json:"id,string"`
+	Latitude              string        `json:"latitude"`
+	Location              string        `json:"location"`
+	Longitude             string        `json:"longitude"`
+	ModifiedBy            int64         `json:"modifiedBy,string"`
+	ModifiedTime          int32         `json:"modifiedTime,string"`
+	Name                  string        `json:"name"`
+	SiemAppConnectorGroup bool          `json:"siemAppConnectorGroup"`
+	UpgradeDay            string        `json:"upgradeDay"`
+	UpgradeTimeInSecs     string        `json:"upgradeTimeInSecs"`
+	VersionProfileId      int64         `json:"versionProfileId,string"`
+	ServerGroups          []ServerGroup `json:"serverGroups"`
+	Connectors            []Connector   `json:"connectors"`
 }
 
 type Connector struct {
@@ -67,25 +76,15 @@ type Connector struct {
 	UpgradeStatus            string   `json:"upgradeStatus"`
 }
 
-type AppConnectorGroup struct {
-	CityCountry           string        `json:"cityCountry"`
-	CountryCode           string        `json:"countryCode"`
-	CreationTime          int           `json:"creationTime,string"`
-	Description           string        `json:"description"`
-	DnsQueryType          string        `json:"dnsQueryType"`
-	Enabled               bool          `json:"enabled"`
-	GeolocationId         int64         `json:"geoLocationId,string"`
-	ID                    int64         `json:"id,string"`
-	Latitude              string        `json:"latitude"`
-	Location              string        `json:"location"`
-	Longitude             string        `json:"longitude"`
-	ModifiedBy            int64         `json:"modifiedBy,string"`
-	ModifiedTime          int32         `json:"modifiedTime,string"`
-	Name                  string        `json:"name"`
-	SiemAppConnectorGroup bool          `json:"siemAppConnectorGroup"`
-	UpgradeDay            string        `json:"upgradeDay"`
-	UpgradeTimeInSecs     string        `json:"upgradeTimeInSecs"`
-	VersionProfileId      int64         `json:"versionProfileId,string"`
-	ServerGroups          []ServerGroup `json:"serverGroups"`
-	Connectors            []Connector   `json:"connectors"`
+type ApplicationServer struct {
+	Address           string   `json:"address"`
+	AppServerGroupIds []string `json:"appServerGroupIds"` // Don't omitempty. We need empty slice in JSON for update.
+	ConfigSpace       string   `json:"configSpace,omitempty"`
+	CreationTime      int32    `json:"creationTime,string"`
+	Description       string   `json:"description"`
+	Enabled           bool     `json:"enabled"`
+	ID                int64    `json:"id,string"`
+	ModifiedBy        int64    `json:"modifiedBy,string"`
+	ModifiedTime      int32    `json:"modifiedTime,string"`
+	Name              string   `json:"name"`
 }

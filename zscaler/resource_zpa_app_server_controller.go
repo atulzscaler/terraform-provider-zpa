@@ -167,14 +167,14 @@ func removeServerFromGroup(zClient *Client, serverID string) error {
 	return nil
 }
 
-func removeServer(serversList []common.ApplicationServer, serverID int64) []common.ApplicationServer {
-	for i, server := range serversList {
-		if server.ID == serverID {
-			return append(serversList[:i], serversList[i+1:]...)
-		}
-	}
-	return serversList
-}
+// func removeServer(serversList []common.ApplicationServer, serverID int64) []common.ApplicationServer {
+// 	for i, server := range serversList {
+// 		if server.ID == serverID {
+// 			return append(serversList[:i], serversList[i+1:]...)
+// 		}
+// 	}
+// 	return serversList
+// }
 
 func expandCreateAppServerRequest(d *schema.ResourceData) common.ApplicationServer {
 	applicationServer := common.ApplicationServer{

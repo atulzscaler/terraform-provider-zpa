@@ -131,7 +131,7 @@ func (service *Service) Create(serverGroup *ServerGroup) (*ServerGroup, *http.Re
 	return v, resp, nil
 }
 
-func (service *Service) Update(groupId string, serverGroup ServerGroup) (*http.Response, error) {
+func (service *Service) Update(groupId string, serverGroup *ServerGroup) (*http.Response, error) {
 	path := fmt.Sprintf("%s/%s", mgmtConfig+service.Client.Config.CustomerID+serverGroupEndpoint, groupId)
 	resp, err := service.Client.NewRequestDo("PUT", path, nil, serverGroup, nil)
 	if err != nil {
