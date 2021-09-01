@@ -23,7 +23,7 @@ func dataSourceScimGroup() *schema.Resource {
 				Optional: true,
 				Elem: &schema.Resource{
 					Schema: map[string]*schema.Schema{
-						"creationtime": {
+						"creation_time": {
 							Type:     schema.TypeInt,
 							Computed: true,
 						},
@@ -31,15 +31,15 @@ func dataSourceScimGroup() *schema.Resource {
 							Type:     schema.TypeString,
 							Computed: true,
 						},
-						"idpgroupid": {
+						"idp_group_id": {
 							Type:     schema.TypeString,
 							Computed: true,
 						},
-						"idpid": {
+						"idp_id": {
 							Type:     schema.TypeInt,
 							Required: true,
 						},
-						"modifiedtime": {
+						"modified_time": {
 							Type:     schema.TypeInt,
 							Computed: true,
 						},
@@ -97,12 +97,12 @@ func flattenScimGroups(scimGroupResponse []scimgroup.ScimGroup) []interface{} {
 	scimGroups := make([]interface{}, len(scimGroupResponse))
 	for i, scimGroupItem := range scimGroupResponse {
 		scimGroups[i] = map[string]interface{}{
-			"creationtime": scimGroupItem.CreationTime,
-			"id":           scimGroupItem.ID,
-			"idpid":        scimGroupItem.IdpId,
-			"idpgroupid":   scimGroupItem.IdpGroupId,
-			"modifiedtime": scimGroupItem.ModifiedTime,
-			"name":         scimGroupItem.Name,
+			"creation_time": scimGroupItem.CreationTime,
+			"id":            scimGroupItem.ID,
+			"idp_id":        scimGroupItem.IdpId,
+			"idp_group_id":  scimGroupItem.IdpGroupId,
+			"modified_time": scimGroupItem.ModifiedTime,
+			"name":          scimGroupItem.Name,
 		}
 	}
 	return scimGroups

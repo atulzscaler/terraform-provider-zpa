@@ -47,46 +47,19 @@ func convertStringArrToInterface(strs []string) []interface{} {
 	return arr
 }
 
-func ListToStringSlice(v []interface{}) []string {
-	if len(v) == 0 {
-		return []string{}
-	}
-
-	ans := make([]string, len(v))
-	for i := range v {
-		switch x := v[i].(type) {
-		case nil:
-			ans[i] = ""
-		case string:
-			ans[i] = x
-		}
-	}
-
-	return ans
+// Takes the result of schema.Set of strings and returns a []*int64
+func expandInt64Set(configured *schema.Set) []*int64 {
+	return expandInt64List(configured.List())
 }
 
-func ResourceDataInterfaceMap(d *schema.ResourceData, key string) map[string]interface{} {
-	if _, ok := d.GetOk(key); ok {
-		if v1, ok := d.Get(key).([]interface{}); ok && len(v1) != 0 {
-			if v2, ok := v1[0].(map[string]interface{}); ok && v2 != nil {
-				return v2
-			}
-		}
+// Takes the result of flatmap.Expand for an array of int64
+// and returns a []*int64
+func expandInt64List(configured []interface{}) []*int64 {
+	vs := make([]*int64, 0, len(configured))
+	for _, v := range configured {
+		vs = append(vs, Int64(int64(v.(int))))
 	}
-
-	return map[string]interface{}{}
-}
-
-func ToInterfaceMap(m map[string]interface{}, k string) map[string]interface{} {
-	if _, ok := m[k]; ok {
-		if v1, ok := m[k].([]interface{}); ok && len(v1) != 0 {
-			if v2, ok := v1[0].(map[string]interface{}); ok && v2 != nil {
-				return v2
-			}
-		}
-	}
-
-	return map[string]interface{}{}
+	return vs
 }
 
 // Int64Slice converts a slice of int64 values into a slice of

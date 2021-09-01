@@ -12,7 +12,7 @@ func dataSourcePolicySetGlobal() *schema.Resource {
 	return &schema.Resource{
 		Read: dataSourcePolicySetGlobalRead,
 		Schema: map[string]*schema.Schema{
-			"creationtime": {
+			"creation_time": {
 				Type:     schema.TypeInt,
 				Computed: true,
 			},
@@ -32,7 +32,7 @@ func dataSourcePolicySetGlobal() *schema.Resource {
 				Type:     schema.TypeInt,
 				Computed: true,
 			},
-			"modifiedtime": {
+			"modified_time": {
 				Type:     schema.TypeInt,
 				Computed: true,
 			},
@@ -40,7 +40,7 @@ func dataSourcePolicySetGlobal() *schema.Resource {
 				Type:     schema.TypeString,
 				Computed: true,
 			},
-			"policytype": {
+			"policy_type": {
 				Type:     schema.TypeInt,
 				Computed: true,
 			},
@@ -53,19 +53,19 @@ func dataSourcePolicySetGlobal() *schema.Resource {
 							Type:     schema.TypeString,
 							Computed: true,
 						},
-						"actionid": {
+						"action_id": {
 							Type:     schema.TypeInt,
 							Computed: true,
 						},
-						"bypassdefaultrule": {
+						"bypass_default_rule": {
 							Type:     schema.TypeBool,
 							Computed: true,
 						},
-						"creationtime": {
+						"creation_time": {
 							Type:     schema.TypeInt,
 							Computed: true,
 						},
-						"custommsg": {
+						"custom_msg": {
 							Type:     schema.TypeString,
 							Computed: true,
 						},
@@ -77,7 +77,7 @@ func dataSourcePolicySetGlobal() *schema.Resource {
 							Type:     schema.TypeInt,
 							Computed: true,
 						},
-						"isolationdefaultrule": {
+						"isolation_default_rule": {
 							Type:     schema.TypeBool,
 							Computed: true,
 						},
@@ -85,7 +85,7 @@ func dataSourcePolicySetGlobal() *schema.Resource {
 							Type:     schema.TypeInt,
 							Computed: true,
 						},
-						"modifiedtime": {
+						"modified_time": {
 							Type:     schema.TypeInt,
 							Computed: true,
 						},
@@ -97,11 +97,11 @@ func dataSourcePolicySetGlobal() *schema.Resource {
 							Type:     schema.TypeString,
 							Computed: true,
 						},
-						"policysetid": {
+						"policy_set_id": {
 							Type:     schema.TypeInt,
 							Computed: true,
 						},
-						"policytype": {
+						"policy_type": {
 							Type:     schema.TypeInt,
 							Computed: true,
 						},
@@ -109,31 +109,31 @@ func dataSourcePolicySetGlobal() *schema.Resource {
 							Type:     schema.TypeInt,
 							Computed: true,
 						},
-						"reauthdefaultrule": {
+						"reauth_default_rule": {
 							Type:     schema.TypeBool,
 							Computed: true,
 						},
-						"reauthidletimeout": {
+						"reauth_idle_timeout": {
 							Type:     schema.TypeInt,
 							Computed: true,
 						},
-						"reauthtimeout": {
+						"reauth_timeout": {
 							Type:     schema.TypeInt,
 							Computed: true,
 						},
-						"ruleorder": {
+						"rule_order": {
 							Type:     schema.TypeInt,
 							Computed: true,
 						},
-						"zpncbiprofileid": {
+						"zpn_cbi_profile_id": {
 							Type:     schema.TypeInt,
 							Computed: true,
 						},
-						"zpninspectionprofileid": {
+						"zpn_inspection_profile_id": {
 							Type:     schema.TypeInt,
 							Computed: true,
 						},
-						"zpninspectionprofilename": {
+						"zpn_inspection_profile_name": {
 							Type:     schema.TypeString,
 							Computed: true,
 						},
@@ -142,7 +142,7 @@ func dataSourcePolicySetGlobal() *schema.Resource {
 							Computed: true,
 							Elem: &schema.Resource{
 								Schema: map[string]*schema.Schema{
-									"creationtime": {
+									"creation_time": {
 										Type:     schema.TypeInt,
 										Computed: true,
 									},
@@ -154,7 +154,7 @@ func dataSourcePolicySetGlobal() *schema.Resource {
 										Type:     schema.TypeInt,
 										Computed: true,
 									},
-									"modifiedtime": {
+									"modified_time": {
 										Type:     schema.TypeInt,
 										Computed: true,
 									},
@@ -167,7 +167,7 @@ func dataSourcePolicySetGlobal() *schema.Resource {
 										Computed: true,
 										Elem: &schema.Resource{
 											Schema: map[string]*schema.Schema{
-												"creationtime": {
+												"creation_time": {
 													Type:     schema.TypeInt,
 													Computed: true,
 												},
@@ -175,7 +175,7 @@ func dataSourcePolicySetGlobal() *schema.Resource {
 													Type:     schema.TypeInt,
 													Computed: true,
 												},
-												"idpid": {
+												"idp_id": {
 													Type:     schema.TypeInt,
 													Computed: true,
 												},
@@ -187,7 +187,7 @@ func dataSourcePolicySetGlobal() *schema.Resource {
 													Type:     schema.TypeInt,
 													Computed: true,
 												},
-												"modifiedtime": {
+												"modified_time": {
 													Type:     schema.TypeInt,
 													Computed: true,
 												},
@@ -195,7 +195,7 @@ func dataSourcePolicySetGlobal() *schema.Resource {
 													Type:     schema.TypeString,
 													Computed: true,
 												},
-												"objecttype": {
+												"object_type": {
 													Type:     schema.TypeString,
 													Computed: true,
 												},
@@ -233,13 +233,13 @@ func dataSourcePolicySetGlobalRead(d *schema.ResourceData, m interface{}) error 
 
 	log.Printf("[INFO] Getting Policy Set Global Rules:\n%+v\n", resp)
 	d.SetId(strconv.FormatInt(int64(resp.ID), 10))
-	_ = d.Set("creationtime", resp.CreationTime)
+	_ = d.Set("creation_time", resp.CreationTime)
 	_ = d.Set("description", resp.Description)
 	_ = d.Set("enabled", resp.Enabled)
 	_ = d.Set("modifiedby", resp.ModifiedBy)
-	_ = d.Set("modifiedtime", resp.ModifiedTime)
+	_ = d.Set("modified_time", resp.ModifiedTime)
 	_ = d.Set("name", resp.Name)
-	_ = d.Set("policytype", resp.PolicyType)
+	_ = d.Set("policy_type", resp.PolicyType)
 
 	if err := d.Set("rules", flattenPolicySetRules(resp)); err != nil {
 		return err
@@ -252,27 +252,27 @@ func flattenPolicySetRules(policySetRules *policysetglobal.PolicySet) []interfac
 	ruleItems := make([]interface{}, len(policySetRules.Rules))
 	for i, ruleItem := range policySetRules.Rules {
 		ruleItems[i] = map[string]interface{}{
-			"action":                   ruleItem.Action,
-			"actionid":                 ruleItem.ActionID,
-			"creationtime":             ruleItem.CreationTime,
-			"custommsg":                ruleItem.CustomMsg,
-			"description":              ruleItem.Description,
-			"id":                       ruleItem.ID,
-			"isolationdefaultrule":     ruleItem.IsolationDefaultRule,
-			"modifiedby":               ruleItem.ModifiedBy,
-			"modifiedtime":             ruleItem.ModifiedTime,
-			"operator":                 ruleItem.Operator,
-			"policysetid":              ruleItem.PolicySetID,
-			"policytype":               ruleItem.PolicyType,
-			"priority":                 ruleItem.Priority,
-			"reauthdefaultrule":        ruleItem.ReauthDefaultRule,
-			"reauthidletimeout":        ruleItem.ReauthIdleTimeout,
-			"reauthtimeout":            ruleItem.ReauthTimeout,
-			"ruleorder":                ruleItem.RuleOrder,
-			"zpncbiprofileid":          ruleItem.ZpnCbiProfileID,
-			"zpninspectionprofileid":   ruleItem.ZpnInspectionProfileId,
-			"zpninspectionprofilename": ruleItem.ZpnInspectionProfileName,
-			"conditions":               flattenRuleConditions(ruleItem),
+			"action":                      ruleItem.Action,
+			"action_id":                   ruleItem.ActionID,
+			"creation_time":               ruleItem.CreationTime,
+			"custom_msg":                  ruleItem.CustomMsg,
+			"description":                 ruleItem.Description,
+			"id":                          ruleItem.ID,
+			"isolation_default_rule":      ruleItem.IsolationDefaultRule,
+			"modifiedby":                  ruleItem.ModifiedBy,
+			"modified_time":               ruleItem.ModifiedTime,
+			"operator":                    ruleItem.Operator,
+			"policy_set_id":               ruleItem.PolicySetID,
+			"policy_type":                 ruleItem.PolicyType,
+			"priority":                    ruleItem.Priority,
+			"reauth_default_rule":         ruleItem.ReauthDefaultRule,
+			"reauth_idle_timeout":         ruleItem.ReauthIdleTimeout,
+			"reauth_timeout":              ruleItem.ReauthTimeout,
+			"rule_order":                  ruleItem.RuleOrder,
+			"zpn_cbi_profile_id":          ruleItem.ZpnCbiProfileID,
+			"zpn_inspection_profile_id":   ruleItem.ZpnInspectionProfileId,
+			"zpn_inspection_profile_name": ruleItem.ZpnInspectionProfileName,
+			"conditions":                  flattenRuleConditions(ruleItem),
 		}
 	}
 
@@ -283,12 +283,12 @@ func flattenRuleConditions(conditions policysetglobal.Rules) []interface{} {
 	ruleConditions := make([]interface{}, len(conditions.Conditions))
 	for i, ruleCondition := range conditions.Conditions {
 		ruleConditions[i] = map[string]interface{}{
-			"creationtime": ruleCondition.CreationTime,
-			"id":           ruleCondition.ID,
-			"modifiedby":   ruleCondition.ModifiedBy,
-			"modifiedtime": ruleCondition.ModifiedTime,
-			"negated":      ruleCondition.Negated,
-			"operands":     flattenConditionOperands(ruleCondition),
+			"creation_time": ruleCondition.CreationTime,
+			"id":            ruleCondition.ID,
+			"modifiedby":    ruleCondition.ModifiedBy,
+			"modified_time": ruleCondition.ModifiedTime,
+			"negated":       ruleCondition.Negated,
+			"operands":      flattenConditionOperands(ruleCondition),
 			// Needs to figure it out how to deal with this parameter. Returning the following error:
 			//  Error: Invalid address to set: []string{"rules", "0", "conditions", "0", "operator"}
 			// Works fine when removed.
@@ -303,15 +303,15 @@ func flattenConditionOperands(operands policysetglobal.Conditions) []interface{}
 	conditionOperands := make([]interface{}, len(*operands.Operands))
 	for i, conditionOperand := range *operands.Operands {
 		conditionOperands[i] = map[string]interface{}{
-			"creationtime": conditionOperand.CreationTime,
-			"id":           conditionOperand.ID,
-			"idpid":        conditionOperand.IdpID,
-			"lhs":          conditionOperand.LHS,
-			"modifiedby":   conditionOperand.ModifiedBy,
-			"modifiedtime": conditionOperand.ModifiedTime,
-			"name":         conditionOperand.Name,
-			"objecttype":   conditionOperand.ObjectType,
-			"rhs":          conditionOperand.RHS,
+			"creation_time": conditionOperand.CreationTime,
+			"id":            conditionOperand.ID,
+			"idp_id":        conditionOperand.IdpID,
+			"lhs":           conditionOperand.LHS,
+			"modifiedby":    conditionOperand.ModifiedBy,
+			"modified_time": conditionOperand.ModifiedTime,
+			"name":          conditionOperand.Name,
+			"object_type":   conditionOperand.ObjectType,
+			"rhs":           conditionOperand.RHS,
 		}
 	}
 

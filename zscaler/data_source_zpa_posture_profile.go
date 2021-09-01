@@ -23,23 +23,23 @@ func dataSourcePostureProfile() *schema.Resource {
 				Type:     schema.TypeString,
 				Computed: true,
 			},
-			"postureudid": {
+			"posture_udid": {
 				Type:     schema.TypeString,
 				Computed: true,
 			},
-			"zscalercloud": {
+			"zscaler_cloud": {
 				Type:     schema.TypeString,
 				Computed: true,
 			},
-			"zscalercustomerid": {
+			"zscaler_customer_id": {
 				Type:     schema.TypeInt,
 				Computed: true,
 			},
-			"creationtime": {
+			"creation_time": {
 				Type:     schema.TypeInt,
 				Computed: true,
 			},
-			"modifiedtime": {
+			"modified_time": {
 				Type:     schema.TypeInt,
 				Computed: true,
 			},
@@ -64,14 +64,14 @@ func dataSourcePostureProfileRead(d *schema.ResourceData, m interface{}) error {
 
 	//d.SetId(strconv.Itoa(resp.ID))
 	d.SetId(strconv.FormatInt(int64(resp.ID), 10))
-	_ = d.Set("creationtime", resp.CreationTime)
+	_ = d.Set("creation_time", resp.CreationTime)
 	_ = d.Set("domain", resp.Domain)
 	_ = d.Set("modifiedby", resp.ModifiedBy)
-	_ = d.Set("modifiedtime", resp.ModifiedTime)
+	_ = d.Set("modified_time", resp.ModifiedTime)
 	_ = d.Set("name", resp.Name)
-	_ = d.Set("postureudid", resp.PostureudId)
-	_ = d.Set("zscalercloud", resp.ZscalerCloud)
-	_ = d.Set("zscalercustomerid", resp.ZscalerCustomerId)
+	_ = d.Set("posture_udid", resp.PostureudId)
+	_ = d.Set("zscaler_cloud", resp.ZscalerCloud)
+	_ = d.Set("zscaler_customer_id", resp.ZscalerCustomerId)
 
 	return nil
 }

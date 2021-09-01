@@ -17,31 +17,31 @@ func dataSourceAppConnectorGroup() *schema.Resource {
 				Computed: true,
 				Elem: &schema.Resource{
 					Schema: map[string]*schema.Schema{
-						"applicationstarttime": {
+						"application_start_time": {
 							Type:     schema.TypeInt,
 							Computed: true,
 						},
-						"appconnectorgroupid": {
+						"appconnector_group_id": {
 							Type:     schema.TypeString,
 							Computed: true,
 						},
-						"appconnectorgroupname": {
+						"appconnector_group_name": {
 							Type:     schema.TypeString,
 							Computed: true,
 						},
-						"controlchannelstatus": {
+						"control_channel_status": {
 							Type:     schema.TypeString,
 							Computed: true,
 						},
-						"creationtime": {
+						"creation_time": {
 							Type:     schema.TypeInt,
 							Computed: true,
 						},
-						"ctrlbrokername": {
+						"ctrl_broker_name": {
 							Type:     schema.TypeString,
 							Computed: true,
 						},
-						"currentversion": {
+						"current_version": {
 							Type:     schema.TypeString,
 							Computed: true,
 						},
@@ -53,11 +53,11 @@ func dataSourceAppConnectorGroup() *schema.Resource {
 							Type:     schema.TypeBool,
 							Computed: true,
 						},
-						"expectedupgradetime": {
+						"expected_upgrade_time": {
 							Type:     schema.TypeInt,
 							Computed: true,
 						},
-						"expectedversion": {
+						"expected_version": {
 							Type:     schema.TypeString,
 							Computed: true,
 						},
@@ -73,19 +73,19 @@ func dataSourceAppConnectorGroup() *schema.Resource {
 							Type:     schema.TypeString,
 							Computed: true,
 						},
-						"issuedcertid": {
+						"issued_certid": {
 							Type:     schema.TypeInt,
 							Computed: true,
 						},
-						"lastbrokerconnecttime": {
+						"last_broker_connect_time": {
 							Type:     schema.TypeInt,
 							Computed: true,
 						},
-						"lastbrokerdisconnecttime": {
+						"last_broker_disconnect_time": {
 							Type:     schema.TypeInt,
 							Computed: true,
 						},
-						"lastupgradetime": {
+						"last_upgrade_time": {
 							Type:     schema.TypeInt,
 							Computed: true,
 						},
@@ -105,7 +105,7 @@ func dataSourceAppConnectorGroup() *schema.Resource {
 							Type:     schema.TypeInt,
 							Computed: true,
 						},
-						"modifiedtime": {
+						"modified_time": {
 							Type:     schema.TypeInt,
 							Computed: true,
 						},
@@ -117,43 +117,43 @@ func dataSourceAppConnectorGroup() *schema.Resource {
 							Type:     schema.TypeString,
 							Computed: true,
 						},
-						"previousversion": {
+						"previous_version": {
 							Type:     schema.TypeString,
 							Computed: true,
 						},
-						"privateip": {
+						"private_ip": {
 							Type:     schema.TypeString,
 							Computed: true,
 						},
-						"publicip": {
+						"public_ip": {
 							Type:     schema.TypeString,
 							Computed: true,
 						},
-						"upgradeattempt": {
+						"upgrade_attempt": {
 							Type:     schema.TypeInt,
 							Computed: true,
 						},
-						"signingcert": {
+						"signing_cert": {
 							Type:     schema.TypeMap,
 							Elem:     schema.TypeString,
 							Computed: true,
 						},
-						"upgradestatus": {
+						"upgrade_status": {
 							Type:     schema.TypeString,
 							Computed: true,
 						},
 					},
 				},
 			},
-			"citycountry": {
+			"city_country": {
 				Type:     schema.TypeString,
 				Computed: true,
 			},
-			"countrycode": {
+			"country_code": {
 				Type:     schema.TypeString,
 				Computed: true,
 			},
-			"creationtime": {
+			"creation_time": {
 				Type:     schema.TypeInt,
 				Computed: true,
 			},
@@ -161,7 +161,7 @@ func dataSourceAppConnectorGroup() *schema.Resource {
 				Type:     schema.TypeString,
 				Computed: true,
 			},
-			"dnsquerytype": {
+			"dns_query_type": {
 				Type:     schema.TypeString,
 				Computed: true,
 			},
@@ -169,7 +169,7 @@ func dataSourceAppConnectorGroup() *schema.Resource {
 				Type:     schema.TypeBool,
 				Computed: true,
 			},
-			"geolocationid": {
+			"geolocation_id": {
 				Type:     schema.TypeInt,
 				Computed: true,
 			},
@@ -193,7 +193,7 @@ func dataSourceAppConnectorGroup() *schema.Resource {
 				Type:     schema.TypeInt,
 				Computed: true,
 			},
-			"modifiedtime": {
+			"modified_time": {
 				Type:     schema.TypeInt,
 				Computed: true,
 			},
@@ -201,16 +201,16 @@ func dataSourceAppConnectorGroup() *schema.Resource {
 				Type:     schema.TypeString,
 				Optional: true,
 			},
-			"servergroups": {
+			"server_groups": {
 				Type:     schema.TypeList,
 				Computed: true,
 				Elem: &schema.Resource{
 					Schema: map[string]*schema.Schema{
-						"configspace": {
+						"config_space": {
 							Type:     schema.TypeString,
 							Computed: true,
 						},
-						"creationtime": {
+						"creation_time": {
 							Type:     schema.TypeInt,
 							Computed: true,
 						},
@@ -226,7 +226,7 @@ func dataSourceAppConnectorGroup() *schema.Resource {
 							Type:     schema.TypeInt,
 							Computed: true,
 						},
-						"dynamicdiscovery": {
+						"dynamic_discovery": {
 							Type:     schema.TypeBool,
 							Computed: true,
 						},
@@ -234,7 +234,7 @@ func dataSourceAppConnectorGroup() *schema.Resource {
 							Type:     schema.TypeInt,
 							Computed: true,
 						},
-						"modifiedtime": {
+						"modified_time": {
 							Type:     schema.TypeInt,
 							Computed: true,
 						},
@@ -245,19 +245,19 @@ func dataSourceAppConnectorGroup() *schema.Resource {
 					},
 				},
 			},
-			"siemappconnectorgroup": {
+			"siem_appconnector_group": {
 				Type:     schema.TypeBool,
 				Computed: true,
 			},
-			"upgradeday": {
+			"upgrade_day": {
 				Type:     schema.TypeString,
 				Computed: true,
 			},
-			"upgradetimeinsecs": {
+			"upgrade_time_in_secs": {
 				Type:     schema.TypeString,
 				Computed: true,
 			},
-			"versionprofileid": {
+			"version_profile_id": {
 				Type:     schema.TypeInt,
 				Computed: true,
 			},
@@ -279,28 +279,28 @@ func resourceConnectorGroupRead(d *schema.ResourceData, m interface{}) error {
 	}
 
 	d.SetId(strconv.FormatInt(int64(resp.ID), 10))
-	_ = d.Set("citycountry", resp.CityCountry)
-	_ = d.Set("countrycode", resp.CountryCode)
-	_ = d.Set("creationtime", resp.CreationTime)
+	_ = d.Set("city_country", resp.CityCountry)
+	_ = d.Set("country_code", resp.CountryCode)
+	_ = d.Set("creation_time", resp.CreationTime)
 	_ = d.Set("description", resp.Description)
-	_ = d.Set("dnsquerytype", resp.DNSQueryType)
+	_ = d.Set("dns_query_type", resp.DNSQueryType)
 	_ = d.Set("enabled", resp.Enabled)
 	_ = d.Set("latitude", resp.Latitude)
 	_ = d.Set("location", resp.Location)
 	_ = d.Set("longitude", resp.Longitude)
 	_ = d.Set("modifiedby", resp.ModifiedBy)
-	_ = d.Set("modifiedtime", resp.ModifiedTime)
+	_ = d.Set("modified_time", resp.ModifiedTime)
 	_ = d.Set("name", resp.Name)
-	_ = d.Set("siemappconnectorgroup", resp.SiemAppConnectorGroup)
-	_ = d.Set("upgradeday", resp.UpgradeDay)
-	_ = d.Set("upgradetimeinsecs", resp.UpgradeTimeInSecs)
-	_ = d.Set("versionprofileid", resp.VersionProfileID)
+	_ = d.Set("siem_appconnector_group", resp.SiemAppConnectorGroup)
+	_ = d.Set("upgrade_day", resp.UpgradeDay)
+	_ = d.Set("upgrade_time_in_secs", resp.UpgradeTimeInSecs)
+	_ = d.Set("version_profile_id", resp.VersionProfileID)
 	//_ = d.Set("connectors", flattenConnectors(resp))
 
 	if err := d.Set("connectors", flattenConnectors(resp)); err != nil {
 		return fmt.Errorf("failed to read connectors %s", err)
 	}
-	if err := d.Set("servergroups", flattenServerGroups(resp)); err != nil {
+	if err := d.Set("server_groups", flattenServerGroups(resp)); err != nil {
 		return fmt.Errorf("failed to read server groups %s", err)
 	}
 
@@ -312,36 +312,36 @@ func flattenConnectors(appConnector *appconnectorgroup.AppConnectorGroup) []inte
 	appConnectors := make([]interface{}, len(appConnector.Connectors))
 	for i, appConnector := range appConnector.Connectors {
 		appConnectors[i] = map[string]interface{}{
-			"applicationstarttime":     appConnector.ApplicationStartTime,
-			"appconnectorgroupid":      appConnector.AppConnectorGroupID,
-			"controlchannelstatus":     appConnector.ControlChannelStatus,
-			"creationtime":             appConnector.CreationTime,
-			"ctrlbrokername":           appConnector.CtrlBrokerName,
-			"currentversion":           appConnector.CurrentVersion,
-			"description":              appConnector.Description,
-			"enabled":                  appConnector.Enabled,
-			"expectedupgradetime":      appConnector.ExpectedUpgradeTime,
-			"expectedversion":          appConnector.ExpectedVersion,
-			"fingerprint":              appConnector.Fingerprint,
-			"id":                       appConnector.ID,
-			"ipacl":                    appConnector.IpAcl,
-			"issuedcertid":             appConnector.IssuedCertID,
-			"lastbrokerconnecttime":    appConnector.LastBrokerConnectTime,
-			"lastbrokerdisconnecttime": appConnector.LastBrokerDisconnectTime,
-			"lastupgradetime":          appConnector.LastUpgradeTime,
-			"latitude":                 appConnector.Latitude,
-			"location":                 appConnector.Location,
-			"longitude":                appConnector.Longitude,
-			"modifiedby":               appConnector.ModifiedBy,
-			"modifiedtime":             appConnector.ModifiedTime,
-			"name":                     appConnector.Name,
-			"platform":                 appConnector.Platform,
-			"previousversion":          appConnector.PreviousVersion,
-			"privateip":                appConnector.PrivateIp,
-			"publicip":                 appConnector.PublicIp,
-			"signingcert":              appConnector.SigningCert,
-			"upgradeattempt":           appConnector.UpgradeAttempt,
-			"upgradestatus":            appConnector.UpgradeStatus,
+			"application_start_time":      appConnector.ApplicationStartTime,
+			"appconnector_group_id":       appConnector.AppConnectorGroupID,
+			"control_channel_status":      appConnector.ControlChannelStatus,
+			"creation_time":               appConnector.CreationTime,
+			"ctrl_broker_name":            appConnector.CtrlBrokerName,
+			"current_version":             appConnector.CurrentVersion,
+			"description":                 appConnector.Description,
+			"enabled":                     appConnector.Enabled,
+			"expected_upgrade_time":       appConnector.ExpectedUpgradeTime,
+			"expected_version":            appConnector.ExpectedVersion,
+			"fingerprint":                 appConnector.Fingerprint,
+			"id":                          appConnector.ID,
+			"ipacl":                       appConnector.IpAcl,
+			"issued_cert_id":              appConnector.IssuedCertID,
+			"last_broker_connect_time":    appConnector.LastBrokerConnectTime,
+			"last_broker_disconnect_time": appConnector.LastBrokerDisconnectTime,
+			"last_upgrade_time":           appConnector.LastUpgradeTime,
+			"latitude":                    appConnector.Latitude,
+			"location":                    appConnector.Location,
+			"longitude":                   appConnector.Longitude,
+			"modifiedby":                  appConnector.ModifiedBy,
+			"modified_time":               appConnector.ModifiedTime,
+			"name":                        appConnector.Name,
+			"platform":                    appConnector.Platform,
+			"previous_version":            appConnector.PreviousVersion,
+			"private_ip":                  appConnector.PrivateIp,
+			"public_ip":                   appConnector.PublicIp,
+			"signing_cert":                appConnector.SigningCert,
+			"upgrade_attempt":             appConnector.UpgradeAttempt,
+			"upgrade_status":              appConnector.UpgradeStatus,
 		}
 	}
 
@@ -352,15 +352,15 @@ func flattenServerGroups(serverGroup *appconnectorgroup.AppConnectorGroup) []int
 	serverGroups := make([]interface{}, len(serverGroup.AppServerGroup))
 	for i, serverGroup := range serverGroup.AppServerGroup {
 		serverGroups[i] = map[string]interface{}{
-			"configSpace":      serverGroup.ConfigSpace,
-			"creationtime":     serverGroup.CreationTime,
-			"description":      serverGroup.Description,
-			"enabled":          serverGroup.Enabled,
-			"id":               serverGroup.ID,
-			"dynamicdiscovery": serverGroup.DynamicDiscovery,
-			"modifiedby":       serverGroup.ModifiedBy,
-			"modifiedtime":     serverGroup.ModifiedTime,
-			"name":             serverGroup.Name,
+			"config_space":      serverGroup.ConfigSpace,
+			"creation_time":     serverGroup.CreationTime,
+			"description":       serverGroup.Description,
+			"enabled":           serverGroup.Enabled,
+			"id":                serverGroup.ID,
+			"dynamic_discovery": serverGroup.DynamicDiscovery,
+			"modifiedby":        serverGroup.ModifiedBy,
+			"modified_time":     serverGroup.ModifiedTime,
+			"name":              serverGroup.Name,
 		}
 	}
 

@@ -37,7 +37,7 @@ func resourceServerGroup() *schema.Resource {
 					},
 				},
 			},
-			"appconnectorgroups": {
+			"appconnector_groups": {
 				Type:        schema.TypeList,
 				Optional:    true,
 				Description: "This field is a json array of app-connector-id only.",
@@ -55,7 +55,7 @@ func resourceServerGroup() *schema.Resource {
 					},
 				},
 			},
-			"configspace": {
+			"config_space": {
 				Type:     schema.TypeString,
 				Optional: true,
 				ValidateFunc: validation.StringInSlice([]string{
@@ -81,11 +81,11 @@ func resourceServerGroup() *schema.Resource {
 				Type:     schema.TypeString,
 				Computed: true,
 			},
-			"ipanchored": {
+			"ip_anchored": {
 				Type:     schema.TypeBool,
 				Optional: true,
 			},
-			"dynamicdiscovery": {
+			"dynamic_discovery": {
 				Type:        schema.TypeBool,
 				Optional:    true,
 				Description: "This field controls dynamic discovery of the servers.",
@@ -161,13 +161,13 @@ func resourceServerGroupRead(d *schema.ResourceData, m interface{}) error {
 	// _ = d.Set("creationtime", resp.CreationTime)
 	_ = d.Set("description", resp.Description)
 	_ = d.Set("enabled", resp.Enabled)
-	_ = d.Set("ipanchored", resp.IpAnchored)
-	_ = d.Set("dynamicdiscovery", resp.DynamicDiscovery)
+	_ = d.Set("ip_anchored", resp.IpAnchored)
+	_ = d.Set("dynamic_discovery", resp.DynamicDiscovery)
 	_ = d.Set("enabled", resp.Enabled)
 	// _ = d.Set("modifiedby", resp.ModifiedBy)
 	// _ = d.Set("modifiedtime", resp.ModifiedTime)
 	_ = d.Set("name", resp.Name)
-	_ = d.Set("appconnectorgroups", flattenAppConnectorGroups(resp.AppConnectorGroups))
+	_ = d.Set("appconnector_groups", flattenAppConnectorGroups(resp.AppConnectorGroups))
 	_ = d.Set("applications", flattenServerGroupApplications(resp.Applications))
 	_ = d.Set("servers", flattenServers(resp.Servers))
 
@@ -207,7 +207,8 @@ func resourceServerGroupDelete(d *schema.ResourceData, m interface{}) error {
 	if _, err := zClient.servergroup.Delete(d.Id()); err != nil {
 		return err
 	}
-
+	d.SetId("")
+	log.Printf("[INFO] server group deleted")
 	return nil
 }
 
@@ -216,10 +217,10 @@ func expandServerGroup(d *schema.ResourceData) servergroup.ServerGroup {
 		Enabled:            d.Get("enabled").(bool),
 		Name:               d.Get("name").(string),
 		Description:        d.Get("description").(string),
-		IpAnchored:         d.Get("ipanchored").(bool),
-		ConfigSpace:        d.Get("configspace").(string),
-		DynamicDiscovery:   d.Get("dynamicdiscovery").(bool),
-		AppConnectorGroups: expandAppConnectorGroups(d.Get("appconnectorgroups").([]interface{})),
+		IpAnchored:         d.Get("ip_anchored").(bool),
+		ConfigSpace:        d.Get("config_space").(string),
+		DynamicDiscovery:   d.Get("dynamic_discovery").(bool),
+		AppConnectorGroups: expandAppConnectorGroups(d.Get("appconnector_groups").([]interface{})),
 		Applications:       expandServerGroupApplications(d.Get("applications").([]interface{})),
 		Servers:            expandServers(d.Get("servers").([]interface{})),
 	}
@@ -236,6 +237,7 @@ func expandAppConnectorGroups(appConnectorGroupRequest []interface{}) []servergr
 			// ID: int64(appConnectorGroupItem["id"].(int)), // This needs to be *schema.Set
 			ID: appConnectorGroupItem["id"].(int),
 		}
+
 	}
 
 	return appConnectorGroups

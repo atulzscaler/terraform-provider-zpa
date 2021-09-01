@@ -22,7 +22,7 @@ func dataSourceTrustedNetwork() *schema.Resource {
 				Computed: true,
 				Elem: &schema.Resource{
 					Schema: map[string]*schema.Schema{
-						"creationtime": {
+						"creation_time": {
 							Type:     schema.TypeInt,
 							Computed: true,
 						},
@@ -38,7 +38,7 @@ func dataSourceTrustedNetwork() *schema.Resource {
 							Type:     schema.TypeInt,
 							Computed: true,
 						},
-						"modifiedtime": {
+						"modified_time": {
 							Type:     schema.TypeInt,
 							Computed: true,
 						},
@@ -46,11 +46,11 @@ func dataSourceTrustedNetwork() *schema.Resource {
 							Type:     schema.TypeString,
 							Computed: true,
 						},
-						"networkid": {
+						"network_id": {
 							Type:     schema.TypeString,
 							Computed: true,
 						},
-						"zscalercloud": {
+						"zscaler_cloud": {
 							Type:     schema.TypeString,
 							Computed: true,
 						},
@@ -103,14 +103,14 @@ func flattenTrustedNetwork(trustedNetwork []trustednetwork.TrustedNetwork) []int
 	trustedNetworks := make([]interface{}, len(trustedNetwork))
 	for i, trustedNetworksItem := range trustedNetwork {
 		trustedNetworks[i] = map[string]interface{}{
-			"creationtime": trustedNetworksItem.CreationTime,
-			"domain":       trustedNetworksItem.Domain,
-			"id":           trustedNetworksItem.ID,
-			"modifiedby":   trustedNetworksItem.ModifiedBy,
-			"modifiedtime": trustedNetworksItem.ModifiedTime,
-			"name":         trustedNetworksItem.Name,
-			"networkid":    trustedNetworksItem.NetworkId,
-			"zscalercloud": trustedNetworksItem.ZscalerCloud,
+			"creation_time": trustedNetworksItem.CreationTime,
+			"domain":        trustedNetworksItem.Domain,
+			"id":            trustedNetworksItem.ID,
+			"modifiedby":    trustedNetworksItem.ModifiedBy,
+			"modified_time": trustedNetworksItem.ModifiedTime,
+			"name":          trustedNetworksItem.Name,
+			"network_id":    trustedNetworksItem.NetworkId,
+			"zscaler_cloud": trustedNetworksItem.ZscalerCloud,
 		}
 	}
 	return trustedNetworks

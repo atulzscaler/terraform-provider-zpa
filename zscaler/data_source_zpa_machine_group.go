@@ -23,7 +23,7 @@ func dataSourceMachineGroup() *schema.Resource {
 				Computed: true,
 				Elem: &schema.Resource{
 					Schema: map[string]*schema.Schema{
-						"creationtime": {
+						"creation_time": {
 							Type:     schema.TypeInt,
 							Computed: true,
 						},
@@ -44,7 +44,7 @@ func dataSourceMachineGroup() *schema.Resource {
 							Computed: true,
 							Elem: &schema.Resource{
 								Schema: map[string]*schema.Schema{
-									"creationtime": {
+									"creation_time": {
 										Type:     schema.TypeInt,
 										Computed: true,
 									},
@@ -60,19 +60,19 @@ func dataSourceMachineGroup() *schema.Resource {
 										Type:     schema.TypeString,
 										Computed: true,
 									},
-									"issuedcertid": {
+									"issued_cert_id": {
 										Type:     schema.TypeInt,
 										Computed: true,
 									},
-									"machinegroupid": {
+									"machine_group_id": {
 										Type:     schema.TypeString,
 										Computed: true,
 									},
-									"machinegroupname": {
+									"machine_group_name": {
 										Type:     schema.TypeString,
 										Computed: true,
 									},
-									"machinetokenid": {
+									"machine_token_id": {
 										Type:     schema.TypeInt,
 										Computed: true,
 									},
@@ -80,7 +80,7 @@ func dataSourceMachineGroup() *schema.Resource {
 										Type:     schema.TypeInt,
 										Computed: true,
 									},
-									"modifiedtime": {
+									"modified_time": {
 										Type:     schema.TypeInt,
 										Computed: true,
 									},
@@ -88,7 +88,7 @@ func dataSourceMachineGroup() *schema.Resource {
 										Type:     schema.TypeString,
 										Computed: true,
 									},
-									"signingcert": {
+									"signing_cert": {
 										Type:     schema.TypeMap,
 										Computed: true,
 										Elem: &schema.Schema{
@@ -102,7 +102,7 @@ func dataSourceMachineGroup() *schema.Resource {
 							Type:     schema.TypeInt,
 							Computed: true,
 						},
-						"modifiedtime": {
+						"modified_time": {
 							Type:     schema.TypeInt,
 							Computed: true,
 						},
@@ -159,14 +159,14 @@ func flattenMachineGroups(machineGroups []machinegroup.MachineGroup) []interface
 	machineGroupsSlice := make([]interface{}, len(machineGroups))
 	for i, machineGroupItem := range machineGroups {
 		machineGroupsSlice[i] = map[string]interface{}{
-			"creationtime": machineGroupItem.CreationTime,
-			"description":  machineGroupItem.Description,
-			"enabled":      machineGroupItem.Enabled,
-			"id":           machineGroupItem.ID,
-			"modifiedby":   machineGroupItem.ModifiedBy,
-			"modifiedtime": machineGroupItem.ModifiedTime,
-			"name":         machineGroupItem.Name,
-			"machines":     flattenMachines(machineGroupItem),
+			"creation_time": machineGroupItem.CreationTime,
+			"description":   machineGroupItem.Description,
+			"enabled":       machineGroupItem.Enabled,
+			"id":            machineGroupItem.ID,
+			"modifiedby":    machineGroupItem.ModifiedBy,
+			"modified_time": machineGroupItem.ModifiedTime,
+			"name":          machineGroupItem.Name,
+			"machines":      flattenMachines(machineGroupItem),
 		}
 	}
 
@@ -177,18 +177,18 @@ func flattenMachines(machineGroup machinegroup.MachineGroup) []interface{} {
 	machines := make([]interface{}, len(machineGroup.Machines))
 	for i, machineItem := range machineGroup.Machines {
 		machines[i] = map[string]interface{}{
-			"creationtime":     machineItem.CreationTime,
-			"description":      machineItem.Description,
-			"fingerprint":      machineItem.Fingerprint,
-			"id":               machineItem.ID,
-			"issuedcertid":     machineItem.IssuedCertID,
-			"machinegroupid":   machineItem.MachineGroupID,
-			"machinegroupname": machineItem.MachineGroupName,
-			"machinetokenid":   machineItem.MachineTokenID,
-			"modifiedby":       machineItem.ModifiedBy,
-			"modifiedtime":     machineItem.ModifiedTime,
-			"name":             machineItem.Name,
-			"signingcert":      machineItem.SigningCert,
+			"creation_time":      machineItem.CreationTime,
+			"description":        machineItem.Description,
+			"fingerprint":        machineItem.Fingerprint,
+			"id":                 machineItem.ID,
+			"issued_cert_id":     machineItem.IssuedCertID,
+			"machine_group_id":   machineItem.MachineGroupID,
+			"machine_group_name": machineItem.MachineGroupName,
+			"machine_token_id":   machineItem.MachineTokenID,
+			"modifiedby":         machineItem.ModifiedBy,
+			"modified_time":      machineItem.ModifiedTime,
+			"name":               machineItem.Name,
+			"signing_cert":       machineItem.SigningCert,
 		}
 	}
 

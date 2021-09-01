@@ -36,7 +36,7 @@ type Application struct {
 	DoubleEncrypt        bool             `json:"doubleEncrypt,omitempty"`
 	Enabled              bool             `json:"enabled,omitempty"`
 	HealthCheckType      string           `json:"healthCheckType,omitempty"`
-	ID                   int64            `json:"id,string,omitempty"`
+	ID                   int              `json:"id,string"`
 	IPAnchored           bool             `json:"ipAnchored,omitempty"`
 	LogFeatures          []string         `json:"logFeatures,omitempty"`
 	ModifiedBy           int64            `json:"modifiedBy,string,omitempty"`

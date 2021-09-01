@@ -18,25 +18,25 @@ provider "zpa" {}
 // }
 
 
-resource "zpa_application_segment" "all_other_services" {
-    name = "All Other Services"
-    description = "All Other Services"
-    enabled = true
-    healthreporting = "ON_ACCESS"
-    bypasstype = "NEVER"
-    tcpportranges = ["1", "52", "54", "65535"]
-    domainnames = ["*.securitygeek.io"]
-    segmentgroupid = zpa_segment_group.sg_all_other_services.id
-    // servergroups {
-    //     id = 216196257331282438
-    // }
-}
+// resource "zpa_application_segment" "all_other_services" {
+//     name = "All Other Services"
+//     description = "All Other Services"
+//     enabled = true
+//     health_reporting = "ON_ACCESS"
+//     bypasstype = "NEVER"
+//     tcpportranges = ["1", "52", "54", "65535"]
+//     domainnames = ["*.securitygeek.io"]
+//     // segmentgroupid = zpa_segment_group.sg_all_other_services.id
+//     // servergroups {
+//     //     id = 216196257331282438
+//     // }
+// }
 
  resource "zpa_segment_group" "sg_all_other_services" {
    name = "All Other Services"
    description = "All Other Services"
    enabled = true
-   policymigrated = true
+   policy_migrated = true
     // applications  {
     //     id = zpa_application_segment.all_other_services.id
     // }

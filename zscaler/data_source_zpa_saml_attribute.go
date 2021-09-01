@@ -31,11 +31,11 @@ func dataSourceSamlAttribute() *schema.Resource {
 							Type:     schema.TypeInt,
 							Computed: true,
 						},
-						"idpid": {
+						"idp_id": {
 							Type:     schema.TypeInt,
 							Computed: true,
 						},
-						"idpname": {
+						"idp_name": {
 							Type:     schema.TypeString,
 							Computed: true,
 						},
@@ -43,7 +43,7 @@ func dataSourceSamlAttribute() *schema.Resource {
 							Type:     schema.TypeInt,
 							Computed: true,
 						},
-						"modifiedtime": {
+						"modified_time": {
 							Type:     schema.TypeInt,
 							Computed: true,
 						},
@@ -51,11 +51,11 @@ func dataSourceSamlAttribute() *schema.Resource {
 							Type:     schema.TypeString,
 							Computed: true,
 						},
-						"samlname": {
+						"saml_name": {
 							Type:     schema.TypeString,
 							Computed: true,
 						},
-						"userattribute": {
+						"user_attribute": {
 							Type:     schema.TypeBool,
 							Computed: true,
 						},
@@ -109,15 +109,15 @@ func flattenSamlAttributes(samlAttributeResponse []samlattribute.SamlAttribute) 
 	samlAttributes := make([]interface{}, len(samlAttributeResponse))
 	for i, samlAttributeItem := range samlAttributeResponse {
 		samlAttributes[i] = map[string]interface{}{
-			"creationtime":  samlAttributeItem.CreationTime,
-			"id":            samlAttributeItem.ID,
-			"idpid":         samlAttributeItem.IdpId,
-			"idpname":       samlAttributeItem.IdpName,
-			"modifiedby":    samlAttributeItem.ModifiedBy,
-			"modifiedtime":  samlAttributeItem.ModifiedTime,
-			"name":          samlAttributeItem.Name,
-			"samlname":      samlAttributeItem.SamlName,
-			"userattribute": samlAttributeItem.UserAttribute,
+			"creation_time":  samlAttributeItem.CreationTime,
+			"id":             samlAttributeItem.ID,
+			"idp_id":         samlAttributeItem.IdpId,
+			"idp_name":       samlAttributeItem.IdpName,
+			"modifiedby":     samlAttributeItem.ModifiedBy,
+			"modified_time":  samlAttributeItem.ModifiedTime,
+			"name":           samlAttributeItem.Name,
+			"saml_name":      samlAttributeItem.SamlName,
+			"user_attribute": samlAttributeItem.UserAttribute,
 		}
 	}
 	return samlAttributes

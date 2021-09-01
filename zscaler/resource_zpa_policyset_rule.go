@@ -25,11 +25,11 @@ func resourcePolicySetRule() *schema.Resource {
 				Optional:    true,
 				Description: "  This is for providing the rule action.",
 			},
-			"bypassdefaultrule": {
+			"bypass_default_rule": {
 				Type:     schema.TypeBool,
 				Optional: true,
 			},
-			"custommsg": {
+			"custom_msg": {
 				Type:        schema.TypeString,
 				Optional:    true,
 				Description: "This is for providing a customer message for the user.",
@@ -43,7 +43,7 @@ func resourcePolicySetRule() *schema.Resource {
 				Type:     schema.TypeString,
 				Computed: true,
 			},
-			"isolationdefaultrule": {
+			"isolation_default_rule": {
 				Type:     schema.TypeBool,
 				Computed: true,
 			},
@@ -58,11 +58,11 @@ func resourcePolicySetRule() *schema.Resource {
 				Elem:        &schema.Schema{Type: schema.TypeString},
 				Description: "This denotes the operation type.",
 			},
-			"policysetid": {
+			"policyset_id": {
 				Type:     schema.TypeInt,
 				Optional: true,
 			},
-			"policytype": {
+			"policy_type": {
 				Type:     schema.TypeInt,
 				Optional: true,
 			},
@@ -70,36 +70,36 @@ func resourcePolicySetRule() *schema.Resource {
 				Type:     schema.TypeInt,
 				Optional: true,
 			},
-			"reauthdefaultrule": {
+			"reauth_default_rule": {
 				Type:     schema.TypeBool,
 				Optional: true,
 			},
-			"reauthidletimeout": {
+			"reauth_idle_timeout": {
 				Type:     schema.TypeInt,
 				Optional: true,
 			},
-			"reauthtimeout": {
+			"reauth_timeout": {
 				Type:     schema.TypeInt,
 				Optional: true,
 			},
-			"ruleorder": {
+			"rule_order": {
 				Type:     schema.TypeInt,
 				Optional: true,
 			},
-			// "zpncbiprofileid": {
+			// "zpn_cbi_profile_id": {
 			//  Type:     schema.TypeInt,
 			//  Optional: true,
 			// },
-			"zpnInspectionProfileName": {
+			"zpn_inspection_profile_name": {
 				Type:     schema.TypeString,
 				Optional: true,
 			},
-			// "actionid": {
+			// "action_id": {
 			//  Type:        schema.TypeInt,
 			//  Optional:    true,
 			//  Description: "This field defines the description of the server.",
 			// },
-			// "servergroups": {
+			// "server_groups": {
 			//  Type:        schema.TypeList,
 			//  Optional:    true,
 			//  Description: "ID of the server group.",
@@ -113,7 +113,7 @@ func resourcePolicySetRule() *schema.Resource {
 			//      },
 			//  },
 			// },
-			// "appconnectorgroups": {
+			// "app_connector_groups": {
 			//  Type:        schema.TypeList,
 			//  Optional:    true,
 			//  Description: "This field is a json array of app-connector-id only.",
@@ -156,7 +156,7 @@ func resourcePolicySetRule() *schema.Resource {
 			//                          Type:     schema.TypeInt,
 			//                          Computed: true,
 			//                      },
-			//                      "idpid": {
+			//                      "idp_id": {
 			//                          Type:     schema.TypeInt,
 			//                          Computed: true,
 			//                      },
@@ -168,7 +168,7 @@ func resourcePolicySetRule() *schema.Resource {
 			//                          Type:     schema.TypeString,
 			//                          Computed: true,
 			//                      },
-			//                      "objecttype": {
+			//                      "object_type": {
 			//                          Type:     schema.TypeList,
 			//                          Optional: true,
 			//                          Elem:     &schema.Schema{Type: schema.TypeString},
@@ -233,21 +233,21 @@ func resourcePolicySetRead(d *schema.ResourceData, m interface{}) error {
 	log.Printf("[INFO] Getting Policy Set Global Rules:\n%+v\n", resp)
 	d.SetId(strconv.FormatInt(int64(resp.ID), 10))
 	_ = d.Set("action", resp.Action)
-	_ = d.Set("actionid", resp.ActionID)
-	// _ = d.Set("creationtime", resp.CreationTime)
-	_ = d.Set("custommsg", resp.CustomMsg)
+	_ = d.Set("action_id", resp.ActionID)
+	// _ = d.Set("creation_time", resp.CreationTime)
+	_ = d.Set("custom_msg", resp.CustomMsg)
 	_ = d.Set("description", resp.Description)
 	// _ = d.Set("modifiedby", resp.ModifiedBy)
-	// _ = d.Set("modifiedtime", resp.ModifiedTime)
+	// _ = d.Set("modified_time", resp.ModifiedTime)
 	_ = d.Set("name", resp.Name)
 	_ = d.Set("operator", resp.Operator)
-	_ = d.Set("policysetid", resp.PolicySetID)
-	_ = d.Set("policytype", resp.PolicyType)
+	_ = d.Set("policy_set_id", resp.PolicySetID)
+	_ = d.Set("policy_type", resp.PolicyType)
 	_ = d.Set("priority", resp.Priority)
-	_ = d.Set("reauthidletimeout", resp.ReauthIdleTimeout)
-	_ = d.Set("reauthtimeout", resp.ReauthTimeout)
-	_ = d.Set("ruleorder", resp.RuleOrder)
-	_ = d.Set("zpncbiprofileid", resp.ZpnCbiProfileID)
+	_ = d.Set("reauth_idle_timeout", resp.ReauthIdleTimeout)
+	_ = d.Set("reauth_timeout", resp.ReauthTimeout)
+	_ = d.Set("rule_order", resp.RuleOrder)
+	_ = d.Set("zpn_cbi_profile_id", resp.ZpnCbiProfileID)
 	_ = d.Set("conditions", flattenPolicyRuleConditions(resp.Conditions))
 
 	return nil
@@ -292,22 +292,22 @@ func resourcePolicySetDelete(d *schema.ResourceData, m interface{}) error {
 func expandCreatePolicyRule(d *schema.ResourceData) policysetrule.PolicyRule {
 	return policysetrule.PolicyRule{
 		Action: d.Get("action").(string),
-		// ActionID:     d.Get("actionid").(int),
-		// CreationTime: d.Get("creationtime").(int),
-		CustomMsg:   d.Get("custommsg").(string),
+		// ActionID:     d.Get("action_id").(int),
+		// CreationTime: d.Get("creation_time").(int),
+		CustomMsg:   d.Get("custom_msg").(string),
 		Description: d.Get("description").(string),
 		// ID:          d.Get("id").(int),
 		// ModifiedBy:        d.Get("modifiedby").(int),
-		// ModifiedTime:      d.Get("Modifiedtime").(int),
+		// ModifiedTime:      d.Get("Modified_time").(int),
 		Name: d.Get("name").(string),
 		// Operator:    d.Get("operator").(string),
-		PolicySetID: d.Get("policysetid").(int64),
-		PolicyType:  d.Get("policytype").(int),
+		PolicySetID: d.Get("policy_set_id").(int64),
+		PolicyType:  d.Get("policy_type").(int),
 		Priority:    d.Get("priority").(int),
-		// ReauthIdleTimeout: d.Get("reauthidletimeout").(int),
-		// ReauthTimeout:     d.Get("reauthtimeout").(int),
-		RuleOrder:       d.Get("ruleorder").(int),
-		ZpnCbiProfileID: d.Get("zpncbiprofileid").(int),
+		// ReauthIdleTimeout: d.Get("reauth_idle_timeout").(int),
+		// ReauthTimeout:     d.Get("reauth_timeout").(int),
+		RuleOrder:       d.Get("rule_order").(int),
+		ZpnCbiProfileID: d.Get("zpn_cbi_profile_id").(int),
 		Conditions:      expandConditionSet(d),
 	}
 }
@@ -320,10 +320,10 @@ func expandConditionSet(d *schema.ResourceData) []policysetrule.Conditions {
 		for i, condition := range conditions {
 			conditionSet := condition.(map[string]interface{})
 			conditionSets[i] = policysetrule.Conditions{
-				// CreationTime: conditionSet["creationtime"].(int),
+				// CreationTime: conditionSet["creation_time"].(int),
 				// ID:           conditionSet["id"].(int),
 				// ModifiedBy:   conditionSet["modifiedby"].(int),
-				// ModifiedTime: conditionSet["modifiedtime"].(int),
+				// ModifiedTime: conditionSet["modified_time"].(int),
 				Negated:  conditionSet["negated"].(bool),
 				Operator: conditionSet["operator"].(string),
 			}
@@ -337,10 +337,10 @@ func flattenPolicyRuleConditions(conditions []policysetrule.Conditions) []interf
 	ruleConditions := make([]interface{}, len(conditions))
 	for i, ruleConditionItems := range conditions {
 		ruleConditions[i] = map[string]interface{}{
-			"creationtime": ruleConditionItems.CreationTime,
+			"creation_time": ruleConditionItems.CreationTime,
 			"id":           ruleConditionItems.ID,
 			"modifiedby":   ruleConditionItems.ModifiedBy,
-			"modifiedtime": ruleConditionItems.ModifiedTime,
+			"modified_time": ruleConditionItems.ModifiedTime,
 			"negated":      ruleConditionItems.Negated,
 			"operator":     ruleConditionItems.Operator,
 			"operands":     flattenPolicyRuleOperands(ruleConditionItems.Operands),
@@ -354,14 +354,14 @@ func flattenPolicyRuleOperands(conditionOperand []policysetrule.Operands) []inte
 	conditionOperands := make([]interface{}, len(conditionOperand))
 	for i, operandItems := range conditionOperand {
 		conditionOperands[i] = map[string]interface{}{
-			"creationtime": operandItems.CreationTime,
+			"creation_time": operandItems.CreationTime,
 			"id":           operandItems.ID,
-			"idpid":        operandItems.IdpID,
+			"idp_id":        operandItems.IdpID,
 			"lhs":          operandItems.LHS,
 			"modifiedby":   operandItems.ModifiedBy,
-			"modifiedtime": operandItems.ModifiedTime,
+			"modified_time": operandItems.ModifiedTime,
 			"name":         operandItems.Name,
-			"objecttype":   operandItems.ObjectType,
+			"object_type":   operandItems.ObjectType,
 			"rhs":          operandItems.RHS,
 		}
 	}

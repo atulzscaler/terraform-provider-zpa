@@ -14,7 +14,7 @@ func dataSourceBaCertificate() *schema.Resource {
 				Type:     schema.TypeString,
 				Computed: true,
 			},
-			"certchain": {
+			"cert_chain": {
 				Type:     schema.TypeString,
 				Computed: true,
 			},
@@ -22,7 +22,7 @@ func dataSourceBaCertificate() *schema.Resource {
 				Type:     schema.TypeString,
 				Computed: true,
 			},
-			"creationtime": {
+			"creation_time": {
 				Type:     schema.TypeInt,
 				Computed: true,
 			},
@@ -34,11 +34,11 @@ func dataSourceBaCertificate() *schema.Resource {
 				Type:     schema.TypeString,
 				Optional: true,
 			},
-			"issuedby": {
+			"issued_by": {
 				Type:     schema.TypeString,
 				Computed: true,
 			},
-			"issuedto": {
+			"issued_to": {
 				Type:     schema.TypeString,
 				Computed: true,
 			},
@@ -46,7 +46,7 @@ func dataSourceBaCertificate() *schema.Resource {
 				Type:     schema.TypeInt,
 				Computed: true,
 			},
-			"modifiedtime": {
+			"modified_time": {
 				Type:     schema.TypeInt,
 				Computed: true,
 			},
@@ -54,7 +54,7 @@ func dataSourceBaCertificate() *schema.Resource {
 				Type:     schema.TypeString,
 				Computed: true,
 			},
-			"publickey": {
+			"public_key": {
 				Type:     schema.TypeString,
 				Computed: true,
 			},
@@ -63,7 +63,7 @@ func dataSourceBaCertificate() *schema.Resource {
 				Computed: true,
 				Elem:     &schema.Schema{Type: schema.TypeString},
 			},
-			"serialno": {
+			"serial_no": {
 				Type:     schema.TypeString,
 				Computed: true,
 			},
@@ -71,11 +71,11 @@ func dataSourceBaCertificate() *schema.Resource {
 				Type:     schema.TypeString,
 				Computed: true,
 			},
-			"validfrominepochsec": {
+			"valid_from_in_epochsec": {
 				Type:     schema.TypeInt,
 				Computed: true,
 			},
-			"validtoinepochsec": {
+			"valid_to_in_epochsec": {
 				Type:     schema.TypeInt,
 				Computed: true,
 			},
@@ -99,21 +99,21 @@ func dataSourceBaCertificateRead(d *schema.ResourceData, m interface{}) error {
 	// d.SetId(strconv.Itoa(resp.ID))
 	d.SetId(strconv.FormatInt(int64(resp.ID), 10))
 	_ = d.Set("cname", resp.CName)
-	_ = d.Set("certchain", resp.CertChain)
+	_ = d.Set("cert_chain", resp.CertChain)
 	_ = d.Set("certificate", resp.Certificate)
-	_ = d.Set("creationtime", resp.CreationTime)
+	_ = d.Set("creation_time", resp.CreationTime)
 	_ = d.Set("description", resp.Description)
-	_ = d.Set("issuedby", resp.IssuedBy)
-	_ = d.Set("Issuedto", resp.IssuedTo)
+	_ = d.Set("issued_by", resp.IssuedBy)
+	_ = d.Set("issued_to", resp.IssuedTo)
 	_ = d.Set("modifiedby", resp.ModifiedBy)
-	_ = d.Set("modifiedtime", resp.ModifiedTime)
+	_ = d.Set("modified_time", resp.ModifiedTime)
 	_ = d.Set("name", resp.Name)
-	_ = d.Set("publickey", resp.PublicKey)
+	_ = d.Set("public_key", resp.PublicKey)
 	_ = d.Set("san", resp.San)
-	_ = d.Set("serialno", resp.SerialNo)
+	_ = d.Set("serial_no", resp.SerialNo)
 	_ = d.Set("status", resp.Status)
-	_ = d.Set("validfrominepochsec", resp.ValidFromInEpochSec)
-	_ = d.Set("validtoinepochsec", resp.ValidToInEpochSec)
+	_ = d.Set("valid_from_in_epochsec", resp.ValidFromInEpochSec)
+	_ = d.Set("valid_to_in_epochsec", resp.ValidToInEpochSec)
 
 	return nil
 }

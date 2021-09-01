@@ -12,7 +12,7 @@ func dataSourceCloudConnectorGroup() *schema.Resource {
 	return &schema.Resource{
 		Read: dataSourceCloudConnectorGroupRead,
 		Schema: map[string]*schema.Schema{
-			"creationtime": {
+			"creation_time": {
 				Type:     schema.TypeInt,
 				Computed: true,
 			},
@@ -20,12 +20,12 @@ func dataSourceCloudConnectorGroup() *schema.Resource {
 				Type:     schema.TypeString,
 				Computed: true,
 			},
-			"cloudconnectors": {
+			"cloud_connectors": {
 				Type:     schema.TypeList,
 				Computed: true,
 				Elem: &schema.Resource{
 					Schema: map[string]*schema.Schema{
-						"creationtime": {
+						"creation_time": {
 							Type:     schema.TypeInt,
 							Computed: true,
 						},
@@ -49,7 +49,7 @@ func dataSourceCloudConnectorGroup() *schema.Resource {
 							Type:     schema.TypeString,
 							Computed: true,
 						},
-						"issuedcertid": {
+						"issued_cert_id": {
 							Type:     schema.TypeInt,
 							Computed: true,
 						},
@@ -57,7 +57,7 @@ func dataSourceCloudConnectorGroup() *schema.Resource {
 							Type:     schema.TypeInt,
 							Computed: true,
 						},
-						"modifiedtime": {
+						"modified_time": {
 							Type:     schema.TypeInt,
 							Computed: true,
 						},
@@ -72,7 +72,7 @@ func dataSourceCloudConnectorGroup() *schema.Resource {
 				Type:     schema.TypeBool,
 				Computed: true,
 			},
-			"geolocationid": {
+			"geolocation_id": {
 				Type:     schema.TypeInt,
 				Computed: true,
 			},
@@ -84,7 +84,7 @@ func dataSourceCloudConnectorGroup() *schema.Resource {
 				Type:     schema.TypeInt,
 				Computed: true,
 			},
-			"modifiedtime": {
+			"modified_time": {
 				Type:     schema.TypeInt,
 				Computed: true,
 			},
@@ -92,11 +92,11 @@ func dataSourceCloudConnectorGroup() *schema.Resource {
 				Type:     schema.TypeString,
 				Computed: true,
 			},
-			"ziacloud": {
+			"zia_cloud": {
 				Type:     schema.TypeString,
 				Computed: true,
 			},
-			"ziaorgid": {
+			"zia_org_id": {
 				Type:     schema.TypeInt,
 				Computed: true,
 			},
@@ -116,16 +116,16 @@ func dataSourceCloudConnectorGroupRead(d *schema.ResourceData, m interface{}) er
 	}
 
 	d.SetId(strconv.Itoa(resp.ID))
-	_ = d.Set("creationtime", resp.CreationTime)
+	_ = d.Set("creation_time", resp.CreationTime)
 	_ = d.Set("description", resp.Description)
 	_ = d.Set("enabled", resp.Enabled)
-	_ = d.Set("geolocationid", resp.GeolocationId)
+	_ = d.Set("geolocation_id", resp.GeolocationId)
 	_ = d.Set("modifiedby", resp.ModifiedBy)
-	_ = d.Set("modifiedtime", resp.ModifiedTime)
+	_ = d.Set("modified_time", resp.ModifiedTime)
 	_ = d.Set("name", resp.Name)
-	_ = d.Set("ziacloud", resp.ZiaCloud)
-	_ = d.Set("ziaorgid", resp.ZiaOrgid)
-	_ = d.Set("cloudconnectors", flattenCloudConnectors(resp))
+	_ = d.Set("zia_cloud", resp.ZiaCloud)
+	_ = d.Set("zia_org_id", resp.ZiaOrgid)
+	_ = d.Set("cloud_connectors", flattenCloudConnectors(resp))
 
 	return nil
 }
@@ -134,16 +134,16 @@ func flattenCloudConnectors(cloudConnectors *cloudconnectorgroup.CloudConnectorG
 	connectorItems := make([]interface{}, len(cloudConnectors.CloudConnectors))
 	for i, connectorItem := range cloudConnectors.CloudConnectors {
 		connectorItems[i] = map[string]interface{}{
-			"creationtime": connectorItem.CreationTime,
-			"description":  connectorItem.Description,
-			"enabled":      connectorItem.Enabled,
-			"fingerprint":  connectorItem.Fingerprint,
-			"id":           connectorItem.ID,
-			"Ipacl":        connectorItem.IpAcl,
-			"issuedcertid": connectorItem.IssuedCertId,
-			"modifiedby":   connectorItem.ModifiedBy,
-			"modifiedtime": connectorItem.ModifiedTime,
-			"name":         connectorItem.Name,
+			"creation_time":  connectorItem.CreationTime,
+			"description":    connectorItem.Description,
+			"enabled":        connectorItem.Enabled,
+			"fingerprint":    connectorItem.Fingerprint,
+			"id":             connectorItem.ID,
+			"ipacl":          connectorItem.IpAcl,
+			"issued_cert_id": connectorItem.IssuedCertId,
+			"modifiedby":     connectorItem.ModifiedBy,
+			"modified_time":  connectorItem.ModifiedTime,
+			"name":           connectorItem.Name,
 		}
 	}
 

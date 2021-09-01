@@ -16,23 +16,23 @@ func dataSourceSegmentGroup() *schema.Resource {
 				Computed: true,
 				Elem: &schema.Resource{
 					Schema: map[string]*schema.Schema{
-						"bypasstype": {
+						"bypass_type": {
 							Type:     schema.TypeString,
 							Computed: true,
 						},
-						"configspace": {
+						"config_space": {
 							Type:     schema.TypeString,
 							Computed: true,
 						},
-						"creationtime": {
+						"creation_time": {
 							Type:     schema.TypeInt,
 							Computed: true,
 						},
-						"defaultidletimeout": {
+						"default_idle_timeout": {
 							Type:     schema.TypeInt,
 							Computed: true,
 						},
-						"defaultmaxage": {
+						"default_max_age": {
 							Type:     schema.TypeInt,
 							Computed: true,
 						},
@@ -40,16 +40,16 @@ func dataSourceSegmentGroup() *schema.Resource {
 							Type:     schema.TypeString,
 							Computed: true,
 						},
-						"domainname": {
+						"domain_name": {
 							Type:     schema.TypeString,
 							Computed: true,
 						},
-						"domainnames": {
+						"domain_names": {
 							Type:     schema.TypeList,
 							Computed: true,
 							Elem:     &schema.Schema{Type: schema.TypeString},
 						},
-						"doubleencrypt": {
+						"double_encrypt": {
 							Type:     schema.TypeBool,
 							Computed: true,
 						},
@@ -57,7 +57,7 @@ func dataSourceSegmentGroup() *schema.Resource {
 							Type:     schema.TypeBool,
 							Computed: true,
 						},
-						"healthchecktype": {
+						"health_check_type": {
 							Type:     schema.TypeString,
 							Computed: true,
 						},
@@ -65,11 +65,11 @@ func dataSourceSegmentGroup() *schema.Resource {
 							Type:     schema.TypeInt,
 							Computed: true,
 						},
-						"ipanchored": {
+						"ip_anchored": {
 							Type:     schema.TypeBool,
 							Computed: true,
 						},
-						"logfeatures": {
+						"log_features": {
 							Type:     schema.TypeList,
 							Computed: true,
 							Elem:     &schema.Schema{Type: schema.TypeString},
@@ -78,7 +78,7 @@ func dataSourceSegmentGroup() *schema.Resource {
 							Type:     schema.TypeInt,
 							Computed: true,
 						},
-						"modifiedtime": {
+						"modified_time": {
 							Type:     schema.TypeInt,
 							Computed: true,
 						},
@@ -86,20 +86,20 @@ func dataSourceSegmentGroup() *schema.Resource {
 							Type:     schema.TypeString,
 							Computed: true,
 						},
-						"passivehealthenabled": {
+						"passive_health_enabled": {
 							Type:     schema.TypeBool,
 							Computed: true,
 						},
-						"servergroups": {
+						"server_groups": {
 							Type:     schema.TypeList,
 							Computed: true,
 							Elem: &schema.Resource{
 								Schema: map[string]*schema.Schema{
-									"configspace": {
+									"config_space": {
 										Type:     schema.TypeString,
 										Computed: true,
 									},
-									"creationtime": {
+									"creation_time": {
 										Type:     schema.TypeInt,
 										Computed: true,
 									},
@@ -115,7 +115,7 @@ func dataSourceSegmentGroup() *schema.Resource {
 										Type:     schema.TypeInt,
 										Computed: true,
 									},
-									"dynamicdiscovery": {
+									"dynamic_discovery": {
 										Type:     schema.TypeBool,
 										Computed: true,
 									},
@@ -123,7 +123,7 @@ func dataSourceSegmentGroup() *schema.Resource {
 										Type:     schema.TypeInt,
 										Computed: true,
 									},
-									"modifiedtime": {
+									"modified_time": {
 										Type:     schema.TypeInt,
 										Computed: true,
 									},
@@ -134,22 +134,22 @@ func dataSourceSegmentGroup() *schema.Resource {
 								},
 							},
 						},
-						"tcpportranges": {
+						"tcp_port_ranges": {
 							Type:     schema.TypeList,
 							Computed: true,
 							Elem:     &schema.Schema{Type: schema.TypeString},
 						},
-						"tcpportsin": {
+						"tcp_ports_in": {
 							Type:     schema.TypeList,
 							Computed: true,
 							Elem:     &schema.Schema{Type: schema.TypeString},
 						},
-						"tcpportsout": {
+						"tcp_ports_out": {
 							Type:     schema.TypeList,
 							Computed: true,
 							Elem:     &schema.Schema{Type: schema.TypeString},
 						},
-						"udpportranges": {
+						"udp_port_ranges": {
 							Type:     schema.TypeList,
 							Computed: true,
 							Elem:     &schema.Schema{Type: schema.TypeString},
@@ -157,11 +157,11 @@ func dataSourceSegmentGroup() *schema.Resource {
 					},
 				},
 			},
-			"configspace": {
+			"config_space": {
 				Type:     schema.TypeString,
 				Computed: true,
 			},
-			"creationtime": {
+			"creation_time": {
 				Type:     schema.TypeInt,
 				Computed: true,
 			},
@@ -181,7 +181,7 @@ func dataSourceSegmentGroup() *schema.Resource {
 				Type:     schema.TypeInt,
 				Computed: true,
 			},
-			"modifiedtime": {
+			"modified_time": {
 				Type:     schema.TypeInt,
 				Computed: true,
 			},
@@ -189,11 +189,11 @@ func dataSourceSegmentGroup() *schema.Resource {
 				Type:     schema.TypeString,
 				Computed: true,
 			},
-			"policymigrated": {
+			"policy_migrated": {
 				Type:     schema.TypeBool,
 				Computed: true,
 			},
-			"tcpkeepaliveenabled": {
+			"tcp_keep_alive_enabled": {
 				Type:     schema.TypeInt,
 				Computed: true,
 			},
@@ -224,15 +224,15 @@ func dataSourceSegmentGroupRead(d *schema.ResourceData, m interface{}) error {
 
 	//d.SetId(strconv.Itoa(resp.ID))
 	d.SetId(strconv.FormatInt(int64(resp.ID), 10))
-	_ = d.Set("configspace", resp.ConfigSpace)
-	_ = d.Set("creationtime", resp.CreationTime)
+	_ = d.Set("config_space", resp.ConfigSpace)
+	_ = d.Set("creation_time", resp.CreationTime)
 	_ = d.Set("description", resp.Description)
 	_ = d.Set("enabled", resp.Enabled)
 	_ = d.Set("modifiedby", resp.ModifiedBy)
-	_ = d.Set("modifiedtime", resp.ModifiedTime)
+	_ = d.Set("modified_time", resp.ModifiedTime)
 	_ = d.Set("name", resp.Name)
-	_ = d.Set("policymigrated", resp.PolicyMigrated)
-	_ = d.Set("tcpkeepaliveenabled", resp.TcpKeepAliveEnabled)
+	_ = d.Set("policy_migrated", resp.PolicyMigrated)
+	_ = d.Set("tcp_keep_alive_enabled", resp.TcpKeepAliveEnabled)
 
 	if err := d.Set("applications", flattenSegmentGroupApplications(resp)); err != nil {
 		return err
@@ -245,28 +245,28 @@ func flattenSegmentGroupApplications(segmentGroup *segmentgroup.SegmentGroup) []
 	segmentGroupApplications := make([]interface{}, len(segmentGroup.Applications))
 	for i, segmentGroupApplication := range segmentGroup.Applications {
 		segmentGroupApplications[i] = map[string]interface{}{
-			"bypasstype":           segmentGroupApplication.BypassType,
-			"configspace":          segmentGroupApplication.ConfigSpace,
-			"creationtime":         segmentGroupApplication.CreationTime,
-			"defaultidletimeout":   segmentGroupApplication.DefaultIdleTimeout,
-			"defaultmaxage":        segmentGroupApplication.DefaultMaxAge,
-			"description":          segmentGroupApplication.Description,
-			"domainname":           segmentGroupApplication.DomainName,
-			"domainnames":          segmentGroupApplication.DomainNames,
-			"doubleencrypt":        segmentGroupApplication.DoubleEncrypt,
-			"enabled":              segmentGroupApplication.Enabled,
-			"healthchecktype":      segmentGroupApplication.HealthCheckType,
-			"ipanchored":           segmentGroupApplication.IPAnchored,
-			"logfeatures":          segmentGroupApplication.LogFeatures,
-			"modifiedby":           segmentGroupApplication.ModifiedBy,
-			"modifiedtime":         segmentGroupApplication.ModifiedTime,
-			"name":                 segmentGroupApplication.Name,
-			"id":                   segmentGroupApplication.ID,
-			"passivehealthenabled": segmentGroupApplication.PassiveHealthEnabled,
-			"tcpportranges":        segmentGroupApplication.TCPPortRanges,
-			"tcpportsin":           segmentGroupApplication.TCPPortsIn,
-			"tcpportsout":          segmentGroupApplication.TCPPortsOut,
-			"servergroups":         flattenAppServerGroup(segmentGroupApplication),
+			"bypass_type":            segmentGroupApplication.BypassType,
+			"config_space":           segmentGroupApplication.ConfigSpace,
+			"creation_time":          segmentGroupApplication.CreationTime,
+			"default_idle_timeout":   segmentGroupApplication.DefaultIdleTimeout,
+			"default_max_age":        segmentGroupApplication.DefaultMaxAge,
+			"description":            segmentGroupApplication.Description,
+			"domain_name":            segmentGroupApplication.DomainName,
+			"domain_names":           segmentGroupApplication.DomainNames,
+			"double_encrypt":         segmentGroupApplication.DoubleEncrypt,
+			"enabled":                segmentGroupApplication.Enabled,
+			"health_check_type":      segmentGroupApplication.HealthCheckType,
+			"ip_anchored":            segmentGroupApplication.IPAnchored,
+			"log_features":           segmentGroupApplication.LogFeatures,
+			"modifiedby":             segmentGroupApplication.ModifiedBy,
+			"modified_time":          segmentGroupApplication.ModifiedTime,
+			"name":                   segmentGroupApplication.Name,
+			"id":                     segmentGroupApplication.ID,
+			"passive_health_enabled": segmentGroupApplication.PassiveHealthEnabled,
+			"tcp_port_ranges":        segmentGroupApplication.TCPPortRanges,
+			"tcp_ports_in":           segmentGroupApplication.TCPPortsIn,
+			"tcp_ports_out":          segmentGroupApplication.TCPPortsOut,
+			"server_groups":          flattenAppServerGroup(segmentGroupApplication),
 		}
 	}
 
@@ -277,14 +277,14 @@ func flattenAppServerGroup(segmentGroup segmentgroup.Application) []interface{} 
 	segmentServerGroups := make([]interface{}, len(segmentGroup.ServerGroup))
 	for i, segmentServerGroup := range segmentGroup.ServerGroup {
 		segmentServerGroups[i] = map[string]interface{}{
-			"configspace":  segmentServerGroup.ConfigSpace,
-			"creationtime": segmentServerGroup.CreationTime,
-			"description":  segmentServerGroup.Description,
-			"enabled":      segmentServerGroup.Enabled,
+			"config_space":  segmentServerGroup.ConfigSpace,
+			"creation_time": segmentServerGroup.CreationTime,
+			"description":   segmentServerGroup.Description,
+			"enabled":       segmentServerGroup.Enabled,
 			//"id":           segmentServerGroup.ID,
-			"modifiedby":   segmentServerGroup.ModifiedBy,
-			"modifiedtime": segmentServerGroup.ModifiedTime,
-			"name":         segmentServerGroup.Name,
+			"modifiedby":    segmentServerGroup.ModifiedBy,
+			"modified_time": segmentServerGroup.ModifiedTime,
+			"name":          segmentServerGroup.Name,
 		}
 	}
 

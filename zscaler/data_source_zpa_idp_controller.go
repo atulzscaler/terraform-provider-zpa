@@ -12,31 +12,31 @@ func dataSourceIdpController() *schema.Resource {
 	return &schema.Resource{
 		Read: dataSourceIdpControllerRead,
 		Schema: map[string]*schema.Schema{
-			"adminmetadata": {
+			"admin_metadata": {
 				Type:     schema.TypeList,
 				Computed: true,
 				Elem: &schema.Resource{
 					Schema: map[string]*schema.Schema{
-						"certificateurl": {
+						"certificate_url": {
 							Type:     schema.TypeString,
 							Computed: true,
 						},
-						"spentityid": {
+						"sp_entity_id": {
 							Type:     schema.TypeString,
 							Computed: true,
 						},
-						"spmetadataurl": {
+						"sp_metadata_url": {
 							Type:     schema.TypeString,
 							Computed: true,
 						},
-						"spposturl": {
+						"sp_post_url": {
 							Type:     schema.TypeString,
 							Computed: true,
 						},
 					},
 				},
 			},
-			"autoprovision": {
+			"auto_provision": {
 				Type:     schema.TypeInt,
 				Computed: true,
 			},
@@ -53,22 +53,22 @@ func dataSourceIdpController() *schema.Resource {
 							Type:     schema.TypeString,
 							Computed: true,
 						},
-						"serialno": {
+						"serial_no": {
 							Type:     schema.TypeString,
 							Computed: true,
 						},
-						"validfrominsec": {
+						"valid_from_in_sec": {
 							Type:     schema.TypeInt,
 							Computed: true,
 						},
-						"validtoinsec": {
+						"valid_to_in_sec": {
 							Type:     schema.TypeInt,
 							Computed: true,
 						},
 					},
 				},
 			},
-			"creationtime": {
+			"creation_time": {
 				Type:     schema.TypeInt,
 				Computed: true,
 			},
@@ -76,16 +76,16 @@ func dataSourceIdpController() *schema.Resource {
 				Type:     schema.TypeString,
 				Computed: true,
 			},
-			"disablesamlbasedpolicy": {
+			"disable_saml_based_policy": {
 				Type:     schema.TypeBool,
 				Computed: true,
 			},
-			"domainlist": {
+			"domain_list": {
 				Type:     schema.TypeList,
 				Computed: true,
 				Elem:     &schema.Schema{Type: schema.TypeString},
 			},
-			"enablescimbasedpolicy": {
+			"enable_scim_based_policy": {
 				Type:     schema.TypeBool,
 				Computed: true,
 			},
@@ -97,15 +97,15 @@ func dataSourceIdpController() *schema.Resource {
 				Type:     schema.TypeString,
 				Optional: true,
 			},
-			"idpentityid": {
+			"idp_entity_id": {
 				Type:     schema.TypeString,
 				Computed: true,
 			},
-			"loginnameattribute": {
+			"login_name_attribute": {
 				Type:     schema.TypeString,
 				Computed: true,
 			},
-			"loginurl": {
+			"login_url": {
 				Type:     schema.TypeString,
 				Computed: true,
 			},
@@ -113,7 +113,7 @@ func dataSourceIdpController() *schema.Resource {
 				Type:     schema.TypeInt,
 				Computed: true,
 			},
-			"modifiedtime": {
+			"modified_time": {
 				Type:     schema.TypeInt,
 				Computed: true,
 			},
@@ -121,61 +121,61 @@ func dataSourceIdpController() *schema.Resource {
 				Type:     schema.TypeString,
 				Optional: true,
 			},
-			"reauthonuserupdate": {
+			"reauth_on_user_update": {
 				Type:     schema.TypeBool,
 				Computed: true,
 			},
-			"redirectbinding": {
+			"redirect_binding": {
 				Type:     schema.TypeBool,
 				Computed: true,
 			},
-			"scimenabled": {
+			"scim_enabled": {
 				Type:     schema.TypeBool,
 				Computed: true,
 			},
-			"scimserviceproviderendpoint": {
+			"scim_service_provider_endpoint": {
 				Type:     schema.TypeString,
 				Computed: true,
 			},
-			"scimsharedsecret": {
+			"scim_shared_secret": {
 				Type:     schema.TypeString,
 				Computed: true,
 			},
-			"scimsharedsecretexists": {
+			"scim_shared_secret_exists": {
 				Type:     schema.TypeBool,
 				Computed: true,
 			},
-			"signsamlrequest": {
+			"sign_saml_request": {
 				Type:     schema.TypeInt,
 				Computed: true,
 			},
-			"ssotype": {
+			"sso_type": {
 				Type:     schema.TypeList,
 				Computed: true,
 				Elem:     &schema.Schema{Type: schema.TypeString},
 			},
-			"usecustomspmetadata": {
+			"use_custom_sp_metadata": {
 				Type:     schema.TypeBool,
 				Computed: true,
 			},
-			"usermetadata": {
+			"user_metadata": {
 				Type:     schema.TypeList,
 				Computed: true,
 				Elem: &schema.Resource{
 					Schema: map[string]*schema.Schema{
-						"certificateurl": {
+						"certificate_url": {
 							Type:     schema.TypeString,
 							Computed: true,
 						},
-						"spentityiid": {
+						"sp_entity_id": {
 							Type:     schema.TypeString,
 							Computed: true,
 						},
-						"spmetadataurl": {
+						"sp_metadata_url": {
 							Type:     schema.TypeString,
 							Computed: true,
 						},
-						"spposturl": {
+						"sp_post_url": {
 							Type:     schema.TypeInt,
 							Computed: true,
 						},
@@ -199,32 +199,32 @@ func dataSourceIdpControllerRead(d *schema.ResourceData, m interface{}) error {
 
 	//d.SetId(strconv.Itoa(resp.ID))
 	d.SetId(strconv.FormatInt(int64(resp.ID), 10))
-	_ = d.Set("autoprovision", resp.AutoProvision)
-	_ = d.Set("creationtime", resp.CreationTime)
+	_ = d.Set("auto_provision", resp.AutoProvision)
+	_ = d.Set("creation_time", resp.CreationTime)
 	_ = d.Set("description", resp.Description)
-	_ = d.Set("disablesamlbasedpolicy", resp.DisableSamlBasedPolicy)
-	_ = d.Set("domainlist", resp.Domainlist)
-	_ = d.Set("enablescimbasedpolicy", resp.EnableScimBasedPolicy)
+	_ = d.Set("disable_saml_based_policy", resp.DisableSamlBasedPolicy)
+	_ = d.Set("domain_list", resp.Domainlist)
+	_ = d.Set("enable_scim_based_policy", resp.EnableScimBasedPolicy)
 	_ = d.Set("enabled", resp.Enabled)
-	_ = d.Set("idpentityid", resp.IdpEntityId)
-	_ = d.Set("loginnameattribute", resp.LoginNameAttribute)
-	_ = d.Set("loginurl", resp.LoginUrl)
+	_ = d.Set("idp_entity_id", resp.IdpEntityId)
+	_ = d.Set("login_name_attribute", resp.LoginNameAttribute)
+	_ = d.Set("login_url", resp.LoginUrl)
 	_ = d.Set("modifiedby", resp.ModifiedBy)
-	_ = d.Set("modifiedtime", resp.ModifiedTime)
+	_ = d.Set("modified_time", resp.ModifiedTime)
 	_ = d.Set("name", resp.Name)
-	_ = d.Set("reauthonuserupdate", resp.ReauthOnUserUpdate)
-	_ = d.Set("redirectbinding", resp.RedirectBinding)
-	_ = d.Set("scimenabled", resp.ScimEnabled)
-	_ = d.Set("scimserviceproviderendpoint", resp.ScimServiceProviderEndpoint)
-	_ = d.Set("scimsharedsecret", resp.ScimSharedSecret)
-	_ = d.Set("scimsharedsecretexists", resp.ScimSharedSecretExists)
-	_ = d.Set("signsamlrequest", resp.SignSamlRequest)
-	_ = d.Set("ssotype", resp.SsoType)
-	_ = d.Set("usecustomspmetadata", resp.UseCustomSpMetadata)
-	_ = d.Set("usermetadata", resp.UserMetadata)
-	_ = d.Set("spentityid", resp.UserMetadata.SpEntityId)
-	_ = d.Set("spmetadataurl", resp.UserMetadata.SpMetadataUrl)
-	_ = d.Set("spposturl", resp.UserMetadata.SpPostUrl)
+	_ = d.Set("reauth_on_user_update", resp.ReauthOnUserUpdate)
+	_ = d.Set("redirect_binding", resp.RedirectBinding)
+	_ = d.Set("scim_enabled", resp.ScimEnabled)
+	_ = d.Set("scim_service_provider_endpoint", resp.ScimServiceProviderEndpoint)
+	_ = d.Set("scim_shared_secret", resp.ScimSharedSecret)
+	_ = d.Set("scim_shared_secret_exists", resp.ScimSharedSecretExists)
+	_ = d.Set("sign_saml_request", resp.SignSamlRequest)
+	_ = d.Set("sso_type", resp.SsoType)
+	_ = d.Set("use_custom_sp_metadata", resp.UseCustomSpMetadata)
+	_ = d.Set("user_metadata", resp.UserMetadata)
+	_ = d.Set("sp_entity_id", resp.UserMetadata.SpEntityId)
+	_ = d.Set("sp_metadata_url", resp.UserMetadata.SpMetadataUrl)
+	_ = d.Set("sp_post_url", resp.UserMetadata.SpPostUrl)
 	_ = d.Set("certificates", flattenIdpCertificates(resp.Certificates))
 	// _ = d.Set("usermetadata", flattenIdpUserMetadata(resp.UserMetadata))
 
@@ -235,11 +235,11 @@ func flattenIdpCertificates(idpCertificate []idpcontroller.Certificates) []inter
 	idpCertificates := make([]interface{}, len(idpCertificate))
 	for i, idpCertificateItems := range idpCertificate {
 		idpCertificates[i] = map[string]interface{}{
-			"certificate":    idpCertificateItems.Certificate,
-			"cname":          idpCertificateItems.Cname,
-			"serialno":       idpCertificateItems.Serialno,
-			"validfrominsec": idpCertificateItems.ValidFrominSec,
-			"validtoinsec":   idpCertificateItems.ValidToinSec,
+			"certificate":       idpCertificateItems.Certificate,
+			"cname":             idpCertificateItems.Cname,
+			"serialno":          idpCertificateItems.Serialno,
+			"valid_from_in_sec": idpCertificateItems.ValidFrominSec,
+			"valid_to_in_sec":   idpCertificateItems.ValidToinSec,
 		}
 	}
 	return idpCertificates

@@ -28,92 +28,92 @@ func resourceSegmentGroup() *schema.Resource {
 							Type:     schema.TypeInt,
 							Optional: true,
 						},
-						"bypasstype": {
-							Type:     schema.TypeString,
-							Optional: true,
-						},
-						"configspace": {
-							Type:     schema.TypeString,
-							Optional: true,
-						},
-						"creationtime": {
-							Type:     schema.TypeInt,
-							Computed: true,
-						},
-						"defaultidletimeout": {
-							Type:     schema.TypeInt,
-							Computed: true,
-						},
-						"defaultmaxage": {
-							Type:     schema.TypeInt,
-							Computed: true,
-						},
-						"description": {
-							Type:     schema.TypeString,
-							Computed: true,
-						},
-						"domainname": {
-							Type:     schema.TypeString,
-							Computed: true,
-						},
-						"domainnames": {
-							Type:     schema.TypeList,
-							Computed: true,
-							Elem:     &schema.Schema{Type: schema.TypeString},
-						},
-						"doubleencrypt": {
-							Type:     schema.TypeBool,
-							Computed: true,
-						},
-						"enabled": {
-							Type:     schema.TypeBool,
-							Computed: true,
-						},
-						"ipanchored": {
-							Type:     schema.TypeBool,
-							Computed: true,
-						},
-						"logfeatures": {
-							Type:     schema.TypeList,
-							Computed: true,
-							Elem:     &schema.Schema{Type: schema.TypeString},
-						},
-						"passivehealthenabled": {
-							Type:     schema.TypeBool,
-							Computed: true,
-						},
-						"healthchecktype": {
-							Type:     schema.TypeString,
-							Computed: true,
-						},
-						"tcpportranges": {
-							Type:        schema.TypeList,
-							Optional:    true,
-							Description: "TCP port ranges used to access the app.",
-							Elem:        &schema.Schema{Type: schema.TypeInt},
-						},
-						"udpportranges": {
-							Type:        schema.TypeList,
-							Optional:    true,
-							Description: "UDP port ranges used to access the app.",
-							Elem:        &schema.Schema{Type: schema.TypeInt},
-						},
-						"modifiedby": {
-							Type:     schema.TypeInt,
-							Computed: true,
-						},
-						"modifiedtime": {
-							Type:     schema.TypeInt,
-							Computed: true,
-						},
-						"name": {
-							Type:     schema.TypeString,
-							Computed: true,
-						},
+						// "bypass_type": {
+						// 	Type:     schema.TypeString,
+						// 	Optional: true,
+						// },
+						// "configspace": {
+						// 	Type:     schema.TypeString,
+						// 	Optional: true,
+						// },
+						// "creation_time": {
+						// 	Type:     schema.TypeInt,
+						// 	Computed: true,
+						// },
+						// "default_idle_timeout": {
+						// 	Type:     schema.TypeInt,
+						// 	Computed: true,
+						// },
+						// "default_max_age": {
+						// 	Type:     schema.TypeInt,
+						// 	Computed: true,
+						// },
+						// "description": {
+						// 	Type:     schema.TypeString,
+						// 	Computed: true,
+						// },
+						// "domain_name": {
+						// 	Type:     schema.TypeString,
+						// 	Computed: true,
+						// },
+						// "domain_names": {
+						// 	Type:     schema.TypeList,
+						// 	Computed: true,
+						// 	Elem:     &schema.Schema{Type: schema.TypeString},
+						// },
+						// "double_encrypt": {
+						// 	Type:     schema.TypeBool,
+						// 	Computed: true,
+						// },
+						// "enabled": {
+						// 	Type:     schema.TypeBool,
+						// 	Computed: true,
+						// },
+						// "ip_anchored": {
+						// 	Type:     schema.TypeBool,
+						// 	Computed: true,
+						// },
+						// "log_features": {
+						// 	Type:     schema.TypeList,
+						// 	Computed: true,
+						// 	Elem:     &schema.Schema{Type: schema.TypeString},
+						// },
+						// "passive_health_enabled": {
+						// 	Type:     schema.TypeBool,
+						// 	Computed: true,
+						// },
+						// "health_check_type": {
+						// 	Type:     schema.TypeString,
+						// 	Computed: true,
+						// },
+						// "tcp_port_ranges": {
+						// 	Type:        schema.TypeList,
+						// 	Optional:    true,
+						// 	Description: "TCP port ranges used to access the app.",
+						// 	Elem:        &schema.Schema{Type: schema.TypeInt},
+						// },
+						// "udp_port_ranges": {
+						// 	Type:        schema.TypeList,
+						// 	Optional:    true,
+						// 	Description: "UDP port ranges used to access the app.",
+						// 	Elem:        &schema.Schema{Type: schema.TypeInt},
+						// },
+						// "modifiedby": {
+						// 	Type:     schema.TypeInt,
+						// 	Computed: true,
+						// },
+						// "modified_time": {
+						// 	Type:     schema.TypeInt,
+						// 	Computed: true,
+						// },
+						// "name": {
+						// 	Type:     schema.TypeString,
+						// 	Computed: true,
+						// },
 					},
 				},
 			},
-			"configspace": {
+			"config_space": {
 				Type:     schema.TypeString,
 				Optional: true,
 			},
@@ -148,11 +148,11 @@ func resourceSegmentGroup() *schema.Resource {
 				Description: "Name of the app group.",
 				Required:    true,
 			},
-			"policymigrated": {
+			"policy_migrated": {
 				Type:     schema.TypeBool,
 				Optional: true,
 			},
-			"tcpkeepaliveenabled": {
+			"tcp_keep_alive_enabled": {
 				Type:     schema.TypeInt,
 				Computed: true,
 			},
@@ -203,16 +203,16 @@ func resourceSegmentGroupRead(d *schema.ResourceData, m interface{}) error {
 
 	log.Printf("[INFO] Getting segment group:\n%+v\n", resp)
 	d.SetId(strconv.FormatInt(int64(resp.ID), 10))
-	_ = d.Set("configspace", resp.ConfigSpace)
+	_ = d.Set("config_space", resp.ConfigSpace)
 	// _ = d.Set("creationtime", resp.CreationTime)
 	_ = d.Set("description", resp.Description)
 	_ = d.Set("enabled", resp.Enabled)
 	// _ = d.Set("modifiedby", resp.ModifiedBy)
 	// _ = d.Set("modifiedtime", resp.ModifiedTime)
 	_ = d.Set("name", resp.Name)
-	_ = d.Set("policymigrated", resp.PolicyMigrated)
-	_ = d.Set("tcpkeepaliveenabled", resp.TcpKeepAliveEnabled)
-	_ = d.Set("appconnectorgroups", flattenSegmentGroupApplications(resp))
+	_ = d.Set("policy_migrated", resp.PolicyMigrated)
+	_ = d.Set("tcp_keep_alive_enabled", resp.TcpKeepAliveEnabled)
+	_ = d.Set("appconnector_groups", flattenSegmentGroupApplications(resp))
 	// if err := d.Set("applications", flattenSegmentGroupApplications(resp)); err != nil {
 	// 	return fmt.Errorf("failed to read segment group applications %s", err)
 	// }
@@ -251,7 +251,10 @@ func resourceSegmentGroupDelete(d *schema.ResourceData, m interface{}) error {
 		return err
 	}
 
+	d.SetId("")
+	log.Printf("[INFO] segment group deleted")
 	return nil
+
 }
 
 func expandSegmentGroup(d *schema.ResourceData) segmentgroup.SegmentGroup {
@@ -259,10 +262,10 @@ func expandSegmentGroup(d *schema.ResourceData) segmentgroup.SegmentGroup {
 		Name:                d.Get("name").(string),
 		Description:         d.Get("description").(string),
 		Enabled:             d.Get("enabled").(bool),
-		PolicyMigrated:      d.Get("policymigrated").(bool),
-		TcpKeepAliveEnabled: d.Get("tcpkeepaliveenabled").(int),
-		Applications:        expandSegmentGroupApplications(d),
-		// Applications: expandSegmentGroupApplications(d.Get("applications").([]interface{})),
+		PolicyMigrated:      d.Get("policy_migrated").(bool),
+		TcpKeepAliveEnabled: d.Get("tcp_keep_alive_enabled").(int),
+		// Applications:        expandSegmentGroupApplications(d),
+		Applications: expandSegmentGroupApplications(d.Get("applications").([]interface{})),
 		// CreationTime:   d.Get("creationtime").(int32),
 		// ModifiedBy:     d.Get("modifiedby").(int64),
 		// ModifiedTime:   d.Get("modifiedtime").(int32),
@@ -271,6 +274,59 @@ func expandSegmentGroup(d *schema.ResourceData) segmentgroup.SegmentGroup {
 	return segmentGroup
 }
 
+func expandSegmentGroupApplications(segmentGroupApplication []interface{}) []segmentgroup.Application {
+	segmentGroupApplications := make([]segmentgroup.Application, len(segmentGroupApplication))
+
+	for i, segmentGroupApp := range segmentGroupApplication {
+		segmentGroupItem := segmentGroupApp.(map[string]interface{})
+		segmentGroupApplications[i] = segmentgroup.Application{
+			// ID: int64(appConnectorGroupItem["id"].(int)), // This needs to be *schema.Set
+			ID: segmentGroupItem["id"].(int),
+		}
+
+	}
+
+	return segmentGroupApplications
+}
+
+/*
+func expandSegmentGroupApplications(d *schema.ResourceData) []segmentgroup.Application {
+	var segmentGroupApplications []segmentgroup.Application
+	if applicationsInterface, ok := d.GetOk("applications"); ok {
+		applications := applicationsInterface.([]interface{})
+		segmentGroupApplications = make([]segmentgroup.Application, len(applications))
+		for i, application := range applications {
+			segmentGroupApplication := application.(map[string]interface{})
+			segmentGroupApplications[i] = segmentgroup.Application{
+				BypassType:           segmentGroupApplication["bypass_type"].(string),
+				ConfigSpace:          segmentGroupApplication["config_space"].(string),
+				CreationTime:         segmentGroupApplication["creation_time"].(int32),
+				DefaultIdleTimeout:   segmentGroupApplication["default_idle_timeout"].(int32),
+				DefaultMaxAge:        segmentGroupApplication["default_max_age"].(int32),
+				Description:          segmentGroupApplication["description"].(string),
+				DomainName:           segmentGroupApplication["domain_name"].(string),
+				DomainNames:          segmentGroupApplication["domain_names"].([]string),
+				DoubleEncrypt:        segmentGroupApplication["double_encrypt"].(bool),
+				Enabled:              segmentGroupApplication["enabled"].(bool),
+				HealthCheckType:      segmentGroupApplication["health_check_type"].(string),
+				IPAnchored:           segmentGroupApplication["ip_anchored"].(bool),
+				LogFeatures:          segmentGroupApplication["log_features"].([]string),
+				ModifiedBy:           segmentGroupApplication["modifiedby"].(int64),
+				ModifiedTime:         segmentGroupApplication["modified_time"].(int32),
+				Name:                 segmentGroupApplication["name"].(string),
+				ID:                   segmentGroupApplication["id"].(int64),
+				PassiveHealthEnabled: segmentGroupApplication["passive_health_enabled"].(bool),
+				TCPPortRanges:        segmentGroupApplication["tcp_port_ranges"].([]int32),
+				TCPPortsIn:           segmentGroupApplication["tcp_ports_in"].([]int32),
+				TCPPortsOut:          segmentGroupApplication["tcp_ports_out"].([]int32),
+				UDPPortRanges:        segmentGroupApplication["udp_port_ranges"].([]int32),
+			}
+		}
+	}
+
+	return segmentGroupApplications
+}
+*/
 /*
 func expandSegmentGroupApplications(segmentGroupAppRequest []interface{}) []segmentgroup.Application {
 	segmentGroupApps := make([]segmentgroup.Application, len(segmentGroupAppRequest))
@@ -290,43 +346,6 @@ func expandSegmentGroupApplications(segmentGroupAppRequest []interface{}) []segm
 	return segmentGroupApps
 }
 */
-
-func expandSegmentGroupApplications(d *schema.ResourceData) []segmentgroup.Application {
-	var segmentGroupApplications []segmentgroup.Application
-	if applicationsInterface, ok := d.GetOk("applications"); ok {
-		applications := applicationsInterface.([]interface{})
-		segmentGroupApplications = make([]segmentgroup.Application, len(applications))
-		for i, application := range applications {
-			segmentGroupApplication := application.(map[string]interface{})
-			segmentGroupApplications[i] = segmentgroup.Application{
-				BypassType:           segmentGroupApplication["bypasstype"].(string),
-				ConfigSpace:          segmentGroupApplication["configspace"].(string),
-				CreationTime:         segmentGroupApplication["creationtime"].(int32),
-				DefaultIdleTimeout:   segmentGroupApplication["defaultidletimeout"].(int32),
-				DefaultMaxAge:        segmentGroupApplication["defaultmaxage"].(int32),
-				Description:          segmentGroupApplication["description"].(string),
-				DomainName:           segmentGroupApplication["domainname"].(string),
-				DomainNames:          segmentGroupApplication["domainnames"].([]string),
-				DoubleEncrypt:        segmentGroupApplication["doubleencrypt"].(bool),
-				Enabled:              segmentGroupApplication["enabled"].(bool),
-				HealthCheckType:      segmentGroupApplication["healthchecktype"].(string),
-				IPAnchored:           segmentGroupApplication["ipanchored"].(bool),
-				LogFeatures:          segmentGroupApplication["logfeatures"].([]string),
-				ModifiedBy:           segmentGroupApplication["modifiedby"].(int64),
-				ModifiedTime:         segmentGroupApplication["modifiedtime"].(int32),
-				Name:                 segmentGroupApplication["name"].(string),
-				ID:                   segmentGroupApplication["id"].(int64),
-				PassiveHealthEnabled: segmentGroupApplication["passivehealthenabled"].(bool),
-				TCPPortRanges:        segmentGroupApplication["tcpportranges"].([]int32),
-				TCPPortsIn:           segmentGroupApplication["tcpportsin"].([]int32),
-				TCPPortsOut:          segmentGroupApplication["tcpportsout"].([]int32),
-				UDPPortRanges:        segmentGroupApplication["udpportranges"].([]int32),
-			}
-		}
-	}
-
-	return segmentGroupApplications
-}
 
 /*
 func expandServerGroups(d *schema.ResourceData) []segmentgroup.AppServerGroup {

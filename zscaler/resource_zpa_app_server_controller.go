@@ -41,13 +41,13 @@ func resourceApplicationServer() *schema.Resource {
 				Description: "This field defines the status of the server.",
 			},
 			// App Server Group ID can only be attached if Dynamic Server Discovery in Server Group is False
-			"appservergroupids": {
+			"app_server_group_ids": {
 				Type:        schema.TypeSet,
 				Elem:        &schema.Schema{Type: schema.TypeString},
 				Description: "This field defines the list of server groups IDs.",
 				Optional:    true,
 			},
-			"configspace": {
+			"config_space": {
 				Type:     schema.TypeString,
 				Computed: true,
 			},
@@ -94,8 +94,8 @@ func resourceApplicationServerRead(d *schema.ResourceData, m interface{}) error 
 
 	log.Printf("[INFO] Getting application server:\n%+v\n", resp)
 	_ = d.Set("address", resp.Address)
-	_ = d.Set("appservergroupids", resp.AppServerGroupIds)
-	_ = d.Set("configspace", resp.ConfigSpace)
+	_ = d.Set("app_server_group_ids", resp.AppServerGroupIds)
+	_ = d.Set("config_space", resp.ConfigSpace)
 	_ = d.Set("description", resp.Description)
 	_ = d.Set("enabled", resp.Enabled)
 	_ = d.Set("name", resp.Name)
@@ -108,11 +108,11 @@ func resourceApplicationServerUpdate(d *schema.ResourceData, m interface{}) erro
 
 	log.Println("An updated occurred")
 
-	if d.HasChange("appservergroupids") || d.HasChange("name") || d.HasChange("address") {
+	if d.HasChange("app_server_group_ids") || d.HasChange("name") || d.HasChange("address") {
 		log.Println("The AppServerGroupID, name or address has been changed")
 
 		if _, err := zClient.appservercontroller.Update(d.Id(), appservercontroller.ApplicationServer{
-			AppServerGroupIds: resourceTypeSetToStringSlice(d.Get("appservergroupids").(*schema.Set)),
+			AppServerGroupIds: resourceTypeSetToStringSlice(d.Get("app_server_group_ids").(*schema.Set)),
 			Name:              d.Get("name").(string),
 			Address:           d.Get("address").(string),
 			Enabled:           d.Get("enabled").(bool),
@@ -179,8 +179,8 @@ func removeServerFromGroup(zClient *Client, serverID string) error {
 func expandCreateAppServerRequest(d *schema.ResourceData) appservercontroller.ApplicationServer {
 	applicationServer := appservercontroller.ApplicationServer{
 		Address:           d.Get("address").(string),
-		ConfigSpace:       d.Get("configspace").(string),
-		AppServerGroupIds: resourceTypeSetToStringSlice(d.Get("appservergroupids").(*schema.Set)),
+		ConfigSpace:       d.Get("config_space").(string),
+		AppServerGroupIds: resourceTypeSetToStringSlice(d.Get("app_server_group_ids").(*schema.Set)),
 		Description:       d.Get("description").(string),
 		Enabled:           d.Get("enabled").(bool),
 		Name:              d.Get("name").(string),
