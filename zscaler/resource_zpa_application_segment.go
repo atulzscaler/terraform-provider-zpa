@@ -288,29 +288,3 @@ func expandAppServerGroups(appServerGroupsRequest []interface{}) []applicationse
 
 	return appServerGroups
 }
-
-/*
-func expandAppServerGroups(d *schema.ResourceData) []applicationsegment.AppServerGroups {
-	var serverGroups []applicationsegment.AppServerGroups
-	if serverGroupInterface, ok := d.GetOk("servergroups"); ok {
-		servers := serverGroupInterface.([]interface{})
-		serverGroups = make([]applicationsegment.AppServerGroups, len(servers))
-		for i, srvGroup := range servers {
-			serverGroup := srvGroup.(map[string]interface{})
-			serverGroups[i] = applicationsegment.AppServerGroups{
-				// Name: serverGroup["name"].(string),
-				ID: serverGroup["id"].(int),
-				// ConfigSpace:      serverGroup["configspace"].(string),
-				// CreationTime:     serverGroup["creationtime"].(int32),
-				// Description:      serverGroup["description"].(string),
-				// Enabled:          serverGroup["enabled"].(bool),
-				// DynamicDiscovery: serverGroup["dynamicdiscovery"].(bool),
-				// ModifiedBy:       serverGroup["modifiedby"].(int64),
-				// ModifiedTime:     serverGroup["modifiedtime"].(int32),
-			}
-		}
-	}
-
-	return serverGroups
-}
-*/

@@ -233,6 +233,7 @@ func expandAppConnectorGroups(appConnectorGroupRequest []interface{}) []servergr
 	for i, appConnectorGroup := range appConnectorGroupRequest {
 		appConnectorGroupItem := appConnectorGroup.(map[string]interface{})
 		appConnectorGroups[i] = servergroup.AppConnectorGroups{
+			// ID: int64(appConnectorGroupItem["id"].(int)), // This needs to be *schema.Set
 			ID: appConnectorGroupItem["id"].(int),
 		}
 	}

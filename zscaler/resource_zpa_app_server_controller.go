@@ -4,7 +4,7 @@ import (
 	"log"
 	"strconv"
 
-	"github.com/SecurityGeekIO/terraform-provider-zpa/gozscaler/common"
+	"github.com/SecurityGeekIO/terraform-provider-zpa/gozscaler/appservercontroller"
 
 	"github.com/SecurityGeekIO/terraform-provider-zpa/gozscaler/client"
 	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/schema"
@@ -12,6 +12,13 @@ import (
 
 func resourceApplicationServer() *schema.Resource {
 	return &schema.Resource{
+		Create: resourceApplicationServerCreate,
+		Read:   resourceApplicationServerRead,
+		Update: resourceApplicationServerUpdate,
+		Delete: resourceApplicationServerDelete,
+		Importer: &schema.ResourceImporter{
+			State: schema.ImportStatePassthrough,
+		},
 		Schema: map[string]*schema.Schema{
 			"name": {
 				Type:        schema.TypeString,
@@ -48,13 +55,6 @@ func resourceApplicationServer() *schema.Resource {
 				Type:     schema.TypeString,
 				Computed: true,
 			},
-		},
-		Create: resourceApplicationServerCreate,
-		Read:   resourceApplicationServerRead,
-		Update: resourceApplicationServerUpdate,
-		Delete: resourceApplicationServerDelete,
-		Importer: &schema.ResourceImporter{
-			State: schema.ImportStatePassthrough,
 		},
 	}
 }
@@ -111,7 +111,7 @@ func resourceApplicationServerUpdate(d *schema.ResourceData, m interface{}) erro
 	if d.HasChange("appservergroupids") || d.HasChange("name") || d.HasChange("address") {
 		log.Println("The AppServerGroupID, name or address has been changed")
 
-		if _, err := zClient.appservercontroller.Update(d.Id(), common.ApplicationServer{
+		if _, err := zClient.appservercontroller.Update(d.Id(), appservercontroller.ApplicationServer{
 			AppServerGroupIds: resourceTypeSetToStringSlice(d.Get("appservergroupids").(*schema.Set)),
 			Name:              d.Get("name").(string),
 			Address:           d.Get("address").(string),
@@ -168,16 +168,16 @@ func removeServerFromGroup(zClient *Client, serverID string) error {
 }
 
 // func removeServer(serversList []common.ApplicationServer, serverID int64) []common.ApplicationServer {
-// 	for i, server := range serversList {
-// 		if server.ID == serverID {
-// 			return append(serversList[:i], serversList[i+1:]...)
-// 		}
-// 	}
-// 	return serversList
+//  for i, server := range serversList {
+//      if server.ID == serverID {
+//          return append(serversList[:i], serversList[i+1:]...)
+//      }
+//  }
+//  return serversList
 // }
 
-func expandCreateAppServerRequest(d *schema.ResourceData) common.ApplicationServer {
-	applicationServer := common.ApplicationServer{
+func expandCreateAppServerRequest(d *schema.ResourceData) appservercontroller.ApplicationServer {
+	applicationServer := appservercontroller.ApplicationServer{
 		Address:           d.Get("address").(string),
 		ConfigSpace:       d.Get("configspace").(string),
 		AppServerGroupIds: resourceTypeSetToStringSlice(d.Get("appservergroupids").(*schema.Set)),

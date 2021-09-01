@@ -9,6 +9,16 @@ terraform {
 
 provider "zpa" {}
 
+resource "zpa_server_group" "sg_sgio_browser_access" {
+  name = "SGIO Browser Access Apps"
+  description = "SGIO Browser Access Apps"
+  enabled = true
+  dynamicdiscovery = true
+  appconnectorgroups {
+    id = 216196257331281931
+  }
+}
+
  resource "zpa_segment_group" "sg_sgio_browser_access" {
    name = "SGIO Browser Access Apps"
    description = "SGIO Browser Access Apps"
@@ -43,8 +53,8 @@ resource "zpa_browser_access" "browser_access_apps" {
     enabled = true
     healthreporting = "ON_ACCESS"
     bypasstype = "NEVER"
-    tcpportranges = ["80", "80"]
-    domainnames = ["sales.securitygeek.io"]
+    tcpportranges = ["80", "80", "8080", "8080"]
+    domainnames = ["sales.securitygeek.io", "qa.securitygeek.io", "jenkins.securitygeek.io"]
     segmentgroupid = zpa_segment_group.sg_sgio_browser_access.id
 
     clientlessapps {
@@ -56,10 +66,32 @@ resource "zpa_browser_access" "browser_access_apps" {
         enabled = true
         domain = "sales.securitygeek.io"
     }
+        clientlessapps {
+        name = "qa.securitygeek.io"
+        applicationprotocol = "HTTP"
+        applicationport = "80"
+        certificateid = data.zpa_ba_certificate.qa_ba.id
+        trustuntrustedcert = true
+        enabled = true
+        domain = "qa.securitygeek.io"
+    }
+
+    clientlessapps {
+        name = "jenkins.securitygeek.io"
+        applicationprotocol = "HTTP"
+        applicationport = "8080"
+        certificateid = data.zpa_ba_certificate.jenkins_ba.id
+        trustuntrustedcert = true
+        enabled = true
+        domain = "jenkins.securitygeek.io"
+    }
     servergroups {
-        id = 216196257331282476
+        id = zpa_server_group.sg_sgio_browser_access.id
     }
 }
+
+
+
 
 /*
 resource "zpa_browser_access" "browser_access_apps" {
@@ -81,32 +113,11 @@ resource "zpa_browser_access" "browser_access_apps" {
         enabled = true
         domain = "sales.securitygeek.io"
     }
-
-    clientlessapps {
-        name = "qa.securitygeek.io"
-        applicationprotocol = "HTTP"
-        applicationport = "80"
-        certificateid = data.zpa_ba_certificate.qa_ba.id
-        trustuntrustedcert = true
-        enabled = true
-        domain = "qa.securitygeek.io"
-    }
-
-    clientlessapps {
-        name = "jenkins.securitygeek.io"
-        applicationprotocol = "HTTP"
-        applicationport = "8080"
-        certificateid = data.zpa_ba_certificate.jenkins_ba.id
-        trustuntrustedcert = true
-        enabled = true
-        domain = "jenkins.securitygeek.io"
-    }
     servergroups {
         id = 216196257331282476
     }
 }
-*/
-/*
+
  resource "zpa_segment_group" "sg_all_other_services" {
    name = "All Other Services"
    description = "All Other Services"

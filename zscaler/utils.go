@@ -16,6 +16,29 @@ func resourceTypeSetToStringSlice(s *schema.Set) []string {
 	return values
 }
 
+func getSliceFromTerraformTypeList(list interface{}) []string {
+	if list == nil {
+		return nil
+	}
+	terraformList, ok := list.([]interface{})
+	if !ok {
+		terraformSet, ok := list.(*schema.Set)
+		if ok {
+			terraformList = terraformSet.List()
+		} else {
+			// It's not a list or set type
+			return nil
+		}
+	}
+	var newSlice []string
+	for _, v := range terraformList {
+		if v != nil {
+			newSlice = append(newSlice, v.(string))
+		}
+	}
+	return newSlice
+}
+
 func convertStringArrToInterface(strs []string) []interface{} {
 	arr := make([]interface{}, len(strs))
 	for i, str := range strs {
@@ -40,15 +63,6 @@ func ListToStringSlice(v []interface{}) []string {
 	}
 
 	return ans
-}
-
-// getStringList will convert a TypeList attribute to a slice of string
-func getStringList(d *schema.ResourceData, k string) []string {
-	var sl []string
-	for _, v := range d.Get(k).([]interface{}) {
-		sl = append(sl, v.(string))
-	}
-	return sl
 }
 
 func ResourceDataInterfaceMap(d *schema.ResourceData, key string) map[string]interface{} {
