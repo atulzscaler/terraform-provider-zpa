@@ -3,22 +3,22 @@ resource "zpa_browser_access" "browser_access_apps" {
     name = "Browser Access Apps"
     description = "Browser Access Apps"
     enabled = true
-    healthreporting = "ON_ACCESS"
-    bypasstype = "NEVER"
-    tcpportranges = ["80", "80"]
-    domainnames = ["sales.securitygeek.io"]
-    segmentgroupid = zpa_segment_group.sg_sgio_browser_access.id
+    health_reporting = "ON_ACCESS"
+    bypass_type = "NEVER"
+    tcp_port_ranges = ["80", "80"]
+    domain_names = ["sales.securitygeek.io"]
+    segment_group_id = zpa_segment_group.sg_sgio_browser_access.id
 
-    clientlessapps {
+    clientless_apps {
         name = "sales.securitygeek.io"
-        applicationprotocol = "HTTP"
-        applicationport = "80"
-        certificateid = data.zpa_ba_certificate.sales_ba.id
-        trustuntrustedcert = true
+        application_protocol = "HTTP"
+        application_port = "80"
+        certificate_id = data.zpa_ba_certificate.sales_ba.id
+        trust_untrusted_cert = true
         enabled = true
         domain = "sales.securitygeek.io"
     }
-    servergroups {
+    server_groups {
         id = zpa_server_group.browser_access_apps.id
     }
 }

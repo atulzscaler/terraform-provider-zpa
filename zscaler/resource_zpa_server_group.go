@@ -37,7 +37,7 @@ func resourceServerGroup() *schema.Resource {
 					},
 				},
 			},
-			"appconnector_groups": {
+			"app_connector_groups": {
 				Type:        schema.TypeList,
 				Optional:    true,
 				Description: "This field is a json array of app-connector-id only.",
@@ -220,7 +220,7 @@ func expandServerGroup(d *schema.ResourceData) servergroup.ServerGroup {
 		IpAnchored:         d.Get("ip_anchored").(bool),
 		ConfigSpace:        d.Get("config_space").(string),
 		DynamicDiscovery:   d.Get("dynamic_discovery").(bool),
-		AppConnectorGroups: expandAppConnectorGroups(d.Get("appconnector_groups").([]interface{})),
+		AppConnectorGroups: expandAppConnectorGroups(d.Get("app_connector_groups").([]interface{})),
 		Applications:       expandServerGroupApplications(d.Get("applications").([]interface{})),
 		Servers:            expandServers(d.Get("servers").([]interface{})),
 	}

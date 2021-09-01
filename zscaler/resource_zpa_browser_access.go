@@ -20,26 +20,26 @@ func resourceBrowserAccess() *schema.Resource {
 			State: schema.ImportStatePassthrough,
 		},
 		Schema: map[string]*schema.Schema{
-			"segmentgroupid": {
+			"segment_group_id": {
 				Type:     schema.TypeString,
 				Optional: true,
 			},
-			"segmentgroupname": {
+			"segment_group_name": {
 				Type:     schema.TypeString,
 				Optional: true,
 			},
-			"bypasstype": {
+			"bypass_type": {
 				Type:        schema.TypeString,
 				Optional:    true,
 				Description: "Indicates whether users can bypass ZPA to access applications.",
 			},
-			"tcpportranges": {
+			"tcp_port_ranges": {
 				Type:        schema.TypeList,
 				Optional:    true,
 				Description: "TCP port ranges used to access the app.",
 				Elem:        &schema.Schema{Type: schema.TypeInt},
 			},
-			"udpportranges": {
+			"udp_port_ranges": {
 				Type:        schema.TypeList,
 				Optional:    true,
 				Description: "UDP port ranges used to access the app.",
@@ -54,18 +54,18 @@ func resourceBrowserAccess() *schema.Resource {
 				Optional:    true,
 				Description: "Description of the application.",
 			},
-			"domainnames": {
+			"domain_names": {
 				Type:        schema.TypeList,
 				Optional:    true,
 				Description: "List of domains and IPs.",
 				Elem:        &schema.Schema{Type: schema.TypeString},
 			},
-			"doubleencrypt": {
+			"double_encrypt": {
 				Type:        schema.TypeBool,
 				Optional:    true,
 				Description: "Whether Double Encryption is enabled or disabled for the app.",
 			},
-			"healthchecktype": {
+			"health_check_type": {
 				Type:     schema.TypeString,
 				Optional: true,
 			},
@@ -73,16 +73,16 @@ func resourceBrowserAccess() *schema.Resource {
 				Type:     schema.TypeBool,
 				Optional: true,
 			},
-			"healthreporting": {
+			"health_reporting": {
 				Type:        schema.TypeString,
 				Optional:    true,
 				Description: "Whether health reporting for the app is Continuous or On Access. Supported values: NONE, ON_ACCESS, CONTINUOUS.",
 			},
-			"ipanchored": {
+			"ip_anchored": {
 				Type:     schema.TypeBool,
 				Optional: true,
 			},
-			"iscnameenabled": {
+			"is_cname_enabled": {
 				Type:        schema.TypeBool,
 				Optional:    true,
 				Description: "Indicates if the Zscaler Client Connector (formerly Zscaler App or Z App) receives CNAME DNS records from the connectors.",
@@ -92,12 +92,12 @@ func resourceBrowserAccess() *schema.Resource {
 				Required:    true,
 				Description: "Name of the application.",
 			},
-			"clientlessapps": {
+			"clientless_apps": {
 				Type:     schema.TypeList,
 				Optional: true,
 				Elem: &schema.Resource{
 					Schema: map[string]*schema.Schema{
-						"allowoptions": {
+						"allow_options": {
 							Type:     schema.TypeBool,
 							Optional: true,
 						},
@@ -105,11 +105,11 @@ func resourceBrowserAccess() *schema.Resource {
 						// 	Type:     schema.TypeInt,
 						// 	Computed: true,
 						// },
-						"applicationport": {
+						"application_port": {
 							Type:     schema.TypeInt,
 							Optional: true,
 						},
-						"applicationprotocol": {
+						"application_protocol": {
 							Type:     schema.TypeString,
 							Optional: true,
 							ValidateFunc: validation.StringInSlice([]string{
@@ -119,11 +119,11 @@ func resourceBrowserAccess() *schema.Resource {
 								"RDP",
 							}, false),
 						},
-						"certificateid": {
+						"certificate_id": {
 							Type:     schema.TypeInt,
 							Optional: true,
 						},
-						"certificatename": {
+						"certificate_name": {
 							Type:     schema.TypeString,
 							Optional: true,
 						},
@@ -151,7 +151,7 @@ func resourceBrowserAccess() *schema.Resource {
 							Type:     schema.TypeInt,
 							Computed: true,
 						},
-						"localdomain": {
+						"local_domain": {
 							Type:     schema.TypeString,
 							Optional: true,
 						},
@@ -163,7 +163,7 @@ func resourceBrowserAccess() *schema.Resource {
 							Type:     schema.TypeString,
 							Optional: true,
 						},
-						"trustuntrustedcert": {
+						"trust_untrusted_cert": {
 							Type:     schema.TypeBool,
 							Optional: true,
 						},
@@ -171,7 +171,7 @@ func resourceBrowserAccess() *schema.Resource {
 				},
 			},
 			// Server Group only takes one ID as int64
-			"servergroups": {
+			"server_groups": {
 				Type:        schema.TypeList,
 				Optional:    true,
 				Description: "ID of the server group.",
@@ -222,25 +222,25 @@ func resourceBrowserAccessRead(d *schema.ResourceData, m interface{}) error {
 	}
 
 	log.Printf("[INFO] Getting browser access:\n%+v\n", resp)
-	_ = d.Set("segmentgroupid", resp.SegmentGroupId)
-	_ = d.Set("segmentgroupname", resp.SegmentGroupName)
-	_ = d.Set("bypasstype", resp.BypassType)
-	_ = d.Set("configspace", resp.ConfigSpace)
-	_ = d.Set("domainnames", resp.DomainNames)
+	_ = d.Set("segment_group_id", resp.SegmentGroupId)
+	_ = d.Set("segment_group_name", resp.SegmentGroupName)
+	_ = d.Set("bypass_type", resp.BypassType)
+	_ = d.Set("config_space", resp.ConfigSpace)
+	_ = d.Set("domain_names", resp.DomainNames)
 	_ = d.Set("name", resp.Name)
 	_ = d.Set("description", resp.Description)
 	_ = d.Set("enabled", resp.Enabled)
 	// _ = d.Set("creationtime", resp.CreationTime)
 	// _ = d.Set("modifiedby", resp.ModifiedBy)
 	// _ = d.Set("modifiedtime", resp.ModifiedTime)
-	_ = d.Set("passivehealthenabled", resp.PassiveHealthEnabled)
-	_ = d.Set("doubleencrypt", resp.DoubleEncrypt)
-	_ = d.Set("healthchecktype", resp.HealthCheckType)
-	_ = d.Set("iscnameenabled", resp.IsCnameEnabled)
-	_ = d.Set("ipanchored", resp.IpAnchored)
-	_ = d.Set("healthreporting", resp.HealthReporting)
-	_ = d.Set("tcpportranges", resp.TcpPortRanges)
-	_ = d.Set("udpportranges", resp.UdpPortRanges)
+	_ = d.Set("passive_health_enabled", resp.PassiveHealthEnabled)
+	_ = d.Set("double_encrypt", resp.DoubleEncrypt)
+	_ = d.Set("health_check_type", resp.HealthCheckType)
+	_ = d.Set("is_cname_enabled", resp.IsCnameEnabled)
+	_ = d.Set("ip_anchored", resp.IpAnchored)
+	_ = d.Set("health_reporting", resp.HealthReporting)
+	_ = d.Set("tcp_port_ranges", resp.TcpPortRanges)
+	_ = d.Set("udp_port_ranges", resp.UdpPortRanges)
 	// _ = d.Set("clientlessapps", resp.ClientlessApps)
 
 	if err := d.Set("clientless_apps", flattenBaClientlessApps(resp)); err != nil {
@@ -324,7 +324,7 @@ func expandClientlessApps(d *schema.ResourceData) []browseraccess.ClientlessApps
 				LocalDomain:         clientlessApp["local_domain"].(string),
 				Name:                clientlessApp["name"].(string),
 				Path:                clientlessApp["path"].(string),
-				TrustUntrustedCert:  clientlessApp["trust_unrusted_cert"].(bool),
+				TrustUntrustedCert:  clientlessApp["trust_untrusted_cert"].(bool),
 			}
 		}
 	}

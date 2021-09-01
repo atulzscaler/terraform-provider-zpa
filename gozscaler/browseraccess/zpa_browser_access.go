@@ -54,7 +54,7 @@ type ClientlessApps struct {
 	ModifiedTime        int32  `json:"modifiedTime,string,omitempty"`
 	Name                string `json:"name"`
 	Path                string `json:"path,omitempty"`
-	TrustUntrustedCert  bool   `json:"trustUntrustedCert,omitempty"`
+	TrustUntrustedCert  bool   `json:"trustUntrustedCert"`
 }
 
 type AppServerGroups struct {

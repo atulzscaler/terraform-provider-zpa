@@ -212,7 +212,7 @@ func resourceSegmentGroupRead(d *schema.ResourceData, m interface{}) error {
 	_ = d.Set("name", resp.Name)
 	_ = d.Set("policy_migrated", resp.PolicyMigrated)
 	_ = d.Set("tcp_keep_alive_enabled", resp.TcpKeepAliveEnabled)
-	_ = d.Set("appconnector_groups", flattenSegmentGroupApplications(resp))
+	_ = d.Set("app_connector_groups", flattenSegmentGroupApplications(resp))
 	// if err := d.Set("applications", flattenSegmentGroupApplications(resp)); err != nil {
 	// 	return fmt.Errorf("failed to read segment group applications %s", err)
 	// }
