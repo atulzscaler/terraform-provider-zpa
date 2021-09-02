@@ -6,6 +6,7 @@ import (
 	"net/http"
 	"net/url"
 	"os"
+	"sync"
 	"time"
 
 	"github.com/hashicorp/go-retryablehttp"
@@ -13,9 +14,12 @@ import (
 )
 
 const (
-	defaultBaseURL = "https://config.private.zscaler.com"
-	defaultTimeout = 240 * time.Second
-	loggerPrefix   = "zpa-logger: "
+	defaultBaseURL    = "https://config.private.zscaler.com"
+	defaultTimeout    = 240 * time.Second
+	loggerPrefix      = "zpa-logger: "
+	ZPA_CLIENT_ID     = "ZPA_CLIENT_ID"
+	ZPA_CLIENT_SECRET = "ZPA_CLIENT_SECRET"
+	ZPA_CUSTOMER_ID   = "ZPA_CUSTOMER_ID"
 )
 
 // BackoffConfig contains all the configuration for the backoff and retry mechanism
@@ -24,6 +28,16 @@ type BackoffConfig struct {
 	RetryWaitMinSeconds int  // Minimum time to wait
 	RetryWaitMaxSeconds int  // Maximum time to wait
 	MaxNumOfRetries     int  // Maximum number of retries
+}
+
+// Need to implement exponential back off to comply with the API rate limit. https://help.zscaler.com/zpa/about-rate-limiting
+// 20 times in a 10 second interval for a GET call.
+// 10 times in a 10 second interval for any POST/PUT/DELETE call.
+// See example: https://github.com/okta/terraform-provider-okta/blob/master/okta/config.go
+type AuthToken struct {
+	TokenType   string `json:"token_type"`
+	AccessToken string `json:"access_token"`
+	//ExpiresIn   string `json:"expires_in"`
 }
 
 // Config contains all the configuration data for the API client
@@ -36,6 +50,8 @@ type Config struct {
 	ClientID, ClientSecret, CustomerID string
 	// Backoff config
 	BackoffConf *BackoffConfig
+	AuthToken   *AuthToken
+	AuthMu      sync.Mutex
 }
 
 /*
@@ -55,9 +71,9 @@ func NewConfig(clientID, clientSecret, customerID, rawUrl string) (*Config, erro
 		RetryWaitMinSeconds: 5,
 	}
 	if clientID == "" || clientSecret == "" || customerID == "" {
-		clientID = os.Getenv("ZPA_CLIENT_ID")
-		clientSecret = os.Getenv("ZPA_CLIENT_SECRET")
-		customerID = os.Getenv("ZPA_CUSTOMER_ID")
+		clientID = os.Getenv(ZPA_CLIENT_ID)
+		clientSecret = os.Getenv(ZPA_CLIENT_SECRET)
+		customerID = os.Getenv(ZPA_CUSTOMER_ID)
 	}
 	if rawUrl == "" {
 		rawUrl = defaultBaseURL
