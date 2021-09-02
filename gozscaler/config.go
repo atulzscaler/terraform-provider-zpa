@@ -13,9 +13,12 @@ import (
 )
 
 const (
-	defaultBaseURL = "https://config.private.zscaler.com"
-	defaultTimeout = 240 * time.Second
-	loggerPrefix   = "zpa-logger: "
+	defaultBaseURL    = "https://config.private.zscaler.com"
+	defaultTimeout    = 240 * time.Second
+	loggerPrefix      = "zpa-logger: "
+	ZPA_CLIENT_ID     = "ZPA_CLIENT_ID"
+	ZPA_CLIENT_SECRET = "ZPA_CLIENT_SECRET"
+	ZPA_CUSTOMER_ID   = "ZPA_CUSTOMER_ID"
 )
 
 // BackoffConfig contains all the configuration for the backoff and retry mechanism
@@ -55,9 +58,9 @@ func NewConfig(clientID, clientSecret, customerID, rawUrl string) (*Config, erro
 		RetryWaitMinSeconds: 5,
 	}
 	if clientID == "" || clientSecret == "" || customerID == "" {
-		clientID = os.Getenv("ZPA_CLIENT_ID")
-		clientSecret = os.Getenv("ZPA_CLIENT_SECRET")
-		customerID = os.Getenv("ZPA_CUSTOMER_ID")
+		clientID = os.Getenv(ZPA_CLIENT_ID)
+		clientSecret = os.Getenv(ZPA_CLIENT_SECRET)
+		customerID = os.Getenv(ZPA_CUSTOMER_ID)
 	}
 	if rawUrl == "" {
 		rawUrl = defaultBaseURL
