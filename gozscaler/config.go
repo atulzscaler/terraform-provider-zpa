@@ -117,7 +117,7 @@ func containsInt(codes []int, code int) bool {
 // return empty slice to enable retry on all connection & server errors.
 // or return []int{429}  to retry on only TooManyRequests error
 func getRetryOnStatusCodes() []int {
-	return []int{}
+	return []int{http.StatusTooManyRequests}
 }
 
 // Used to make http client retry on provided list of response status codes
