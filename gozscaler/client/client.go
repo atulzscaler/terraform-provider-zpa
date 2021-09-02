@@ -14,19 +14,8 @@ import (
 	"github.com/google/go-querystring/query"
 )
 
-// Need to implement exponential back off to comply with the API rate limit. https://help.zscaler.com/zpa/about-rate-limiting
-// 20 times in a 10 second interval for a GET call.
-// 10 times in a 10 second interval for any POST/PUT/DELETE call.
-// See example: https://github.com/okta/terraform-provider-okta/blob/master/okta/config.go
-type AuthToken struct {
-	TokenType   string `json:"token_type"`
-	AccessToken string `json:"access_token"`
-	//ExpiresIn   string `json:"expires_in"`
-}
-
 type Client struct {
-	Config    *gozscaler.Config
-	AuthToken *AuthToken
+	Config *gozscaler.Config
 }
 
 // NewClient returns a new client for the specified apiKey.
@@ -39,12 +28,14 @@ func NewClient(config *gozscaler.Config) (c *Client) {
 }
 
 func (client *Client) NewRequestDo(method, url string, options, body, v interface{}) (*http.Response, error) {
-	if client.AuthToken == nil || client.AuthToken.AccessToken == "" {
+	client.Config.AuthMu.Lock()
+	if client.Config.AuthToken == nil || client.Config.AuthToken.AccessToken == "" {
 		if client.Config.ClientID == "" || client.Config.ClientSecret == "" {
 			log.Printf("[ERROR] No client credentials were provided. Please set %s, %s and %s enviroment variables.\n", gozscaler.ZPA_CLIENT_ID, gozscaler.ZPA_CLIENT_SECRET, gozscaler.ZPA_CUSTOMER_ID)
-
+			client.Config.AuthMu.Unlock()
 			return nil, errors.New("no client credentials were provided")
 		}
+		log.Printf("[TRACE] Getting access token for %s=%s\n", gozscaler.ZPA_CLIENT_ID, client.Config.ClientID)
 		formData := []byte(fmt.Sprintf("client_id=%s&client_secret=%s",
 			client.Config.ClientID,
 			client.Config.ClientSecret,
@@ -53,7 +44,7 @@ func (client *Client) NewRequestDo(method, url string, options, body, v interfac
 		req, err := http.NewRequest("POST", client.Config.BaseURL.String()+"/signin", bytes.NewBuffer(formData))
 		if err != nil {
 			log.Printf("[ERROR] Failed to signin the user %s=%s, err: %v\n", gozscaler.ZPA_CLIENT_ID, client.Config.ClientID, err)
-
+			client.Config.AuthMu.Unlock()
 			return nil, err
 		}
 
@@ -63,29 +54,29 @@ func (client *Client) NewRequestDo(method, url string, options, body, v interfac
 
 		if err != nil {
 			log.Printf("[ERROR] Failed to signin the user %s=%s, err: %v\n", gozscaler.ZPA_CLIENT_ID, client.Config.ClientID, err)
-
+			client.Config.AuthMu.Unlock()
 			return nil, err
 		}
 		defer resp.Body.Close()
 		respBody, err := io.ReadAll(resp.Body)
 		if err != nil {
 			log.Printf("[ERROR] Failed to signin the user %s=%s, err: %v\n", gozscaler.ZPA_CLIENT_ID, client.Config.ClientID, err)
-
+			client.Config.AuthMu.Unlock()
 			return nil, err
 		}
 
-		var a AuthToken
+		var a gozscaler.AuthToken
 		err = json.Unmarshal(respBody, &a)
 		if err != nil {
 			log.Printf("[ERROR] Failed to signin the user %s=%s, err: %v\n", gozscaler.ZPA_CLIENT_ID, client.Config.ClientID, err)
-
+			client.Config.AuthMu.Unlock()
 			return nil, err
 		}
 
 		// we need keep auth token for future http request
-		client.AuthToken = &a
+		client.Config.AuthToken = &a
 	}
-
+	client.Config.AuthMu.Unlock()
 	req, err := client.newRequest(method, url, options, body)
 	if err != nil {
 		return nil, err
@@ -96,11 +87,13 @@ func (client *Client) NewRequestDo(method, url string, options, body, v interfac
 
 // Generating the Http request
 func (client *Client) newRequest(method, urlPath string, options, body interface{}) (*http.Request, error) {
-	if client.AuthToken == nil || client.AuthToken.AccessToken == "" {
+	client.Config.AuthMu.Lock()
+	if client.Config.AuthToken == nil || client.Config.AuthToken.AccessToken == "" {
 		log.Printf("[ERROR] Failed to signin the user %s=%s\n", gozscaler.ZPA_CLIENT_ID, client.Config.ClientID)
+		client.Config.AuthMu.Unlock()
 		return nil, fmt.Errorf("failed to signin the user %s=%s", gozscaler.ZPA_CLIENT_ID, client.Config.ClientID)
 	}
-
+	client.Config.AuthMu.Unlock()
 	var buf io.ReadWriter
 	if body != nil {
 		buf = new(bytes.Buffer)
@@ -142,7 +135,7 @@ func (client *Client) newRequest(method, urlPath string, options, body interface
 	// 	req.Header.Add("Content-Type", "application/x-www-form-urlencoded")
 	// }
 
-	req.Header.Set("Authorization", fmt.Sprintf("Bearer %s", client.AuthToken.AccessToken))
+	req.Header.Set("Authorization", fmt.Sprintf("Bearer %s", client.Config.AuthToken.AccessToken))
 	req.Header.Add("Content-Type", "application/json")
 	//req.Header.Add("Accept", "application/json")
 	return req, nil
