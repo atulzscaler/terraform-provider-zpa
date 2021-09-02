@@ -42,3 +42,5 @@ website/vendor
 *.winfile eol=crlf
 /.vs
 node_modules
+vendor
+vendor/modules.txt
