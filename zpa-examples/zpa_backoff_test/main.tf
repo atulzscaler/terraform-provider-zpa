@@ -11,7 +11,7 @@ provider "zpa" {}
 
 
  resource "zpa_segment_group" "sg_all_other_services" {
-   count = "10"
+   count = "5"
    name = "Terraform-${count.index + 1}"
    description = "All Other Services"
    enabled = true
