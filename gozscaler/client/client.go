@@ -50,7 +50,7 @@ func (client *Client) NewRequestDo(method, url string, options, body, v interfac
 
 		req.Header.Add("Content-Type", "application/x-www-form-urlencoded")
 
-		resp, err := client.Config.HTTPClient.Do(req)
+		resp, err := client.Config.GetHTTPClient().Do(req)
 
 		if err != nil {
 			return nil, err
@@ -129,7 +129,7 @@ func (client *Client) newRequest(method, urlPath string, options, body interface
 }
 
 func (client *Client) do(req *http.Request, v interface{}) (*http.Response, error) {
-	resp, err := client.Config.HTTPClient.Do(req)
+	resp, err := client.Config.GetHTTPClient().Do(req)
 	if err != nil {
 		return nil, err
 	}
