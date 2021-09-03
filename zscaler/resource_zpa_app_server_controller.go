@@ -112,7 +112,7 @@ func resourceApplicationServerUpdate(d *schema.ResourceData, m interface{}) erro
 		log.Println("The AppServerGroupID, name or address has been changed")
 
 		if _, err := zClient.appservercontroller.Update(d.Id(), appservercontroller.ApplicationServer{
-			AppServerGroupIds: resourceTypeSetToStringSlice(d.Get("app_server_group_ids").(*schema.Set)),
+			AppServerGroupIds: SetToStringSlice(d.Get("app_server_group_ids").(*schema.Set)),
 			Name:              d.Get("name").(string),
 			Address:           d.Get("address").(string),
 			Enabled:           d.Get("enabled").(bool),
@@ -180,7 +180,7 @@ func expandCreateAppServerRequest(d *schema.ResourceData) appservercontroller.Ap
 	applicationServer := appservercontroller.ApplicationServer{
 		Address:           d.Get("address").(string),
 		ConfigSpace:       d.Get("config_space").(string),
-		AppServerGroupIds: resourceTypeSetToStringSlice(d.Get("app_server_group_ids").(*schema.Set)),
+		AppServerGroupIds: SetToStringSlice(d.Get("app_server_group_ids").(*schema.Set)),
 		Description:       d.Get("description").(string),
 		Enabled:           d.Get("enabled").(bool),
 		Name:              d.Get("name").(string),

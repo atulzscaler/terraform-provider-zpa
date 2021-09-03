@@ -311,7 +311,7 @@ func expandClientlessApps(d *schema.ResourceData) []browseraccess.ClientlessApps
 			clientlessApp := app.(map[string]interface{})
 			clientlessApps[i] = browseraccess.ClientlessApps{
 				AllowOptions: clientlessApp["allow_options"].(bool),
-				// AppId:               clientlessApp["appid"].(int64),
+				// AppId:               clientlessApp["app_id"].(int64),
 				ApplicationPort:     clientlessApp["application_port"].(int),
 				ApplicationProtocol: clientlessApp["application_protocol"].(string),
 				CertificateId:       clientlessApp["certificate_id"].(int),
@@ -342,13 +342,13 @@ func expandClientlessAppServerGroups(d *schema.ResourceData) []browseraccess.App
 			serverGroups[i] = browseraccess.AppServerGroups{
 				// Name: serverGroup["name"].(string),
 				ID: serverGroup["id"].(int),
-				// ConfigSpace:      serverGroup["configspace"].(string),
-				// CreationTime:     serverGroup["creationtime"].(int32),
+				// ConfigSpace:      serverGroup["config_space"].(string),
+				// CreationTime:     serverGroup["creation_time"].(int32),
 				// Description:      serverGroup["description"].(string),
 				// Enabled:          serverGroup["enabled"].(bool),
-				// DynamicDiscovery: serverGroup["dynamicdiscovery"].(bool),
+				// DynamicDiscovery: serverGroup["dynamic_discovery"].(bool),
 				// ModifiedBy:       serverGroup["modifiedby"].(int64),
-				// ModifiedTime:     serverGroup["modifiedtime"].(int32),
+				// ModifiedTime:     serverGroup["modified_time"].(int32),
 			}
 		}
 	}
@@ -361,13 +361,13 @@ func flattenBaClientlessApps(clientlessApp *browseraccess.BrowserAccess) []inter
 	for i, clientlessApp := range clientlessApp.ClientlessApps {
 		clientlessApps[i] = map[string]interface{}{
 			"allow_options": clientlessApp.AllowOptions,
-			// "appid":               clientlessApp.AppId,
+			// "app_id":               clientlessApp.AppId,
 			"application_port":     clientlessApp.ApplicationPort,
 			"application_protocol": clientlessApp.ApplicationProtocol,
 			"certificate_id":       clientlessApp.CertificateId,
 			"certificate_name":     clientlessApp.CertificateName,
 			"cname":                clientlessApp.Cname,
-			//"creationtime":        clientlessApp.CreationTime,
+			//"creation_time":        clientlessApp.CreationTime,
 			"description":  clientlessApp.Description,
 			"domain":       clientlessApp.Domain,
 			"enabled":      clientlessApp.Enabled,
@@ -375,7 +375,7 @@ func flattenBaClientlessApps(clientlessApp *browseraccess.BrowserAccess) []inter
 			"id":           clientlessApp.ID,
 			"local_domain": clientlessApp.LocalDomain,
 			//"modifiedby":          clientlessApp.ModifiedBy,
-			//"modifiedtime":        clientlessApp.ModifiedTime,
+			//"modified_time":        clientlessApp.ModifiedTime,
 			"name":                 clientlessApp.Name,
 			"path":                 clientlessApp.Path,
 			"trust_untrusted_cert": clientlessApp.TrustUntrustedCert,
@@ -391,13 +391,13 @@ func flattenClientlessAppServerGroups(serverGroup *browseraccess.BrowserAccess) 
 		serverGroups[i] = map[string]interface{}{
 			// "name":             val.Name,
 			"id": val.ID,
-			// "configspace":      val.ConfigSpace,
-			// "creationtime":     val.CreationTime,
+			// "config_space":      val.ConfigSpace,
+			// "creation_time":     val.CreationTime,
 			// "description":      val.Description,
 			// "enabled":          val.Enabled,
-			// "dynamicdiscovery": val.DynamicDiscovery,
+			// "dynamic_discovery": val.DynamicDiscovery,
 			// "modifiedby":       val.ModifiedBy,
-			// "modifiedtime":     val.ModifiedTime,
+			// "modified_time":     val.ModifiedTime,
 		}
 	}
 

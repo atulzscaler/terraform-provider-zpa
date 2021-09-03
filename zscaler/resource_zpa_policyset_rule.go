@@ -1,5 +1,6 @@
 package zscaler
 
+/*
 import (
 	"log"
 	"strconv"
@@ -260,7 +261,7 @@ func resourcePolicySetRead(d *schema.ResourceData, m interface{}) error {
 		return err
 	}
 
-	resp, _, err := zClient.policysetrule.Get(policySetId, ruleId)
+	resp, _, err := zClient.policysetrule.Get(&policySetId, ruleId)
 	if err != nil {
 		if err.(*client.ErrorResponse).IsObjectNotFound() {
 			log.Printf("[WARN] Removing policy rule %s from state because it no longer exists in ZPA", d.Id())
@@ -412,3 +413,4 @@ func flattenPolicyRuleOperands(conditionOperand []policysetrule.Operands) []inte
 
 // Need to flatten the Operands menu, which is a slice inside the slice Conditions
 //https://help.zscaler.com/zpa/api-reference#/policy-set-controller/addRuleToPolicySet
+*/
