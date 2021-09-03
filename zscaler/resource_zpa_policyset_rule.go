@@ -1,6 +1,5 @@
 package zscaler
 
-/*
 import (
 	"log"
 	"strconv"
@@ -8,6 +7,7 @@ import (
 	"github.com/SecurityGeekIO/terraform-provider-zpa/gozscaler/client"
 	"github.com/SecurityGeekIO/terraform-provider-zpa/gozscaler/policysetrule"
 	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/schema"
+	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/validation"
 )
 
 func resourcePolicySetRule() *schema.Resource {
@@ -24,7 +24,26 @@ func resourcePolicySetRule() *schema.Resource {
 				Type:        schema.TypeString,
 				Optional:    true,
 				Description: "  This is for providing the rule action.",
+				ValidateFunc: validation.StringInSlice([]string{
+					"ALLOW",
+					"DENY",
+					"LOG",
+					"RE_AUTH",
+					"NEVER",
+					"BYPASS",
+					"INTERCEPT",
+					"NO_DOWNLOAD",
+					"BYPASS_RE_AUTH",
+					"INTERCEPT_ACCESSIBLE",
+					"ISOLATE",
+					"BYPASS_ISOLATE",
+				}, false),
 			},
+			// "action_id": {
+			//  Type:        schema.TypeInt,
+			//  Optional:    true,
+			//  Description: "This field defines the description of the server.",
+			// },
 			"bypass_default_rule": {
 				Type:     schema.TypeBool,
 				Optional: true,
@@ -94,98 +113,120 @@ func resourcePolicySetRule() *schema.Resource {
 				Type:     schema.TypeString,
 				Optional: true,
 			},
-			// "action_id": {
-			//  Type:        schema.TypeInt,
-			//  Optional:    true,
-			//  Description: "This field defines the description of the server.",
-			// },
-			// "server_groups": {
-			//  Type:        schema.TypeList,
-			//  Optional:    true,
-			//  Description: "ID of the server group.",
-			//  Elem: &schema.Resource{
-			//      Schema: map[string]*schema.Schema{
-			//          "id": {
-			//              Type:     schema.TypeList,
-			//              Optional: true,
-			//              Elem:     &schema.Schema{Type: schema.TypeInt},
-			//          },
-			//      },
-			//  },
-			// },
-			// "app_connector_groups": {
-			//  Type:        schema.TypeList,
-			//  Optional:    true,
-			//  Description: "This field is a json array of app-connector-id only.",
-			//  Elem: &schema.Resource{
-			//      Schema: map[string]*schema.Schema{
-			//          "id": {
-			//              Type:     schema.TypeList,
-			//              Optional: true,
-			//              Elem:     &schema.Schema{Type: schema.TypeInt},
-			//          },
-			//      },
-			//  },
-			// },
-			// "conditions": {
-			//  Type:        schema.TypeList,
-			//  Optional:    true,
-			//  Description: "This is for proviidng the set of conditions for the policy.",
-			//  Elem: &schema.Resource{
-			//      Schema: map[string]*schema.Schema{
-			//          "id": {
-			//              Type:     schema.TypeInt,
-			//              Computed: true,
-			//          },
-			//          "negated": {
-			//              Type:     schema.TypeBool,
-			//              Optional: true,
-			//          },
-			//          "operator": {
-			//              Type:     schema.TypeList,
-			//              Optional: true,
-			//              Elem:     &schema.Schema{Type: schema.TypeString},
-			//          },
-			//          "operands": {
-			//              Type:        schema.TypeList,
-			//              Optional:    true,
-			//              Description: "This signifies the various policy criteria.",
-			//              Elem: &schema.Resource{
-			//                  Schema: map[string]*schema.Schema{
-			//                      "id": {
-			//                          Type:     schema.TypeInt,
-			//                          Computed: true,
-			//                      },
-			//                      "idp_id": {
-			//                          Type:     schema.TypeInt,
-			//                          Computed: true,
-			//                      },
-			//                      "lhs": {
-			//                          Type:     schema.TypeString,
-			//                          Computed: true,
-			//                      },
-			//                      "name": {
-			//                          Type:     schema.TypeString,
-			//                          Computed: true,
-			//                      },
-			//                      "object_type": {
-			//                          Type:     schema.TypeList,
-			//                          Optional: true,
-			//                          Elem:     &schema.Schema{Type: schema.TypeString},
-			//                          Description: "  This is for specifying the policy critiera.",
-			//                      },
-			//                      "rhs": {
-			//                          Type:        schema.TypeString,
-			//                          Optional:    true,
-			//                          Description: "This denotes the value for the given object type. Its value depends upon the key.",
-			//                      },
-			//                  },
-			//              },
-			//          },
-			//      },
-			//  },
-			// },
-
+			"server_groups": {
+				Type:        schema.TypeList,
+				Optional:    true,
+				Description: "ID of the server group.",
+				Elem: &schema.Resource{
+					Schema: map[string]*schema.Schema{
+						"id": {
+							Type:     schema.TypeInt,
+							Optional: true,
+						},
+						// "id": {
+						// 	Type:     schema.TypeSet,
+						// 	Optional: true,
+						// 	Elem:     &schema.Schema{Type: schema.TypeInt},
+						// },
+					},
+				},
+			},
+			"app_connector_groups": {
+				Type:        schema.TypeList,
+				Optional:    true,
+				Description: "This field is a json array of app-connector-id only.",
+				Elem: &schema.Resource{
+					Schema: map[string]*schema.Schema{
+						"id": {
+							Type:     schema.TypeInt,
+							Optional: true,
+						},
+						// "id": {
+						// 	Type:     schema.TypeSet,
+						// 	Optional: true,
+						// 	Elem:     &schema.Schema{Type: schema.TypeInt},
+						// },
+					},
+				},
+			},
+			"conditions": {
+				Type:        schema.TypeList,
+				Optional:    true,
+				Description: "This is for proviidng the set of conditions for the policy.",
+				Elem: &schema.Resource{
+					Schema: map[string]*schema.Schema{
+						"id": {
+							Type:     schema.TypeInt,
+							Computed: true,
+						},
+						"negated": {
+							Type:     schema.TypeBool,
+							Optional: true,
+						},
+						"operator": {
+							Type:     schema.TypeList,
+							Optional: true,
+							Elem:     &schema.Schema{Type: schema.TypeString},
+							ValidateFunc: validation.StringInSlice([]string{
+								"AND",
+								"OR",
+							}, false),
+						},
+						"operands": {
+							Type:        schema.TypeList,
+							Optional:    true,
+							Description: "This signifies the various policy criteria.",
+							Elem: &schema.Resource{
+								Schema: map[string]*schema.Schema{
+									"id": {
+										Type:     schema.TypeInt,
+										Computed: true,
+									},
+									"idp_id": {
+										Type:     schema.TypeInt,
+										Computed: true,
+									},
+									"lhs": {
+										Type:     schema.TypeString,
+										Computed: true,
+									},
+									"name": {
+										Type:     schema.TypeString,
+										Computed: true,
+									},
+									"object_type": {
+										Type:        schema.TypeList,
+										Optional:    true,
+										Elem:        &schema.Schema{Type: schema.TypeString},
+										Description: "  This is for specifying the policy critiera.",
+										ValidateFunc: validation.StringInSlice([]string{
+											"USER",
+											"USER_GROUP",
+											"LOCATION",
+											"APP",
+											"APP_GROUP",
+											"SAML",
+											"POSTURE",
+											"CLIENT_TYPE",
+											"IDP",
+											"TRUSTED_NETWORK",
+											"EDGE_CONNECTOR_GROUP",
+											"MACHINE_GRP",
+											"SCIM",
+											"SCIM_GROUP",
+										}, false),
+									},
+									"rhs": {
+										Type:        schema.TypeString,
+										Optional:    true,
+										Description: "This denotes the value for the given object type. Its value depends upon the key.",
+									},
+								},
+							},
+						},
+					},
+				},
+			},
 		},
 	}
 }
@@ -338,12 +379,12 @@ func flattenPolicyRuleConditions(conditions []policysetrule.Conditions) []interf
 	for i, ruleConditionItems := range conditions {
 		ruleConditions[i] = map[string]interface{}{
 			"creation_time": ruleConditionItems.CreationTime,
-			"id":           ruleConditionItems.ID,
-			"modifiedby":   ruleConditionItems.ModifiedBy,
+			"id":            ruleConditionItems.ID,
+			"modifiedby":    ruleConditionItems.ModifiedBy,
 			"modified_time": ruleConditionItems.ModifiedTime,
-			"negated":      ruleConditionItems.Negated,
-			"operator":     ruleConditionItems.Operator,
-			"operands":     flattenPolicyRuleOperands(ruleConditionItems.Operands),
+			"negated":       ruleConditionItems.Negated,
+			"operator":      ruleConditionItems.Operator,
+			"operands":      flattenPolicyRuleOperands(ruleConditionItems.Operands),
 		}
 	}
 
@@ -355,14 +396,14 @@ func flattenPolicyRuleOperands(conditionOperand []policysetrule.Operands) []inte
 	for i, operandItems := range conditionOperand {
 		conditionOperands[i] = map[string]interface{}{
 			"creation_time": operandItems.CreationTime,
-			"id":           operandItems.ID,
+			"id":            operandItems.ID,
 			"idp_id":        operandItems.IdpID,
-			"lhs":          operandItems.LHS,
-			"modifiedby":   operandItems.ModifiedBy,
+			"lhs":           operandItems.LHS,
+			"modifiedby":    operandItems.ModifiedBy,
 			"modified_time": operandItems.ModifiedTime,
-			"name":         operandItems.Name,
+			"name":          operandItems.Name,
 			"object_type":   operandItems.ObjectType,
-			"rhs":          operandItems.RHS,
+			"rhs":           operandItems.RHS,
 		}
 	}
 
@@ -371,4 +412,3 @@ func flattenPolicyRuleOperands(conditionOperand []policysetrule.Operands) []inte
 
 // Need to flatten the Operands menu, which is a slice inside the slice Conditions
 //https://help.zscaler.com/zpa/api-reference#/policy-set-controller/addRuleToPolicySet
-*/

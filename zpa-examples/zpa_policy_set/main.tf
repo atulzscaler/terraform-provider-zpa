@@ -20,23 +20,37 @@ output "all_policy_set_global" {
 
 
 // resource "zpa_policyset_rule" "example" {
-
 //   name                          = "example1"
 //   description                   = "example1"
 //   action                        = "ALLOW"
 //   ruleorder                     = 1
 //   policysetid = data.zpa_policy_set_global.all.id
 //   policytype = 1
-//   // conditions {
-//   //   operands {
-//   //       name = "Example"
-//   //       objecttype = "APP"
-//   //       operator = "AND"
-//   //   }
-//   //   operands {
-//   //       name = "SGIO-User-Okta"
-//   //       objecttype = ["SCIM_GROUP"]
-//   //       operator = "AND"  
-//   //   }
-//   // }
 // }
+
+resource "zpa_policyset_rule" "example" {
+  name                          = "example1"
+  description                   = "example1"
+  action                        = "ALLOW"
+  ruleorder                     = 1
+  policy_set_id = data.zpa_policy_set_global.all.id
+  conditions {
+      negated = false
+    operands {
+        object_type = "APP"
+        lhs = "id"
+        rhs = data.zpa_application_segment.all_other_services.id
+        operator = "AND"  
+    }
+    operands {
+        name = "SGIO-User-Okta"
+        object_type = ["IDP"]
+        operator = "AND"  
+    }
+    operands {
+        name = "SGIO-User-Okta"
+        object_type = ["IDP"]
+        operator = "AND"  
+    }
+  }
+}
