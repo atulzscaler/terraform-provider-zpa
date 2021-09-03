@@ -1,6 +1,5 @@
 package zscaler
 
-/*
 import (
 	"log"
 	"strconv"
@@ -251,17 +250,16 @@ func resourcePolicySetCreate(d *schema.ResourceData, m interface{}) error {
 func resourcePolicySetRead(d *schema.ResourceData, m interface{}) error {
 	zClient := m.(*Client)
 
-	policySetId, err := strconv.ParseInt(d.Id(), 10, 64)
+	globalPolicySet, _, err := zClient.policysetglobal.Get()
 	if err != nil {
 		return err
 	}
-
 	ruleId, err := strconv.ParseInt(d.Id(), 10, 64)
 	if err != nil {
 		return err
 	}
 
-	resp, _, err := zClient.policysetrule.Get(&policySetId, ruleId)
+	resp, _, err := zClient.policysetrule.Get(globalPolicySet.ID, ruleId)
 	if err != nil {
 		if err.(*client.ErrorResponse).IsObjectNotFound() {
 			log.Printf("[WARN] Removing policy rule %s from state because it no longer exists in ZPA", d.Id())
@@ -272,7 +270,7 @@ func resourcePolicySetRead(d *schema.ResourceData, m interface{}) error {
 		return err
 	}
 
-	log.Printf("[INFO] Getting Policy Set Global Rules:\n%+v\n", resp)
+	log.Printf("[INFO] Getting Policy Set Rule:\n%+v\n", resp)
 	d.SetId(strconv.FormatInt(int64(resp.ID), 10))
 	_ = d.Set("action", resp.Action)
 	_ = d.Set("action_id", resp.ActionID)
@@ -286,10 +284,10 @@ func resourcePolicySetRead(d *schema.ResourceData, m interface{}) error {
 	_ = d.Set("policy_set_id", resp.PolicySetID)
 	_ = d.Set("policy_type", resp.PolicyType)
 	_ = d.Set("priority", resp.Priority)
-	_ = d.Set("reauth_idle_timeout", resp.ReauthIdleTimeout)
-	_ = d.Set("reauth_timeout", resp.ReauthTimeout)
+	//_ = d.Set("reauth_idle_timeout", resp.ReauthIdleTimeout)
+	//_ = d.Set("reauth_timeout", resp.ReauthTimeout)
 	_ = d.Set("rule_order", resp.RuleOrder)
-	_ = d.Set("zpn_cbi_profile_id", resp.ZpnCbiProfileID)
+	//_ = d.Set("zpn_cbi_profile_id", resp.ZpnCbiProfileID)
 	_ = d.Set("conditions", flattenPolicyRuleConditions(resp.Conditions))
 
 	return nil
@@ -298,12 +296,18 @@ func resourcePolicySetRead(d *schema.ResourceData, m interface{}) error {
 // Please review Update operations. It needs to pull the policySetId and RuleId in order to update a specific rule.
 func resourcePolicySetUpdate(d *schema.ResourceData, m interface{}) error {
 	zClient := m.(*Client)
-
-	ruleId := d.Id()
+	globalPolicySet, _, err := zClient.policysetglobal.Get()
+	if err != nil {
+		return err
+	}
+	ruleId, err := strconv.ParseInt(d.Id(), 10, 64)
+	if err != nil {
+		return err
+	}
 	log.Printf("[INFO] Updating policy rule ID: %v\n", ruleId)
 	req := expandCreatePolicyRule(d)
 
-	if _, err := zClient.policysetrule.Update(ruleId, req); err != nil {
+	if _, err := zClient.policysetrule.Update(globalPolicySet.ID, ruleId, &req); err != nil {
 		return err
 	}
 
@@ -313,7 +317,10 @@ func resourcePolicySetUpdate(d *schema.ResourceData, m interface{}) error {
 // Please review Delete operations. It needs to pull the policySetId and RuleId in order to delete a specific rule.
 func resourcePolicySetDelete(d *schema.ResourceData, m interface{}) error {
 	zClient := m.(*Client)
-
+	globalPolicySet, _, err := zClient.policysetglobal.Get()
+	if err != nil {
+		return err
+	}
 	id, err := strconv.ParseInt(d.Id(), 10, 64)
 	if err != nil {
 		return err
@@ -321,7 +328,7 @@ func resourcePolicySetDelete(d *schema.ResourceData, m interface{}) error {
 
 	log.Printf("[INFO] Deleting IP list with id %v\n", id)
 
-	if _, err := zClient.policysetrule.Delete(); err != nil {
+	if _, err := zClient.policysetrule.Delete(globalPolicySet.ID, id); err != nil {
 		return err
 	}
 
@@ -410,7 +417,3 @@ func flattenPolicyRuleOperands(conditionOperand []policysetrule.Operands) []inte
 
 	return conditionOperands
 }
-
-// Need to flatten the Operands menu, which is a slice inside the slice Conditions
-//https://help.zscaler.com/zpa/api-reference#/policy-set-controller/addRuleToPolicySet
-*/
