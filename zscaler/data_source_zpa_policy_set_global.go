@@ -222,9 +222,7 @@ func dataSourcePolicySetGlobal() *schema.Resource {
 
 func dataSourcePolicySetGlobalRead(d *schema.ResourceData, m interface{}) error {
 	zClient := m.(*Client)
-
-	id := d.Get("id").(string)
-	log.Printf("[INFO] Getting data for global policy set %s\n", id)
+	log.Printf("[INFO] Getting data for global policy set\n")
 
 	resp, _, err := zClient.policysetglobal.Get()
 	if err != nil {

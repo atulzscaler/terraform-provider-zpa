@@ -19,24 +19,14 @@ output "all_policy_set_global" {
 
 
 
-// resource "zpa_policyset_rule" "example" {
+resource "zpa_policyset_rule" "example2" {
 
-//   name                          = "example1"
-//   description                   = "example1"
-//   action                        = "ALLOW"
-//   ruleorder                     = 1
-//   policysetid = data.zpa_policy_set_global.all.id
-//   policytype = 1
-//   // conditions {
-//   //   operands {
-//   //       name = "Example"
-//   //       objecttype = "APP"
-//   //       operator = "AND"
-//   //   }
-//   //   operands {
-//   //       name = "SGIO-User-Okta"
-//   //       objecttype = ["SCIM_GROUP"]
-//   //       operator = "AND"  
-//   //   }
-//   // }
-// }
+  name                          = "example2"
+  description                   = "example2"
+  action                        = "ALLOW"
+  rule_order                     = 1
+  policy_set_id = data.zpa_policy_set_global.all.id
+  policy_type = 1
+}
+
+
