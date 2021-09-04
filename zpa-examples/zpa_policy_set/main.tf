@@ -13,17 +13,17 @@ provider "zpa" {}
 data "zpa_policy_set_global" "all" {
 }
 
-output "all_zpa_policy_set_global" {
-  value = data.zpa_policy_set_global.all
-}
+// output "all_zpa_policy_set_global" {
+//   value = data.zpa_policy_set_global.all
+// }
 
 data "zpa_application_segment" "all_other_services"{
   id = 216196257331283285
 }
 
-data "zpa_idp_controller" "okta"{
-  id = 216196257331281956
-}
+// data "zpa_idp_controller" "okta"{
+//   id = 216196257331281956
+// }
 
 resource "zpa_policyset_rule" "all_other_services" {
   name                          = "All Other Services"
@@ -42,4 +42,8 @@ resource "zpa_policyset_rule" "all_other_services" {
       rhs = data.zpa_application_segment.all_other_services.id 
     }
   }
+}
+
+output "all_zpa_policyset_rule" {
+  value = zpa_policyset_rule.all_other_services
 }
