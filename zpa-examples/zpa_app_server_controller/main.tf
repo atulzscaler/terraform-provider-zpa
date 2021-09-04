@@ -20,7 +20,7 @@ resource "zpa_server_group" "example1" {
   description = "example1"
   enabled = true
   dynamic_discovery = false
-  appconnector_groups {
+  app_connector_groups {
     id = data.zpa_app_connector_group.example.id
   }
 }
@@ -30,7 +30,7 @@ resource "zpa_server_group" "example2" {
   description = "example2"
   enabled = true
   dynamic_discovery = false
-  appconnector_groups {
+  app_connector_groups {
     id = data.zpa_app_connector_group.example.id
   }
 }

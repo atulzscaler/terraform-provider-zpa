@@ -12,7 +12,7 @@ const (
 
 type ApplicationServer struct {
 	Address           string   `json:"address"`
-	AppServerGroupIds []string `json:"appServerGroupIds"` // Don't omitempty. We need empty slice in JSON for update.
+	AppServerGroupIds []string `json:"appServerGroupIds"`
 	ConfigSpace       string   `json:"configSpace,omitempty"`
 	CreationTime      int32    `json:"creationTime,string"`
 	Description       string   `json:"description"`
