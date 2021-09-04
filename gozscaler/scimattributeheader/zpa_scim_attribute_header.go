@@ -28,7 +28,7 @@ type ScimAttrHeader struct {
 	Uniqueness      bool     `json:"uniqueness,"`
 }
 
-func (service *Service) Get(ScimAttrHeaderId, IdpId int64) (*ScimAttrHeader, *http.Response, error) {
+func (service *Service) Get(IdpId, ScimAttrHeaderId int64) (*ScimAttrHeader, *http.Response, error) {
 	v := new(ScimAttrHeader)
 	relativeURL := fmt.Sprintf(userConfig+service.Client.Config.CustomerID+"/idp/%d/scimattribute/%d", IdpId, ScimAttrHeaderId)
 	resp, err := service.Client.NewRequestDo("GET", relativeURL, nil, nil, v)

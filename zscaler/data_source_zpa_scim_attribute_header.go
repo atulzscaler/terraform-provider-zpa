@@ -1,5 +1,6 @@
 package zscaler
 
+/*
 import (
 	"strconv"
 
@@ -84,15 +85,16 @@ func dataSourceScimAttributeHeaderRead(d *schema.ResourceData, m interface{}) er
 	// id := d.Get("id").(string)
 	// log.Printf("[INFO] Getting data for scim group %s\n", id)
 
-	id, err := strconv.ParseInt(d.Get("id").(string), 10, 64)
+	// id, err := strconv.ParseInt(d.Get("id").(string), 10, 64)
+	// if err != nil {
+	// 	return err
+	// }
+
+	idp, _, err := zClient.scimattributeheader.Get()
 	if err != nil {
 		return err
 	}
 
-	resp, _, err := zClient.scimattributeheader.Get(id)
-	if err != nil {
-		return err
-	}
 
 	// d.SetId(resp.ID)
 	d.SetId(strconv.FormatInt(int64(resp.ID), 10))
@@ -130,3 +132,4 @@ func dataSourceScimAttributeHeaderRead(d *schema.ResourceData, m interface{}) er
 // 	}
 // 	return scimGroups
 // }
+*/
