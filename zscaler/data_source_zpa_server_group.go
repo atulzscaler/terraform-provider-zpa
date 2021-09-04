@@ -17,7 +17,7 @@ func dataSourceServerGroup() *schema.Resource {
 				Elem: &schema.Resource{
 					Schema: map[string]*schema.Schema{
 						"id": {
-							Type:     schema.TypeInt,
+							Type:     schema.TypeString,
 							Computed: true,
 						},
 						"name": {
@@ -41,7 +41,7 @@ func dataSourceServerGroup() *schema.Resource {
 							Computed: true,
 						},
 						"creation_time": {
-							Type:     schema.TypeInt,
+							Type:     schema.TypeString,
 							Computed: true,
 						},
 						"description": {
@@ -57,11 +57,11 @@ func dataSourceServerGroup() *schema.Resource {
 							Computed: true,
 						},
 						"geolocation_id": {
-							Type:     schema.TypeInt,
+							Type:     schema.TypeString,
 							Computed: true,
 						},
 						"id": {
-							Type:     schema.TypeInt,
+							Type:     schema.TypeString,
 							Computed: true,
 						},
 						"latitude": {
@@ -77,11 +77,11 @@ func dataSourceServerGroup() *schema.Resource {
 							Computed: true,
 						},
 						"modifiedby": {
-							Type:     schema.TypeInt,
+							Type:     schema.TypeString,
 							Computed: true,
 						},
 						"modified_time": {
-							Type:     schema.TypeInt,
+							Type:     schema.TypeString,
 							Computed: true,
 						},
 						"name": {
@@ -94,7 +94,7 @@ func dataSourceServerGroup() *schema.Resource {
 							Elem: &schema.Resource{
 								Schema: map[string]*schema.Schema{
 									"creation_time": {
-										Type:     schema.TypeInt,
+										Type:     schema.TypeString,
 										Computed: true,
 									},
 									"description": {
@@ -110,19 +110,19 @@ func dataSourceServerGroup() *schema.Resource {
 										Computed: true,
 									},
 									"id": {
-										Type:     schema.TypeInt,
+										Type:     schema.TypeString,
 										Computed: true,
 									},
 									"issued_cert_id": {
-										Type:     schema.TypeInt,
+										Type:     schema.TypeString,
 										Computed: true,
 									},
 									"modifiedby": {
-										Type:     schema.TypeInt,
+										Type:     schema.TypeString,
 										Computed: true,
 									},
 									"modified_time": {
-										Type:     schema.TypeInt,
+										Type:     schema.TypeString,
 										Computed: true,
 									},
 									"name": {
@@ -130,7 +130,7 @@ func dataSourceServerGroup() *schema.Resource {
 										Optional: true,
 									},
 									"upgrade_attempt": {
-										Type:     schema.TypeInt,
+										Type:     schema.TypeString,
 										Computed: true,
 									},
 								},
@@ -158,7 +158,7 @@ func dataSourceServerGroup() *schema.Resource {
 										Computed: true,
 									},
 									"id": {
-										Type:     schema.TypeInt,
+										Type:     schema.TypeString,
 										Computed: true,
 									},
 									"dynamic_discovery": {
@@ -170,7 +170,7 @@ func dataSourceServerGroup() *schema.Resource {
 										Computed: true,
 									},
 									"modified_time": {
-										Type:     schema.TypeInt,
+										Type:     schema.TypeString,
 										Computed: true,
 									},
 									"name": {
@@ -193,7 +193,7 @@ func dataSourceServerGroup() *schema.Resource {
 							Computed: true,
 						},
 						"version_profile_id": {
-							Type:     schema.TypeInt,
+							Type:     schema.TypeString,
 							Computed: true,
 						},
 					},
@@ -204,7 +204,7 @@ func dataSourceServerGroup() *schema.Resource {
 				Computed: true,
 			},
 			"creation_time": {
-				Type:     schema.TypeInt,
+				Type:     schema.TypeString,
 				Computed: true,
 			},
 			"description": {
@@ -232,7 +232,7 @@ func dataSourceServerGroup() *schema.Resource {
 				Computed: true,
 			},
 			"modified_time": {
-				Type:     schema.TypeInt,
+				Type:     schema.TypeString,
 				Computed: true,
 			},
 			"name": {
@@ -258,7 +258,7 @@ func dataSourceServerGroup() *schema.Resource {
 							Computed: true,
 						},
 						"creation_time": {
-							Type:     schema.TypeInt,
+							Type:     schema.TypeString,
 							Computed: true,
 						},
 						"description": {
@@ -270,15 +270,15 @@ func dataSourceServerGroup() *schema.Resource {
 							Computed: true,
 						},
 						"id": {
-							Type:     schema.TypeInt,
+							Type:     schema.TypeString,
 							Computed: true,
 						},
 						"modifiedby": {
-							Type:     schema.TypeInt,
+							Type:     schema.TypeString,
 							Computed: true,
 						},
 						"modified_time": {
-							Type:     schema.TypeInt,
+							Type:     schema.TypeString,
 							Computed: true,
 						},
 						"name": {
