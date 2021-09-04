@@ -297,9 +297,6 @@ func resourceConnectorGroupRead(d *schema.ResourceData, m interface{}) error {
 	_ = d.Set("version_profile_id", resp.VersionProfileID)
 	_ = d.Set("connectors", flattenConnectors(resp))
 
-	// if err := d.Set("connectors", flattenConnectors(resp)); err != nil {
-	// 	return fmt.Errorf("failed to read connectors %s", err)
-	// }
 	if err := d.Set("server_groups", flattenServerGroups(resp)); err != nil {
 		return fmt.Errorf("failed to read server groups %s", err)
 	}
