@@ -55,6 +55,7 @@ func Provider() *schema.Provider {
 			"zpa_trusted_network":       dataSourceTrustedNetwork(),
 			"zpa_saml_attribute":        dataSourceSamlAttribute(),
 			"zpa_scim_groups":           dataSourceScimGroup(),
+			"zpa_scim_attribute_header": dataSourceScimAttributeHeader(),
 			"zpa_ba_certificate":        dataSourceBaCertificate(),
 			"zpa_machine_group":         dataSourceMachineGroup(),
 			"zpa_application_segment":   dataSourceApplicationSegment(),
