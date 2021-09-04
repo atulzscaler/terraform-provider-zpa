@@ -7,34 +7,25 @@ import (
 
 const (
 	userConfig        = "/userconfig/v1/customers/"
-	scimGroupEndpoint = "/scimgroup/idpId"
+	scimGroupEndpoint = "/scimgroup"
 )
 
 type ScimGroup struct {
-	CreationTime int32  `json:"creationTime,string"`
-	ID           int64  `json:"id,string"`
-	IdpGroupId   string `json:"idpGroupId"`
-	IdpId        int64  `json:"idpId,string"`
-	ModifiedTime int64  `json:"modifiedTime,string"`
-	Name         string `json:"name"`
+	CreationTime int64  `json:"creationTime,omitempty"`
+	ID           int64  `json:"id,omitempty"`
+	IdpGroupId   string `json:"idpGroupId,omitempty"`
+	IdpId        int64  `json:"idpId,omitempty"`
+	ModifiedTime int64  `json:"modifiedTime,omitempty"`
+	Name         string `json:"name,omitempty"`
 }
 
-func (service *Service) Get(scimGroupId string) (*ScimGroup, *http.Response, error) {
+func (service *Service) Get(scimGroupId int64) (*ScimGroup, *http.Response, error) {
 	v := new(ScimGroup)
-	relativeURL := fmt.Sprintf("%s/%s", userConfig+service.Client.Config.CustomerID+scimGroupEndpoint, scimGroupId)
+	relativeURL := fmt.Sprintf("%s/%d", userConfig+service.Client.Config.CustomerID+scimGroupEndpoint, scimGroupId)
 	resp, err := service.Client.NewRequestDo("GET", relativeURL, nil, nil, v)
 	if err != nil {
 		return nil, nil, err
 	}
 
-	return v, resp, nil
-}
-
-func (service *Service) GetAll() ([]ScimGroup, *http.Response, error) {
-	v := make([]ScimGroup, 0)
-	resp, err := service.Client.NewRequestDo("GET", userConfig+service.Client.Config.CustomerID+scimGroupEndpoint, nil, nil, &v)
-	if err != nil {
-		return nil, nil, err
-	}
 	return v, resp, nil
 }
