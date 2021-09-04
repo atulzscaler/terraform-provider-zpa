@@ -21,10 +21,6 @@ data "zpa_application_segment" "all_other_services"{
   id = 216196257331283285
 }
 
-data "zpa_idp_controller" "okta"{
-  id = 216196257331281956
-}
-
 resource "zpa_policyset_rule" "all_other_services" {
   name                          = "All Other Services"
   description                   = "All Other Services"
