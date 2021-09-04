@@ -14,18 +14,18 @@ type ApplicationServer struct {
 	Address           string   `json:"address"`
 	AppServerGroupIds []string `json:"appServerGroupIds"`
 	ConfigSpace       string   `json:"configSpace,omitempty"`
-	CreationTime      int32    `json:"creationTime,string"`
+	CreationTime      string   `json:"creationTime,"`
 	Description       string   `json:"description"`
 	Enabled           bool     `json:"enabled"`
-	ID                int64    `json:"id,string"`
-	ModifiedBy        int64    `json:"modifiedBy,string"`
-	ModifiedTime      int32    `json:"modifiedTime,string"`
+	ID                string   `json:"id,"`
+	ModifiedBy        string   `json:"modifiedBy,"`
+	ModifiedTime      string   `json:"modifiedTime,"`
 	Name              string   `json:"name"`
 }
 
-func (service *Service) Get(id int64) (*ApplicationServer, *http.Response, error) {
+func (service *Service) Get(id string) (*ApplicationServer, *http.Response, error) {
 	v := new(ApplicationServer)
-	relativeURL := fmt.Sprintf("%s/%d", mgmtConfig+service.Client.Config.CustomerID+appServerControllerEndpoint, id)
+	relativeURL := fmt.Sprintf("%s/%s", mgmtConfig+service.Client.Config.CustomerID+appServerControllerEndpoint, id)
 	resp, err := service.Client.NewRequestDo("GET", relativeURL, nil, nil, v)
 	if err != nil {
 		return nil, nil, err

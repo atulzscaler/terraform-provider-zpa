@@ -1,7 +1,7 @@
 package zscaler
 
 import (
-	"strconv"
+	"log"
 
 	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/schema"
 )
@@ -24,7 +24,7 @@ func dataSourceApplicationServer() *schema.Resource {
 				Computed: true,
 			},
 			"creation_time": {
-				Type:     schema.TypeInt,
+				Type:     schema.TypeString,
 				Computed: true,
 			},
 			"description": {
@@ -37,14 +37,14 @@ func dataSourceApplicationServer() *schema.Resource {
 			},
 			"id": {
 				Type:     schema.TypeString,
-				Computed: true,
+				Optional: true,
 			},
 			"modifiedby": {
-				Type:     schema.TypeInt,
+				Type:     schema.TypeString,
 				Computed: true,
 			},
 			"modified_time": {
-				Type:     schema.TypeInt,
+				Type:     schema.TypeString,
 				Computed: true,
 			},
 			"name": {
@@ -58,18 +58,15 @@ func dataSourceApplicationServer() *schema.Resource {
 func dataSourceApplicationServerRead(d *schema.ResourceData, m interface{}) error {
 	zClient := m.(*Client)
 
-	id, err := strconv.ParseInt(d.Get("id").(string), 10, 64)
-	if err != nil {
-		return err
-	}
+	id := d.Get("id").(string)
+	log.Printf("[INFO] Getting data for server group %s\n", id)
 
 	resp, _, err := zClient.appservercontroller.Get(id)
 	if err != nil {
 		return err
 	}
 
-	// d.SetId(strconv.Itoa(resp.ID))
-	d.SetId(strconv.FormatInt(int64(resp.ID), 10))
+	d.SetId(resp.ID)
 	_ = d.Set("address", resp.Address)
 	_ = d.Set("app_server_group_ids", resp.AppServerGroupIds)
 	_ = d.Set("config_space", resp.ConfigSpace)

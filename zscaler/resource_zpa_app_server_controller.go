@@ -2,7 +2,6 @@ package zscaler
 
 import (
 	"log"
-	"strconv"
 
 	"github.com/SecurityGeekIO/terraform-provider-zpa/gozscaler/appservercontroller"
 
@@ -65,30 +64,27 @@ func resourceApplicationServerCreate(d *schema.ResourceData, m interface{}) erro
 	req := expandCreateAppServerRequest(d)
 	log.Printf("[INFO] Creating zpa application server with request\n%+v\n", req)
 
-	appservercontroller, _, err := zClient.appservercontroller.Create(req)
+	resp, _, err := zClient.appservercontroller.Create(req)
 	if err != nil {
 		return err
 	}
-	//d.SetId(strconv.Itoa(appservercontroller.ID))
-	d.SetId(strconv.FormatInt(int64(appservercontroller.ID), 10))
+	log.Printf("[INFO] Created server group request. ID: %v\n", resp)
+	d.SetId(resp.ID)
+
 	return resourceApplicationServerRead(d, m)
 }
 
 func resourceApplicationServerRead(d *schema.ResourceData, m interface{}) error {
 	zClient := m.(*Client)
 
-	id, err := strconv.ParseInt(d.Id(), 10, 64)
-	if err != nil {
-		return err
-	}
-
-	resp, _, err := zClient.appservercontroller.Get(id)
+	resp, _, err := zClient.appservercontroller.Get(d.Id())
 	if err != nil {
 		if err.(*client.ErrorResponse).IsObjectNotFound() {
-			log.Printf("[WARN] Removing application server %s from state because it no longer exists in ZPA", d.Id())
+			log.Printf("[WARN] Removing server group %s from state because it no longer exists in ZPA", d.Id())
 			d.SetId("")
 			return nil
 		}
+
 		return err
 	}
 
@@ -143,11 +139,8 @@ func resourceApplicationServerDelete(d *schema.ResourceData, m interface{}) erro
 
 func removeServerFromGroup(zClient *Client, serverID string) error {
 	// Remove the reference to this server from server groups.
-	id, err := strconv.ParseInt(serverID, 10, 64)
-	if err != nil {
-		return err
-	}
-	resp, _, err := zClient.appservercontroller.Get(id)
+
+	resp, _, err := zClient.appservercontroller.Get(serverID)
 	if err != nil {
 		return err
 	}
@@ -166,15 +159,6 @@ func removeServerFromGroup(zClient *Client, serverID string) error {
 
 	return nil
 }
-
-// func removeServer(serversList []common.ApplicationServer, serverID int64) []common.ApplicationServer {
-//  for i, server := range serversList {
-//      if server.ID == serverID {
-//          return append(serversList[:i], serversList[i+1:]...)
-//      }
-//  }
-//  return serversList
-// }
 
 func expandCreateAppServerRequest(d *schema.ResourceData) appservercontroller.ApplicationServer {
 	applicationServer := appservercontroller.ApplicationServer{
