@@ -10,7 +10,6 @@ const (
 )
 
 type PolicyRule struct {
-<<<<<<< HEAD
 	Action   string `json:"action,omitempty"`
 	ActionID int    `json:"actionId,string,omitempty"`
 	// BypassDefaultRule    bool   `json:"bypassDefaultRule,omitempty"`
@@ -36,33 +35,6 @@ type PolicyRule struct {
 	Conditions         []Conditions         `json:"conditions,omitempty"`
 	AppServerGroups    []AppServerGroups    `json:"appServerGroups,omitempty"`
 	AppConnectorGroups []AppConnectorGroups `json:"appConnectorGroups,omitempty"`
-=======
-	Action               string `json:"action,omitempty"`
-	ActionID             int    `json:"actionId,string,omitempty"`
-	BypassDefaultRule    bool   `json:"bypassDefaultRule,omitempty"`
-	CreationTime         int    `json:"creationTime,string,omitempty"`
-	CustomMsg            string `json:"customMsg,omitempty"`
-	Description          string `json:"description,omitempty"`
-	ID                   int64  `json:"id,string,omitempty"`
-	IsolationDefaultRule bool   `json:"isolationDefaultRule,omitempty"`
-	ModifiedBy           int    `json:"modifiedBy,string,omitempty"`
-	ModifiedTime         int    `json:"modifiedTime,string,omitempty"`
-	Name                 string `json:"name,omitempty"`
-	Operator             string `json:"operator,omitempty"`
-	PolicySetID          int64  `json:"policySetId,string"`
-	PolicyType           int    `json:"policyType,string,omitempty"`
-	Priority             int    `json:"priority,string,omitempty"`
-	ReauthDefaultRule    bool   `json:"reauthDefaultRule,omitempty"`
-	//ReauthIdleTimeout        int                  `json:"reauthIdleTimeout,string,omitempty"`
-	//ReauthTimeout            int                  `json:"reauthTimeout,string,omitempty"`
-	RuleOrder int `json:"ruleOrder,string,omitempty"`
-	//ZpnCbiProfileID          int                  `json:"zpnCbiProfileId,string,omitempty"`
-	ZpnInspectionProfileId   int                  `json:"zpnInspectionProfileId,string,omitempty"`
-	ZpnInspectionProfileName string               `json:"zpnInspectionProfileName,string,omitempty"`
-	Conditions               []Conditions         `json:"conditions,omitempty"`
-	AppServerGroups          []AppServerGroups    `json:"appServerGroups,omitempty"`
-	AppConnectorGroups       []AppConnectorGroups `json:"appConnectorGroups,omitempty"`
->>>>>>> origin/policy-rule
 }
 
 type Conditions struct {

@@ -44,7 +44,6 @@ resource "zpa_policyset_rule" "all_other_services" {
   }
 }
 
-<<<<<<< HEAD
 
 
 // resource "zpa_policyset_rule" "example" {
@@ -55,16 +54,3 @@ resource "zpa_policyset_rule" "all_other_services" {
 //   policysetid = data.zpa_policy_set_global.all.id
 //   policytype = 1
 // }
-=======
-resource "zpa_policyset_rule" "example2" {
-
-  name                          = "example2"
-  description                   = "example2"
-  action                        = "ALLOW"
-  rule_order                     = 1
-  policy_set_id = data.zpa_policy_set_global.all.id
-  policy_type = 1
-}
-
-
->>>>>>> origin/policy-rule
