@@ -2,7 +2,6 @@ package zscaler
 
 import (
 	"log"
-	"strconv"
 
 	"github.com/SecurityGeekIO/terraform-provider-zpa/gozscaler/client"
 	"github.com/SecurityGeekIO/terraform-provider-zpa/gozscaler/policysetrule"
@@ -40,7 +39,7 @@ func resourcePolicySetRule() *schema.Resource {
 				}, false),
 			},
 			"action_id": {
-				Type:        schema.TypeInt,
+				Type:        schema.TypeString,
 				Optional:    true,
 				Description: "This field defines the description of the server.",
 			},
@@ -80,11 +79,11 @@ func resourcePolicySetRule() *schema.Resource {
 				Optional: true,
 			},
 			"policy_type": {
-				Type:     schema.TypeInt,
+				Type:     schema.TypeString,
 				Optional: true,
 			},
 			"priority": {
-				Type:     schema.TypeInt,
+				Type:     schema.TypeString,
 				Optional: true,
 			},
 			"reauth_default_rule": {
@@ -92,15 +91,15 @@ func resourcePolicySetRule() *schema.Resource {
 				Optional: true,
 			},
 			"reauth_idle_timeout": {
-				Type:     schema.TypeInt,
+				Type:     schema.TypeString,
 				Optional: true,
 			},
 			"reauth_timeout": {
-				Type:     schema.TypeInt,
+				Type:     schema.TypeString,
 				Optional: true,
 			},
 			"rule_order": {
-				Type:     schema.TypeInt,
+				Type:     schema.TypeString,
 				Optional: true,
 			},
 			"app_server_groups": {
@@ -110,7 +109,7 @@ func resourcePolicySetRule() *schema.Resource {
 				Elem: &schema.Resource{
 					Schema: map[string]*schema.Schema{
 						"id": {
-							Type:     schema.TypeInt,
+							Type:     schema.TypeString,
 							Computed: true,
 						},
 						//  "id": {
@@ -128,7 +127,7 @@ func resourcePolicySetRule() *schema.Resource {
 				Elem: &schema.Resource{
 					Schema: map[string]*schema.Schema{
 						"id": {
-							Type:     schema.TypeInt,
+							Type:     schema.TypeString,
 							Computed: true,
 						},
 						//  "id": {
@@ -146,7 +145,7 @@ func resourcePolicySetRule() *schema.Resource {
 				Elem: &schema.Resource{
 					Schema: map[string]*schema.Schema{
 						"id": {
-							Type:     schema.TypeInt,
+							Type:     schema.TypeString,
 							Computed: true,
 						},
 						"negated": {
@@ -168,11 +167,11 @@ func resourcePolicySetRule() *schema.Resource {
 							Elem: &schema.Resource{
 								Schema: map[string]*schema.Schema{
 									"id": {
-										Type:     schema.TypeInt,
+										Type:     schema.TypeString,
 										Computed: true,
 									},
 									"idp_id": {
-										Type:     schema.TypeInt,
+										Type:     schema.TypeString,
 										Optional: true,
 									},
 									"name": {
@@ -229,7 +228,7 @@ func resourcePolicySetCreate(d *schema.ResourceData, m interface{}) error {
 	if err != nil {
 		return err
 	}
-	d.SetId(strconv.FormatInt(int64(policysetrule.ID), 10))
+	d.SetId(policysetrule.ID)
 
 	return resourcePolicySetRead(d, m)
 }
@@ -242,14 +241,10 @@ func resourcePolicySetRead(d *schema.ResourceData, m interface{}) error {
 	if err != nil {
 		return err
 	}
-	ruleId, err := strconv.ParseInt(d.Id(), 10, 64)
+	log.Printf("[INFO] Getting Policy Set Rule: globalPolicySet:%s id: %s\n", globalPolicySet.ID, d.Id())
+	resp, _, err := zClient.policysetrule.Get(globalPolicySet.ID, d.Id())
 	if err != nil {
-		return err
-	}
-
-	resp, _, err := zClient.policysetrule.Get(globalPolicySet.ID, ruleId)
-	if err != nil {
-		if err.(*client.ErrorResponse).IsObjectNotFound() {
+		if obj, ok := err.(*client.ErrorResponse); ok && obj.IsObjectNotFound() {
 			log.Printf("[WARN] Removing policy rule %s from state because it no longer exists in ZPA", d.Id())
 			d.SetId("")
 			return nil
@@ -258,8 +253,8 @@ func resourcePolicySetRead(d *schema.ResourceData, m interface{}) error {
 		return err
 	}
 
-	log.Printf("[INFO] Getting Policy Set Rule:\n%+v\n", resp)
-	d.SetId(strconv.FormatInt(int64(resp.ID), 10))
+	log.Printf("[INFO] Got Policy Set Rule:\n%+v\n", resp)
+	d.SetId(resp.ID)
 	_ = d.Set("action", resp.Action)
 	_ = d.Set("action_id", resp.ActionID)
 	_ = d.Set("custom_msg", resp.CustomMsg)
@@ -288,10 +283,7 @@ func resourcePolicySetUpdate(d *schema.ResourceData, m interface{}) error {
 	if err != nil {
 		return err
 	}
-	ruleId, err := strconv.ParseInt(d.Id(), 10, 64)
-	if err != nil {
-		return err
-	}
+	ruleId := d.Id()
 	log.Printf("[INFO] Updating policy rule ID: %v\n", ruleId)
 	req := expandCreatePolicyRule(d)
 
@@ -309,14 +301,10 @@ func resourcePolicySetDelete(d *schema.ResourceData, m interface{}) error {
 	if err != nil {
 		return err
 	}
-	id, err := strconv.ParseInt(d.Id(), 10, 64)
-	if err != nil {
-		return err
-	}
 
-	log.Printf("[INFO] Deleting IP list with id %v\n", id)
+	log.Printf("[INFO] Deleting IP list with id %v\n", d.Id())
 
-	if _, err := zClient.policysetrule.Delete(globalPolicySet.ID, id); err != nil {
+	if _, err := zClient.policysetrule.Delete(globalPolicySet.ID, d.Id()); err != nil {
 		return err
 	}
 
@@ -327,25 +315,26 @@ func resourcePolicySetDelete(d *schema.ResourceData, m interface{}) error {
 // Please review the expand and flattening functions. Condition is actually a slice inside PolicyRule
 //https://help.zscaler.com/zpa/api-reference#/policy-set-controller/addRuleToPolicySet
 func expandCreatePolicyRule(d *schema.ResourceData) policysetrule.PolicyRule {
-	policySetID, err := strconv.ParseInt(d.Get("policy_set_id").(string), 10, 64)
-	if err != nil {
-		log.Printf("[ERROR] policy_set_id is not set, err:%v\n", err)
+	policySetID, ok := d.Get("policy_set_id").(string)
+	if !ok {
+		log.Printf("[ERROR] policy_set_id is not set\n")
 	}
+	log.Printf("[INFO] action_id:%v\n", d.Get("action_id"))
 	return policysetrule.PolicyRule{
 		Action:            d.Get("action").(string),
-		ActionID:          d.Get("action_id").(int64),
+		ActionID:          d.Get("action_id").(string),
 		CustomMsg:         d.Get("custom_msg").(string),
 		Description:       d.Get("description").(string),
-		ID:                d.Get("id").(int64),
+		ID:                d.Get("id").(string),
 		Name:              d.Get("name").(string),
 		Operator:          d.Get("operator").(string),
 		PolicySetID:       policySetID,
-		PolicyType:        d.Get("policy_type").(int32),
-		Priority:          d.Get("priority").(int32),
+		PolicyType:        d.Get("policy_type").(string),
+		Priority:          d.Get("priority").(string),
 		ReauthDefaultRule: d.Get("reauth_default_rule").(bool),
-		ReauthIdleTimeout: d.Get("reauth_idle_timeout").(int32),
-		ReauthTimeout:     d.Get("reauth_timeout").(int32),
-		RuleOrder:         d.Get("rule_order").(int32),
+		ReauthIdleTimeout: d.Get("reauth_idle_timeout").(string),
+		ReauthTimeout:     d.Get("reauth_timeout").(string),
+		RuleOrder:         d.Get("rule_order").(string),
 		Conditions:        expandConditionSet(d),
 	}
 }
@@ -361,7 +350,7 @@ func expandConditionSet(d *schema.ResourceData) []policysetrule.Conditions {
 			if conditionSet != nil {
 				conditionSets = append(conditionSets, policysetrule.Conditions{
 					// CreationTime: conditionSet["creation_time"].(int),
-					ID: conditionSet["id"].(int64),
+					ID: conditionSet["id"].(string),
 					// ModifiedBy:   conditionSet["modifiedby"].(int),
 					// ModifiedTime: conditionSet["modified_time"].(int),
 					Negated:  conditionSet["negated"].(bool),
@@ -383,8 +372,8 @@ func expandOperandsList(ops interface{}) []policysetrule.Operands {
 		var operandsSets []policysetrule.Operands
 		for _, operand := range operands {
 			operandSet, _ := operand.(map[string]interface{})
-			id, _ := operandSet["id"].(int64)
-			IdpID, _ := operandSet["idp_id"].(int64)
+			id, _ := operandSet["id"].(string)
+			IdpID, _ := operandSet["idp_id"].(string)
 			if operandSet != nil {
 				operandsSets = append(operandsSets, policysetrule.Operands{
 					ID:         id,

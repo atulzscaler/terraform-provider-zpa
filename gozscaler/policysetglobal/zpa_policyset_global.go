@@ -10,71 +10,71 @@ const (
 )
 
 type PolicySet struct {
-	CreationTime int32   `json:"creationTime,string,omitempty"`
+	CreationTime string  `json:"creationTime,omitempty"`
 	Description  string  `json:"description,omitempty"`
 	Enabled      bool    `json:"enabled"`
-	ID           int64   `json:"id,string,omitempty"`
-	ModifiedBy   int64   `json:"modifiedBy,string,omitempty"`
-	ModifiedTime int32   `json:"modifiedTime,string,omitempty"`
+	ID           string  `json:"id,omitempty"`
+	ModifiedBy   string  `json:"modifiedBy,omitempty"`
+	ModifiedTime string  `json:"modifiedTime,omitempty"`
 	Name         string  `json:"name,omitempty"`
-	PolicyType   int32   `json:"policyType,string,omitempty"`
+	PolicyType   string  `json:"policyType,omitempty"`
 	Rules        []Rules `json:"rules"`
 }
 
 type Rules struct {
 	Action                   string       `json:"action,omitempty"`
-	ActionID                 int64        `json:"actionId,string,omitempty"`
+	ActionID                 string       `json:"actionId,omitempty"`
 	BypassDefaultRule        bool         `json:"bypassDefaultRule,omitempty"`
-	CreationTime             int32        `json:"creationTime,string,omitempty"`
+	CreationTime             string       `json:"creationTime,omitempty"`
 	CustomMsg                string       `json:"customMsg,omitempty"`
 	Description              string       `json:"description,omitempty"`
-	ID                       int64        `json:"id,string,omitempty"`
+	ID                       string       `json:"id,omitempty"`
 	IsolationDefaultRule     bool         `json:"isolationDefaultRule,omitempty"`
-	ModifiedBy               int64        `json:"modifiedBy,string,omitempty"`
-	ModifiedTime             int32        `json:"modifiedTime,string,omitempty"`
+	ModifiedBy               string       `json:"modifiedBy,omitempty"`
+	ModifiedTime             string       `json:"modifiedTime,omitempty"`
 	Name                     string       `json:"name,omitempty"`
 	Operator                 string       `json:"operator,omitempty"`
-	PolicySetID              int64        `json:"policySetId,string,omitempty"`
-	PolicyType               int32        `json:"policyType,string,omitempty"`
-	Priority                 int32        `json:"priority,string,omitempty"`
+	PolicySetID              string       `json:"policySetId,omitempty"`
+	PolicyType               string       `json:"policyType,omitempty"`
+	Priority                 string       `json:"priority,omitempty"`
 	ReauthDefaultRule        bool         `json:"reauthDefaultRule,omitempty"`
-	ReauthIdleTimeout        int32        `json:"reauthIdleTimeout,string,omitempty"`
-	ReauthTimeout            int32        `json:"reauthTimeout,string,omitempty"`
-	RuleOrder                int32        `json:"ruleOrder,string,omitempty"`
-	ZpnCbiProfileID          int64        `json:"zpnCbiProfileId,string,omitempty"`
-	ZpnInspectionProfileId   int64        `json:"zpnInspectionProfileId,string,omitempty"`
-	ZpnInspectionProfileName string       `json:"zpnInspectionProfileName,string,omitempty"`
+	ReauthIdleTimeout        string       `json:"reauthIdleTimeout,omitempty"`
+	ReauthTimeout            string       `json:"reauthTimeout,omitempty"`
+	RuleOrder                string       `json:"ruleOrder,omitempty"`
+	ZpnCbiProfileID          string       `json:"zpnCbiProfileId,omitempty"`
+	ZpnInspectionProfileId   string       `json:"zpnInspectionProfileId,omitempty"`
+	ZpnInspectionProfileName string       `json:"zpnInspectionProfileName,omitempty"`
 	Conditions               []Conditions `json:"conditions,omitempty"`
 }
 type Conditions struct {
-	CreationTime int32       `json:"creationTime,string,omitempty"`
-	ID           int64       `json:"id,string,omitempty"`
-	ModifiedBy   int64       `json:"modifiedBy,string,omitempty"`
-	ModifiedTime int32       `json:"modifiedTime,string,omitempty"`
+	CreationTime string      `json:"creationTime,omitempty"`
+	ID           string      `json:"id,omitempty"`
+	ModifiedBy   string      `json:"modifiedBy,omitempty"`
+	ModifiedTime string      `json:"modifiedTime,omitempty"`
 	Negated      bool        `json:"negated,omitempty"`
 	Operands     *[]Operands `json:"operands,omitempty"`
 	Operator     string      `json:"operator,omitempty"`
 }
 type Operands struct {
-	CreationTime int32  `json:"creationTime,string,omitempty"`
-	ID           int64  `json:"id,string,omitempty"`
-	IdpID        int64  `json:"idpId,string,omitempty"`
+	CreationTime string `json:"creationTime,omitempty"`
+	ID           string `json:"id,omitempty"`
+	IdpID        string `json:"idpId,omitempty"`
 	LHS          string `json:"lhs,omitempty"`
-	ModifiedBy   int64  `json:"modifiedBy,string,omitempty"`
-	ModifiedTime int32  `json:"modifiedTime,string,omitempty"`
+	ModifiedBy   string `json:"modifiedBy,omitempty"`
+	ModifiedTime string `json:"modifiedTime,omitempty"`
 	Name         string `json:"name,omitempty"`
 	ObjectType   string `json:"objectType,omitempty"`
 	RHS          string `json:"rhs,omitempty"`
 }
 type AppServerGroups struct {
 	ConfigSpace      string `json:"configSpace,omitempty"`
-	CreationTime     int32  `json:"creationTime,string,omitempty"`
+	CreationTime     string `json:"creationTime,omitempty"`
 	Description      string `json:"description,omitempty"`
 	Enabled          bool   `json:"enabled,omitempty"`
-	ID               int64  `json:"id,string,omitempty"`
+	ID               string `json:"id,omitempty"`
 	DynamicDiscovery bool   `json:"dynamicDiscovery,omitempty"`
-	ModifiedBy       int64  `json:"modifiedBy,string,omitempty"`
-	ModifiedTime     int32  `json:"modifiedTime,string,omitempty"`
+	ModifiedBy       string `json:"modifiedBy,omitempty"`
+	ModifiedTime     string `json:"modifiedTime,omitempty"`
 	Name             string `json:"name,omitempty"`
 }
 
