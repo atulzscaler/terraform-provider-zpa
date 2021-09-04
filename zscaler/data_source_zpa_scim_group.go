@@ -14,41 +14,29 @@ func dataSourceScimGroup() *schema.Resource {
 	return &schema.Resource{
 		Read: dataSourceScimGroupRead,
 		Schema: map[string]*schema.Schema{
-			"id": {
+			"creation_time": {
 				Type:     schema.TypeInt,
-				Optional: true,
+				Computed: true,
 			},
-			"list": {
-				Type:     schema.TypeSet,
-				Optional: true,
-				Elem: &schema.Resource{
-					Schema: map[string]*schema.Schema{
-						"creation_time": {
-							Type:     schema.TypeInt,
-							Computed: true,
-						},
-						"id": {
-							Type:     schema.TypeString,
-							Computed: true,
-						},
-						"idp_group_id": {
-							Type:     schema.TypeString,
-							Computed: true,
-						},
-						"idp_id": {
-							Type:     schema.TypeInt,
-							Required: true,
-						},
-						"modified_time": {
-							Type:     schema.TypeInt,
-							Computed: true,
-						},
-						"name": {
-							Type:     schema.TypeString,
-							Computed: true,
-						},
-					},
-				},
+			"id": {
+				Type:     schema.TypeString,
+				Computed: true,
+			},
+			"idp_group_id": {
+				Type:     schema.TypeString,
+				Computed: true,
+			},
+			"idp_id": {
+				Type:     schema.TypeInt,
+				Required: true,
+			},
+			"modified_time": {
+				Type:     schema.TypeInt,
+				Computed: true,
+			},
+			"name": {
+				Type:     schema.TypeString,
+				Computed: true,
 			},
 		},
 	}
