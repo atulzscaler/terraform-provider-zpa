@@ -110,7 +110,7 @@ func resourcePolicySetRule() *schema.Resource {
 					Schema: map[string]*schema.Schema{
 						"id": {
 							Type:     schema.TypeString,
-							Computed: true,
+							Optional: true,
 						},
 						//  "id": {
 						//      Type:     schema.TypeSet,
@@ -128,7 +128,7 @@ func resourcePolicySetRule() *schema.Resource {
 					Schema: map[string]*schema.Schema{
 						"id": {
 							Type:     schema.TypeString,
-							Computed: true,
+							Optional: true,
 						},
 						//  "id": {
 						//      Type:     schema.TypeSet,
@@ -276,7 +276,6 @@ func resourcePolicySetRead(d *schema.ResourceData, m interface{}) error {
 	return nil
 }
 
-// Please review Update operations. It needs to pull the policySetId and RuleId in order to update a specific rule.
 func resourcePolicySetUpdate(d *schema.ResourceData, m interface{}) error {
 	zClient := m.(*Client)
 	globalPolicySet, _, err := zClient.policysetglobal.Get()
@@ -294,7 +293,6 @@ func resourcePolicySetUpdate(d *schema.ResourceData, m interface{}) error {
 	return resourcePolicySetRead(d, m)
 }
 
-// Please review Delete operations. It needs to pull the policySetId and RuleId in order to delete a specific rule.
 func resourcePolicySetDelete(d *schema.ResourceData, m interface{}) error {
 	zClient := m.(*Client)
 	globalPolicySet, _, err := zClient.policysetglobal.Get()
@@ -321,22 +319,64 @@ func expandCreatePolicyRule(d *schema.ResourceData) policysetrule.PolicyRule {
 	}
 	log.Printf("[INFO] action_id:%v\n", d.Get("action_id"))
 	return policysetrule.PolicyRule{
-		Action:            d.Get("action").(string),
-		ActionID:          d.Get("action_id").(string),
-		CustomMsg:         d.Get("custom_msg").(string),
-		Description:       d.Get("description").(string),
-		ID:                d.Get("id").(string),
-		Name:              d.Get("name").(string),
-		Operator:          d.Get("operator").(string),
-		PolicySetID:       policySetID,
-		PolicyType:        d.Get("policy_type").(string),
-		Priority:          d.Get("priority").(string),
-		ReauthDefaultRule: d.Get("reauth_default_rule").(bool),
-		ReauthIdleTimeout: d.Get("reauth_idle_timeout").(string),
-		ReauthTimeout:     d.Get("reauth_timeout").(string),
-		RuleOrder:         d.Get("rule_order").(string),
-		Conditions:        expandConditionSet(d),
+		Action:             d.Get("action").(string),
+		ActionID:           d.Get("action_id").(string),
+		CustomMsg:          d.Get("custom_msg").(string),
+		Description:        d.Get("description").(string),
+		ID:                 d.Get("id").(string),
+		Name:               d.Get("name").(string),
+		Operator:           d.Get("operator").(string),
+		PolicySetID:        policySetID,
+		PolicyType:         d.Get("policy_type").(string),
+		Priority:           d.Get("priority").(string),
+		ReauthDefaultRule:  d.Get("reauth_default_rule").(bool),
+		ReauthIdleTimeout:  d.Get("reauth_idle_timeout").(string),
+		ReauthTimeout:      d.Get("reauth_timeout").(string),
+		RuleOrder:          d.Get("rule_order").(string),
+		Conditions:         expandConditionSet(d),
+		AppServerGroups:    expandPolicySetRuleAppServerGroups(d),
+		AppConnectorGroups: expandPolicySetRuleAppConnectorGroups(d),
 	}
+}
+
+func expandPolicySetRuleAppServerGroups(d *schema.ResourceData) []policysetrule.AppServerGroups {
+	appServerGroupsInterface, ok := d.GetOk("app_server_groups")
+	if ok {
+		appServer := appServerGroupsInterface.([]interface{})
+		log.Printf("[INFO] app server groups data: %+v\n", appServer)
+		var appServerGroups []policysetrule.AppServerGroups
+		for _, appServerGroup := range appServer {
+			appServerGroup, _ := appServerGroup.(map[string]interface{})
+			if appServerGroup != nil {
+				appServerGroups = append(appServerGroups, policysetrule.AppServerGroups{
+					ID: appServerGroup["id"].(string),
+				})
+			}
+		}
+		return appServerGroups
+	}
+
+	return []policysetrule.AppServerGroups{}
+}
+
+func expandPolicySetRuleAppConnectorGroups(d *schema.ResourceData) []policysetrule.AppConnectorGroups {
+	appConnectorGroupsInterface, ok := d.GetOk("app_connector_groups")
+	if ok {
+		appConnector := appConnectorGroupsInterface.([]interface{})
+		log.Printf("[INFO] app connector groups data: %+v\n", appConnector)
+		var appConnectorGroups []policysetrule.AppConnectorGroups
+		for _, appConnectorGroup := range appConnector {
+			appConnectorGroup, _ := appConnectorGroup.(map[string]interface{})
+			if appConnectorGroup != nil {
+				appConnectorGroups = append(appConnectorGroups, policysetrule.AppConnectorGroups{
+					ID: appConnectorGroup["id"].(string),
+				})
+			}
+		}
+		return appConnectorGroups
+	}
+
+	return []policysetrule.AppConnectorGroups{}
 }
 
 func expandConditionSet(d *schema.ResourceData) []policysetrule.Conditions {
@@ -349,10 +389,7 @@ func expandConditionSet(d *schema.ResourceData) []policysetrule.Conditions {
 			conditionSet, _ := condition.(map[string]interface{})
 			if conditionSet != nil {
 				conditionSets = append(conditionSets, policysetrule.Conditions{
-					// CreationTime: conditionSet["creation_time"].(int),
-					ID: conditionSet["id"].(string),
-					// ModifiedBy:   conditionSet["modifiedby"].(int),
-					// ModifiedTime: conditionSet["modified_time"].(int),
+					ID:       conditionSet["id"].(string),
 					Negated:  conditionSet["negated"].(bool),
 					Operator: conditionSet["operator"].(string),
 					Operands: expandOperandsList(conditionSet["operands"]),
@@ -394,10 +431,7 @@ func flattenPolicyRuleConditions(conditions []policysetrule.Conditions) []interf
 	ruleConditions := make([]interface{}, len(conditions))
 	for i, ruleConditionItems := range conditions {
 		ruleConditions[i] = map[string]interface{}{
-			// "creation_time": ruleConditionItems.CreationTime,
-			"id": ruleConditionItems.ID,
-			// "modifiedby":    ruleConditionItems.ModifiedBy,
-			// "modified_time": ruleConditionItems.ModifiedTime,
+			"id":       ruleConditionItems.ID,
 			"negated":  ruleConditionItems.Negated,
 			"operator": ruleConditionItems.Operator,
 			"operands": flattenPolicyRuleOperands(ruleConditionItems.Operands),
@@ -411,12 +445,9 @@ func flattenPolicyRuleOperands(conditionOperand []policysetrule.Operands) []inte
 	conditionOperands := make([]interface{}, len(conditionOperand))
 	for i, operandItems := range conditionOperand {
 		conditionOperands[i] = map[string]interface{}{
-			// "creation_time": operandItems.CreationTime,
-			"id":     operandItems.ID,
-			"idp_id": operandItems.IdpID,
-			"lhs":    operandItems.LHS,
-			// "modifiedby":    operandItems.ModifiedBy,
-			// "modified_time": operandItems.ModifiedTime,
+			"id":          operandItems.ID,
+			"idp_id":      operandItems.IdpID,
+			"lhs":         operandItems.LHS,
 			"object_type": operandItems.ObjectType,
 			"rhs":         operandItems.RHS,
 		}
@@ -446,6 +477,3 @@ func flattenPolicyRuleAppConnectorGroups(appConnectorGroups []policysetrule.AppC
 
 	return policyRuleAppConnectorGroups
 }
-
-// Need to flatten the Operands menu, which is a slice inside the slice Conditions
-//https://help.zscaler.com/zpa/api-reference#/policy-set-controller/addRuleToPolicySet
