@@ -21,13 +21,13 @@ description: |-
 
 ### Read-Only
 
-- **creation_time** (Number)
+- **creation_time** (String)
 - **domain** (String)
-- **modified_time** (Number)
-- **modifiedby** (Number)
+- **modified_time** (String)
+- **modifiedby** (String)
 - **name** (String)
 - **posture_udid** (String)
 - **zscaler_cloud** (String)
-- **zscaler_customer_id** (Number)
+- **zscaler_customer_id** (String)
 
 

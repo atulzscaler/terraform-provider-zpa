@@ -33,18 +33,18 @@ description: |-
 - **is_cname_enabled** (Boolean) Indicates if the Zscaler Client Connector (formerly Zscaler App or Z App) receives CNAME DNS records from the connectors.
 - **log_features** (String)
 - **passive_health_enabled** (Boolean)
-- **segment_group_id** (Number)
+- **segment_group_id** (String)
 - **segment_group_name** (String)
 - **server_groups** (Block List) ID of the server group. (see [below for nested schema](#nestedblock--server_groups))
-- **tcp_port_ranges** (List of Number) TCP port ranges used to access the app.
-- **udp_port_ranges** (List of Number) UDP port ranges used to access the app.
+- **tcp_port_ranges** (List of String) TCP port ranges used to access the app.
+- **udp_port_ranges** (List of String) UDP port ranges used to access the app.
 
 ### Read-Only
 
-- **creation_time** (Number)
+- **creation_time** (String)
 - **health_check_type** (String)
 - **id** (String) The ID of this resource.
-- **modified_time** (Number)
+- **modified_time** (String)
 - **modifiedby** (String)
 
 <a id="nestedblock--server_groups"></a>
@@ -52,6 +52,6 @@ description: |-
 
 Optional:
 
-- **id** (Number) The ID of this resource.
+- **id** (String) The ID of this resource.
 
 
