@@ -295,7 +295,7 @@ func resourcePolicyTimeoutUpdate(d *schema.ResourceData, m interface{}) error {
 
 func resourcePolicyTimeoutDelete(d *schema.ResourceData, m interface{}) error {
 	zClient := m.(*Client)
-	globalPolicyTimeout, _, err := zClient.policysetglobal.Get()
+	globalPolicyTimeout, _, err := zClient.policysetglobal.GetReauth()
 	if err != nil {
 		return err
 	}
