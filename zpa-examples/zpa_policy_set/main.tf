@@ -9,7 +9,14 @@ terraform {
 
 provider "zpa" {}
 
+data "zpa_policy_set_global" "all" {
+}
 
+output "all_zpa_policy_set_global" {
+  value = data.zpa_policy_set_global.all
+}
+
+/*
 resource "zpa_policyset_rule" "all_other_services" {
   name                          = "All Other Services"
   description                   = "All Other Services"
@@ -62,3 +69,4 @@ data "zpa_idp_controller" "sgio_user_okta" {
 data "zpa_scim_groups" "engineering" {
  id = "255066"
 }
+*/
