@@ -10,50 +10,40 @@ terraform {
 provider "zpa" {}
 
 
-<<<<<<< HEAD
-=======
-data "zpa_policy_set_global" "all" {
-}
-
-// output "all_zpa_policy_set_global" {
-//   value = data.zpa_policy_set_global.all
-// }
-
-data "zpa_application_segment" "all_other_services"{
-  id = 216196257331283285
-}
-
->>>>>>> zpa_scim_group_controller
 resource "zpa_policyset_rule" "all_other_services" {
   name                          = "All Other Services"
   description                   = "All Other Services"
   action                        = "ALLOW"
   rule_order                     = 2
-  operator = "AND"
+  operator = ["AND"]
   policy_set_id = data.zpa_policy_set_global.all.id
   conditions {
-     negated = false
-     operator = "AND"
+    negated = false
+    operator = ["OR"]
     operands {
       name =  "All Other Services"
       object_type = "APP"
       lhs = "id"
       rhs = data.zpa_application_segment.all_other_services.id
     }
-    operands {
-      object_type = "IDP"
-      lhs = "id"
-      rhs = data.zpa_idp_controller.sgio_user_okta.id
-    }
+  }
+  conditions {
+     negated = false
+     operator = ["OR"]
+    // operands {
+    //   object_type = "IDP"
+    //   lhs = "id"
+    //   rhs = data.zpa_idp_controller.sgio_user_okta.id
+    // }
     operands {
       object_type = "SCIM_GROUP"
-      lhs = "id"
+      lhs = data.zpa_idp_controller.sgio_user_okta.id
       rhs = data.zpa_scim_groups.engineering.id
+      idp_id = data.zpa_idp_controller.sgio_user_okta.id
     }
   }
 }
 
-<<<<<<< HEAD
 output "all_zpa_policyset_rule" {
   value = zpa_policyset_rule.all_other_services
 }
@@ -72,6 +62,3 @@ data "zpa_idp_controller" "sgio_user_okta" {
 data "zpa_scim_groups" "engineering" {
  id = "255066"
 }
-=======
-
->>>>>>> zpa_scim_group_controller
