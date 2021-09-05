@@ -101,12 +101,13 @@ func resourceBrowserAccess() *schema.Resource {
 							Type:     schema.TypeBool,
 							Optional: true,
 						},
-						// "appid": {
-						// 	Type:     schema.TypeInt,
-						// 	Computed: true,
-						// },
+						"appid": {
+							Type:     schema.TypeString,
+							Computed: true,
+						},
+						//Causing panic: interface conversion: interface {} is nil, not string
 						"application_port": {
-							Type:     schema.TypeInt,
+							Type:     schema.TypeString,
 							Optional: true,
 						},
 						"application_protocol": {
@@ -120,7 +121,7 @@ func resourceBrowserAccess() *schema.Resource {
 							}, false),
 						},
 						"certificate_id": {
-							Type:     schema.TypeInt,
+							Type:     schema.TypeString,
 							Optional: true,
 						},
 						"certificate_name": {
@@ -148,7 +149,7 @@ func resourceBrowserAccess() *schema.Resource {
 							Optional: true,
 						},
 						"id": {
-							Type:     schema.TypeInt,
+							Type:     schema.TypeString,
 							Computed: true,
 						},
 						"local_domain": {
@@ -170,7 +171,6 @@ func resourceBrowserAccess() *schema.Resource {
 					},
 				},
 			},
-			// Server Group only takes one ID as int64
 			"server_groups": {
 				Type:        schema.TypeList,
 				Optional:    true,
@@ -178,7 +178,7 @@ func resourceBrowserAccess() *schema.Resource {
 				Elem: &schema.Resource{
 					Schema: map[string]*schema.Schema{
 						"id": {
-							Type:     schema.TypeInt,
+							Type:     schema.TypeString,
 							Optional: true,
 						},
 					},
@@ -230,9 +230,6 @@ func resourceBrowserAccessRead(d *schema.ResourceData, m interface{}) error {
 	_ = d.Set("name", resp.Name)
 	_ = d.Set("description", resp.Description)
 	_ = d.Set("enabled", resp.Enabled)
-	// _ = d.Set("creationtime", resp.CreationTime)
-	// _ = d.Set("modifiedby", resp.ModifiedBy)
-	// _ = d.Set("modifiedtime", resp.ModifiedTime)
 	_ = d.Set("passive_health_enabled", resp.PassiveHealthEnabled)
 	_ = d.Set("double_encrypt", resp.DoubleEncrypt)
 	_ = d.Set("health_check_type", resp.HealthCheckType)
@@ -241,7 +238,6 @@ func resourceBrowserAccessRead(d *schema.ResourceData, m interface{}) error {
 	_ = d.Set("health_reporting", resp.HealthReporting)
 	_ = d.Set("tcp_port_ranges", resp.TcpPortRanges)
 	_ = d.Set("udp_port_ranges", resp.UdpPortRanges)
-	// _ = d.Set("clientlessapps", resp.ClientlessApps)
 
 	if err := d.Set("clientless_apps", flattenBaClientlessApps(resp)); err != nil {
 		return fmt.Errorf("failed to read clientless apps %s", err)
@@ -310,11 +306,11 @@ func expandClientlessApps(d *schema.ResourceData) []browseraccess.ClientlessApps
 		for i, app := range clientless {
 			clientlessApp := app.(map[string]interface{})
 			clientlessApps[i] = browseraccess.ClientlessApps{
-				AllowOptions: clientlessApp["allow_options"].(bool),
-				// AppId:               clientlessApp["app_id"].(int64),
-				ApplicationPort:     clientlessApp["application_port"].(int),
+				AllowOptions:        clientlessApp["allow_options"].(bool),
+				AppId:               clientlessApp["app_id"].(string),
+				ApplicationPort:     clientlessApp["application_port"].(string), //Causing panic: interface conversion: interface {} is nil, not string
 				ApplicationProtocol: clientlessApp["application_protocol"].(string),
-				CertificateId:       clientlessApp["certificate_id"].(int),
+				CertificateId:       clientlessApp["certificate_id"].(string),
 				CertificateName:     clientlessApp["certificate_name"].(string),
 				Cname:               clientlessApp["cname"].(string),
 				Description:         clientlessApp["description"].(string),
@@ -340,15 +336,7 @@ func expandClientlessAppServerGroups(d *schema.ResourceData) []browseraccess.App
 		for i, srvGroup := range servers {
 			serverGroup := srvGroup.(map[string]interface{})
 			serverGroups[i] = browseraccess.AppServerGroups{
-				// Name: serverGroup["name"].(string),
-				ID: serverGroup["id"].(int),
-				// ConfigSpace:      serverGroup["config_space"].(string),
-				// CreationTime:     serverGroup["creation_time"].(int32),
-				// Description:      serverGroup["description"].(string),
-				// Enabled:          serverGroup["enabled"].(bool),
-				// DynamicDiscovery: serverGroup["dynamic_discovery"].(bool),
-				// ModifiedBy:       serverGroup["modifiedby"].(int64),
-				// ModifiedTime:     serverGroup["modified_time"].(int32),
+				ID: serverGroup["id"].(string),
 			}
 		}
 	}
@@ -360,22 +348,19 @@ func flattenBaClientlessApps(clientlessApp *browseraccess.BrowserAccess) []inter
 	clientlessApps := make([]interface{}, len(clientlessApp.ClientlessApps))
 	for i, clientlessApp := range clientlessApp.ClientlessApps {
 		clientlessApps[i] = map[string]interface{}{
-			"allow_options": clientlessApp.AllowOptions,
-			// "app_id":               clientlessApp.AppId,
+			"allow_options":        clientlessApp.AllowOptions,
+			"app_id":               clientlessApp.AppId,
 			"application_port":     clientlessApp.ApplicationPort,
 			"application_protocol": clientlessApp.ApplicationProtocol,
 			"certificate_id":       clientlessApp.CertificateId,
 			"certificate_name":     clientlessApp.CertificateName,
 			"cname":                clientlessApp.Cname,
-			//"creation_time":        clientlessApp.CreationTime,
-			"description":  clientlessApp.Description,
-			"domain":       clientlessApp.Domain,
-			"enabled":      clientlessApp.Enabled,
-			"hidden":       clientlessApp.Hidden,
-			"id":           clientlessApp.ID,
-			"local_domain": clientlessApp.LocalDomain,
-			//"modifiedby":          clientlessApp.ModifiedBy,
-			//"modified_time":        clientlessApp.ModifiedTime,
+			"description":          clientlessApp.Description,
+			"domain":               clientlessApp.Domain,
+			"enabled":              clientlessApp.Enabled,
+			"hidden":               clientlessApp.Hidden,
+			"id":                   clientlessApp.ID,
+			"local_domain":         clientlessApp.LocalDomain,
 			"name":                 clientlessApp.Name,
 			"path":                 clientlessApp.Path,
 			"trust_untrusted_cert": clientlessApp.TrustUntrustedCert,
@@ -389,15 +374,7 @@ func flattenClientlessAppServerGroups(serverGroup *browseraccess.BrowserAccess) 
 	serverGroups := make([]interface{}, len(serverGroup.AppServerGroups))
 	for i, val := range serverGroup.AppServerGroups {
 		serverGroups[i] = map[string]interface{}{
-			// "name":             val.Name,
 			"id": val.ID,
-			// "config_space":      val.ConfigSpace,
-			// "creation_time":     val.CreationTime,
-			// "description":      val.Description,
-			// "enabled":          val.Enabled,
-			// "dynamic_discovery": val.DynamicDiscovery,
-			// "modifiedby":       val.ModifiedBy,
-			// "modified_time":     val.ModifiedTime,
 		}
 	}
 
