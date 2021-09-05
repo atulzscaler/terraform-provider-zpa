@@ -9,6 +9,7 @@ terraform {
 
 provider "zpa" {}
 
+<<<<<<< HEAD
 data "zpa_policy_set_global" "all" {
 }
 
@@ -17,6 +18,16 @@ output "all_zpa_policy_set_global" {
 }
 
 /*
+=======
+// data "zpa_policy_set_global" "all" {
+// }
+
+// output "all_zpa_policy_set_global" {
+//   value = data.zpa_policy_set_global.all
+// }
+
+
+>>>>>>> zpa_policy_timeout
 resource "zpa_policyset_rule" "all_other_services" {
   name                          = "All Other Services"
   description                   = "All Other Services"
@@ -24,6 +35,13 @@ resource "zpa_policyset_rule" "all_other_services" {
   rule_order                     = 2
   operator = "AND"
   policy_set_id = data.zpa_policy_set_global.all.id
+  app_connector_groups {
+    id = "216196257331281931"
+  }
+
+  app_server_groups {
+    id = "216196257331283266"
+  }
   conditions {
     negated = false
     operator = "OR"
@@ -32,6 +50,37 @@ resource "zpa_policyset_rule" "all_other_services" {
       object_type = "APP"
       lhs = "id"
       rhs = data.zpa_application_segment.all_other_services.id
+<<<<<<< HEAD
+=======
+    }
+  }
+  conditions {
+     negated = false
+     operator = "OR"
+    operands {
+      object_type = "SCIM_GROUP"
+      lhs = data.zpa_idp_controller.sgio_user_okta.id
+      rhs = data.zpa_scim_groups.engineering.id
+      idp_id = data.zpa_idp_controller.sgio_user_okta.id
+    }
+    operands {
+      object_type = "SCIM_GROUP"
+      lhs = data.zpa_idp_controller.sgio_user_okta.id
+      rhs = data.zpa_scim_groups.sales.id
+      idp_id = data.zpa_idp_controller.sgio_user_okta.id
+    }
+    operands {
+      object_type = "SCIM_GROUP"
+      lhs = data.zpa_idp_controller.sgio_user_okta.id
+      rhs = data.zpa_scim_groups.finance.id
+      idp_id = data.zpa_idp_controller.sgio_user_okta.id
+    }
+    operands {
+      object_type = "SCIM_GROUP"
+      lhs = data.zpa_idp_controller.sgio_user_okta.id
+      rhs = data.zpa_scim_groups.executives.id
+      idp_id = data.zpa_idp_controller.sgio_user_okta.id
+>>>>>>> zpa_policy_timeout
     }
   }
   // conditions {
@@ -63,6 +112,7 @@ data "zpa_application_segment" "all_other_services"{
 }
 
 data "zpa_idp_controller" "sgio_user_okta" {
+<<<<<<< HEAD
  id = "216196257331281956"
 }
 
@@ -70,3 +120,25 @@ data "zpa_scim_groups" "engineering" {
  id = "255066"
 }
 */
+=======
+ id = 216196257331281933
+}
+
+data "zpa_scim_groups" "engineering" {
+ id = 255066
+}
+
+data "zpa_scim_groups" "sales" {
+ id = 255067
+}
+
+data "zpa_scim_groups" "finance" {
+ id = 255068
+}
+
+data "zpa_scim_groups" "executives" {
+ id = 255069
+}
+
+
+>>>>>>> zpa_policy_timeout

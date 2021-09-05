@@ -160,30 +160,26 @@ func (service *Service) Get() (*PolicySet, *http.Response, error) {
 	return v, resp, nil
 }
 
-func (service *Service) Create(policySetId string) (*PolicySet, *http.Response, error) {
+// Get the authentication policy and all rules for a Timeout policy rule
+func (service *Service) GetReauth() (*PolicySet, *http.Response, error) {
 	v := new(PolicySet)
-	relativeURL := fmt.Sprintf(mgmtConfig+service.Client.Config.CustomerID+"/policySet/%v/rule", policySetId)
-	resp, err := service.Client.NewRequestDo("POST", relativeURL, nil, nil, &v)
+	relativeURL := fmt.Sprintf(mgmtConfig + service.Client.Config.CustomerID + "/policySet/reauth")
+	resp, err := service.Client.NewRequestDo("GET", relativeURL, nil, nil, &v)
 	if err != nil {
 		return nil, nil, err
 	}
+
 	return v, resp, nil
 }
 
-func (service *Service) Update(policySetId string, ruleId PolicySet) (*http.Response, error) {
-	path := fmt.Sprintf(mgmtConfig+service.Client.Config.CustomerID+"/policySet/%v/rules/%v", policySetId, ruleId)
-	resp, err := service.Client.NewRequestDo("PUT", path, nil, nil, nil)
+// Get the authentication policy and all rules for a Client Forwarding Policy Rule
+func (service *Service) GetBypass() (*PolicySet, *http.Response, error) {
+	v := new(PolicySet)
+	relativeURL := fmt.Sprintf(mgmtConfig + service.Client.Config.CustomerID + "/policySet/bypass")
+	resp, err := service.Client.NewRequestDo("GET", relativeURL, nil, nil, &v)
 	if err != nil {
-		return nil, err
+		return nil, nil, err
 	}
-	return resp, err
-}
 
-func (service *Service) Delete(policySetId string, ruleId PolicySet) (*http.Response, error) {
-	path := fmt.Sprintf(mgmtConfig+service.Client.Config.CustomerID+"/policySet/%v/rules/%v", policySetId, ruleId)
-	resp, err := service.Client.NewRequestDo("DELETE", path, nil, nil, nil)
-	if err != nil {
-		return nil, err
-	}
-	return resp, err
+	return v, resp, nil
 }
