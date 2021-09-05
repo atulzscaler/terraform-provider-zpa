@@ -21,13 +21,6 @@ data "zpa_application_segment" "all_other_services"{
   id = 216196257331283285
 }
 
-<<<<<<< HEAD
-=======
-// data "zpa_idp_controller" "okta"{
-//   id = 216196257331281956
-// }
-
->>>>>>> origin/zpa_idp_controller
 resource "zpa_policyset_rule" "all_other_services" {
   name                          = "All Other Services"
   description                   = "All Other Services"
@@ -47,19 +40,4 @@ resource "zpa_policyset_rule" "all_other_services" {
   }
 }
 
-<<<<<<< HEAD
 
-
-// resource "zpa_policyset_rule" "example" {
-//   name                          = "example1"
-//   description                   = "example1"
-//   action                        = "ALLOW"
-//   ruleorder                     = 1
-//   policysetid = data.zpa_policy_set_global.all.id
-//   policytype = 1
-// }
-=======
-output "all_zpa_policyset_rule" {
-  value = zpa_policyset_rule.all_other_services
-}
->>>>>>> origin/zpa_idp_controller
