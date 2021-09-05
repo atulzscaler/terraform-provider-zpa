@@ -39,8 +39,8 @@ func Provider() *schema.Provider {
 		},
 		ResourcesMap: map[string]*schema.Resource{
 			/*
-				terraform resource name: resource schema
-				resource formation: provider-resourcename-subresource
+			   terraform resource name: resource schema
+			   resource formation: provider-resourcename-subresource
 			*/
 			"zpa_application_server":  resourceApplicationServer(),
 			"zpa_application_segment": resourceApplicationSegment(),
@@ -69,12 +69,6 @@ func Provider() *schema.Provider {
 		ConfigureFunc: zscalerConfigure,
 	}
 }
-
-/*
-func deprecateIncorrectNaming(d *schema.Resource, newResource string) *schema.Resource {
-	d.DeprecationMessage = fmt.Sprintf("Resource is deprecated due to a correction in naming conventions, please use '%s' instead.", newResource)
-	return d
-}*/
 
 func zscalerConfigure(d *schema.ResourceData) (interface{}, error) {
 	log.Printf("[INFO] Initializing ZPA client")

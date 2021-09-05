@@ -10,6 +10,20 @@ terraform {
 provider "zpa" {}
 
 
+<<<<<<< HEAD
+=======
+data "zpa_policy_set_global" "all" {
+}
+
+// output "all_zpa_policy_set_global" {
+//   value = data.zpa_policy_set_global.all
+// }
+
+data "zpa_application_segment" "all_other_services"{
+  id = 216196257331283285
+}
+
+>>>>>>> zpa_scim_group_controller
 resource "zpa_policyset_rule" "all_other_services" {
   name                          = "All Other Services"
   description                   = "All Other Services"
@@ -39,6 +53,7 @@ resource "zpa_policyset_rule" "all_other_services" {
   }
 }
 
+<<<<<<< HEAD
 output "all_zpa_policyset_rule" {
   value = zpa_policyset_rule.all_other_services
 }
@@ -57,3 +72,6 @@ data "zpa_idp_controller" "sgio_user_okta" {
 data "zpa_scim_groups" "engineering" {
  id = "255066"
 }
+=======
+
+>>>>>>> zpa_scim_group_controller

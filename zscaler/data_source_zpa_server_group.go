@@ -296,6 +296,7 @@ func dataSourceServerGroupRead(d *schema.ResourceData, m interface{}) error {
 	zClient := m.(*Client)
 
 	id := d.Get("id").(string)
+
 	log.Printf("[INFO] Getting data for server group %s\n", id)
 
 	resp, _, err := zClient.servergroup.Get(id)

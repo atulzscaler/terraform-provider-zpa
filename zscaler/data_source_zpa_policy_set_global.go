@@ -285,11 +285,12 @@ func flattenRuleConditions(conditions policysetglobal.Rules) []interface{} {
 			"modifiedby":    ruleCondition.ModifiedBy,
 			"modified_time": ruleCondition.ModifiedTime,
 			"negated":       ruleCondition.Negated,
+			"operator":      ruleCondition.Operator,
 			"operands":      flattenConditionOperands(ruleCondition),
 			// Needs to figure it out how to deal with this parameter. Returning the following error:
 			//  Error: Invalid address to set: []string{"rules", "0", "conditions", "0", "operator"}
 			// Works fine when removed.
-			//"operator":     ruleCondition.Operator,
+
 		}
 	}
 
