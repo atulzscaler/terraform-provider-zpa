@@ -15,11 +15,11 @@ resource "zpa_policyset_rule" "all_other_services" {
   description                   = "All Other Services"
   action                        = "ALLOW"
   rule_order                     = 2
-  operator = ["AND"]
+  operator = "AND"
   policy_set_id = data.zpa_policy_set_global.all.id
   conditions {
     negated = false
-    operator = ["OR"]
+    operator = "OR"
     operands {
       name =  "All Other Services"
       object_type = "APP"
@@ -29,12 +29,7 @@ resource "zpa_policyset_rule" "all_other_services" {
   }
   conditions {
      negated = false
-     operator = ["OR"]
-    // operands {
-    //   object_type = "IDP"
-    //   lhs = "id"
-    //   rhs = data.zpa_idp_controller.sgio_user_okta.id
-    // }
+     operator = "OR"
     operands {
       object_type = "SCIM_GROUP"
       lhs = data.zpa_idp_controller.sgio_user_okta.id
