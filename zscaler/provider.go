@@ -48,6 +48,8 @@ func Provider() *schema.Provider {
 			"zpa_segment_group":       resourceSegmentGroup(),
 			"zpa_browser_access":      resourceBrowserAccess(),
 			"zpa_policyset_rule":      resourcePolicySetRule(),
+			"zpa_policy_timeout":      resourcePolicyTimeout(),
+			// "zpa_policy_client_forwarding": resourcePolicyClientForwarding(),
 		},
 		DataSourcesMap: map[string]*schema.Resource{
 			// terraform date source name: data source schema
@@ -66,6 +68,7 @@ func Provider() *schema.Provider {
 			"zpa_segment_group":         dataSourceSegmentGroup(),
 			"zpa_idp_controller":        dataSourceIdpController(),
 			"zpa_policy_set_global":     dataSourcePolicySetGlobal(),
+			"zpa_policy_timeout":        dataSourcePolicyTimeout(),
 		},
 		ConfigureFunc: zscalerConfigure,
 	}
