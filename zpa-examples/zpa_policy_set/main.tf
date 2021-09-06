@@ -25,18 +25,23 @@ resource "zpa_policyset_rule" "all_other_services" {
   operator = "AND"
   policy_set_id = data.zpa_policy_set_global.all.id
   app_connector_groups {
-    id = "216196257331281931"
+    id = ["216196257331281931", "216196257331282724"]
   }
   app_connector_groups {
     id = "216196257331282724"
   }
 
   app_server_groups {
+<<<<<<< HEAD
     id = "216196257331283675"
   }
   app_server_groups {
       id = "216196257331283670"
   }
+=======
+    id = ["216196257331283675", "216196257331283670"]
+  }
+>>>>>>> policy-rule
 
   conditions {
     negated = false
