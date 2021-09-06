@@ -21,21 +21,10 @@ func resourcePolicyTimeout() *schema.Resource {
 		Schema: map[string]*schema.Schema{
 			"action": {
 				Type:        schema.TypeString,
-				Optional:    true,
+				Required:    true,
 				Description: "  This is for providing the rule action.",
 				ValidateFunc: validation.StringInSlice([]string{
-					"ALLOW",
-					"DENY",
-					"LOG",
 					"RE_AUTH",
-					"NEVER",
-					"BYPASS",
-					"INTERCEPT",
-					"NO_DOWNLOAD",
-					"BYPASS_RE_AUTH",
-					"INTERCEPT_ACCESSIBLE",
-					"ISOLATE",
-					"BYPASS_ISOLATE",
 				}, false),
 			},
 			"action_id": {
@@ -92,11 +81,11 @@ func resourcePolicyTimeout() *schema.Resource {
 			},
 			"reauth_idle_timeout": {
 				Type:     schema.TypeString,
-				Optional: true,
+				Required: true,
 			},
 			"reauth_timeout": {
 				Type:     schema.TypeString,
-				Optional: true,
+				Required: true,
 			},
 			"rule_order": {
 				Type:     schema.TypeString,
@@ -192,18 +181,12 @@ func resourcePolicyTimeout() *schema.Resource {
 										Optional:    true,
 										Description: "  This is for specifying the policy critiera.",
 										ValidateFunc: validation.StringInSlice([]string{
-											"USER",
-											"USER_GROUP",
-											"LOCATION",
 											"APP",
 											"APP_GROUP",
-											"SAML",
-											"POSTURE",
 											"CLIENT_TYPE",
 											"IDP",
-											"TRUSTED_NETWORK",
-											"EDGE_CONNECTOR_GROUP",
-											"MACHINE_GRP",
+											"POSTURE",
+											"SAML",
 											"SCIM",
 											"SCIM_GROUP",
 										}, false),
