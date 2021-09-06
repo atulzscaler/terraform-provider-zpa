@@ -10,7 +10,7 @@ terraform {
 provider "zpa" {}
 
 data "zpa_scim_groups" "all" {
-    id = "255069"
+    id = 255069
     // idp_id = "216196257331281933"
 }
 
