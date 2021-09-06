@@ -105,10 +105,7 @@ func resourcePolicySetRule() *schema.Resource {
 			"app_server_groups": {
 				Type:        schema.TypeSet,
 				Optional:    true,
-<<<<<<< HEAD
-=======
 				MaxItems:    1,
->>>>>>> policy-rule
 				Description: "List of the server group IDs.",
 				Elem: &schema.Resource{
 					Schema: map[string]*schema.Schema{
@@ -125,10 +122,7 @@ func resourcePolicySetRule() *schema.Resource {
 			"app_connector_groups": {
 				Type:        schema.TypeSet,
 				Optional:    true,
-<<<<<<< HEAD
-=======
 				MaxItems:    1,
->>>>>>> policy-rule
 				Description: "List of app-connector IDs.",
 				Elem: &schema.Resource{
 					Schema: map[string]*schema.Schema{
