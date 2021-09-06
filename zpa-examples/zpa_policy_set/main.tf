@@ -80,7 +80,8 @@ data "zpa_policy_set_global" "all" {
 }
 
 data "zpa_application_segment" "all_other_services"{
-  id = 216196257331283691
+  //id = 216196257331283691
+  name = "All Other Services"
 }
 
 data "zpa_idp_controller" "sgio_user_okta" {

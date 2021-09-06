@@ -3,6 +3,7 @@ package applicationsegment
 import (
 	"fmt"
 	"net/http"
+	"strings"
 )
 
 const (
@@ -82,6 +83,26 @@ func (service *Service) Get(applicationId string) (*ApplicationSegmentResource, 
 	}
 
 	return v, resp, nil
+}
+
+func (service *Service) GetByName(appName string) (*ApplicationSegmentResource, *http.Response, error) {
+	var v struct {
+		List []ApplicationSegmentResource `json:"list"`
+	}
+
+	relativeURL := mgmtConfig + service.Client.Config.CustomerID + appSegmentEndpoint
+	resp, err := service.Client.NewRequestDo("GET", relativeURL, struct{ pagesize int }{
+		pagesize: 500,
+	}, nil, &v)
+	if err != nil {
+		return nil, nil, err
+	}
+	for _, app := range v.List {
+		if strings.EqualFold(app.Name, appName) {
+			return &app, resp, nil
+		}
+	}
+	return nil, resp, fmt.Errorf("no applicattion named '%s' was found", appName)
 }
 
 func (service *Service) Create(appSegment ApplicationSegmentResource) (*ApplicationSegmentResource, *http.Response, error) {
