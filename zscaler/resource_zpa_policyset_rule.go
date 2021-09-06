@@ -199,7 +199,7 @@ func resourcePolicySetRule() *schema.Resource {
 											"APP_GROUP",
 											"SAML",
 											"POSTURE",
-											"CLIENT_TYPE",
+											"CLIENT_TYPE", //POSTURE and TRUSTED_NETWORK are only supported for the CLIENT_TYPE.
 											"IDP",
 											"TRUSTED_NETWORK",
 											"EDGE_CONNECTOR_GROUP",
