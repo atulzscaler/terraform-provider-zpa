@@ -85,7 +85,8 @@ data "zpa_application_segment" "all_other_services"{
 }
 
 data "zpa_idp_controller" "sgio_user_okta" {
- id = 216196257331281933
+ //id = 216196257331281933
+ name = "SGIO-User-Okta"
 }
 
 data "zpa_scim_groups" "engineering" {
