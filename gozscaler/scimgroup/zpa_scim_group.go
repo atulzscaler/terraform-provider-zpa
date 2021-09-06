@@ -11,12 +11,12 @@ const (
 )
 
 type ScimGroup struct {
-	CreationTime string `json:"creationTime,omitempty"`
-	ID           string `json:"id,omitempty"`
-	IdpGroupId   string `json:"idpGroupId,omitempty"`
-	IdpId        string `json:"idpId,omitempty"`
-	ModifiedTime string `json:"modifiedTime,omitempty"`
-	Name         string `json:"name,omitempty"`
+	CreationTime string `json:"creationTime"`
+	ID           string `json:"id"`
+	IdpGroupId   string `json:"idpGroupId"`
+	IdpId        string `json:"idpId"`
+	ModifiedTime string `json:"modifiedTime"`
+	Name         string `json:"name"`
 }
 
 func (service *Service) Get(scimGroupId string) (*ScimGroup, *http.Response, error) {

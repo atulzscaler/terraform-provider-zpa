@@ -41,8 +41,13 @@ func dataSourceScimGroup() *schema.Resource {
 func dataSourceScimGroupRead(d *schema.ResourceData, m interface{}) error {
 	zClient := m.(*Client)
 
+	// id, err := strconv.ParseInt(d.Get("id").(string), 10, 64)
+	// if err != nil {
+	// 	return err
+	// }
+
 	id := d.Get("id").(string)
-	log.Printf("[INFO] Getting data for scim group %s\n", id)
+	log.Printf("[INFO] Getting data user with id %s\n", id)
 
 	resp, _, err := zClient.scimgroup.Get(id)
 	if err != nil {
@@ -50,6 +55,7 @@ func dataSourceScimGroupRead(d *schema.ResourceData, m interface{}) error {
 	}
 
 	d.SetId(resp.ID)
+	// d.SetId(strconv.FormatInt(int64(resp.ID), 10))
 	_ = d.Set("creation_time", resp.CreationTime)
 	_ = d.Set("idp_group_id", resp.IdpGroupId)
 	_ = d.Set("idp_id", resp.IdpId)
