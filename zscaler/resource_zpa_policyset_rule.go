@@ -105,12 +105,19 @@ func resourcePolicySetRule() *schema.Resource {
 			"app_server_groups": {
 				Type:        schema.TypeSet,
 				Optional:    true,
+<<<<<<< HEAD
+=======
+				MaxItems:    1,
+>>>>>>> policy-rule
 				Description: "List of the server group IDs.",
 				Elem: &schema.Resource{
 					Schema: map[string]*schema.Schema{
 						"id": {
-							Type:     schema.TypeString,
+							Type:     schema.TypeList,
 							Optional: true,
+							Elem: &schema.Schema{
+								Type: schema.TypeString,
+							},
 						},
 					},
 				},
@@ -118,12 +125,19 @@ func resourcePolicySetRule() *schema.Resource {
 			"app_connector_groups": {
 				Type:        schema.TypeSet,
 				Optional:    true,
+<<<<<<< HEAD
+=======
+				MaxItems:    1,
+>>>>>>> policy-rule
 				Description: "List of app-connector IDs.",
 				Elem: &schema.Resource{
 					Schema: map[string]*schema.Schema{
 						"id": {
-							Type:     schema.TypeString,
+							Type:     schema.TypeList,
 							Optional: true,
+							Elem: &schema.Schema{
+								Type: schema.TypeString,
+							},
 						},
 					},
 				},
@@ -338,9 +352,11 @@ func expandPolicySetRuleAppServerGroups(d *schema.ResourceData) []policysetrule.
 		for _, appServerGroup := range appServer.List() {
 			appServerGroup, _ := appServerGroup.(map[string]interface{})
 			if appServerGroup != nil {
-				appServerGroups = append(appServerGroups, policysetrule.AppServerGroups{
-					ID: appServerGroup["id"].(string),
-				})
+				for _, id := range appServerGroup["id"].([]interface{}) {
+					appServerGroups = append(appServerGroups, policysetrule.AppServerGroups{
+						ID: id.(string),
+					})
+				}
 			}
 		}
 		return appServerGroups
@@ -358,9 +374,12 @@ func expandPolicySetRuleAppConnectorGroups(d *schema.ResourceData) []policysetru
 		for _, appConnectorGroup := range appConnector.List() {
 			appConnectorGroup, _ := appConnectorGroup.(map[string]interface{})
 			if appConnectorGroup != nil {
-				appConnectorGroups = append(appConnectorGroups, policysetrule.AppConnectorGroups{
-					ID: appConnectorGroup["id"].(string),
-				})
+				for _, id := range appConnectorGroup["id"].([]interface{}) {
+					appConnectorGroups = append(appConnectorGroups, policysetrule.AppConnectorGroups{
+						ID: id.(string),
+					})
+				}
+
 			}
 		}
 		return appConnectorGroups
