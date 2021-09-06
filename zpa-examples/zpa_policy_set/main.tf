@@ -27,21 +27,10 @@ resource "zpa_policyset_rule" "all_other_services" {
   app_connector_groups {
     id = ["216196257331281931", "216196257331282724"]
   }
-  app_connector_groups {
-    id = "216196257331282724"
-  }
 
   app_server_groups {
-<<<<<<< HEAD
-    id = "216196257331283675"
-  }
-  app_server_groups {
-      id = "216196257331283670"
-  }
-=======
     id = ["216196257331283675", "216196257331283670"]
   }
->>>>>>> policy-rule
 
   conditions {
     negated = false
@@ -113,5 +102,6 @@ data "zpa_scim_groups" "finance" {
 data "zpa_scim_groups" "executives" {
  id = 255069
 }
+
 
 
