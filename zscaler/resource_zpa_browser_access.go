@@ -101,7 +101,7 @@ func resourceBrowserAccess() *schema.Resource {
 							Type:     schema.TypeBool,
 							Optional: true,
 						},
-						"appid": {
+						"app_id": {
 							Type:     schema.TypeString,
 							Computed: true,
 						},
@@ -303,8 +303,8 @@ func expandClientlessApps(d *schema.ResourceData) []browseraccess.ClientlessApps
 		log.Printf("[INFO] clientless apps data: %+v\n", clientless)
 		var clientlessApps []browseraccess.ClientlessApps
 		for _, clientlessApp := range clientless {
-			clientlessApp, _ := clientlessApp.(map[string]interface{})
-			if clientlessApp != nil {
+			clientlessApp, ok := clientlessApp.(map[string]interface{})
+			if ok {
 				clientlessApps = append(clientlessApps, browseraccess.ClientlessApps{
 					AllowOptions:        clientlessApp["allow_options"].(bool),
 					AppId:               clientlessApp["app_id"].(string),
