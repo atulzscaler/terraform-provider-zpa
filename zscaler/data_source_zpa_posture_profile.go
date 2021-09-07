@@ -2,7 +2,6 @@ package zscaler
 
 import (
 	"log"
-	"strconv"
 
 	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/schema"
 )
@@ -32,19 +31,19 @@ func dataSourcePostureProfile() *schema.Resource {
 				Computed: true,
 			},
 			"zscaler_customer_id": {
-				Type:     schema.TypeInt,
+				Type:     schema.TypeString,
 				Computed: true,
 			},
 			"creation_time": {
-				Type:     schema.TypeInt,
+				Type:     schema.TypeString,
 				Computed: true,
 			},
 			"modified_time": {
-				Type:     schema.TypeInt,
+				Type:     schema.TypeString,
 				Computed: true,
 			},
 			"modifiedby": {
-				Type:     schema.TypeInt,
+				Type:     schema.TypeString,
 				Computed: true,
 			},
 		},
@@ -62,8 +61,8 @@ func dataSourcePostureProfileRead(d *schema.ResourceData, m interface{}) error {
 		return err
 	}
 
-	//d.SetId(strconv.Itoa(resp.ID))
-	d.SetId(strconv.FormatInt(int64(resp.ID), 10))
+	log.Printf("[INFO] Getting Policy Set Global Rules:\n%+v\n", resp)
+	d.SetId(resp.ID)
 	_ = d.Set("creation_time", resp.CreationTime)
 	_ = d.Set("domain", resp.Domain)
 	_ = d.Set("modifiedby", resp.ModifiedBy)
@@ -75,23 +74,3 @@ func dataSourcePostureProfileRead(d *schema.ResourceData, m interface{}) error {
 
 	return nil
 }
-
-/*
-func flattenPostureProfile(postureProfile []postureprofile.PostureProfile) []interface{} {
-	postureProfiles := make([]interface{}, len(postureProfile))
-	for i, postureProfileItem := range postureProfile {
-		postureProfiles[i] = map[string]interface{}{
-			"id":                postureProfileItem.ID,
-			"name":              postureProfileItem.Name,
-			"creationtime":      postureProfileItem.CreationTime,
-			"domain":            postureProfileItem.Domain,
-			"modifiedby":        postureProfileItem.ModifiedBy,
-			"modifiedtime":      postureProfileItem.ModifiedTime,
-			"postureudid":       postureProfileItem.PostureudId,
-			"zscalercloud":      postureProfileItem.ZscalerCloud,
-			"zscalercustomerid": postureProfileItem.ZscalerCustomerId,
-		}
-	}
-	return postureProfiles
-}
-*/

@@ -26,16 +26,6 @@ func resourcePolicySetRule() *schema.Resource {
 				ValidateFunc: validation.StringInSlice([]string{
 					"ALLOW",
 					"DENY",
-					"LOG",
-					"RE_AUTH",
-					"NEVER",
-					"BYPASS",
-					"INTERCEPT",
-					"NO_DOWNLOAD",
-					"BYPASS_RE_AUTH",
-					"INTERCEPT_ACCESSIBLE",
-					"ISOLATE",
-					"BYPASS_ISOLATE",
 				}, false),
 			},
 			"action_id": {
@@ -103,38 +93,36 @@ func resourcePolicySetRule() *schema.Resource {
 				Optional: true,
 			},
 			"app_server_groups": {
-				Type:        schema.TypeList,
+				Type:        schema.TypeSet,
 				Optional:    true,
-				Description: "ID of the server group.",
+				MaxItems:    1,
+				Description: "List of the server group IDs.",
 				Elem: &schema.Resource{
 					Schema: map[string]*schema.Schema{
 						"id": {
-							Type:     schema.TypeString,
+							Type:     schema.TypeList,
 							Optional: true,
+							Elem: &schema.Schema{
+								Type: schema.TypeString,
+							},
 						},
-						//  "id": {
-						//      Type:     schema.TypeSet,
-						//      Optional: true,
-						//      Elem:     &schema.Schema{Type: schema.TypeInt},
-						//  },
 					},
 				},
 			},
 			"app_connector_groups": {
-				Type:        schema.TypeList,
+				Type:        schema.TypeSet,
 				Optional:    true,
-				Description: "This field is a json array of app-connector-id only.",
+				MaxItems:    1,
+				Description: "List of app-connector IDs.",
 				Elem: &schema.Resource{
 					Schema: map[string]*schema.Schema{
 						"id": {
-							Type:     schema.TypeString,
+							Type:     schema.TypeList,
 							Optional: true,
+							Elem: &schema.Schema{
+								Type: schema.TypeString,
+							},
 						},
-						//  "id": {
-						//      Type:     schema.TypeSet,
-						//      Optional: true,
-						//      Elem:     &schema.Schema{Type: schema.TypeInt},
-						//  },
 					},
 				},
 			},
@@ -233,7 +221,6 @@ func resourcePolicySetCreate(d *schema.ResourceData, m interface{}) error {
 	return resourcePolicySetRead(d, m)
 }
 
-// Please review read operations. It needs to pull the policySetId and RuleId in order to read a specific rule.
 func resourcePolicySetRead(d *schema.ResourceData, m interface{}) error {
 	zClient := m.(*Client)
 
@@ -310,8 +297,6 @@ func resourcePolicySetDelete(d *schema.ResourceData, m interface{}) error {
 
 }
 
-// Please review the expand and flattening functions. Condition is actually a slice inside PolicyRule
-//https://help.zscaler.com/zpa/api-reference#/policy-set-controller/addRuleToPolicySet
 func expandCreatePolicyRule(d *schema.ResourceData) policysetrule.PolicyRule {
 	policySetID, ok := d.Get("policy_set_id").(string)
 	if !ok {
@@ -342,15 +327,17 @@ func expandCreatePolicyRule(d *schema.ResourceData) policysetrule.PolicyRule {
 func expandPolicySetRuleAppServerGroups(d *schema.ResourceData) []policysetrule.AppServerGroups {
 	appServerGroupsInterface, ok := d.GetOk("app_server_groups")
 	if ok {
-		appServer := appServerGroupsInterface.([]interface{})
+		appServer := appServerGroupsInterface.(*schema.Set)
 		log.Printf("[INFO] app server groups data: %+v\n", appServer)
 		var appServerGroups []policysetrule.AppServerGroups
-		for _, appServerGroup := range appServer {
+		for _, appServerGroup := range appServer.List() {
 			appServerGroup, _ := appServerGroup.(map[string]interface{})
 			if appServerGroup != nil {
-				appServerGroups = append(appServerGroups, policysetrule.AppServerGroups{
-					ID: appServerGroup["id"].(string),
-				})
+				for _, id := range appServerGroup["id"].([]interface{}) {
+					appServerGroups = append(appServerGroups, policysetrule.AppServerGroups{
+						ID: id.(string),
+					})
+				}
 			}
 		}
 		return appServerGroups
@@ -362,15 +349,18 @@ func expandPolicySetRuleAppServerGroups(d *schema.ResourceData) []policysetrule.
 func expandPolicySetRuleAppConnectorGroups(d *schema.ResourceData) []policysetrule.AppConnectorGroups {
 	appConnectorGroupsInterface, ok := d.GetOk("app_connector_groups")
 	if ok {
-		appConnector := appConnectorGroupsInterface.([]interface{})
+		appConnector := appConnectorGroupsInterface.(*schema.Set)
 		log.Printf("[INFO] app connector groups data: %+v\n", appConnector)
 		var appConnectorGroups []policysetrule.AppConnectorGroups
-		for _, appConnectorGroup := range appConnector {
+		for _, appConnectorGroup := range appConnector.List() {
 			appConnectorGroup, _ := appConnectorGroup.(map[string]interface{})
 			if appConnectorGroup != nil {
-				appConnectorGroups = append(appConnectorGroups, policysetrule.AppConnectorGroups{
-					ID: appConnectorGroup["id"].(string),
-				})
+				for _, id := range appConnectorGroup["id"].([]interface{}) {
+					appConnectorGroups = append(appConnectorGroups, policysetrule.AppConnectorGroups{
+						ID: id.(string),
+					})
+				}
+
 			}
 		}
 		return appConnectorGroups

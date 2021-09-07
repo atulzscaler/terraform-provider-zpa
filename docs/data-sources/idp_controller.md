@@ -22,30 +22,30 @@ description: |-
 
 ### Read-Only
 
-- **admin_metadata** (List of Object) (see [below for nested schema](#nestedatt--admin_metadata))
-- **auto_provision** (Number)
+- **admin_metadata** (Set of Object) (see [below for nested schema](#nestedatt--admin_metadata))
+- **auto_provision** (String)
 - **certificates** (List of Object) (see [below for nested schema](#nestedatt--certificates))
-- **creation_time** (Number)
+- **creation_time** (String)
 - **description** (String)
 - **disable_saml_based_policy** (Boolean)
 - **domain_list** (List of String)
 - **enable_scim_based_policy** (Boolean)
-- **enabled** (Boolean)
+- **enabled** (Boolean) Default value if null is True
 - **idp_entity_id** (String)
 - **login_name_attribute** (String)
 - **login_url** (String)
-- **modified_time** (Number)
-- **modifiedby** (Number)
+- **modified_time** (String)
+- **modifiedby** (String)
 - **reauth_on_user_update** (Boolean)
 - **redirect_binding** (Boolean)
 - **scim_enabled** (Boolean)
 - **scim_service_provider_endpoint** (String)
 - **scim_shared_secret** (String)
 - **scim_shared_secret_exists** (Boolean)
-- **sign_saml_request** (Number)
+- **sign_saml_request** (String)
 - **sso_type** (List of String)
 - **use_custom_sp_metadata** (Boolean)
-- **user_metadata** (List of Object) (see [below for nested schema](#nestedatt--user_metadata))
+- **user_metadata** (Set of Object) (see [below for nested schema](#nestedatt--user_metadata))
 
 <a id="nestedatt--admin_metadata"></a>
 ### Nested Schema for `admin_metadata`
@@ -66,8 +66,8 @@ Read-Only:
 - **certificate** (String)
 - **cname** (String)
 - **serial_no** (String)
-- **valid_from_in_sec** (Number)
-- **valid_to_in_sec** (Number)
+- **valid_from_in_sec** (String)
+- **valid_to_in_sec** (String)
 
 
 <a id="nestedatt--user_metadata"></a>
@@ -78,6 +78,6 @@ Read-Only:
 - **certificate_url** (String)
 - **sp_entity_id** (String)
 - **sp_metadata_url** (String)
-- **sp_post_url** (Number)
+- **sp_post_url** (String)
 
 
