@@ -1,8 +1,11 @@
 package zscaler
 
 import (
+	"fmt"
 	"log"
+	"strconv"
 
+	"github.com/SecurityGeekIO/terraform-provider-zpa/gozscaler/scimgroup"
 	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/schema"
 )
 
@@ -11,10 +14,14 @@ func dataSourceScimGroup() *schema.Resource {
 		Read: dataSourceScimGroupRead,
 		Schema: map[string]*schema.Schema{
 			"creation_time": {
-				Type:     schema.TypeString,
+				Type:     schema.TypeInt,
 				Computed: true,
 			},
 			"id": {
+				Type:     schema.TypeString,
+				Optional: true,
+			},
+			"name": {
 				Type:     schema.TypeString,
 				Optional: true,
 			},
@@ -23,15 +30,15 @@ func dataSourceScimGroup() *schema.Resource {
 				Computed: true,
 			},
 			"idp_id": {
+				Type:     schema.TypeInt,
+				Optional: true,
+			},
+			"idp_name": {
 				Type:     schema.TypeString,
 				Optional: true,
 			},
 			"modified_time": {
-				Type:     schema.TypeString,
-				Computed: true,
-			},
-			"name": {
-				Type:     schema.TypeString,
+				Type:     schema.TypeInt,
 				Computed: true,
 			},
 		},
@@ -40,22 +47,55 @@ func dataSourceScimGroup() *schema.Resource {
 
 func dataSourceScimGroupRead(d *schema.ResourceData, m interface{}) error {
 	zClient := m.(*Client)
-
-	id := d.Get("id").(string)
-	log.Printf("[INFO] Getting data for scim group %s\n", id)
-
-	resp, _, err := zClient.scimgroup.Get(id)
-	if err != nil {
-		return err
+	var resp *scimgroup.ScimGroup
+	id, ok := d.Get("id").(string)
+	if ok && id != "" {
+		res, _, err := zClient.scimgroup.Get(id)
+		if err != nil {
+			return err
+		}
+		resp = res
 	}
-
-	d.SetId(resp.ID)
-	_ = d.Set("creation_time", resp.CreationTime)
-	_ = d.Set("idp_group_id", resp.IdpGroupId)
-	_ = d.Set("idp_id", resp.IdpId)
-	_ = d.Set("modified_time", resp.ModifiedTime)
-	_ = d.Set("name", resp.Name)
-
+	idpName, ok := d.Get("idp_name").(string)
+	name, ok2 := d.Get("name").(string)
+	if id == "" && ok && ok2 && idpName != "" && name != "" {
+		idpResp, _, err := zClient.idpcontroller.GetByName(idpName)
+		if err != nil || idpResp == nil {
+			log.Printf("[INFO] couldn't find idp by name: %s\n", idpName)
+			return err
+		}
+		res, _, err := zClient.scimgroup.GetByName(name, idpResp.ID)
+		if err != nil {
+			return err
+		}
+		resp = res
+	}
+	if resp != nil {
+		// d.SetId(resp.ID)
+		d.SetId(strconv.FormatInt(int64(resp.ID), 10))
+		_ = d.Set("creation_time", resp.CreationTime)
+		_ = d.Set("idp_group_id", resp.IdpGroupId)
+		_ = d.Set("idp_id", resp.IdpId)
+		_ = d.Set("idp_id", resp.IdpId)
+		_ = d.Set("modified_time", resp.ModifiedTime)
+		_ = d.Set("name", resp.Name)
+	} else {
+		return fmt.Errorf("no scim name '%s' & idp name '%s' OR id '%s' was found", name, idpName, id)
+	}
 	return nil
-
 }
+
+// func flattenScimGroups(scimGroupResponse []scimgroup.ScimGroup) []interface{} {
+//  scimGroups := make([]interface{}, len(scimGroupResponse))
+//  for i, scimGroupItem := range scimGroupResponse {
+//      scimGroups[i] = map[string]interface{}{
+//          "creation_time": scimGroupItem.CreationTime,
+//          "id":            scimGroupItem.ID,
+//          "idp_id":        scimGroupItem.IdpId,
+//          "idp_group_id":  scimGroupItem.IdpGroupId,
+//          "modified_time": scimGroupItem.ModifiedTime,
+//          "name":          scimGroupItem.Name,
+//      }
+//  }
+//  return scimGroups
+// }

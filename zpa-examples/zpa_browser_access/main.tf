@@ -24,6 +24,10 @@ resource "zpa_server_group" "example" {
    description = "example"
    enabled = true
    policy_migrated = true
+    // applications  {
+    //     //name = [data.zpa_application_segment.application_segment.name]
+    //     id = 216196257331282544
+    // }
  }
 
 // DevOps Browser Access
@@ -39,19 +43,38 @@ resource "zpa_browser_access" "jenkins_app" {
     health_reporting = "ON_ACCESS"
     bypass_type = "NEVER"
     tcp_port_ranges = ["80", "80", "8080", "8080"]
-    domain_names = ["acme.securitygeek.io"]
-    segment_group_id = zpa_segment_group.example.id
+    domain_names = ["sales.securitygeek.io", "qa.securitygeek.io", "jenkins.securitygeek.io"]
+    segment_group_id = zpa_segment_group.sg_sgio_browser_access.id
+
+    clientless_apps {
+        name = "sales.securitygeek.io"
+        application_protocol = "HTTP"
+        application_port = "80"
+        certificate_id = data.zpa_ba_certificate.sales_ba.id
+        trust_untrusted_cert = true
+        enabled = true
+        domain = "sales.securitygeek.io"
+    }
+        clientless_apps {
+        name = "qa.securitygeek.io"
+        application_protocol = "HTTP"
+        application_port = "80"
+        certificate_id = data.zpa_ba_certificate.qa_ba.id
+        trust_untrusted_cert = true
+        enabled = true
+        domain = "qa.securitygeek.io"
+    }
 
     clientless_apps {
         name = "jenkins.securitygeek.io"
-        application_protocol = "HTTPS"
-        application_port = "443"
+        application_protocol = "HTTP"
+        application_port = "8080"
         certificate_id = data.zpa_ba_certificate.jenkins_ba.id
         trust_untrusted_cert = true
         enabled = true
         domain = "jenkins.securitygeek.io"
     }
     server_groups {
-        id = zpa_server_group.example.id
+        id = zpa_server_group.sg_sgio_browser_access.id
     }
 }

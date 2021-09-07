@@ -1,6 +1,7 @@
 package zscaler
 
 import (
+	"fmt"
 	"log"
 
 	"github.com/SecurityGeekIO/terraform-provider-zpa/gozscaler/servergroup"
@@ -217,7 +218,7 @@ func dataSourceServerGroup() *schema.Resource {
 			},
 			"id": {
 				Type:     schema.TypeString,
-				Required: true,
+				Optional: true,
 			},
 			"ip_anchored": {
 				Type:     schema.TypeBool,
@@ -295,40 +296,54 @@ func dataSourceServerGroup() *schema.Resource {
 func dataSourceServerGroupRead(d *schema.ResourceData, m interface{}) error {
 	zClient := m.(*Client)
 
-	id := d.Get("id").(string)
+	var resp *servergroup.ServerGroup
+	id, ok := d.Get("id").(string)
+	if ok && id != "" {
+		log.Printf("[INFO] Getting data for server group  %s\n", id)
+		res, _, err := zClient.servergroup.Get(id)
+		if err != nil {
+			return err
+		}
+		resp = res
+	}
+	name, ok := d.Get("name").(string)
+	if ok && name != "" {
+		log.Printf("[INFO] Getting data for server group name %s\n", name)
+		res, _, err := zClient.servergroup.GetByName(name)
+		if err != nil {
+			return err
+		}
+		resp = res
+	}
+	if resp != nil {
+		d.SetId(resp.ID)
+		_ = d.Set("config_space", resp.ConfigSpace)
+		_ = d.Set("creation_time", resp.CreationTime)
+		_ = d.Set("description", resp.Description)
+		_ = d.Set("enabled", resp.Enabled)
+		_ = d.Set("dynamic_discovery", resp.DynamicDiscovery)
+		_ = d.Set("ip_anchored", resp.IpAnchored)
+		_ = d.Set("modifiedby", resp.ModifiedBy)
+		_ = d.Set("modified_time", resp.ModifiedTime)
+		_ = d.Set("name", resp.Name)
 
-	log.Printf("[INFO] Getting data for server group %s\n", id)
+		if err := d.Set("applications", flattenServerGroupApplications(resp.Applications)); err != nil {
+			return err
+		}
 
-	resp, _, err := zClient.servergroup.Get(id)
-	if err != nil {
-		return err
+		if err := d.Set("app_connector_groups", flattenAppConnectorGroups(resp.AppConnectorGroups)); err != nil {
+			return err
+		}
+
+		if err := d.Set("servers", flattenServers(resp.Servers)); err != nil {
+			return err
+		}
+	} else {
+		return fmt.Errorf("couldn't find any server group with name '%s' or id '%s'", name, id)
 	}
 
-	d.SetId(resp.ID)
-	_ = d.Set("config_space", resp.ConfigSpace)
-	_ = d.Set("creation_time", resp.CreationTime)
-	_ = d.Set("description", resp.Description)
-	_ = d.Set("enabled", resp.Enabled)
-	_ = d.Set("dynamic_discovery", resp.DynamicDiscovery)
-	_ = d.Set("ip_anchored", resp.IpAnchored)
-	_ = d.Set("modifiedby", resp.ModifiedBy)
-	_ = d.Set("modified_time", resp.ModifiedTime)
-	_ = d.Set("name", resp.Name)
-
-	if err := d.Set("applications", flattenServerGroupApplications(resp.Applications)); err != nil {
-		return err
-	}
-
-	if err := d.Set("app_connector_groups", flattenAppConnectorGroups(resp.AppConnectorGroups)); err != nil {
-		return err
-	}
-
-	if err := d.Set("servers", flattenServers(resp.Servers)); err != nil {
-		return err
-	}
 	return nil
 }
-
 func flattenServerGroupApplications(applications []servergroup.Applications) []interface{} {
 	serverGroupApplications := make([]interface{}, len(applications))
 	for i, srvApplication := range applications {

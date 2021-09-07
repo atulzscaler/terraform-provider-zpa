@@ -3,6 +3,7 @@ package cloudconnectorgroup
 import (
 	"fmt"
 	"net/http"
+	"strings"
 )
 
 const (
@@ -11,38 +12,59 @@ const (
 )
 
 type CloudConnectorGroup struct {
-	CreationTime    int32             `json:"creationTime,string"`
-	Description     string            `json:"description"`
-	CloudConnectors []CloudConnectors `json:"cloudConnectors"`
-	Enabled         bool              `json:"enabled"`
-	GeolocationId   int64             `json:"geoLocationId,string"`
-	ID              int               `json:"id,string"`
-	ModifiedBy      string            `json:"modifiedBy,string"`
-	ModifiedTime    int32             `json:"modifiedTime,string"`
-	Name            string            `json:"name"`
-	ZiaCloud        string            `json:"ziaCloud"`
-	ZiaOrgid        int64             `json:"ziaOrgId,string"`
+	CreationTime    string            `json:"creationTime,omitempty"`
+	Description     string            `json:"description,omitempty"`
+	CloudConnectors []CloudConnectors `json:"cloudConnectors,omitempty"`
+	Enabled         bool              `json:"enabled,omitempty"`
+	GeolocationId   string            `json:"geoLocationId,omitempty"`
+	ID              string            `json:"id,omitempty"`
+	ModifiedBy      string            `json:"modifiedBy,omitempty"`
+	ModifiedTime    string            `json:"modifiedTime,omitempty"`
+	Name            string            `json:"name,omitempty"`
+	ZiaCloud        string            `json:"ziaCloud,omitempty"`
+	ZiaOrgid        string            `json:"ziaOrgId,omitempty"`
 }
 type CloudConnectors struct {
-	CreationTime int32    `json:"creationTime,string"`
-	Description  string   `json:"description"`
-	Enabled      bool     `json:"enabled"`
-	Fingerprint  string   `json:"fingerprint"`
-	ID           int      `json:"id,string"`
-	IpAcl        []string `json:"ipAcl"`
-	IssuedCertId int64    `json:"issuedCertId,string"`
-	ModifiedBy   int64    `json:"modifiedBy,string"`
-	ModifiedTime int32    `json:"modifiedTime,string"`
-	Name         string   `json:"name"`
+	CreationTime string                 `json:"creationTime,omitempty"`
+	Description  string                 `json:"description,omitempty"`
+	Enabled      bool                   `json:"enabled,omitempty"`
+	Fingerprint  string                 `json:"fingerprint,omitempty"`
+	ID           string                 `json:"id,omitempty"`
+	IpAcl        []string               `json:"ipAcl,omitempty"`
+	IssuedCertId string                 `json:"issuedCertId,omitempty"`
+	ModifiedBy   string                 `json:"modifiedBy,omitempty"`
+	ModifiedTime string                 `json:"modifiedTime,omitempty"`
+	SigningCert  map[string]interface{} `json:"signingCert,omitempty"`
+	Name         string                 `json:"name,omitempty"`
 }
 
-func (service *Service) Get() (*CloudConnectorGroup, *http.Response, error) {
+func (service *Service) Get(cloudConnectorGroupId string) (*CloudConnectorGroup, *http.Response, error) {
 	v := new(CloudConnectorGroup)
-	relativeURL := fmt.Sprintf(mgmtConfig + service.Client.Config.CustomerID + cloudConnectorGroupEndpoint)
+	relativeURL := fmt.Sprintf(mgmtConfig+service.Client.Config.CustomerID+cloudConnectorGroupEndpoint, cloudConnectorGroupId)
 	resp, err := service.Client.NewRequestDo("GET", relativeURL, nil, nil, &v)
 	if err != nil {
 		return nil, nil, err
 	}
 
 	return v, resp, nil
+}
+
+func (service *Service) GetByName(cloudConnectorGroupName string) (*CloudConnectorGroup, *http.Response, error) {
+	var v struct {
+		List []CloudConnectorGroup `json:"list"`
+	}
+
+	relativeURL := mgmtConfig + service.Client.Config.CustomerID + cloudConnectorGroupEndpoint
+	resp, err := service.Client.NewRequestDo("GET", relativeURL, struct{ pagesize int }{
+		pagesize: 500,
+	}, nil, &v)
+	if err != nil {
+		return nil, nil, err
+	}
+	for _, app := range v.List {
+		if strings.EqualFold(app.Name, cloudConnectorGroupName) {
+			return &app, resp, nil
+		}
+	}
+	return nil, resp, fmt.Errorf("no application named '%s' was found", cloudConnectorGroupName)
 }
