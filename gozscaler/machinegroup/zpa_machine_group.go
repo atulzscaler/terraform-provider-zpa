@@ -3,6 +3,7 @@ package machinegroup
 import (
 	"fmt"
 	"net/http"
+	"strings"
 )
 
 const (
@@ -10,40 +11,32 @@ const (
 	machineGroupEndpoint string = "/machineGroup"
 )
 
-// MachineGroupsResponse Response structure from API endpoint
-type MachineGroupsResponse struct {
-	TotalPages int32          `json:"totalPages,string"`
-	List       []MachineGroup `json:"list"`
-}
-
 type MachineGroup struct {
-	CreationTime int32      `json:"creationTime,string,omitempty"`
+	CreationTime string     `json:"creationTime,omitempty"`
 	Description  string     `json:"description,omitempty"`
 	Enabled      bool       `json:"enabled,omitempty"`
-	ID           int64      `json:"id,string,omitempty"`
+	ID           string     `json:"id,omitempty"`
 	Machines     []Machines `json:"machines,omitempty"`
-	ModifiedBy   int64      `json:"modifiedBy,string,omitempty"`
-	ModifiedTime int32      `json:"modifiedTime,string,omitempty"`
-	Name         string     `json:"name"`
+	ModifiedBy   string     `json:"modifiedBy,omitempty"`
+	ModifiedTime string     `json:"modifiedTime,omitempty"`
+	Name         string     `json:"name,omitempty"`
 }
 
 type Machines struct {
-	CreationTime     int32                  `json:"creationTime,string,omitempty"`
+	CreationTime     string                 `json:"creationTime,omitempty"`
 	Description      string                 `json:"description,omitempty"`
 	Fingerprint      string                 `json:"fingerprint,omitempty"`
-	ID               int64                  `json:"id,string,omitempty"`
-	IssuedCertID     int64                  `json:"issuedCertId,string,omitempty"`
+	ID               string                 `json:"id,omitempty"`
+	IssuedCertID     string                 `json:"issuedCertId,omitempty"`
 	MachineGroupID   string                 `json:"machineGroupId,omitempty"`
 	MachineGroupName string                 `json:"machineGroupName,omitempty"`
-	MachineTokenID   int64                  `json:"machineTokenId,string,omitempty"`
-	ModifiedBy       int64                  `json:"modifiedBy,string,omitempty"`
-	ModifiedTime     int32                  `json:"modifiedTime,string,omitempty"`
-	Name             string                 `json:"name"`
+	MachineTokenID   string                 `json:"machineTokenId,omitempty"`
+	ModifiedBy       string                 `json:"modifiedBy,omitempty"`
+	ModifiedTime     string                 `json:"modifiedTime,omitempty"`
+	Name             string                 `json:"name,omitempty"`
 	SigningCert      map[string]interface{} `json:"signingCert,omitempty"`
-	//SigningCert      map[string]string `json:"signingCert,omitempty"`
 }
 
-// Get ...
 func (service *Service) Get(machineGroupId string) (*MachineGroup, *http.Response, error) {
 	v := new(MachineGroup)
 	relativeURL := fmt.Sprintf("%s/%s", mgmtConfig+service.Client.Config.CustomerID+machineGroupEndpoint, machineGroupId)
@@ -55,11 +48,22 @@ func (service *Service) Get(machineGroupId string) (*MachineGroup, *http.Respons
 	return v, resp, nil
 }
 
-func (service *Service) GetAll() (*MachineGroupsResponse, *http.Response, error) {
-	v := new(MachineGroupsResponse)
-	resp, err := service.Client.NewRequestDo("GET", mgmtConfig+service.Client.Config.CustomerID+machineGroupEndpoint, nil, nil, &v)
+func (service *Service) GetByName(machineGroupName string) (*MachineGroup, *http.Response, error) {
+	var v struct {
+		List []MachineGroup `json:"list"`
+	}
+
+	relativeURL := mgmtConfig + service.Client.Config.CustomerID + machineGroupEndpoint
+	resp, err := service.Client.NewRequestDo("GET", relativeURL, struct{ pagesize int }{
+		pagesize: 500,
+	}, nil, &v)
 	if err != nil {
 		return nil, nil, err
 	}
-	return v, resp, nil
+	for _, app := range v.List {
+		if strings.EqualFold(app.Name, machineGroupName) {
+			return &app, resp, nil
+		}
+	}
+	return nil, resp, fmt.Errorf("no application named '%s' was found", machineGroupName)
 }
