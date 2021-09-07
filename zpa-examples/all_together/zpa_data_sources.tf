@@ -15,18 +15,23 @@ data "zpa_idp_controller" "sgio_user_okta" {
  id = 216196257331281933
 }
 
+// Okta IDP SCIM Groups
 data "zpa_scim_groups" "engineering" {
- id = 255066
+  name = "Engineering"
+  idp_name = "SGIO-User-Okta"
 }
 
 data "zpa_scim_groups" "sales" {
- id = 255067
-}
-
-data "zpa_scim_groups" "finance" {
- id = 255068
+  name = "Sales"
+  idp_name = "SGIO-User-Okta"
 }
 
 data "zpa_scim_groups" "executives" {
- id = 255069
+  name = "Executives"
+  idp_name = "SGIO-User-Okta"
+}
+
+data "zpa_scim_groups" "finance" {
+  name = "Finance"
+  idp_name = "SGIO-User-Okta"
 }
