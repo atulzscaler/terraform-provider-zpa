@@ -3,6 +3,7 @@ package applicationsegment
 import (
 	"fmt"
 	"net/http"
+	"strings"
 )
 
 const (
@@ -26,35 +27,35 @@ type ApplicationSegmentResource struct {
 	IpAnchored           bool              `json:"ipAnchored,omitempty"`
 	HealthReporting      string            `json:"healthReporting,omitempty"`
 	IcmpAccessType       string            `json:"icmpAccessType,omitempty"`
-	SegmentGroupId       string            `json:"segmentGroupId"`
+	SegmentGroupId       int               `json:"segmentGroupId,string"`
 	SegmentGroupName     string            `json:"segmentGroupName,omitempty"`
-	CreationTime         string            `json:"creationTime,omitempty"`
+	CreationTime         int               `json:"creationTime,string"`
 	ModifiedBy           string            `json:"modifiedBy,omitempty"`
-	ModifiedTime         string            `json:"modifiedTime,omitempty"`
+	ModifiedTime         int               `json:"modifiedTime,string"`
 	TcpPortRanges        []interface{}     `json:"tcpPortRanges,omitempty"`
 	UdpPortRanges        []interface{}     `json:"udpPortRanges,omitempty"`
 	ClientlessApps       []ClientlessApps  `json:"clientlessApps,omitempty"`
 	ServerGroups         []AppServerGroups `json:"serverGroups,omitempty"`
-	DefaultIdleTimeout   string            `json:"defaultIdleTimeout,omitempty"`
-	DefaultMaxAge        string            `json:"defaultMaxAge,omitempty"`
+	DefaultIdleTimeout   int32             `json:"defaultIdleTimeout,string,omitempty"`
+	DefaultMaxAge        int32             `json:"defaultMaxAge,string,omitempty"`
 }
 type ClientlessApps struct {
 	AllowOptions        bool   `json:"allowOptions,omitempty"`
-	AppId               string `json:"appId,omitempty"`
-	ApplicationPort     string `json:"applicationPort,omitempty"`
+	AppId               int    `json:"appId,string,omitempty"`
+	ApplicationPort     int    `json:"applicationPort,string,omitempty"`
 	ApplicationProtocol string `json:"applicationProtocol,omitempty"`
-	CertificateId       string `json:"certificateId,omitempty"`
+	CertificateId       int    `json:"certificateId,string,omitempty"`
 	CertificateName     string `json:"certificateName,omitempty"`
 	Cname               string `json:"cname,omitempty"`
-	CreationTime        string `json:"creationTime,omitempty"`
+	CreationTime        int32  `json:"creationTime,string,omitempty"`
 	Description         string `json:"description,omitempty"`
 	Domain              string `json:"domain,omitempty"`
 	Enabled             bool   `json:"enabled,omitempty"`
 	Hidden              bool   `json:"hidden,omitempty"`
-	ID                  string `json:"id,omitempty"`
+	ID                  int64  `json:"id,string,omitempty"`
 	LocalDomain         string `json:"localDomain,omitempty"`
-	ModifiedBy          string `json:"modifiedBy,omitempty"`
-	ModifiedTime        string `json:"modifiedTime,omitempty"`
+	ModifiedBy          int64  `json:"modifiedBy,string,omitempty"`
+	ModifiedTime        int32  `json:"modifiedTime,string,omitempty"`
 	Name                string `json:"name"`
 	Path                string `json:"path,omitempty"`
 	Portal              bool   `json:"portal,omitempty"`
@@ -63,13 +64,13 @@ type ClientlessApps struct {
 
 type AppServerGroups struct {
 	ConfigSpace      string `json:"configSpace,omitempty"`
-	CreationTime     string `json:"creationTime,omitempty"`
+	CreationTime     int32  `json:"creationTime,string,omitempty"`
 	Description      string `json:"description,omitempty"`
 	Enabled          bool   `json:"enabled,omitempty"`
-	ID               string `json:"id,omitempty"`
+	ID               int    `json:"id,string,omitempty"`
 	DynamicDiscovery bool   `json:"dynamicDiscovery,omitempty"`
-	ModifiedBy       string `json:"modifiedBy,omitempty"`
-	ModifiedTime     string `json:"modifiedTime,omitempty"`
+	ModifiedBy       int64  `json:"modifiedBy,string,omitempty"`
+	ModifiedTime     int32  `json:"modifiedTime,string,omitempty"`
 	Name             string `json:"name"`
 }
 
@@ -82,6 +83,26 @@ func (service *Service) Get(applicationId string) (*ApplicationSegmentResource, 
 	}
 
 	return v, resp, nil
+}
+
+func (service *Service) GetByName(appName string) (*ApplicationSegmentResource, *http.Response, error) {
+	var v struct {
+		List []ApplicationSegmentResource `json:"list"`
+	}
+
+	relativeURL := mgmtConfig + service.Client.Config.CustomerID + appSegmentEndpoint
+	resp, err := service.Client.NewRequestDo("GET", relativeURL, struct{ pagesize int }{
+		pagesize: 500,
+	}, nil, &v)
+	if err != nil {
+		return nil, nil, err
+	}
+	for _, app := range v.List {
+		if strings.EqualFold(app.Name, appName) {
+			return &app, resp, nil
+		}
+	}
+	return nil, resp, fmt.Errorf("no applicattion named '%s' was found", appName)
 }
 
 func (service *Service) Create(appSegment ApplicationSegmentResource) (*ApplicationSegmentResource, *http.Response, error) {
