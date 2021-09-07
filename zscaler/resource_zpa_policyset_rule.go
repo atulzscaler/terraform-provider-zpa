@@ -26,16 +26,6 @@ func resourcePolicySetRule() *schema.Resource {
 				ValidateFunc: validation.StringInSlice([]string{
 					"ALLOW",
 					"DENY",
-					"LOG",
-					"RE_AUTH",
-					"NEVER",
-					"BYPASS",
-					"INTERCEPT",
-					"NO_DOWNLOAD",
-					"BYPASS_RE_AUTH",
-					"INTERCEPT_ACCESSIBLE",
-					"ISOLATE",
-					"BYPASS_ISOLATE",
 				}, false),
 			},
 			"action_id": {
@@ -231,7 +221,6 @@ func resourcePolicySetCreate(d *schema.ResourceData, m interface{}) error {
 	return resourcePolicySetRead(d, m)
 }
 
-// Please review read operations. It needs to pull the policySetId and RuleId in order to read a specific rule.
 func resourcePolicySetRead(d *schema.ResourceData, m interface{}) error {
 	zClient := m.(*Client)
 
@@ -308,8 +297,6 @@ func resourcePolicySetDelete(d *schema.ResourceData, m interface{}) error {
 
 }
 
-// Please review the expand and flattening functions. Condition is actually a slice inside PolicyRule
-//https://help.zscaler.com/zpa/api-reference#/policy-set-controller/addRuleToPolicySet
 func expandCreatePolicyRule(d *schema.ResourceData) policysetrule.PolicyRule {
 	policySetID, ok := d.Get("policy_set_id").(string)
 	if !ok {

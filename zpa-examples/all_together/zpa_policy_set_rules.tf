@@ -3,7 +3,7 @@ resource "zpa_policyset_rule" "as_sgio_devops" {
   name                          = "SGIO DevOps Servers"
   description                   = "SGIO DevOps Servers"
   action                        = "ALLOW"
-//   rule_order                     = 2
+  rule_order                     = 2
   operator = "AND"
   policy_set_id = data.zpa_policy_set_global.all.id
   conditions {
@@ -20,11 +20,6 @@ resource "zpa_policyset_rule" "as_sgio_devops" {
      negated = false
      operator = "OR"
     operands {
-      object_type = "IDP"
-      lhs = "id"
-      rhs = data.zpa_idp_controller.sgio_user_okta.id
-    }
-    operands {
       object_type = "SCIM_GROUP"
       lhs = data.zpa_idp_controller.sgio_user_okta.id
       rhs = data.zpa_scim_groups.engineering.id
@@ -38,7 +33,7 @@ resource "zpa_policyset_rule" "as_vcenter_servers" {
   name                          = "SGIO vCenter Servers"
   description                   = "SGIO vCenter Servers"
   action                        = "ALLOW"
-//   rule_order                     = 3
+  rule_order                     = 3
   operator = "AND"
   policy_set_id = data.zpa_policy_set_global.all.id
   conditions {
@@ -55,11 +50,6 @@ resource "zpa_policyset_rule" "as_vcenter_servers" {
      negated = false
      operator = "OR"
     operands {
-      object_type = "IDP"
-      lhs = "id"
-      rhs = data.zpa_idp_controller.sgio_user_okta.id
-    }
-    operands {
       object_type = "SCIM_GROUP"
       lhs = data.zpa_idp_controller.sgio_user_okta.id
       rhs = data.zpa_scim_groups.engineering.id
@@ -73,7 +63,7 @@ resource "zpa_policyset_rule" "as_intranet_web_apps" {
   name                          = "SGIO Intranet Web Apps"
   description                   = "SGIO Intranet Web Apps"
   action                        = "ALLOW"
-//   rule_order                     = 4
+  rule_order                     = 4
   operator = "AND"
   policy_set_id = data.zpa_policy_set_global.all.id
   conditions {
@@ -90,17 +80,12 @@ resource "zpa_policyset_rule" "as_intranet_web_apps" {
      negated = false
      operator = "OR"
     operands {
-      object_type = "IDP"
-      lhs = "id"
-      rhs = data.zpa_idp_controller.sgio_user_okta.id
-    }
-    operands {
       object_type = "SCIM_GROUP"
       lhs = data.zpa_idp_controller.sgio_user_okta.id
       rhs = data.zpa_scim_groups.engineering.id
       idp_id = data.zpa_idp_controller.sgio_user_okta.id
     }
-        operands {
+    operands {
       object_type = "SCIM_GROUP"
       lhs = data.zpa_idp_controller.sgio_user_okta.id
       rhs = data.zpa_scim_groups.sales.id
@@ -126,7 +111,7 @@ resource "zpa_policyset_rule" "browser_access_apps" {
   name                          = "Browser Access Apps"
   description                   = "Browser Access Apps"
   action                        = "ALLOW"
-//   rule_order                     = 5
+  rule_order                     = 5
   operator = "AND"
   policy_set_id = data.zpa_policy_set_global.all.id
   conditions {
@@ -137,15 +122,6 @@ resource "zpa_policyset_rule" "browser_access_apps" {
       object_type = "CLIENT_TYPE"
       lhs = "id"
       rhs = "zpn_client_type_exporter"
-    }
-  }
-  conditions {
-     negated = false
-     operator = "OR"
-    operands {
-      object_type = "IDP"
-      lhs = "id"
-      rhs = data.zpa_idp_controller.sgio_user_okta.id
     }
   }
   conditions {
@@ -215,21 +191,6 @@ resource "zpa_policyset_rule" "all_other_services" {
       object_type = "SCIM_GROUP"
       lhs = data.zpa_idp_controller.sgio_user_okta.id
       rhs = data.zpa_scim_groups.executives.id
-      idp_id = data.zpa_idp_controller.sgio_user_okta.id
-    }
-  }
-  conditions {
-     negated = false
-     operator = "OR"
-    operands {
-      object_type = "IDP"
-      lhs = "id"
-      rhs = data.zpa_idp_controller.sgio_user_okta.id
-    }
-    operands {
-      object_type = "SCIM_GROUP"
-      lhs = data.zpa_idp_controller.sgio_user_okta.id
-      rhs = data.zpa_scim_groups.engineering.id
       idp_id = data.zpa_idp_controller.sgio_user_okta.id
     }
   }
