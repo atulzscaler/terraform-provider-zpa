@@ -63,10 +63,11 @@ func resourceApplicationSegment() *schema.Resource {
 				Description: "Description of the application.",
 			},
 			"domain_names": {
-				Type:        schema.TypeList,
-				Optional:    true,
-				Description: "List of domains and IPs.",
-				Elem:        &schema.Schema{Type: schema.TypeString},
+				Type:         schema.TypeList,
+				Required:     true,
+				Description:  "List of domains and IPs.",
+				Elem:         &schema.Schema{Type: schema.TypeString},
+				ValidateFunc: validation.StringIsNotEmpty,
 			},
 			"double_encrypt": {
 				Type:        schema.TypeBool,
@@ -123,9 +124,10 @@ func resourceApplicationSegment() *schema.Resource {
 				Description: "Indicates if the Zscaler Client Connector (formerly Zscaler App or Z App) receives CNAME DNS records from the connectors.",
 			},
 			"name": {
-				Type:        schema.TypeString,
-				Required:    true,
-				Description: "Name of the application.",
+				Type:         schema.TypeString,
+				Required:     true,
+				Description:  "Name of the application.",
+				ValidateFunc: validation.StringIsNotEmpty,
 			},
 			"passive_health_enabled": {
 				Type:     schema.TypeBool,
