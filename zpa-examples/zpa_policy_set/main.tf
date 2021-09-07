@@ -29,7 +29,7 @@ resource "zpa_policyset_rule" "all_other_services" {
   }
 
   app_server_groups {
-    id = ["216196257331283675", "216196257331283670"]
+    id = []
   }
 
   conditions {
@@ -90,19 +90,27 @@ data "zpa_idp_controller" "sgio_user_okta" {
 }
 
 data "zpa_scim_groups" "engineering" {
- id = 255066
+ //id = 255066
+ name = "Engineering"
+ idp_name = "SGIO-User-Okta"
 }
 
 data "zpa_scim_groups" "sales" {
- id = 255067
+  //id = 255067
+  name = "Sales"
+  idp_name = "SGIO-User-Okta"
 }
 
 data "zpa_scim_groups" "finance" {
- id = 255068
+  //id = 255068
+  name = "Finance"
+  idp_name = "SGIO-User-Okta"
 }
 
 data "zpa_scim_groups" "executives" {
- id = 255069
+  //id = 255069
+  name = "Executives"
+  idp_name = "SGIO-User-Okta"
 }
 
 
