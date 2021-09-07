@@ -19,7 +19,7 @@ provider "zpa" {}
 
 
 data "zpa_app_connector_group" "example" {
-  id = 216196257331281931
+  name = "SGIO-Vancouver"
 }
 
  resource "zpa_segment_group" "example" {
@@ -35,7 +35,7 @@ resource "zpa_server_group" "example1" {
   enabled = true
   dynamic_discovery = true
   app_connector_groups {
-    id = data.zpa_app_connector_group.example.id
+    id = [data.zpa_app_connector_group.example.id]
   }
 }
 
@@ -45,7 +45,7 @@ resource "zpa_server_group" "example2" {
   enabled = true
   dynamic_discovery = true
   app_connector_groups {
-    id = data.zpa_app_connector_group.example.id
+    id = [data.zpa_app_connector_group.example.id]
   }
 }
 
