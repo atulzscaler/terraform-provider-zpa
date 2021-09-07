@@ -20,8 +20,8 @@ func resourceApplicationSegment() *schema.Resource {
 		},
 		Schema: map[string]*schema.Schema{
 			"segment_group_id": {
-				Type:     schema.TypeInt,
-				Optional: true,
+				Type:     schema.TypeString,
+				Required: true,
 			},
 			"segment_group_name": {
 				Type:     schema.TypeString,
@@ -56,10 +56,6 @@ func resourceApplicationSegment() *schema.Resource {
 					"DEFAULT",
 					"SIEM",
 				}, false),
-			},
-			"creation_time": {
-				Type:     schema.TypeInt,
-				Computed: true,
 			},
 			"description": {
 				Type:        schema.TypeString,
@@ -99,6 +95,11 @@ func resourceApplicationSegment() *schema.Resource {
 			"icmp_access_type": {
 				Type:     schema.TypeString,
 				Optional: true,
+				ValidateFunc: validation.StringInSlice([]string{
+					"PING_TRACEROUTING",
+					"PING",
+					"NONE",
+				}, false),
 			},
 			"id": {
 				Type:     schema.TypeString,
@@ -121,14 +122,6 @@ func resourceApplicationSegment() *schema.Resource {
 				Optional:    true,
 				Description: "Indicates if the Zscaler Client Connector (formerly Zscaler App or Z App) receives CNAME DNS records from the connectors.",
 			},
-			"modifiedby": {
-				Type:     schema.TypeString,
-				Computed: true,
-			},
-			"modified_time": {
-				Type:     schema.TypeInt,
-				Computed: true,
-			},
 			"name": {
 				Type:        schema.TypeString,
 				Required:    true,
@@ -138,16 +131,18 @@ func resourceApplicationSegment() *schema.Resource {
 				Type:     schema.TypeBool,
 				Optional: true,
 			},
-			// Server Group only takes one ID as int64
 			"server_groups": {
-				Type:        schema.TypeList,
+				Type:        schema.TypeSet,
 				Optional:    true,
-				Description: "ID of the server group.",
+				Description: "List of the server group IDs.",
 				Elem: &schema.Resource{
 					Schema: map[string]*schema.Schema{
 						"id": {
-							Type:     schema.TypeInt,
+							Type:     schema.TypeList,
 							Optional: true,
+							Elem: &schema.Schema{
+								Type: schema.TypeString,
+							},
 						},
 					},
 				},
@@ -213,10 +208,7 @@ func resourceApplicationSegmentRead(d *schema.ResourceData, m interface{}) error
 	_ = d.Set("ip_anchored", resp.IpAnchored)
 	_ = d.Set("tcp_port_ranges", resp.TcpPortRanges)
 	_ = d.Set("udp_port_ranges", resp.UdpPortRanges)
-	_ = d.Set("servers", flattenAppServerGroups(resp))
-	// if err := d.Set("servergroups", flattenAppServerGroups(resp)); err != nil {
-	// 	return fmt.Errorf("failed to read app server groups %s", err)
-	// }
+	_ = d.Set("server_groups", flattenAppServerGroups(resp))
 
 	return nil
 }
@@ -258,7 +250,7 @@ func expandStringInSlice(d *schema.ResourceData, key string) []string {
 
 func expandApplicationSegmentRequest(d *schema.ResourceData) applicationsegment.ApplicationSegmentResource {
 	return applicationsegment.ApplicationSegmentResource{
-		SegmentGroupId:   d.Get("segment_group_id").(int),
+		SegmentGroupId:   d.Get("segment_group_id").(string),
 		SegmentGroupName: d.Get("segment_group_name").(string),
 		BypassType:       d.Get("bypass_type").(string),
 		Description:      d.Get("description").(string),
@@ -271,20 +263,28 @@ func expandApplicationSegmentRequest(d *schema.ResourceData) applicationsegment.
 		Name:             d.Get("name").(string),
 		TcpPortRanges:    d.Get("tcp_port_ranges").([]interface{}),
 		UdpPortRanges:    d.Get("udp_port_ranges").([]interface{}),
-		ServerGroups:     expandAppServerGroups(d.Get("server_groups").([]interface{})),
-		// ServerGroups:     expandAppServerGroups(d),
+		ServerGroups:     expandAppServerGroups(d),
 	}
 }
 
-func expandAppServerGroups(appServerGroupsRequest []interface{}) []applicationsegment.AppServerGroups {
-	appServerGroups := make([]applicationsegment.AppServerGroups, len(appServerGroupsRequest))
-
-	for i, appServerGroup := range appServerGroupsRequest {
-		appServerGroupItem := appServerGroup.(map[string]interface{})
-		appServerGroups[i] = applicationsegment.AppServerGroups{
-			ID: appServerGroupItem["id"].(int),
+func expandAppServerGroups(d *schema.ResourceData) []applicationsegment.AppServerGroups {
+	appServerGroupsInterface, ok := d.GetOk("server_groups")
+	if ok {
+		appServer := appServerGroupsInterface.(*schema.Set)
+		log.Printf("[INFO] app server groups data: %+v\n", appServer)
+		var appServerGroups []applicationsegment.AppServerGroups
+		for _, appServerGroup := range appServer.List() {
+			appServerGroup, _ := appServerGroup.(map[string]interface{})
+			if appServerGroup != nil {
+				for _, id := range appServerGroup["id"].([]interface{}) {
+					appServerGroups = append(appServerGroups, applicationsegment.AppServerGroups{
+						ID: id.(string),
+					})
+				}
+			}
 		}
+		return appServerGroups
 	}
 
-	return appServerGroups
+	return []applicationsegment.AppServerGroups{}
 }
