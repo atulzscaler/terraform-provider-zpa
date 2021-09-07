@@ -10,3 +10,4 @@ rm -rf .terraform.lock.hcl
 rm -rf terraform.tfstate
 rm -rf terraform.tfstate.backup
 terraform init && terraform apply --auto-approve
+go run github.com/hashicorp/terraform-plugin-docs/cmd/tfplugindocs
