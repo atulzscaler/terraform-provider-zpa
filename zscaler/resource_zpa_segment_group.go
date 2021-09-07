@@ -114,7 +114,7 @@ func resourceSegmentGroupUpdate(d *schema.ResourceData, m interface{}) error {
 	zClient := m.(*Client)
 
 	id := d.Id()
-	log.Printf("[INFO] Updating server group ID: %v\n", id)
+	log.Printf("[INFO] Updating segment group ID: %v\n", id)
 	req := expandSegmentGroup(d)
 
 	if _, err := zClient.segmentgroup.Update(id, &req); err != nil {
@@ -127,13 +127,13 @@ func resourceSegmentGroupUpdate(d *schema.ResourceData, m interface{}) error {
 func resourceSegmentGroupDelete(d *schema.ResourceData, m interface{}) error {
 	zClient := m.(*Client)
 
-	log.Printf("[INFO] Deleting server group ID: %v\n", d.Id())
+	log.Printf("[INFO] Deleting segment group ID: %v\n", d.Id())
 
 	if _, err := zClient.segmentgroup.Delete(d.Id()); err != nil {
 		return err
 	}
 	d.SetId("")
-	log.Printf("[INFO] server group deleted")
+	log.Printf("[INFO] segment group deleted")
 	return nil
 }
 
