@@ -2,7 +2,7 @@ package zscaler
 
 import (
 	"fmt"
-	"strconv"
+	"log"
 
 	"github.com/SecurityGeekIO/terraform-provider-zpa/gozscaler/appconnectorgroup"
 	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/schema"
@@ -18,7 +18,7 @@ func dataSourceAppConnectorGroup() *schema.Resource {
 				Elem: &schema.Resource{
 					Schema: map[string]*schema.Schema{
 						"application_start_time": {
-							Type:     schema.TypeInt,
+							Type:     schema.TypeString,
 							Computed: true,
 						},
 						"appconnector_group_id": {
@@ -34,7 +34,7 @@ func dataSourceAppConnectorGroup() *schema.Resource {
 							Computed: true,
 						},
 						"creation_time": {
-							Type:     schema.TypeInt,
+							Type:     schema.TypeString,
 							Computed: true,
 						},
 						"ctrl_broker_name": {
@@ -54,7 +54,7 @@ func dataSourceAppConnectorGroup() *schema.Resource {
 							Computed: true,
 						},
 						"expected_upgrade_time": {
-							Type:     schema.TypeInt,
+							Type:     schema.TypeString,
 							Computed: true,
 						},
 						"expected_version": {
@@ -66,7 +66,7 @@ func dataSourceAppConnectorGroup() *schema.Resource {
 							Computed: true,
 						},
 						"id": {
-							Type:     schema.TypeInt,
+							Type:     schema.TypeString,
 							Computed: true,
 						},
 						"ipacl": {
@@ -74,19 +74,19 @@ func dataSourceAppConnectorGroup() *schema.Resource {
 							Computed: true,
 						},
 						"issued_certid": {
-							Type:     schema.TypeInt,
+							Type:     schema.TypeString,
 							Computed: true,
 						},
 						"last_broker_connect_time": {
-							Type:     schema.TypeInt,
+							Type:     schema.TypeString,
 							Computed: true,
 						},
 						"last_broker_disconnect_time": {
-							Type:     schema.TypeInt,
+							Type:     schema.TypeString,
 							Computed: true,
 						},
 						"last_upgrade_time": {
-							Type:     schema.TypeInt,
+							Type:     schema.TypeString,
 							Computed: true,
 						},
 						"latitude": {
@@ -102,11 +102,11 @@ func dataSourceAppConnectorGroup() *schema.Resource {
 							Computed: true,
 						},
 						"modifiedby": {
-							Type:     schema.TypeInt,
+							Type:     schema.TypeString,
 							Computed: true,
 						},
 						"modified_time": {
-							Type:     schema.TypeInt,
+							Type:     schema.TypeString,
 							Computed: true,
 						},
 						"name": {
@@ -130,7 +130,7 @@ func dataSourceAppConnectorGroup() *schema.Resource {
 							Computed: true,
 						},
 						"upgrade_attempt": {
-							Type:     schema.TypeInt,
+							Type:     schema.TypeString,
 							Computed: true,
 						},
 						"signing_cert": {
@@ -154,7 +154,7 @@ func dataSourceAppConnectorGroup() *schema.Resource {
 				Computed: true,
 			},
 			"creation_time": {
-				Type:     schema.TypeInt,
+				Type:     schema.TypeString,
 				Computed: true,
 			},
 			"description": {
@@ -170,7 +170,7 @@ func dataSourceAppConnectorGroup() *schema.Resource {
 				Computed: true,
 			},
 			"geolocation_id": {
-				Type:     schema.TypeInt,
+				Type:     schema.TypeString,
 				Computed: true,
 			},
 			"id": {
@@ -178,7 +178,7 @@ func dataSourceAppConnectorGroup() *schema.Resource {
 				Optional: true,
 			},
 			"latitude": {
-				Type:     schema.TypeString,
+				Type:     schema.TypeInt,
 				Computed: true,
 			},
 			"location": {
@@ -186,15 +186,15 @@ func dataSourceAppConnectorGroup() *schema.Resource {
 				Computed: true,
 			},
 			"longitude": {
-				Type:     schema.TypeString,
+				Type:     schema.TypeInt,
 				Computed: true,
 			},
 			"modifiedby": {
-				Type:     schema.TypeInt,
+				Type:     schema.TypeString,
 				Computed: true,
 			},
 			"modified_time": {
-				Type:     schema.TypeInt,
+				Type:     schema.TypeString,
 				Computed: true,
 			},
 			"name": {
@@ -211,7 +211,7 @@ func dataSourceAppConnectorGroup() *schema.Resource {
 							Computed: true,
 						},
 						"creation_time": {
-							Type:     schema.TypeInt,
+							Type:     schema.TypeString,
 							Computed: true,
 						},
 						"description": {
@@ -223,7 +223,7 @@ func dataSourceAppConnectorGroup() *schema.Resource {
 							Computed: true,
 						},
 						"id": {
-							Type:     schema.TypeInt,
+							Type:     schema.TypeString,
 							Computed: true,
 						},
 						"dynamic_discovery": {
@@ -231,11 +231,11 @@ func dataSourceAppConnectorGroup() *schema.Resource {
 							Computed: true,
 						},
 						"modifiedby": {
-							Type:     schema.TypeInt,
+							Type:     schema.TypeString,
 							Computed: true,
 						},
 						"modified_time": {
-							Type:     schema.TypeInt,
+							Type:     schema.TypeString,
 							Computed: true,
 						},
 						"name": {
@@ -258,7 +258,7 @@ func dataSourceAppConnectorGroup() *schema.Resource {
 				Computed: true,
 			},
 			"version_profile_id": {
-				Type:     schema.TypeInt,
+				Type:     schema.TypeString,
 				Computed: true,
 			},
 		},
@@ -268,41 +268,53 @@ func dataSourceAppConnectorGroup() *schema.Resource {
 func resourceConnectorGroupRead(d *schema.ResourceData, m interface{}) error {
 	zClient := m.(*Client)
 
-	id, err := strconv.ParseInt(d.Get("id").(string), 10, 64)
-	if err != nil {
-		return err
+	var resp *appconnectorgroup.AppConnectorGroup
+	id, ok := d.Get("id").(string)
+	if ok && id != "" {
+		log.Printf("[INFO] Getting data for appconnector group  %s\n", id)
+		res, _, err := zClient.appconnectorgroup.Get(id)
+		if err != nil {
+			return err
+		}
+		resp = res
 	}
-
-	resp, _, err := zClient.appconnectorgroup.Get(id)
-	if err != nil {
-		return err
+	name, ok := d.Get("name").(string)
+	if ok && name != "" {
+		log.Printf("[INFO] Getting data for appconnector group name %s\n", name)
+		res, _, err := zClient.appconnectorgroup.GetByName(name)
+		if err != nil {
+			return err
+		}
+		resp = res
 	}
+	if resp != nil {
+		d.SetId(resp.ID)
+		_ = d.Set("city_country", resp.CityCountry)
+		_ = d.Set("country_code", resp.CountryCode)
+		_ = d.Set("creation_time", resp.CreationTime)
+		_ = d.Set("description", resp.Description)
+		_ = d.Set("dns_query_type", resp.DNSQueryType)
+		_ = d.Set("enabled", resp.Enabled)
+		_ = d.Set("latitude", resp.Latitude)
+		_ = d.Set("location", resp.Location)
+		_ = d.Set("longitude", resp.Longitude)
+		_ = d.Set("modifiedby", resp.ModifiedBy)
+		_ = d.Set("modified_time", resp.ModifiedTime)
+		_ = d.Set("name", resp.Name)
+		_ = d.Set("siem_appconnector_group", resp.SiemAppConnectorGroup)
+		_ = d.Set("upgrade_day", resp.UpgradeDay)
+		_ = d.Set("upgrade_time_in_secs", resp.UpgradeTimeInSecs)
+		_ = d.Set("version_profile_id", resp.VersionProfileID)
+		_ = d.Set("connectors", flattenConnectors(resp))
 
-	d.SetId(strconv.FormatInt(int64(resp.ID), 10))
-	_ = d.Set("city_country", resp.CityCountry)
-	_ = d.Set("country_code", resp.CountryCode)
-	_ = d.Set("creation_time", resp.CreationTime)
-	_ = d.Set("description", resp.Description)
-	_ = d.Set("dns_query_type", resp.DNSQueryType)
-	_ = d.Set("enabled", resp.Enabled)
-	_ = d.Set("latitude", resp.Latitude)
-	_ = d.Set("location", resp.Location)
-	_ = d.Set("longitude", resp.Longitude)
-	_ = d.Set("modifiedby", resp.ModifiedBy)
-	_ = d.Set("modified_time", resp.ModifiedTime)
-	_ = d.Set("name", resp.Name)
-	_ = d.Set("siem_appconnector_group", resp.SiemAppConnectorGroup)
-	_ = d.Set("upgrade_day", resp.UpgradeDay)
-	_ = d.Set("upgrade_time_in_secs", resp.UpgradeTimeInSecs)
-	_ = d.Set("version_profile_id", resp.VersionProfileID)
-	_ = d.Set("connectors", flattenConnectors(resp))
-
-	if err := d.Set("server_groups", flattenServerGroups(resp)); err != nil {
-		return fmt.Errorf("failed to read server groups %s", err)
+		if err := d.Set("server_groups", flattenServerGroups(resp)); err != nil {
+			return fmt.Errorf("failed to read server groups %s", err)
+		}
+	} else {
+		return fmt.Errorf("couldn't find any application with name '%s' or id '%s'", name, id)
 	}
 
 	return nil
-
 }
 
 func flattenConnectors(appConnector *appconnectorgroup.AppConnectorGroup) []interface{} {

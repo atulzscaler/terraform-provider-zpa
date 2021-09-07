@@ -3,6 +3,7 @@ package postureprofile
 import (
 	"fmt"
 	"net/http"
+	"strings"
 )
 
 const (
@@ -12,15 +13,15 @@ const (
 
 // PostureProfile ...
 type PostureProfile struct {
-	CreationTime      int32  `json:"creationTime,string"`
+	CreationTime      string `json:"creationTime,omitempty"`
 	Domain            string `json:"domain,omitempty"`
-	ID                int64  `json:"id,string"`
-	ModifiedBy        int64  `json:"modifiedBy,string"`
-	ModifiedTime      int32  `json:"modifiedTime,string"`
+	ID                string `json:"id,omitempty"`
+	ModifiedBy        string `json:"modifiedBy,omitempty"`
+	ModifiedTime      string `json:"modifiedTime,omitempty"`
 	Name              string `json:"name,omitempty"`
-	PostureudId       string `json:"postureUdid"`
-	ZscalerCloud      string `json:"zscalerCloud"`
-	ZscalerCustomerId int64  `json:"zscalerCustomerId,string"`
+	PostureudId       string `json:"postureUdid,omitempty"`
+	ZscalerCloud      string `json:"zscalerCloud,omitempty"`
+	ZscalerCustomerId string `json:"zscalerCustomerId,omitempty"`
 }
 
 func (service *Service) Get(id string) (*PostureProfile, *http.Response, error) {
@@ -34,11 +35,22 @@ func (service *Service) Get(id string) (*PostureProfile, *http.Response, error) 
 	return v, resp, nil
 }
 
-func (service *Service) GetAll() ([]PostureProfile, *http.Response, error) {
-	v := make([]PostureProfile, 0)
-	resp, err := service.Client.NewRequestDo("GET", mgmtConfig+service.Client.Config.CustomerID+postureProfileEndpoint, nil, nil, &v)
+func (service *Service) GetByName(postureName string) (*PostureProfile, *http.Response, error) {
+	var v struct {
+		List []PostureProfile `json:"list"`
+	}
+
+	relativeURL := mgmtConfig + service.Client.Config.CustomerID + postureProfileEndpoint
+	resp, err := service.Client.NewRequestDo("GET", relativeURL, struct{ pagesize int }{
+		pagesize: 500,
+	}, nil, &v)
 	if err != nil {
 		return nil, nil, err
 	}
-	return v, resp, nil
+	for _, app := range v.List {
+		if strings.EqualFold(app.Name, postureName) {
+			return &app, resp, nil
+		}
+	}
+	return nil, resp, fmt.Errorf("no posture profile named '%s' was found", postureName)
 }

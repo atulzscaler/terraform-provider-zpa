@@ -3,6 +3,7 @@ package segmentgroup
 import (
 	"fmt"
 	"net/http"
+	"strings"
 )
 
 const (
@@ -13,34 +14,34 @@ const (
 type SegmentGroup struct {
 	Applications        []Application `json:"applications,omitempty"`
 	ConfigSpace         string        `json:"configSpace,omitempty"`
-	CreationTime        int32         `json:"creationTime,string,omitempty"`
+	CreationTime        string        `json:"creationTime,omitempty"`
 	Description         string        `json:"description,omitempty"`
 	Enabled             bool          `json:"enabled,omitempty"`
-	ID                  int64         `json:"id,string,omitempty"`
-	ModifiedBy          int64         `json:"modifiedBy,string,omitempty"`
-	ModifiedTime        int32         `json:"modifiedTime,string,omitempty"`
+	ID                  string        `json:"id,omitempty"`
+	ModifiedBy          string        `json:"modifiedBy,omitempty"`
+	ModifiedTime        string        `json:"modifiedTime,omitempty"`
 	Name                string        `json:"name"`
 	PolicyMigrated      bool          `json:"policyMigrated,omitempty"`
-	TcpKeepAliveEnabled int           `json:"tcpKeepAliveEnabled,string,omitempty"`
+	TcpKeepAliveEnabled string        `json:"tcpKeepAliveEnabled,omitempty"`
 }
 
 type Application struct {
 	BypassType           string           `json:"bypassType,omitempty"`
 	ConfigSpace          string           `json:"configSpace,omitempty"`
-	CreationTime         int32            `json:"creationTime,string,omitempty"`
-	DefaultIdleTimeout   int32            `json:"defaultIdleTimeout,string,omitempty"`
-	DefaultMaxAge        int32            `json:"defaultMaxAge,string,omitempty"`
+	CreationTime         string           `json:"creationTime,omitempty"`
+	DefaultIdleTimeout   string           `json:"defaultIdleTimeout,omitempty"`
+	DefaultMaxAge        string           `json:"defaultMaxAge,omitempty"`
 	Description          string           `json:"description,omitempty"`
 	DomainName           string           `json:"domainName,omitempty"`
 	DomainNames          []string         `json:"domainNames,omitempty"`
 	DoubleEncrypt        bool             `json:"doubleEncrypt,omitempty"`
 	Enabled              bool             `json:"enabled,omitempty"`
 	HealthCheckType      string           `json:"healthCheckType,omitempty"`
-	ID                   int              `json:"id,string"`
+	ID                   string           `json:"id,omitempty"`
 	IPAnchored           bool             `json:"ipAnchored,omitempty"`
 	LogFeatures          []string         `json:"logFeatures,omitempty"`
-	ModifiedBy           int64            `json:"modifiedBy,string,omitempty"`
-	ModifiedTime         int32            `json:"modifiedTime,string,omitempty"`
+	ModifiedBy           string           `json:"modifiedBy,omitempty"`
+	ModifiedTime         string           `json:"modifiedTime,omitempty"`
 	Name                 string           `json:"name"`
 	PassiveHealthEnabled bool             `json:"passiveHealthEnabled,omitempty"`
 	ServerGroup          []AppServerGroup `json:"serverGroups,omitempty"`
@@ -51,19 +52,19 @@ type Application struct {
 }
 type AppServerGroup struct {
 	ConfigSpace      string `json:"configSpace,omitempty"`
-	CreationTime     int32  `json:"creationTime,string,omitempty"`
+	CreationTime     string `json:"creationTime,omitempty"`
 	Description      string `json:"description,omitempty"`
 	Enabled          bool   `json:"enabled,omitempty"`
-	ID               int64  `json:"id,string,omitempty"`
+	ID               string `json:"id,omitempty"`
 	DynamicDiscovery bool   `json:"dynamicDiscovery,omitempty"`
-	ModifiedBy       int64  `json:"modifiedBy,string,omitempty"`
-	ModifiedTime     int32  `json:"modifiedTime,string,omitempty"`
+	ModifiedBy       string `json:"modifiedBy,omitempty"`
+	ModifiedTime     string `json:"modifiedTime,omitempty"`
 	Name             string `json:"name"`
 }
 
-func (service *Service) Get(segmentGroupId int64) (*SegmentGroup, *http.Response, error) {
+func (service *Service) Get(segmentGroupId string) (*SegmentGroup, *http.Response, error) {
 	v := new(SegmentGroup)
-	relativeURL := fmt.Sprintf("%v/%v", mgmtConfig+service.Client.Config.CustomerID+segmentGroupEndpoint, segmentGroupId)
+	relativeURL := fmt.Sprintf("%s/%s", mgmtConfig+service.Client.Config.CustomerID+segmentGroupEndpoint, segmentGroupId)
 	resp, err := service.Client.NewRequestDo("GET", relativeURL, nil, nil, v)
 	if err != nil {
 		return nil, nil, err
@@ -71,7 +72,27 @@ func (service *Service) Get(segmentGroupId int64) (*SegmentGroup, *http.Response
 	return v, resp, nil
 }
 
-func (service *Service) Create(segmentGroup SegmentGroup) (*SegmentGroup, *http.Response, error) {
+func (service *Service) GetByName(segmentName string) (*SegmentGroup, *http.Response, error) {
+	var v struct {
+		List []SegmentGroup `json:"list"`
+	}
+
+	relativeURL := mgmtConfig + service.Client.Config.CustomerID + segmentGroupEndpoint
+	resp, err := service.Client.NewRequestDo("GET", relativeURL, struct{ pagesize int }{
+		pagesize: 500,
+	}, nil, &v)
+	if err != nil {
+		return nil, nil, err
+	}
+	for _, app := range v.List {
+		if strings.EqualFold(app.Name, segmentName) {
+			return &app, resp, nil
+		}
+	}
+	return nil, resp, fmt.Errorf("no application named '%s' was found", segmentName)
+}
+
+func (service *Service) Create(segmentGroup *SegmentGroup) (*SegmentGroup, *http.Response, error) {
 	v := new(SegmentGroup)
 	resp, err := service.Client.NewRequestDo("POST", mgmtConfig+service.Client.Config.CustomerID+segmentGroupEndpoint, nil, segmentGroup, &v)
 	if err != nil {
@@ -80,7 +101,7 @@ func (service *Service) Create(segmentGroup SegmentGroup) (*SegmentGroup, *http.
 	return v, resp, nil
 }
 
-func (service *Service) Update(segmentGroupId int64, segmentGroupRequest SegmentGroup) (*http.Response, error) {
+func (service *Service) Update(segmentGroupId string, segmentGroupRequest *SegmentGroup) (*http.Response, error) {
 	path := fmt.Sprintf("%v/%v", mgmtConfig+service.Client.Config.CustomerID+segmentGroupEndpoint, segmentGroupId)
 	resp, err := service.Client.NewRequestDo("PUT", path, nil, segmentGroupRequest, nil)
 	if err != nil {
@@ -89,7 +110,7 @@ func (service *Service) Update(segmentGroupId int64, segmentGroupRequest Segment
 	return resp, err
 }
 
-func (service *Service) Delete(segmentGroupId int64) (*http.Response, error) {
+func (service *Service) Delete(segmentGroupId string) (*http.Response, error) {
 	path := fmt.Sprintf("%v/%v", mgmtConfig+service.Client.Config.CustomerID+segmentGroupEndpoint, segmentGroupId)
 	resp, err := service.Client.NewRequestDo("DELETE", path, nil, nil, nil)
 	if err != nil {
