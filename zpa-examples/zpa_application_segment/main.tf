@@ -9,6 +9,14 @@ terraform {
 
 provider "zpa" {}
 
+data "zpa_application_segment" "example" {
+  name = "All Other Services"
+}
+
+output "example_zpa_application_segment" {
+  value = data.zpa_application_segment.example.id
+}
+/*
 data "zpa_app_connector_group" "example" {
   id = 216196257331281931
 }
@@ -55,3 +63,4 @@ resource "zpa_application_segment" "example" {
 output "all_application_segment" {
   value = zpa_application_segment.example
 }
+*/
