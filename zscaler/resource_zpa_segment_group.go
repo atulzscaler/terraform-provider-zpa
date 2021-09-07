@@ -142,7 +142,6 @@ func resourceSegmentGroupDelete(d *schema.ResourceData, m interface{}) error {
 
 func expandSegmentGroup(d *schema.ResourceData) segmentgroup.SegmentGroup {
 	segmentGroup := segmentgroup.SegmentGroup{
-		// return segmentgroup.SegmentGroup{
 		Name:                d.Get("name").(string),
 		Description:         d.Get("description").(string),
 		Enabled:             d.Get("enabled").(bool),
@@ -159,7 +158,6 @@ func expandSegmentGroupApplications(segmentGroupApplication []interface{}) []seg
 	for i, segmentGroupApp := range segmentGroupApplication {
 		segmentGroupItem := segmentGroupApp.(map[string]interface{})
 		segmentGroupApplications[i] = segmentgroup.Application{
-			// ID: int64(appConnectorGroupItem["id"].(int)), // This needs to be *schema.Set
 			ID: segmentGroupItem["id"].(string),
 		}
 
