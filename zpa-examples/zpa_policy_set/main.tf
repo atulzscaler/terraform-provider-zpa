@@ -27,17 +27,11 @@ resource "zpa_policyset_rule" "all_other_services" {
   app_connector_groups {
     id = ["216196257331281931", "216196257331282724"]
   }
-<<<<<<< HEAD
 
   app_server_groups {
-    id = ["216196257331283675", "216196257331283670"]
+    id = []
   }
 
-=======
-  app_connector_groups {
-    id = "216196257331282724"
-  }
->>>>>>> 4d42589e874dfbdf760cc66cc7addeace3cd7ef8
   conditions {
     negated = false
     operator = "OR"
@@ -85,34 +79,38 @@ output "all_zpa_policyset_rule" {
 data "zpa_policy_set_global" "all" {
 }
 
-<<<<<<< HEAD
 data "zpa_application_segment" "all_other_services"{
   //id = 216196257331283691
   name = "All Other Services"
 }
 
 data "zpa_idp_controller" "sgio_user_okta" {
- id = 216196257331281933
+ //id = 216196257331281933
+ name = "SGIO-User-Okta"
 }
 
 data "zpa_scim_groups" "engineering" {
- id = 255066
+ //id = 255066
+ name = "Engineering"
+ idp_name = "SGIO-User-Okta"
 }
 
 data "zpa_scim_groups" "sales" {
- id = 255067
+  //id = 255067
+  name = "Sales"
+  idp_name = "SGIO-User-Okta"
 }
 
 data "zpa_scim_groups" "finance" {
- id = 255068
-=======
-output "all_zpa_policyset_rule" {
-  value = zpa_policyset_rule.example2
->>>>>>> master
+  //id = 255068
+  name = "Finance"
+  idp_name = "SGIO-User-Okta"
 }
-<<<<<<< HEAD
+
+data "zpa_scim_groups" "executives" {
+  //id = 255069
+  name = "Executives"
+  idp_name = "SGIO-User-Okta"
+}
 
 
-
-=======
->>>>>>> 4d42589e874dfbdf760cc66cc7addeace3cd7ef8
