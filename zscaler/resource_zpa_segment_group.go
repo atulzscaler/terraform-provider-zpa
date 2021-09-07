@@ -6,6 +6,7 @@ import (
 	"github.com/SecurityGeekIO/terraform-provider-zpa/gozscaler/client"
 	"github.com/SecurityGeekIO/terraform-provider-zpa/gozscaler/segmentgroup"
 	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/schema"
+	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/validation"
 )
 
 func resourceSegmentGroup() *schema.Resource {
@@ -49,9 +50,10 @@ func resourceSegmentGroup() *schema.Resource {
 				Computed: true,
 			},
 			"name": {
-				Type:        schema.TypeString,
-				Description: "Name of the app group.",
-				Required:    true,
+				Type:         schema.TypeString,
+				Description:  "Name of the app group.",
+				Required:     true,
+				ValidateFunc: validation.StringIsNotEmpty,
 			},
 			"policy_migrated": {
 				Type:     schema.TypeBool,
