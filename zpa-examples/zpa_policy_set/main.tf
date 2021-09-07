@@ -30,19 +30,6 @@ resource "zpa_policyset_rule" "all_other_services" {
   app_connector_groups {
     id = "216196257331282724"
   }
-
-  app_server_groups {
-<<<<<<< HEAD
-    id = "216196257331283675"
-  }
-  app_server_groups {
-      id = "216196257331283670"
-  }
-=======
-    id = ["216196257331283675", "216196257331283670"]
-  }
->>>>>>> policy-rule
-
   conditions {
     negated = false
     operator = "OR"
@@ -90,28 +77,6 @@ output "all_zpa_policyset_rule" {
 data "zpa_policy_set_global" "all" {
 }
 
-data "zpa_application_segment" "all_other_services"{
-  id = 216196257331283691
+output "all_zpa_policyset_rule" {
+  value = zpa_policyset_rule.example2
 }
-
-data "zpa_idp_controller" "sgio_user_okta" {
- id = 216196257331281933
-}
-
-data "zpa_scim_groups" "engineering" {
- id = 255066
-}
-
-data "zpa_scim_groups" "sales" {
- id = 255067
-}
-
-data "zpa_scim_groups" "finance" {
- id = 255068
-}
-
-data "zpa_scim_groups" "executives" {
- id = 255069
-}
-
-
