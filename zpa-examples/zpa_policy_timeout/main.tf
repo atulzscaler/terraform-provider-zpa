@@ -19,6 +19,26 @@ resource "zpa_policy_timeout" "all_other_services" {
   rule_order                     = 1
   operator = "AND"
   policy_set_id = data.zpa_policy_timeout.all.id
+
+    conditions {
+    negated = false
+    operator = "OR"
+    operands {
+      name =  "All Other Services"
+      object_type = "APP"
+      lhs = "id"
+      rhs = data.zpa_application_segment.all_other_services.id
+    }
+  }
+  conditions {
+     negated = false
+     operator = "OR"
+    operands {
+      object_type = "SCIM_GROUP"
+      lhs = data.zpa_idp_controller.sgio_user_okta.id
+      rhs = data.zpa_scim_groups.engineering.id
+      idp_id = data.zpa_idp_controller.sgio_user_okta.id
+    }
 }
 
 output "all_zpa_policy_timeout" {
@@ -27,23 +47,3 @@ output "all_zpa_policy_timeout" {
 
 data "zpa_policy_timeout" "all" {
 }
-
-// output "all_zpa_policyset_rule" {
-//   value = data.zpa_policy_timeout.all
-// }
-
-/*
-
-
-data "zpa_application_segment" "all_other_services"{
-  id = 216196257331283285
-}
-
-data "zpa_idp_controller" "sgio_user_okta" {
- id = 216196257331281933
-}
-
-data "zpa_scim_groups" "engineering" {
- id = 255066
-}
-*/
