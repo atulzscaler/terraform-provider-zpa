@@ -10,7 +10,8 @@ terraform {
 provider "zpa" {}
 
 data "zpa_ba_certificate" "all" {
-    id = 216196257331282104
+    id = 216196257331282582
+    // name = "jenkins.securitygeek.io"
 
 }
 
