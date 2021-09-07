@@ -3,6 +3,7 @@ package appservercontroller
 import (
 	"fmt"
 	"net/http"
+	"strings"
 )
 
 const (
@@ -31,6 +32,26 @@ func (service *Service) Get(id string) (*ApplicationServer, *http.Response, erro
 		return nil, nil, err
 	}
 	return v, resp, nil
+}
+
+func (service *Service) GetByName(appServerName string) (*ApplicationServer, *http.Response, error) {
+	var v struct {
+		List []ApplicationServer `json:"list"`
+	}
+
+	relativeURL := mgmtConfig + service.Client.Config.CustomerID + appServerControllerEndpoint
+	resp, err := service.Client.NewRequestDo("GET", relativeURL, struct{ pagesize int }{
+		pagesize: 500,
+	}, nil, &v)
+	if err != nil {
+		return nil, nil, err
+	}
+	for _, app := range v.List {
+		if strings.EqualFold(app.Name, appServerName) {
+			return &app, resp, nil
+		}
+	}
+	return nil, resp, fmt.Errorf("no application named '%s' was found", appServerName)
 }
 
 func (service *Service) Create(server ApplicationServer) (*ApplicationServer, *http.Response, error) {
