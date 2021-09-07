@@ -6,7 +6,7 @@ resource "zpa_server_group" "all_other_services" {
   enabled = true
   dynamic_discovery = true
   app_connector_groups {
-    id = data.zpa_app_connector_group.sgio-vancouver.id
+    id = [data.zpa_app_connector_group.sgio-vancouver.id]
   }
 }
 
@@ -16,7 +16,7 @@ resource "zpa_server_group" "browser_access_apps" {
   enabled = true
   dynamic_discovery = false
   app_connector_groups {
-    id = data.zpa_app_connector_group.sgio-vancouver.id
+    id = [data.zpa_app_connector_group.sgio-vancouver.id]
   }
 }
 
@@ -26,7 +26,7 @@ resource "zpa_server_group" "sgio_devops_servers" {
   enabled = true
   dynamic_discovery = false
   app_connector_groups {
-    id = data.zpa_app_connector_group.sgio-vancouver.id
+    id = [data.zpa_app_connector_group.sgio-vancouver.id]
   }
 }
 
@@ -36,7 +36,7 @@ resource "zpa_server_group" "sgio_intranet_web_apps" {
   enabled = true
   dynamic_discovery = false
   app_connector_groups {
-    id = data.zpa_app_connector_group.sgio-vancouver.id
+    id = [data.zpa_app_connector_group.sgio-vancouver.id]
   }
 }
 
@@ -46,6 +46,6 @@ resource "zpa_server_group" "sgio_vcenter_servers" {
   enabled = true
   dynamic_discovery = false
   app_connector_groups {
-    id = data.zpa_app_connector_group.sgio-vancouver.id
+    id = [data.zpa_app_connector_group.sgio-vancouver.id]
   }
 }

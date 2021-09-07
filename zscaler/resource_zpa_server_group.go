@@ -181,57 +181,84 @@ func resourceServerGroupDelete(d *schema.ResourceData, m interface{}) error {
 }
 
 func expandServerGroup(d *schema.ResourceData) servergroup.ServerGroup {
-	req := servergroup.ServerGroup{
+	// req := servergroup.ServerGroup{
+	return servergroup.ServerGroup{
 		Enabled:            d.Get("enabled").(bool),
 		Name:               d.Get("name").(string),
 		Description:        d.Get("description").(string),
 		IpAnchored:         d.Get("ip_anchored").(bool),
 		ConfigSpace:        d.Get("config_space").(string),
 		DynamicDiscovery:   d.Get("dynamic_discovery").(bool),
-		AppConnectorGroups: expandAppConnectorGroups(d.Get("app_connector_groups").([]interface{})),
-		Applications:       expandServerGroupApplications(d.Get("applications").([]interface{})),
-		Servers:            expandServers(d.Get("servers").([]interface{})),
+		AppConnectorGroups: expandAppConnectorGroups(d),
+		Applications:       expandServerGroupApplications(d),
+		Servers:            expandApplicationServers(d),
 	}
 
-	return req
+	// return req
 }
 
-func expandServerGroupApplications(serverGroupAppRequest []interface{}) []servergroup.Applications {
-	serverGroupApplications := make([]servergroup.Applications, len(serverGroupAppRequest))
-
-	for i, serverGroupApplication := range serverGroupAppRequest {
-		serverApplicationItem := serverGroupApplication.(map[string]interface{})
-		serverGroupApplications[i] = servergroup.Applications{
-			ID: serverApplicationItem["id"].(string),
+func expandAppConnectorGroups(d *schema.ResourceData) []servergroup.AppConnectorGroups {
+	appConnectorGroupsInterface, ok := d.GetOk("app_connector_groups")
+	if ok {
+		appConnector := appConnectorGroupsInterface.(*schema.Set)
+		log.Printf("[INFO] app connector groups data: %+v\n", appConnector)
+		var appConnectorGroups []servergroup.AppConnectorGroups
+		for _, appConnectorGroup := range appConnector.List() {
+			appConnectorGroup, _ := appConnectorGroup.(map[string]interface{})
+			if appConnectorGroup != nil {
+				for _, id := range appConnectorGroup["id"].([]interface{}) {
+					appConnectorGroups = append(appConnectorGroups, servergroup.AppConnectorGroups{
+						ID: id.(string),
+					})
+				}
+			}
 		}
+		return appConnectorGroups
 	}
 
-	return serverGroupApplications
+	return []servergroup.AppConnectorGroups{}
 }
 
-func expandAppConnectorGroups(appConnectorGroupRequest []interface{}) []servergroup.AppConnectorGroups {
-	appConnectorGroups := make([]servergroup.AppConnectorGroups, len(appConnectorGroupRequest))
-
-	for i, appConnectorGroup := range appConnectorGroupRequest {
-		appConnectorGroupItem := appConnectorGroup.(map[string]interface{})
-		appConnectorGroups[i] = servergroup.AppConnectorGroups{
-			ID: appConnectorGroupItem["id"].(string),
+func expandServerGroupApplications(d *schema.ResourceData) []servergroup.Applications {
+	serverGroupAppsInterface, ok := d.GetOk("applications")
+	if ok {
+		serverGroupApp := serverGroupAppsInterface.(*schema.Set)
+		log.Printf("[INFO] server group application data: %+v\n", serverGroupApp)
+		var serverGroupApps []servergroup.Applications
+		for _, serverGroupApp := range serverGroupApp.List() {
+			serverGroupApp, _ := serverGroupApp.(map[string]interface{})
+			if serverGroupApp != nil {
+				for _, id := range serverGroupApp["id"].([]interface{}) {
+					serverGroupApps = append(serverGroupApps, servergroup.Applications{
+						ID: id.(string),
+					})
+				}
+			}
 		}
-
+		return serverGroupApps
 	}
 
-	return appConnectorGroups
+	return []servergroup.Applications{}
 }
 
-func expandServers(applicationServerRequest []interface{}) []servergroup.ApplicationServer {
-	applicationServers := make([]servergroup.ApplicationServer, len(applicationServerRequest))
-
-	for i, applicationServer := range applicationServerRequest {
-		applicationServerItem := applicationServer.(map[string]interface{})
-		applicationServers[i] = servergroup.ApplicationServer{
-			ID: applicationServerItem["id"].(string),
+func expandApplicationServers(d *schema.ResourceData) []servergroup.ApplicationServer {
+	applicationServersInterface, ok := d.GetOk("servers")
+	if ok {
+		applicationServer := applicationServersInterface.(*schema.Set)
+		log.Printf("[INFO] server group application data: %+v\n", applicationServer)
+		var applicationServers []servergroup.ApplicationServer
+		for _, applicationServer := range applicationServer.List() {
+			applicationServer, _ := applicationServer.(map[string]interface{})
+			if applicationServer != nil {
+				for _, id := range applicationServer["id"].([]interface{}) {
+					applicationServers = append(applicationServers, servergroup.ApplicationServer{
+						ID: id.(string),
+					})
+				}
+			}
 		}
+		return applicationServers
 	}
 
-	return applicationServers
+	return []servergroup.ApplicationServer{}
 }
