@@ -86,16 +86,16 @@ func dataSourceScimGroupRead(d *schema.ResourceData, m interface{}) error {
 }
 
 // func flattenScimGroups(scimGroupResponse []scimgroup.ScimGroup) []interface{} {
-// 	scimGroups := make([]interface{}, len(scimGroupResponse))
-// 	for i, scimGroupItem := range scimGroupResponse {
-// 		scimGroups[i] = map[string]interface{}{
-// 			"creation_time": scimGroupItem.CreationTime,
-// 			"id":            scimGroupItem.ID,
-// 			"idp_id":        scimGroupItem.IdpId,
-// 			"idp_group_id":  scimGroupItem.IdpGroupId,
-// 			"modified_time": scimGroupItem.ModifiedTime,
-// 			"name":          scimGroupItem.Name,
-// 		}
-// 	}
-// 	return scimGroups
+//  scimGroups := make([]interface{}, len(scimGroupResponse))
+//  for i, scimGroupItem := range scimGroupResponse {
+//      scimGroups[i] = map[string]interface{}{
+//          "creation_time": scimGroupItem.CreationTime,
+//          "id":            scimGroupItem.ID,
+//          "idp_id":        scimGroupItem.IdpId,
+//          "idp_group_id":  scimGroupItem.IdpGroupId,
+//          "modified_time": scimGroupItem.ModifiedTime,
+//          "name":          scimGroupItem.Name,
+//      }
+//  }
+//  return scimGroups
 // }

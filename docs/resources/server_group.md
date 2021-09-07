@@ -39,7 +39,7 @@ description: |-
 
 Optional:
 
-- **id** (Number) The ID of this resource.
+- **id** (String) The ID of this resource.
 
 
 <a id="nestedblock--applications"></a>
@@ -47,7 +47,7 @@ Optional:
 
 Optional:
 
-- **id** (Number) The ID of this resource.
+- **id** (String) The ID of this resource.
 
 
 <a id="nestedblock--servers"></a>
@@ -55,6 +55,6 @@ Optional:
 
 Optional:
 
-- **id** (Number) The ID of this resource.
+- **id** (String) The ID of this resource.
 
 

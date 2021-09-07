@@ -26,7 +26,7 @@ func resourceServerGroup() *schema.Resource {
 				Elem: &schema.Resource{
 					Schema: map[string]*schema.Schema{
 						"id": {
-							Type:     schema.TypeInt,
+							Type:     schema.TypeString,
 							Optional: true,
 						},
 						// "id": {
@@ -44,7 +44,7 @@ func resourceServerGroup() *schema.Resource {
 				Elem: &schema.Resource{
 					Schema: map[string]*schema.Schema{
 						"id": {
-							Type:     schema.TypeInt,
+							Type:     schema.TypeString,
 							Optional: true,
 						},
 						// "id": {
@@ -115,7 +115,7 @@ func resourceServerGroup() *schema.Resource {
 						// 	Elem:     &schema.Schema{Type: schema.TypeInt},
 						// },
 						"id": {
-							Type:     schema.TypeInt,
+							Type:     schema.TypeString,
 							Optional: true,
 						},
 					},
@@ -158,14 +158,11 @@ func resourceServerGroupRead(d *schema.ResourceData, m interface{}) error {
 	log.Printf("[INFO] Getting server group:\n%+v\n", resp)
 	d.SetId(resp.ID)
 	_ = d.Set("configspace", resp.ConfigSpace)
-	// _ = d.Set("creationtime", resp.CreationTime)
 	_ = d.Set("description", resp.Description)
 	_ = d.Set("enabled", resp.Enabled)
 	_ = d.Set("ip_anchored", resp.IpAnchored)
 	_ = d.Set("dynamic_discovery", resp.DynamicDiscovery)
 	_ = d.Set("enabled", resp.Enabled)
-	// _ = d.Set("modifiedby", resp.ModifiedBy)
-	// _ = d.Set("modifiedtime", resp.ModifiedTime)
 	_ = d.Set("name", resp.Name)
 	_ = d.Set("appconnector_groups", flattenAppConnectorGroups(resp.AppConnectorGroups))
 	_ = d.Set("applications", flattenServerGroupApplications(resp.Applications))
@@ -234,8 +231,7 @@ func expandAppConnectorGroups(appConnectorGroupRequest []interface{}) []servergr
 	for i, appConnectorGroup := range appConnectorGroupRequest {
 		appConnectorGroupItem := appConnectorGroup.(map[string]interface{})
 		appConnectorGroups[i] = servergroup.AppConnectorGroups{
-			// ID: int64(appConnectorGroupItem["id"].(int)), // This needs to be *schema.Set
-			ID: appConnectorGroupItem["id"].(int),
+			ID: appConnectorGroupItem["id"].(string),
 		}
 
 	}
@@ -249,7 +245,7 @@ func expandServerGroupApplications(serverGroupAppRequest []interface{}) []server
 	for i, serverGroupApplication := range serverGroupAppRequest {
 		serverApplicationItem := serverGroupApplication.(map[string]interface{})
 		serverGroupApplications[i] = servergroup.Applications{
-			ID: serverApplicationItem["id"].(int),
+			ID: serverApplicationItem["id"].(string),
 		}
 	}
 
@@ -262,7 +258,7 @@ func expandServers(applicationServerRequest []interface{}) []servergroup.Applica
 	for i, applicationServer := range applicationServerRequest {
 		applicationServerItem := applicationServer.(map[string]interface{})
 		applicationServers[i] = servergroup.ApplicationServer{
-			ID: applicationServerItem["id"].(int),
+			ID: applicationServerItem["id"].(string),
 		}
 	}
 
