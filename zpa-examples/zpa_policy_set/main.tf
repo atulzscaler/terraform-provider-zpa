@@ -9,13 +9,6 @@ terraform {
 
 provider "zpa" {}
 
-// data "zpa_policy_set_global" "all" {
-// }
-
-// output "all_zpa_policy_set_global" {
-//   value = data.zpa_policy_set_global.all
-// }
-
 
 resource "zpa_policyset_rule" "all_other_services" {
   name                          = "All Other Services"
@@ -26,10 +19,6 @@ resource "zpa_policyset_rule" "all_other_services" {
   policy_set_id = data.zpa_policy_set_global.all.id
   app_connector_groups {
     id = ["216196257331281931", "216196257331282724"]
-  }
-
-  app_server_groups {
-    id = []
   }
 
   conditions {
@@ -80,35 +69,29 @@ data "zpa_policy_set_global" "all" {
 }
 
 data "zpa_application_segment" "all_other_services"{
-  //id = 216196257331283691
   name = "All Other Services"
 }
 
 data "zpa_idp_controller" "sgio_user_okta" {
- //id = 216196257331281933
  name = "SGIO-User-Okta"
 }
 
 data "zpa_scim_groups" "engineering" {
- //id = 255066
  name = "Engineering"
  idp_name = "SGIO-User-Okta"
 }
 
 data "zpa_scim_groups" "sales" {
-  //id = 255067
   name = "Sales"
   idp_name = "SGIO-User-Okta"
 }
 
 data "zpa_scim_groups" "finance" {
-  //id = 255068
   name = "Finance"
   idp_name = "SGIO-User-Okta"
 }
 
 data "zpa_scim_groups" "executives" {
-  //id = 255069
   name = "Executives"
   idp_name = "SGIO-User-Okta"
 }
