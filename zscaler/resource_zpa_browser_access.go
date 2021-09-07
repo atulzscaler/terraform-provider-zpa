@@ -171,15 +171,18 @@ func resourceBrowserAccess() *schema.Resource {
 					},
 				},
 			},
-			"server_groups": {
-				Type:        schema.TypeList,
+			"app_server_groups": {
+				Type:        schema.TypeSet,
 				Optional:    true,
-				Description: "ID of the server group.",
+				Description: "List of the server group IDs.",
 				Elem: &schema.Resource{
 					Schema: map[string]*schema.Schema{
 						"id": {
-							Type:     schema.TypeString,
+							Type:     schema.TypeList,
 							Optional: true,
+							Elem: &schema.Schema{
+								Type: schema.TypeString,
+							},
 						},
 					},
 				},
