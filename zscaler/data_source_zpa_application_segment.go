@@ -13,7 +13,7 @@ func dataSourceApplicationSegment() *schema.Resource {
 		Read: dataSourceApplicationSegmentRead,
 		Schema: map[string]*schema.Schema{
 			"segment_group_id": {
-				Type:     schema.TypeInt,
+				Type:     schema.TypeString,
 				Computed: true,
 			},
 			"segment_group_name": {
@@ -34,11 +34,11 @@ func dataSourceApplicationSegment() *schema.Resource {
 							Computed: true,
 						},
 						"appid": {
-							Type:     schema.TypeInt,
+							Type:     schema.TypeString,
 							Computed: true,
 						},
 						"application_port": {
-							Type:     schema.TypeInt,
+							Type:     schema.TypeString,
 							Computed: true,
 						},
 						"application_protocol": {
@@ -46,7 +46,7 @@ func dataSourceApplicationSegment() *schema.Resource {
 							Computed: true,
 						},
 						"certificate_id": {
-							Type:     schema.TypeInt,
+							Type:     schema.TypeString,
 							Computed: true,
 						},
 						"certificate_name": {
@@ -58,7 +58,7 @@ func dataSourceApplicationSegment() *schema.Resource {
 							Computed: true,
 						},
 						"creation_time": {
-							Type:     schema.TypeInt,
+							Type:     schema.TypeString,
 							Computed: true,
 						},
 						"description": {
@@ -78,7 +78,7 @@ func dataSourceApplicationSegment() *schema.Resource {
 							Computed: true,
 						},
 						"id": {
-							Type:     schema.TypeInt,
+							Type:     schema.TypeString,
 							Computed: true,
 						},
 						"local_domain": {
@@ -86,11 +86,11 @@ func dataSourceApplicationSegment() *schema.Resource {
 							Computed: true,
 						},
 						"modifiedby": {
-							Type:     schema.TypeInt,
+							Type:     schema.TypeString,
 							Computed: true,
 						},
 						"modified_time": {
-							Type:     schema.TypeInt,
+							Type:     schema.TypeString,
 							Computed: true,
 						},
 						"name": {
@@ -113,15 +113,15 @@ func dataSourceApplicationSegment() *schema.Resource {
 				Computed: true,
 			},
 			"creation_time": {
-				Type:     schema.TypeInt,
+				Type:     schema.TypeString,
 				Computed: true,
 			},
 			"default_idle_timeout": {
-				Type:     schema.TypeInt,
+				Type:     schema.TypeString,
 				Computed: true,
 			},
 			"default_max_age": {
-				Type:     schema.TypeInt,
+				Type:     schema.TypeString,
 				Computed: true,
 			},
 			"description": {
@@ -170,7 +170,7 @@ func dataSourceApplicationSegment() *schema.Resource {
 				Computed: true,
 			},
 			"modified_time": {
-				Type:     schema.TypeInt,
+				Type:     schema.TypeString,
 				Computed: true,
 			},
 			"passive_health_enabled": {
@@ -187,7 +187,7 @@ func dataSourceApplicationSegment() *schema.Resource {
 							Computed: true,
 						},
 						"creation_time": {
-							Type:     schema.TypeInt,
+							Type:     schema.TypeString,
 							Computed: true,
 						},
 						"description": {
@@ -199,7 +199,7 @@ func dataSourceApplicationSegment() *schema.Resource {
 							Computed: true,
 						},
 						"id": {
-							Type:     schema.TypeInt,
+							Type:     schema.TypeString,
 							Computed: true,
 						},
 						"dynamic_discovery": {
@@ -207,11 +207,11 @@ func dataSourceApplicationSegment() *schema.Resource {
 							Computed: true,
 						},
 						"modifiedby": {
-							Type:     schema.TypeInt,
+							Type:     schema.TypeString,
 							Computed: true,
 						},
 						"modified_time": {
-							Type:     schema.TypeInt,
+							Type:     schema.TypeString,
 							Computed: true,
 						},
 						"name": {
@@ -248,7 +248,7 @@ func dataSourceApplicationSegmentRead(d *schema.ResourceData, m interface{}) err
 		resp = res
 	}
 	name, ok := d.Get("name").(string)
-	if ok && name != "" {
+	if id == "" && ok && name != "" {
 		log.Printf("[INFO] Getting data for server group name %s\n", name)
 		res, _, err := zClient.applicationsegment.GetByName(name)
 		if err != nil {

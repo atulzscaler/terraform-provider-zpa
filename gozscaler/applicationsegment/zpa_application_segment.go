@@ -27,7 +27,7 @@ type ApplicationSegmentResource struct {
 	IpAnchored           bool              `json:"ipAnchored,omitempty"`
 	HealthReporting      string            `json:"healthReporting,omitempty"`
 	IcmpAccessType       string            `json:"icmpAccessType,omitempty"`
-	SegmentGroupId       string            `json:"segmentGroupId,string"`
+	SegmentGroupId       string            `json:"segmentGroupId"`
 	SegmentGroupName     string            `json:"segmentGroupName,omitempty"`
 	CreationTime         string            `json:"creationTime,omitempty"`
 	ModifiedBy           string            `json:"modifiedBy,omitempty"`
@@ -41,7 +41,7 @@ type ApplicationSegmentResource struct {
 }
 type ClientlessApps struct {
 	AllowOptions        bool   `json:"allowOptions,omitempty"`
-	AppId               string `json:"appId,string,omitempty"`
+	AppId               string `json:"appId,omitempty"`
 	ApplicationPort     string `json:"applicationPort,omitempty"`
 	ApplicationProtocol string `json:"applicationProtocol,omitempty"`
 	CertificateId       string `json:"certificateId,omitempty"`
@@ -52,7 +52,7 @@ type ClientlessApps struct {
 	Domain              string `json:"domain,omitempty"`
 	Enabled             bool   `json:"enabled,omitempty"`
 	Hidden              bool   `json:"hidden,omitempty"`
-	ID                  string `json:"id,string,omitempty"`
+	ID                  string `json:"id,omitempty"`
 	LocalDomain         string `json:"localDomain,omitempty"`
 	ModifiedBy          string `json:"modifiedBy,omitempty"`
 	ModifiedTime        string `json:"modifiedTime,omitempty"`
@@ -67,7 +67,7 @@ type AppServerGroups struct {
 	CreationTime     string `json:"creationTime,omitempty"`
 	Description      string `json:"description,omitempty"`
 	Enabled          bool   `json:"enabled,omitempty"`
-	ID               string `json:"id,string"`
+	ID               string `json:"id,omitempty"`
 	DynamicDiscovery bool   `json:"dynamicDiscovery,omitempty"`
 	ModifiedBy       string `json:"modifiedBy,omitempty"`
 	ModifiedTime     string `json:"modifiedTime,omitempty"`
