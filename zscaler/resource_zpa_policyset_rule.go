@@ -2,11 +2,11 @@ package zscaler
 
 import (
 	"log"
-	"strconv"
 
 	"github.com/SecurityGeekIO/terraform-provider-zpa/gozscaler/client"
 	"github.com/SecurityGeekIO/terraform-provider-zpa/gozscaler/policysetrule"
 	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/schema"
+	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/validation"
 )
 
 func resourcePolicySetRule() *schema.Resource {
@@ -23,6 +23,25 @@ func resourcePolicySetRule() *schema.Resource {
 				Type:        schema.TypeString,
 				Optional:    true,
 				Description: "  This is for providing the rule action.",
+				ValidateFunc: validation.StringInSlice([]string{
+					"ALLOW",
+					"DENY",
+					"LOG",
+					"RE_AUTH",
+					"NEVER",
+					"BYPASS",
+					"INTERCEPT",
+					"NO_DOWNLOAD",
+					"BYPASS_RE_AUTH",
+					"INTERCEPT_ACCESSIBLE",
+					"ISOLATE",
+					"BYPASS_ISOLATE",
+				}, false),
+			},
+			"action_id": {
+				Type:        schema.TypeString,
+				Optional:    true,
+				Description: "This field defines the description of the server.",
 			},
 			"bypass_default_rule": {
 				Type:     schema.TypeBool,
@@ -42,31 +61,29 @@ func resourcePolicySetRule() *schema.Resource {
 				Type:     schema.TypeString,
 				Computed: true,
 			},
-			"isolation_default_rule": {
-				Type:     schema.TypeBool,
-				Computed: true,
-			},
 			"name": {
 				Type:        schema.TypeString,
 				Required:    true,
 				Description: "This is the name of the policy rule.",
 			},
 			"operator": {
-				Type:        schema.TypeList,
-				Optional:    true,
-				Elem:        &schema.Schema{Type: schema.TypeString},
-				Description: "This denotes the operation type.",
+				Type:     schema.TypeString,
+				Optional: true,
+				ValidateFunc: validation.StringInSlice([]string{
+					"AND",
+					"OR",
+				}, false),
 			},
 			"policy_set_id": {
 				Type:     schema.TypeString,
 				Optional: true,
 			},
 			"policy_type": {
-				Type:     schema.TypeInt,
+				Type:     schema.TypeString,
 				Optional: true,
 			},
 			"priority": {
-				Type:     schema.TypeInt,
+				Type:     schema.TypeString,
 				Optional: true,
 			},
 			"reauth_default_rule": {
@@ -74,58 +91,51 @@ func resourcePolicySetRule() *schema.Resource {
 				Optional: true,
 			},
 			"reauth_idle_timeout": {
-				Type:     schema.TypeInt,
-				Optional: true,
-			},
-			"reauth_timeout": {
-				Type:     schema.TypeInt,
-				Optional: true,
-			},
-			"rule_order": {
-				Type:     schema.TypeInt,
-				Optional: true,
-			},
-			// "zpn_cbi_profile_id": {
-			//  Type:     schema.TypeInt,
-			//  Optional: true,
-			// },
-			"zpn_inspection_profile_name": {
 				Type:     schema.TypeString,
 				Optional: true,
 			},
-			// "action_id": {
-			//  Type:        schema.TypeInt,
-			//  Optional:    true,
-			//  Description: "This field defines the description of the server.",
-			// },
-			// "server_groups": {
-			//  Type:        schema.TypeList,
-			//  Optional:    true,
-			//  Description: "ID of the server group.",
-			//  Elem: &schema.Resource{
-			//      Schema: map[string]*schema.Schema{
-			//          "id": {
-			//              Type:     schema.TypeSet,
-			//              Optional: true,
-			//              Elem:     &schema.Schema{Type: schema.TypeInt},
-			//          },
-			//      },
-			//  },
-			// },
-			// "app_connector_groups": {
-			//  Type:        schema.TypeList,
-			//  Optional:    true,
-			//  Description: "This field is a json array of app-connector-id only.",
-			//  Elem: &schema.Resource{
-			//      Schema: map[string]*schema.Schema{
-			//          "id": {
-			//              Type:     schema.TypeSet,
-			//              Optional: true,
-			//              Elem:     &schema.Schema{Type: schema.TypeInt},
-			//          },
-			//      },
-			//  },
-			// },
+			"reauth_timeout": {
+				Type:     schema.TypeString,
+				Optional: true,
+			},
+			"rule_order": {
+				Type:     schema.TypeString,
+				Optional: true,
+			},
+			"app_server_groups": {
+				Type:        schema.TypeSet,
+				Optional:    true,
+				MaxItems:    1,
+				Description: "List of the server group IDs.",
+				Elem: &schema.Resource{
+					Schema: map[string]*schema.Schema{
+						"id": {
+							Type:     schema.TypeList,
+							Optional: true,
+							Elem: &schema.Schema{
+								Type: schema.TypeString,
+							},
+						},
+					},
+				},
+			},
+			"app_connector_groups": {
+				Type:        schema.TypeSet,
+				Optional:    true,
+				MaxItems:    1,
+				Description: "List of app-connector IDs.",
+				Elem: &schema.Resource{
+					Schema: map[string]*schema.Schema{
+						"id": {
+							Type:     schema.TypeList,
+							Optional: true,
+							Elem: &schema.Schema{
+								Type: schema.TypeString,
+							},
+						},
+					},
+				},
+			},
 			"conditions": {
 				Type:        schema.TypeList,
 				Optional:    true,
@@ -133,7 +143,7 @@ func resourcePolicySetRule() *schema.Resource {
 				Elem: &schema.Resource{
 					Schema: map[string]*schema.Schema{
 						"id": {
-							Type:     schema.TypeInt,
+							Type:     schema.TypeString,
 							Computed: true,
 						},
 						"negated": {
@@ -143,6 +153,10 @@ func resourcePolicySetRule() *schema.Resource {
 						"operator": {
 							Type:     schema.TypeString,
 							Optional: true,
+							ValidateFunc: validation.StringInSlice([]string{
+								"AND",
+								"OR",
+							}, false),
 						},
 						"operands": {
 							Type:        schema.TypeList,
@@ -151,26 +165,46 @@ func resourcePolicySetRule() *schema.Resource {
 							Elem: &schema.Resource{
 								Schema: map[string]*schema.Schema{
 									"id": {
-										Type:     schema.TypeInt,
-										Computed: true,
-									},
-									"idp_id": {
-										Type:     schema.TypeInt,
-										Computed: true,
-									},
-									"lhs": {
 										Type:     schema.TypeString,
 										Computed: true,
 									},
-									"object_type": {
-										Type:        schema.TypeString,
-										Optional:    true,
-										Description: "  This is for specifying the policy critiera.",
+									"idp_id": {
+										Type:     schema.TypeString,
+										Optional: true,
+									},
+									"name": {
+										Type:     schema.TypeString,
+										Optional: true,
+									},
+									"lhs": {
+										Type:     schema.TypeString,
+										Optional: true,
 									},
 									"rhs": {
 										Type:        schema.TypeString,
 										Optional:    true,
 										Description: "This denotes the value for the given object type. Its value depends upon the key.",
+									},
+									"object_type": {
+										Type:        schema.TypeString,
+										Optional:    true,
+										Description: "  This is for specifying the policy critiera.",
+										ValidateFunc: validation.StringInSlice([]string{
+											"USER",
+											"USER_GROUP",
+											"LOCATION",
+											"APP",
+											"APP_GROUP",
+											"SAML",
+											"POSTURE",
+											"CLIENT_TYPE",
+											"IDP",
+											"TRUSTED_NETWORK",
+											"EDGE_CONNECTOR_GROUP",
+											"MACHINE_GRP",
+											"SCIM",
+											"SCIM_GROUP",
+										}, false),
 									},
 								},
 							},
@@ -192,7 +226,7 @@ func resourcePolicySetCreate(d *schema.ResourceData, m interface{}) error {
 	if err != nil {
 		return err
 	}
-	d.SetId(strconv.FormatInt(int64(policysetrule.ID), 10))
+	d.SetId(policysetrule.ID)
 
 	return resourcePolicySetRead(d, m)
 }
@@ -205,14 +239,10 @@ func resourcePolicySetRead(d *schema.ResourceData, m interface{}) error {
 	if err != nil {
 		return err
 	}
-	ruleId, err := strconv.ParseInt(d.Id(), 10, 64)
+	log.Printf("[INFO] Getting Policy Set Rule: globalPolicySet:%s id: %s\n", globalPolicySet.ID, d.Id())
+	resp, _, err := zClient.policysetrule.Get(globalPolicySet.ID, d.Id())
 	if err != nil {
-		return err
-	}
-
-	resp, _, err := zClient.policysetrule.Get(globalPolicySet.ID, ruleId)
-	if err != nil {
-		if err.(*client.ErrorResponse).IsObjectNotFound() {
+		if obj, ok := err.(*client.ErrorResponse); ok && obj.IsObjectNotFound() {
 			log.Printf("[WARN] Removing policy rule %s from state because it no longer exists in ZPA", d.Id())
 			d.SetId("")
 			return nil
@@ -221,40 +251,36 @@ func resourcePolicySetRead(d *schema.ResourceData, m interface{}) error {
 		return err
 	}
 
-	log.Printf("[INFO] Getting Policy Set Rule:\n%+v\n", resp)
-	d.SetId(strconv.FormatInt(int64(resp.ID), 10))
+	log.Printf("[INFO] Got Policy Set Rule:\n%+v\n", resp)
+	d.SetId(resp.ID)
 	_ = d.Set("action", resp.Action)
 	_ = d.Set("action_id", resp.ActionID)
-	// _ = d.Set("creation_time", resp.CreationTime)
 	_ = d.Set("custom_msg", resp.CustomMsg)
 	_ = d.Set("description", resp.Description)
-	// _ = d.Set("modifiedby", resp.ModifiedBy)
-	// _ = d.Set("modified_time", resp.ModifiedTime)
 	_ = d.Set("name", resp.Name)
+	_ = d.Set("bypass_default_rule", resp.BypassDefaultRule)
 	_ = d.Set("operator", resp.Operator)
 	_ = d.Set("policy_set_id", resp.PolicySetID)
 	_ = d.Set("policy_type", resp.PolicyType)
 	_ = d.Set("priority", resp.Priority)
-	//_ = d.Set("reauth_idle_timeout", resp.ReauthIdleTimeout)
-	//_ = d.Set("reauth_timeout", resp.ReauthTimeout)
+	_ = d.Set("reauth_default_rule", resp.ReauthDefaultRule)
+	_ = d.Set("reauth_idle_timeout", resp.ReauthIdleTimeout)
+	_ = d.Set("reauth_timeout", resp.ReauthTimeout)
 	_ = d.Set("rule_order", resp.RuleOrder)
-	//_ = d.Set("zpn_cbi_profile_id", resp.ZpnCbiProfileID)
 	_ = d.Set("conditions", flattenPolicyRuleConditions(resp.Conditions))
+	_ = d.Set("app_server_groups", flattenPolicyRuleServerGroups(resp.AppServerGroups))
+	_ = d.Set("app_connector_groups", flattenPolicyRuleAppConnectorGroups(resp.AppConnectorGroups))
 
 	return nil
 }
 
-// Please review Update operations. It needs to pull the policySetId and RuleId in order to update a specific rule.
 func resourcePolicySetUpdate(d *schema.ResourceData, m interface{}) error {
 	zClient := m.(*Client)
 	globalPolicySet, _, err := zClient.policysetglobal.Get()
 	if err != nil {
 		return err
 	}
-	ruleId, err := strconv.ParseInt(d.Id(), 10, 64)
-	if err != nil {
-		return err
-	}
+	ruleId := d.Id()
 	log.Printf("[INFO] Updating policy rule ID: %v\n", ruleId)
 	req := expandCreatePolicyRule(d)
 
@@ -265,21 +291,16 @@ func resourcePolicySetUpdate(d *schema.ResourceData, m interface{}) error {
 	return resourcePolicySetRead(d, m)
 }
 
-// Please review Delete operations. It needs to pull the policySetId and RuleId in order to delete a specific rule.
 func resourcePolicySetDelete(d *schema.ResourceData, m interface{}) error {
 	zClient := m.(*Client)
 	globalPolicySet, _, err := zClient.policysetglobal.Get()
 	if err != nil {
 		return err
 	}
-	id, err := strconv.ParseInt(d.Id(), 10, 64)
-	if err != nil {
-		return err
-	}
 
-	log.Printf("[INFO] Deleting IP list with id %v\n", id)
+	log.Printf("[INFO] Deleting IP list with id %v\n", d.Id())
 
-	if _, err := zClient.policysetrule.Delete(globalPolicySet.ID, id); err != nil {
+	if _, err := zClient.policysetrule.Delete(globalPolicySet.ID, d.Id()); err != nil {
 		return err
 	}
 
@@ -290,30 +311,75 @@ func resourcePolicySetDelete(d *schema.ResourceData, m interface{}) error {
 // Please review the expand and flattening functions. Condition is actually a slice inside PolicyRule
 //https://help.zscaler.com/zpa/api-reference#/policy-set-controller/addRuleToPolicySet
 func expandCreatePolicyRule(d *schema.ResourceData) policysetrule.PolicyRule {
-	policySetID, err := strconv.ParseInt(d.Get("policy_set_id").(string), 10, 64)
-	if err != nil {
-		log.Printf("[ERROR] policy_set_id is not set, err:%v\n", err)
+	policySetID, ok := d.Get("policy_set_id").(string)
+	if !ok {
+		log.Printf("[ERROR] policy_set_id is not set\n")
 	}
+	log.Printf("[INFO] action_id:%v\n", d.Get("action_id"))
 	return policysetrule.PolicyRule{
-		Action: d.Get("action").(string),
-		// ActionID:     d.Get("action_id").(int),
-		// CreationTime: d.Get("creation_time").(int),
-		CustomMsg:   d.Get("custom_msg").(string),
-		Description: d.Get("description").(string),
-		// ID:          d.Get("id").(int),
-		// ModifiedBy:        d.Get("modifiedby").(int),
-		// ModifiedTime:      d.Get("Modified_time").(int),
-		Name: d.Get("name").(string),
-		// Operator:    d.Get("operator").(string),
-		PolicySetID: policySetID,
-		PolicyType:  d.Get("policy_type").(int),
-		Priority:    d.Get("priority").(int),
-		// ReauthIdleTimeout: d.Get("reauth_idle_timeout").(int),
-		// ReauthTimeout:     d.Get("reauth_timeout").(int),
-		RuleOrder: d.Get("rule_order").(int),
-		//ZpnCbiProfileID: d.Get("zpn_cbi_profile_id").(int),
-		Conditions: expandConditionSet(d),
+		Action:             d.Get("action").(string),
+		ActionID:           d.Get("action_id").(string),
+		CustomMsg:          d.Get("custom_msg").(string),
+		Description:        d.Get("description").(string),
+		ID:                 d.Get("id").(string),
+		Name:               d.Get("name").(string),
+		Operator:           d.Get("operator").(string),
+		PolicySetID:        policySetID,
+		PolicyType:         d.Get("policy_type").(string),
+		Priority:           d.Get("priority").(string),
+		ReauthDefaultRule:  d.Get("reauth_default_rule").(bool),
+		ReauthIdleTimeout:  d.Get("reauth_idle_timeout").(string),
+		ReauthTimeout:      d.Get("reauth_timeout").(string),
+		RuleOrder:          d.Get("rule_order").(string),
+		Conditions:         expandConditionSet(d),
+		AppServerGroups:    expandPolicySetRuleAppServerGroups(d),
+		AppConnectorGroups: expandPolicySetRuleAppConnectorGroups(d),
 	}
+}
+
+func expandPolicySetRuleAppServerGroups(d *schema.ResourceData) []policysetrule.AppServerGroups {
+	appServerGroupsInterface, ok := d.GetOk("app_server_groups")
+	if ok {
+		appServer := appServerGroupsInterface.(*schema.Set)
+		log.Printf("[INFO] app server groups data: %+v\n", appServer)
+		var appServerGroups []policysetrule.AppServerGroups
+		for _, appServerGroup := range appServer.List() {
+			appServerGroup, _ := appServerGroup.(map[string]interface{})
+			if appServerGroup != nil {
+				for _, id := range appServerGroup["id"].([]interface{}) {
+					appServerGroups = append(appServerGroups, policysetrule.AppServerGroups{
+						ID: id.(string),
+					})
+				}
+			}
+		}
+		return appServerGroups
+	}
+
+	return []policysetrule.AppServerGroups{}
+}
+
+func expandPolicySetRuleAppConnectorGroups(d *schema.ResourceData) []policysetrule.AppConnectorGroups {
+	appConnectorGroupsInterface, ok := d.GetOk("app_connector_groups")
+	if ok {
+		appConnector := appConnectorGroupsInterface.(*schema.Set)
+		log.Printf("[INFO] app connector groups data: %+v\n", appConnector)
+		var appConnectorGroups []policysetrule.AppConnectorGroups
+		for _, appConnectorGroup := range appConnector.List() {
+			appConnectorGroup, _ := appConnectorGroup.(map[string]interface{})
+			if appConnectorGroup != nil {
+				for _, id := range appConnectorGroup["id"].([]interface{}) {
+					appConnectorGroups = append(appConnectorGroups, policysetrule.AppConnectorGroups{
+						ID: id.(string),
+					})
+				}
+
+			}
+		}
+		return appConnectorGroups
+	}
+
+	return []policysetrule.AppConnectorGroups{}
 }
 
 func expandConditionSet(d *schema.ResourceData) []policysetrule.Conditions {
@@ -326,10 +392,7 @@ func expandConditionSet(d *schema.ResourceData) []policysetrule.Conditions {
 			conditionSet, _ := condition.(map[string]interface{})
 			if conditionSet != nil {
 				conditionSets = append(conditionSets, policysetrule.Conditions{
-					// CreationTime: conditionSet["creation_time"].(int),
-					// ID:           conditionSet["id"].(int),
-					// ModifiedBy:   conditionSet["modifiedby"].(int),
-					// ModifiedTime: conditionSet["modified_time"].(int),
+					ID:       conditionSet["id"].(string),
 					Negated:  conditionSet["negated"].(bool),
 					Operator: conditionSet["operator"].(string),
 					Operands: expandOperandsList(conditionSet["operands"]),
@@ -349,8 +412,8 @@ func expandOperandsList(ops interface{}) []policysetrule.Operands {
 		var operandsSets []policysetrule.Operands
 		for _, operand := range operands {
 			operandSet, _ := operand.(map[string]interface{})
-			id, _ := operandSet["id"].(int64)
-			IdpID, _ := operandSet["idp_id"].(int64)
+			id, _ := operandSet["id"].(string)
+			IdpID, _ := operandSet["idp_id"].(string)
 			if operandSet != nil {
 				operandsSets = append(operandsSets, policysetrule.Operands{
 					ID:         id,
@@ -358,6 +421,7 @@ func expandOperandsList(ops interface{}) []policysetrule.Operands {
 					LHS:        operandSet["lhs"].(string),
 					ObjectType: operandSet["object_type"].(string),
 					RHS:        operandSet["rhs"].(string),
+					Name:       operandSet["name"].(string),
 				})
 			}
 		}
@@ -370,13 +434,10 @@ func flattenPolicyRuleConditions(conditions []policysetrule.Conditions) []interf
 	ruleConditions := make([]interface{}, len(conditions))
 	for i, ruleConditionItems := range conditions {
 		ruleConditions[i] = map[string]interface{}{
-			"creation_time": ruleConditionItems.CreationTime,
-			"id":            ruleConditionItems.ID,
-			"modifiedby":    ruleConditionItems.ModifiedBy,
-			"modified_time": ruleConditionItems.ModifiedTime,
-			"negated":       ruleConditionItems.Negated,
-			"operator":      ruleConditionItems.Operator,
-			"operands":      flattenPolicyRuleOperands(ruleConditionItems.Operands),
+			"id":       ruleConditionItems.ID,
+			"negated":  ruleConditionItems.Negated,
+			"operator": ruleConditionItems.Operator,
+			"operands": flattenPolicyRuleOperands(ruleConditionItems.Operands),
 		}
 	}
 
@@ -387,19 +448,35 @@ func flattenPolicyRuleOperands(conditionOperand []policysetrule.Operands) []inte
 	conditionOperands := make([]interface{}, len(conditionOperand))
 	for i, operandItems := range conditionOperand {
 		conditionOperands[i] = map[string]interface{}{
-			"creation_time": operandItems.CreationTime,
-			"id":            operandItems.ID,
-			"idp_id":        operandItems.IdpID,
-			"lhs":           operandItems.LHS,
-			"modifiedby":    operandItems.ModifiedBy,
-			"modified_time": operandItems.ModifiedTime,
-			"object_type":   operandItems.ObjectType,
-			"rhs":           operandItems.RHS,
+			"id":          operandItems.ID,
+			"idp_id":      operandItems.IdpID,
+			"lhs":         operandItems.LHS,
+			"object_type": operandItems.ObjectType,
+			"rhs":         operandItems.RHS,
 		}
 	}
 
 	return conditionOperands
 }
 
-// Need to flatten the Operands menu, which is a slice inside the slice Conditions
-//https://help.zscaler.com/zpa/api-reference#/policy-set-controller/addRuleToPolicySet
+func flattenPolicyRuleServerGroups(appServerGroup []policysetrule.AppServerGroups) []interface{} {
+	policyRuleServerGroups := make([]interface{}, len(appServerGroup))
+	for i, serverGroup := range appServerGroup {
+		policyRuleServerGroups[i] = map[string]interface{}{
+			"id": serverGroup.ID,
+		}
+	}
+
+	return policyRuleServerGroups
+}
+
+func flattenPolicyRuleAppConnectorGroups(appConnectorGroups []policysetrule.AppConnectorGroups) []interface{} {
+	policyRuleAppConnectorGroups := make([]interface{}, len(appConnectorGroups))
+	for i, val := range appConnectorGroups {
+		policyRuleAppConnectorGroups[i] = map[string]interface{}{
+			"id": val.ID,
+		}
+	}
+
+	return policyRuleAppConnectorGroups
+}
