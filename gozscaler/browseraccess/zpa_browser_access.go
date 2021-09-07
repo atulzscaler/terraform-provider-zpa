@@ -17,7 +17,7 @@ type BrowserAccess struct {
 	BypassType           string            `json:"bypassType,omitempty"`
 	ConfigSpace          string            `json:"configSpace,omitempty"`
 	DomainNames          []string          `json:"domainNames,omitempty"`
-	Name                 string            `json:"name"`
+	Name                 string            `json:"name,omitempty"`
 	Description          string            `json:"description,omitempty"`
 	Enabled              bool              `json:"enabled,omitempty"`
 	PassiveHealthEnabled bool              `json:"passiveHealthEnabled,omitempty"`
@@ -31,8 +31,8 @@ type BrowserAccess struct {
 	ModifiedTime         string            `json:"modifiedTime,string,omitempty"`
 	TcpPortRanges        []interface{}     `json:"tcpPortRanges,omitempty"`
 	UdpPortRanges        []interface{}     `json:"udpPortRanges,omitempty"`
-	ClientlessApps       []ClientlessApps  `json:"clientlessApps"`
-	AppServerGroups      []AppServerGroups `json:"serverGroups"`
+	ClientlessApps       []ClientlessApps  `json:"clientlessApps,omitempty"`
+	AppServerGroups      []AppServerGroups `json:"serverGroups,omitempty"`
 }
 
 type ClientlessApps struct {
@@ -52,7 +52,7 @@ type ClientlessApps struct {
 	LocalDomain         string `json:"localDomain,omitempty"`
 	ModifiedBy          string `json:"modifiedBy,omitempty"`
 	ModifiedTime        string `json:"modifiedTime,omitempty"`
-	Name                string `json:"name"`
+	Name                string `json:"name,omitempty"`
 	Path                string `json:"path,omitempty"`
 	TrustUntrustedCert  bool   `json:"trustUntrustedCert"`
 }
@@ -71,7 +71,7 @@ func (service *Service) Get(id string) (*BrowserAccess, *http.Response, error) {
 	return v, resp, nil
 }
 
-func (service *Service) Create(browserAccess BrowserAccess) (*BrowserAccess, *http.Response, error) {
+func (service *Service) Create(browserAccess *BrowserAccess) (*BrowserAccess, *http.Response, error) {
 	v := new(BrowserAccess)
 	resp, err := service.Client.NewRequestDo("POST", mgmtConfig+service.Client.Config.CustomerID+browserAccessEndpoint, nil, browserAccess, &v)
 	if err != nil {
@@ -80,7 +80,7 @@ func (service *Service) Create(browserAccess BrowserAccess) (*BrowserAccess, *ht
 	return v, resp, nil
 }
 
-func (service *Service) Update(id string, browserAccess BrowserAccess) (*http.Response, error) {
+func (service *Service) Update(id string, browserAccess *BrowserAccess) (*http.Response, error) {
 	path := fmt.Sprintf("%s/%s", mgmtConfig+service.Client.Config.CustomerID+browserAccessEndpoint, id)
 	resp, err := service.Client.NewRequestDo("PUT", path, nil, browserAccess, nil)
 	if err != nil {

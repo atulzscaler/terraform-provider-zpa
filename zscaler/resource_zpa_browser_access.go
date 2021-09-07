@@ -194,15 +194,13 @@ func resourceBrowserAccessCreate(d *schema.ResourceData, m interface{}) error {
 	req := expandBrowserAccess(d)
 	log.Printf("[INFO] Creating browser access request\n%+v\n", req)
 
-	resp, _, err := zClient.browseraccess.Create(req)
+	browseraccess, _, err := zClient.browseraccess.Create(&req)
 	if err != nil {
 		return err
 	}
 
-	log.Printf("[INFO] Created application segment request. ID: %v\n", resp.ID)
-	d.SetId(resp.ID)
-	//d.SetId(strconv.FormatInt(int64(applicationsegment.ID), 10))
-	//d.SetId(strconv.Itoa(resp.ID))
+	log.Printf("[INFO] Created application segment request. ID: %v\n", browseraccess.ID)
+	d.SetId(browseraccess.ID)
 
 	return resourceBrowserAccessRead(d, m)
 }
@@ -257,7 +255,7 @@ func resourceBrowserAccessUpdate(d *schema.ResourceData, m interface{}) error {
 	log.Printf("[INFO] Updating browser access ID: %v\n", id)
 	req := expandBrowserAccess(d)
 
-	if _, err := zClient.browseraccess.Update(id, req); err != nil {
+	if _, err := zClient.browseraccess.Update(id, &req); err != nil {
 		return err
 	}
 
@@ -271,9 +269,6 @@ func resourceBrowserAccessDelete(d *schema.ResourceData, m interface{}) error {
 	if _, err := zClient.browseraccess.Delete(d.Id()); err != nil {
 		return err
 	}
-
-	d.SetId("")
-	log.Printf("[INFO] browser access application deleted")
 
 	return nil
 }
@@ -299,49 +294,57 @@ func expandBrowserAccess(d *schema.ResourceData) browseraccess.BrowserAccess {
 }
 
 func expandClientlessApps(d *schema.ResourceData) []browseraccess.ClientlessApps {
-	var clientlessApps []browseraccess.ClientlessApps
-	if clientlessInterface, ok := d.GetOk("clientless_apps"); ok {
+	clientlessInterface, ok := d.GetOk("clientless_apps")
+	if ok {
 		clientless := clientlessInterface.([]interface{})
-		clientlessApps = make([]browseraccess.ClientlessApps, len(clientless))
-		for i, app := range clientless {
-			clientlessApp := app.(map[string]interface{})
-			clientlessApps[i] = browseraccess.ClientlessApps{
-				AllowOptions:        clientlessApp["allow_options"].(bool),
-				AppId:               clientlessApp["app_id"].(string),
-				ApplicationPort:     clientlessApp["application_port"].(string), //Causing panic: interface conversion: interface {} is nil, not string
-				ApplicationProtocol: clientlessApp["application_protocol"].(string),
-				CertificateId:       clientlessApp["certificate_id"].(string),
-				CertificateName:     clientlessApp["certificate_name"].(string),
-				Cname:               clientlessApp["cname"].(string),
-				Description:         clientlessApp["description"].(string),
-				Domain:              clientlessApp["domain"].(string),
-				Enabled:             clientlessApp["enabled"].(bool),
-				Hidden:              clientlessApp["hidden"].(bool),
-				LocalDomain:         clientlessApp["local_domain"].(string),
-				Name:                clientlessApp["name"].(string),
-				Path:                clientlessApp["path"].(string),
-				TrustUntrustedCert:  clientlessApp["trust_untrusted_cert"].(bool),
+		log.Printf("[INFO] clientless apps data: %+v\n", clientless)
+		var clientlessApps []browseraccess.ClientlessApps
+		for _, clientlessApp := range clientless {
+			clientlessApp, _ := clientlessApp.(map[string]interface{})
+			if clientlessApp != nil {
+				clientlessApps = append(clientlessApps, browseraccess.ClientlessApps{
+					AllowOptions:        clientlessApp["allow_options"].(bool),
+					AppId:               clientlessApp["app_id"].(string),
+					ApplicationPort:     clientlessApp["application_port"].(string), //Causing panic: interface conversion: interface {} is nil, not string
+					ApplicationProtocol: clientlessApp["application_protocol"].(string),
+					CertificateId:       clientlessApp["certificate_id"].(string),
+					CertificateName:     clientlessApp["certificate_name"].(string),
+					Cname:               clientlessApp["cname"].(string),
+					Description:         clientlessApp["description"].(string),
+					Domain:              clientlessApp["domain"].(string),
+					Enabled:             clientlessApp["enabled"].(bool),
+					Hidden:              clientlessApp["hidden"].(bool),
+					LocalDomain:         clientlessApp["local_domain"].(string),
+					Name:                clientlessApp["name"].(string),
+					Path:                clientlessApp["path"].(string),
+					TrustUntrustedCert:  clientlessApp["trust_untrusted_cert"].(bool),
+				})
 			}
 		}
+		return clientlessApps
 	}
 
-	return clientlessApps
+	return []browseraccess.ClientlessApps{}
 }
 
 func expandClientlessAppServerGroups(d *schema.ResourceData) []browseraccess.AppServerGroups {
-	var serverGroups []browseraccess.AppServerGroups
-	if serverGroupInterface, ok := d.GetOk("server_groups"); ok {
-		servers := serverGroupInterface.([]interface{})
-		serverGroups = make([]browseraccess.AppServerGroups, len(servers))
-		for i, srvGroup := range servers {
-			serverGroup := srvGroup.(map[string]interface{})
-			serverGroups[i] = browseraccess.AppServerGroups{
-				ID: serverGroup["id"].(string),
+	serverGroupsInterface, ok := d.GetOk("server_groups")
+	if ok {
+		serverGroup := serverGroupsInterface.([]interface{})
+		log.Printf("[INFO] app server groups data: %+v\n", serverGroup)
+		var serverGroups []browseraccess.AppServerGroups
+		for _, appServerGroup := range serverGroup {
+			appServerGroup, _ := appServerGroup.(map[string]interface{})
+			if appServerGroup != nil {
+				serverGroups = append(serverGroups, browseraccess.AppServerGroups{
+					ID: appServerGroup["id"].(string),
+				})
 			}
 		}
+		return serverGroups
 	}
 
-	return serverGroups
+	return []browseraccess.AppServerGroups{}
 }
 
 func flattenBaClientlessApps(clientlessApp *browseraccess.BrowserAccess) []interface{} {
