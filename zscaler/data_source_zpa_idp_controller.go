@@ -247,7 +247,6 @@ func dataSourceIdpControllerRead(d *schema.ResourceData, m interface{}) error {
 		}
 	} else {
 		return fmt.Errorf("couldn't find any idp controller with name '%s' or id '%s'", name, id)
-
 	}
 	return nil
 }
