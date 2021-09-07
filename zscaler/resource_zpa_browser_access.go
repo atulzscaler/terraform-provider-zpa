@@ -243,7 +243,7 @@ func resourceBrowserAccessRead(d *schema.ResourceData, m interface{}) error {
 	if err := d.Set("clientless_apps", flattenBaClientlessApps(resp)); err != nil {
 		return fmt.Errorf("failed to read clientless apps %s", err)
 	}
-	if err := d.Set("server_groups", flattenClientlessAppServerGroups(resp)); err != nil {
+	if err := d.Set("app_server_groups", flattenClientlessAppServerGroups(resp)); err != nil {
 		return fmt.Errorf("failed to read app server groups %s", err)
 	}
 
@@ -331,17 +331,19 @@ func expandClientlessApps(d *schema.ResourceData) []browseraccess.ClientlessApps
 }
 
 func expandClientlessAppServerGroups(d *schema.ResourceData) []browseraccess.AppServerGroups {
-	serverGroupsInterface, ok := d.GetOk("server_groups")
+	serverGroupsInterface, ok := d.GetOk("app_server_groups")
 	if ok {
-		serverGroup := serverGroupsInterface.([]interface{})
+		serverGroup := serverGroupsInterface.(*schema.Set)
 		log.Printf("[INFO] app server groups data: %+v\n", serverGroup)
 		var serverGroups []browseraccess.AppServerGroups
-		for _, appServerGroup := range serverGroup {
+		for _, appServerGroup := range serverGroup.List() {
 			appServerGroup, _ := appServerGroup.(map[string]interface{})
 			if appServerGroup != nil {
-				serverGroups = append(serverGroups, browseraccess.AppServerGroups{
-					ID: appServerGroup["id"].(string),
-				})
+				for _, id := range appServerGroup["id"].([]interface{}) {
+					serverGroups = append(serverGroups, browseraccess.AppServerGroups{
+						ID: id.(string),
+					})
+				}
 			}
 		}
 		return serverGroups

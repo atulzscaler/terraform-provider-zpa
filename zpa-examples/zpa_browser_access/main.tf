@@ -74,7 +74,12 @@ resource "zpa_browser_access" "jenkins_app" {
         enabled = true
         domain = "jenkins.securitygeek.io"
     }
+<<<<<<< HEAD
     server_groups {
         id = zpa_server_group.sg_sgio_browser_access.id
+=======
+    app_server_groups {
+        id = [zpa_server_group.example.id]
+>>>>>>> 4cea8297e10c975628350c929975e59ad6127945
     }
 }
