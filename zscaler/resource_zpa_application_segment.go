@@ -20,7 +20,7 @@ func resourceApplicationSegment() *schema.Resource {
 		},
 		Schema: map[string]*schema.Schema{
 			"segment_group_id": {
-				Type:     schema.TypeString,
+				Type:     schema.TypeInt,
 				Optional: true,
 			},
 			"segment_group_name": {
@@ -41,13 +41,13 @@ func resourceApplicationSegment() *schema.Resource {
 				Type:        schema.TypeList,
 				Optional:    true,
 				Description: "TCP port ranges used to access the app.",
-				Elem:        &schema.Schema{Type: schema.TypeString},
+				Elem:        &schema.Schema{Type: schema.TypeInt},
 			},
 			"udp_port_ranges": {
 				Type:        schema.TypeList,
 				Optional:    true,
 				Description: "UDP port ranges used to access the app.",
-				Elem:        &schema.Schema{Type: schema.TypeString},
+				Elem:        &schema.Schema{Type: schema.TypeInt},
 			},
 			"config_space": {
 				Type:     schema.TypeString,
@@ -58,7 +58,7 @@ func resourceApplicationSegment() *schema.Resource {
 				}, false),
 			},
 			"creation_time": {
-				Type:     schema.TypeString,
+				Type:     schema.TypeInt,
 				Computed: true,
 			},
 			"description": {
@@ -126,7 +126,7 @@ func resourceApplicationSegment() *schema.Resource {
 				Computed: true,
 			},
 			"modified_time": {
-				Type:     schema.TypeString,
+				Type:     schema.TypeInt,
 				Computed: true,
 			},
 			"name": {
@@ -146,7 +146,7 @@ func resourceApplicationSegment() *schema.Resource {
 				Elem: &schema.Resource{
 					Schema: map[string]*schema.Schema{
 						"id": {
-							Type:     schema.TypeString,
+							Type:     schema.TypeInt,
 							Optional: true,
 						},
 					},
@@ -258,7 +258,7 @@ func expandStringInSlice(d *schema.ResourceData, key string) []string {
 
 func expandApplicationSegmentRequest(d *schema.ResourceData) applicationsegment.ApplicationSegmentResource {
 	return applicationsegment.ApplicationSegmentResource{
-		SegmentGroupId:   d.Get("segment_group_id").(string),
+		SegmentGroupId:   d.Get("segment_group_id").(int),
 		SegmentGroupName: d.Get("segment_group_name").(string),
 		BypassType:       d.Get("bypass_type").(string),
 		Description:      d.Get("description").(string),
@@ -282,7 +282,7 @@ func expandAppServerGroups(appServerGroupsRequest []interface{}) []applicationse
 	for i, appServerGroup := range appServerGroupsRequest {
 		appServerGroupItem := appServerGroup.(map[string]interface{})
 		appServerGroups[i] = applicationsegment.AppServerGroups{
-			ID: appServerGroupItem["id"].(string),
+			ID: appServerGroupItem["id"].(int),
 		}
 	}
 
