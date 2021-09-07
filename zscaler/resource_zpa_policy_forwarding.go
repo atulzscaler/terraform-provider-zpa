@@ -9,22 +9,24 @@ import (
 	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/validation"
 )
 
-func resourcePolicyTimeout() *schema.Resource {
+func resourcePolicyForwarding() *schema.Resource {
 	return &schema.Resource{
-		Create: resourcePolicyTimeoutCreate,
-		Read:   resourcePolicyTimeoutRead,
-		Update: resourcePolicyTimeoutUpdate,
-		Delete: resourcePolicyTimeoutDelete,
+		Create: resourcePolicyForwardingCreate,
+		Read:   resourcePolicyForwardingRead,
+		Update: resourcePolicyForwardingUpdate,
+		Delete: resourcePolicyForwardingDelete,
 		Importer: &schema.ResourceImporter{
 			State: schema.ImportStatePassthrough,
 		},
 		Schema: map[string]*schema.Schema{
 			"action": {
 				Type:        schema.TypeString,
-				Required:    true,
+				Optional:    true,
 				Description: "  This is for providing the rule action.",
 				ValidateFunc: validation.StringInSlice([]string{
-					"RE_AUTH",
+					"BYPASS",
+					"INTERCEPT",
+					"INTERCEPT_ACCESSIBLE",
 				}, false),
 			},
 			"action_id": {
@@ -81,11 +83,11 @@ func resourcePolicyTimeout() *schema.Resource {
 			},
 			"reauth_idle_timeout": {
 				Type:     schema.TypeString,
-				Required: true,
+				Optional: true,
 			},
 			"reauth_timeout": {
 				Type:     schema.TypeString,
-				Required: true,
+				Optional: true,
 			},
 			"rule_order": {
 				Type:     schema.TypeString,
@@ -184,11 +186,13 @@ func resourcePolicyTimeout() *schema.Resource {
 											"APP",
 											"APP_GROUP",
 											"CLIENT_TYPE",
+											"CLOUD_CONNECTOR_GROUP",
 											"IDP",
 											"POSTURE",
 											"SAML",
 											"SCIM",
 											"SCIM_GROUP",
+											"TRUSTED_NETWORK",
 										}, false),
 									},
 								},
@@ -201,10 +205,10 @@ func resourcePolicyTimeout() *schema.Resource {
 	}
 }
 
-func resourcePolicyTimeoutCreate(d *schema.ResourceData, m interface{}) error {
+func resourcePolicyForwardingCreate(d *schema.ResourceData, m interface{}) error {
 	zClient := m.(*Client)
 
-	req := expandCreatePolicyTimeoutRule(d)
+	req := expandCreatePolicyForwardingRule(d)
 	log.Printf("[INFO] Creating zpa policy rule with request\n%+v\n", req)
 
 	policysetrule, _, err := zClient.policysetrule.Create(&req)
@@ -213,14 +217,14 @@ func resourcePolicyTimeoutCreate(d *schema.ResourceData, m interface{}) error {
 	}
 	d.SetId(policysetrule.ID)
 
-	return resourcePolicyTimeoutRead(d, m)
+	return resourcePolicyForwardingRead(d, m)
 }
 
 // Please review read operations. It needs to pull the policySetId and RuleId in order to read a specific rule.
-func resourcePolicyTimeoutRead(d *schema.ResourceData, m interface{}) error {
+func resourcePolicyForwardingRead(d *schema.ResourceData, m interface{}) error {
 	zClient := m.(*Client)
 
-	globalPolicyTimeout, _, err := zClient.policysetglobal.GetReauth()
+	globalPolicyTimeout, _, err := zClient.policysetglobal.GetBypass()
 	if err != nil {
 		return err
 	}
@@ -252,16 +256,16 @@ func resourcePolicyTimeoutRead(d *schema.ResourceData, m interface{}) error {
 	_ = d.Set("reauth_idle_timeout", resp.ReauthIdleTimeout)
 	_ = d.Set("reauth_timeout", resp.ReauthTimeout)
 	_ = d.Set("rule_order", resp.RuleOrder)
-	_ = d.Set("conditions", flattenPolicyTimeoutConditions(resp.Conditions))
-	_ = d.Set("app_server_groups", flattenPolicyTimeoutServerGroups(resp.AppServerGroups))
-	_ = d.Set("app_connector_groups", flattenPolicyTimeoutAppConnectorGroups(resp.AppConnectorGroups))
+	_ = d.Set("conditions", flattenPolicyForwardingConditions(resp.Conditions))
+	_ = d.Set("app_server_groups", flattenPolicyForwardingServerGroups(resp.AppServerGroups))
+	_ = d.Set("app_connector_groups", flattenPolicyForwardingAppConnectorGroups(resp.AppConnectorGroups))
 
 	return nil
 }
 
-func resourcePolicyTimeoutUpdate(d *schema.ResourceData, m interface{}) error {
+func resourcePolicyForwardingUpdate(d *schema.ResourceData, m interface{}) error {
 	zClient := m.(*Client)
-	globalPolicyTimeout, _, err := zClient.policysetglobal.GetReauth()
+	globalPolicyTimeout, _, err := zClient.policysetglobal.GetBypass()
 	if err != nil {
 		return err
 	}
@@ -273,12 +277,12 @@ func resourcePolicyTimeoutUpdate(d *schema.ResourceData, m interface{}) error {
 		return err
 	}
 
-	return resourcePolicyTimeoutRead(d, m)
+	return resourcePolicyForwardingRead(d, m)
 }
 
-func resourcePolicyTimeoutDelete(d *schema.ResourceData, m interface{}) error {
+func resourcePolicyForwardingDelete(d *schema.ResourceData, m interface{}) error {
 	zClient := m.(*Client)
-	globalPolicyTimeout, _, err := zClient.policysetglobal.GetReauth()
+	globalPolicyTimeout, _, err := zClient.policysetglobal.GetBypass()
 	if err != nil {
 		return err
 	}
@@ -295,7 +299,7 @@ func resourcePolicyTimeoutDelete(d *schema.ResourceData, m interface{}) error {
 
 // Please review the expand and flattening functions. Condition is actually a slice inside PolicyRule
 //https://help.zscaler.com/zpa/api-reference#/policy-set-controller/addRuleToPolicySet
-func expandCreatePolicyTimeoutRule(d *schema.ResourceData) policysetrule.PolicyRule {
+func expandCreatePolicyForwardingRule(d *schema.ResourceData) policysetrule.PolicyRule {
 	policySetID, ok := d.Get("policy_set_id").(string)
 	if !ok {
 		log.Printf("[ERROR] policy_set_id is not set\n")
@@ -316,13 +320,13 @@ func expandCreatePolicyTimeoutRule(d *schema.ResourceData) policysetrule.PolicyR
 		ReauthIdleTimeout:  d.Get("reauth_idle_timeout").(string),
 		ReauthTimeout:      d.Get("reauth_timeout").(string),
 		RuleOrder:          d.Get("rule_order").(string),
-		Conditions:         expandPolicyTimeoutConditionSet(d),
-		AppServerGroups:    expandPolicyTimeoutRuleAppServerGroups(d),
-		AppConnectorGroups: expandPolicyTimeoutAppConnectorGroups(d),
+		Conditions:         expandPolicyForwardingConditionSet(d),
+		AppServerGroups:    expandPolicyForwardingRuleAppServerGroups(d),
+		AppConnectorGroups: expandPolicyForwardingAppConnectorGroups(d),
 	}
 }
 
-func expandPolicyTimeoutRuleAppServerGroups(d *schema.ResourceData) []policysetrule.AppServerGroups {
+func expandPolicyForwardingRuleAppServerGroups(d *schema.ResourceData) []policysetrule.AppServerGroups {
 	appServerGroupsInterface, ok := d.GetOk("app_server_groups")
 	if ok {
 		appServer := appServerGroupsInterface.([]interface{})
@@ -342,7 +346,7 @@ func expandPolicyTimeoutRuleAppServerGroups(d *schema.ResourceData) []policysetr
 	return []policysetrule.AppServerGroups{}
 }
 
-func expandPolicyTimeoutAppConnectorGroups(d *schema.ResourceData) []policysetrule.AppConnectorGroups {
+func expandPolicyForwardingAppConnectorGroups(d *schema.ResourceData) []policysetrule.AppConnectorGroups {
 	appConnectorGroupsInterface, ok := d.GetOk("app_connector_groups")
 	if ok {
 		appConnector := appConnectorGroupsInterface.([]interface{})
@@ -362,7 +366,7 @@ func expandPolicyTimeoutAppConnectorGroups(d *schema.ResourceData) []policysetru
 	return []policysetrule.AppConnectorGroups{}
 }
 
-func expandPolicyTimeoutConditionSet(d *schema.ResourceData) []policysetrule.Conditions {
+func expandPolicyForwardingConditionSet(d *schema.ResourceData) []policysetrule.Conditions {
 	conditionInterface, ok := d.GetOk("conditions")
 	if ok {
 		conditions := conditionInterface.([]interface{})
@@ -375,7 +379,7 @@ func expandPolicyTimeoutConditionSet(d *schema.ResourceData) []policysetrule.Con
 					ID:       conditionSet["id"].(string),
 					Negated:  conditionSet["negated"].(bool),
 					Operator: conditionSet["operator"].(string),
-					Operands: expandPolicyTimeoutOperandsList(conditionSet["operands"]),
+					Operands: expandPolicyForwardingOperandsList(conditionSet["operands"]),
 				})
 			}
 		}
@@ -385,7 +389,7 @@ func expandPolicyTimeoutConditionSet(d *schema.ResourceData) []policysetrule.Con
 	return []policysetrule.Conditions{}
 }
 
-func expandPolicyTimeoutOperandsList(ops interface{}) []policysetrule.Operands {
+func expandPolicyForwardingOperandsList(ops interface{}) []policysetrule.Operands {
 	if ops != nil {
 		operands := ops.([]interface{})
 		log.Printf("[INFO] operands data: %+v\n", operands)
@@ -410,21 +414,21 @@ func expandPolicyTimeoutOperandsList(ops interface{}) []policysetrule.Operands {
 	}
 	return []policysetrule.Operands{}
 }
-func flattenPolicyTimeoutConditions(conditions []policysetrule.Conditions) []interface{} {
+func flattenPolicyForwardingConditions(conditions []policysetrule.Conditions) []interface{} {
 	ruleConditions := make([]interface{}, len(conditions))
 	for i, ruleConditionItems := range conditions {
 		ruleConditions[i] = map[string]interface{}{
 			"id":       ruleConditionItems.ID,
 			"negated":  ruleConditionItems.Negated,
 			"operator": ruleConditionItems.Operator,
-			"operands": flattenPolicyRuleOperands(ruleConditionItems.Operands),
+			"operands": flattenPolicyForwardingOperands(ruleConditionItems.Operands),
 		}
 	}
 
 	return ruleConditions
 }
 
-func flattenPolicyTimeoutOperands(conditionOperand []policysetrule.Operands) []interface{} {
+func flattenPolicyForwardingOperands(conditionOperand []policysetrule.Operands) []interface{} {
 	conditionOperands := make([]interface{}, len(conditionOperand))
 	for i, operandItems := range conditionOperand {
 		conditionOperands[i] = map[string]interface{}{
@@ -439,7 +443,7 @@ func flattenPolicyTimeoutOperands(conditionOperand []policysetrule.Operands) []i
 	return conditionOperands
 }
 
-func flattenPolicyTimeoutServerGroups(appServerGroup []policysetrule.AppServerGroups) []interface{} {
+func flattenPolicyForwardingServerGroups(appServerGroup []policysetrule.AppServerGroups) []interface{} {
 	policyRuleServerGroups := make([]interface{}, len(appServerGroup))
 	for i, serverGroup := range appServerGroup {
 		policyRuleServerGroups[i] = map[string]interface{}{
@@ -450,7 +454,7 @@ func flattenPolicyTimeoutServerGroups(appServerGroup []policysetrule.AppServerGr
 	return policyRuleServerGroups
 }
 
-func flattenPolicyTimeoutAppConnectorGroups(appConnectorGroups []policysetrule.AppConnectorGroups) []interface{} {
+func flattenPolicyForwardingAppConnectorGroups(appConnectorGroups []policysetrule.AppConnectorGroups) []interface{} {
 	policyRuleAppConnectorGroups := make([]interface{}, len(appConnectorGroups))
 	for i, val := range appConnectorGroups {
 		policyRuleAppConnectorGroups[i] = map[string]interface{}{

@@ -13,7 +13,7 @@ func dataSourceApplicationSegment() *schema.Resource {
 		Read: dataSourceApplicationSegmentRead,
 		Schema: map[string]*schema.Schema{
 			"segment_group_id": {
-				Type:     schema.TypeInt,
+				Type:     schema.TypeString,
 				Computed: true,
 			},
 			"segment_group_name": {
@@ -34,11 +34,11 @@ func dataSourceApplicationSegment() *schema.Resource {
 							Computed: true,
 						},
 						"appid": {
-							Type:     schema.TypeInt,
+							Type:     schema.TypeString,
 							Computed: true,
 						},
 						"application_port": {
-							Type:     schema.TypeInt,
+							Type:     schema.TypeString,
 							Computed: true,
 						},
 						"application_protocol": {
@@ -46,7 +46,7 @@ func dataSourceApplicationSegment() *schema.Resource {
 							Computed: true,
 						},
 						"certificate_id": {
-							Type:     schema.TypeInt,
+							Type:     schema.TypeString,
 							Computed: true,
 						},
 						"certificate_name": {
@@ -58,7 +58,7 @@ func dataSourceApplicationSegment() *schema.Resource {
 							Computed: true,
 						},
 						"creation_time": {
-							Type:     schema.TypeInt,
+							Type:     schema.TypeString,
 							Computed: true,
 						},
 						"description": {
@@ -78,7 +78,7 @@ func dataSourceApplicationSegment() *schema.Resource {
 							Computed: true,
 						},
 						"id": {
-							Type:     schema.TypeInt,
+							Type:     schema.TypeString,
 							Computed: true,
 						},
 						"local_domain": {
@@ -86,11 +86,11 @@ func dataSourceApplicationSegment() *schema.Resource {
 							Computed: true,
 						},
 						"modifiedby": {
-							Type:     schema.TypeInt,
+							Type:     schema.TypeString,
 							Computed: true,
 						},
 						"modified_time": {
-							Type:     schema.TypeInt,
+							Type:     schema.TypeString,
 							Computed: true,
 						},
 						"name": {
@@ -113,15 +113,15 @@ func dataSourceApplicationSegment() *schema.Resource {
 				Computed: true,
 			},
 			"creation_time": {
-				Type:     schema.TypeInt,
+				Type:     schema.TypeString,
 				Computed: true,
 			},
 			"default_idle_timeout": {
-				Type:     schema.TypeInt,
+				Type:     schema.TypeString,
 				Computed: true,
 			},
 			"default_max_age": {
-				Type:     schema.TypeInt,
+				Type:     schema.TypeString,
 				Computed: true,
 			},
 			"description": {
@@ -151,7 +151,11 @@ func dataSourceApplicationSegment() *schema.Resource {
 			},
 			"id": {
 				Type:     schema.TypeString,
-				Required: true,
+				Optional: true,
+			},
+			"name": {
+				Type:     schema.TypeString,
+				Optional: true,
 			},
 			"ip_anchored": {
 				Type:     schema.TypeBool,
@@ -166,10 +170,6 @@ func dataSourceApplicationSegment() *schema.Resource {
 				Computed: true,
 			},
 			"modified_time": {
-				Type:     schema.TypeInt,
-				Computed: true,
-			},
-			"name": {
 				Type:     schema.TypeString,
 				Computed: true,
 			},
@@ -187,7 +187,7 @@ func dataSourceApplicationSegment() *schema.Resource {
 							Computed: true,
 						},
 						"creation_time": {
-							Type:     schema.TypeInt,
+							Type:     schema.TypeString,
 							Computed: true,
 						},
 						"description": {
@@ -199,7 +199,7 @@ func dataSourceApplicationSegment() *schema.Resource {
 							Computed: true,
 						},
 						"id": {
-							Type:     schema.TypeInt,
+							Type:     schema.TypeString,
 							Computed: true,
 						},
 						"dynamic_discovery": {
@@ -207,11 +207,11 @@ func dataSourceApplicationSegment() *schema.Resource {
 							Computed: true,
 						},
 						"modifiedby": {
-							Type:     schema.TypeInt,
+							Type:     schema.TypeString,
 							Computed: true,
 						},
 						"modified_time": {
-							Type:     schema.TypeInt,
+							Type:     schema.TypeString,
 							Computed: true,
 						},
 						"name": {
@@ -237,41 +237,55 @@ func dataSourceApplicationSegment() *schema.Resource {
 
 func dataSourceApplicationSegmentRead(d *schema.ResourceData, m interface{}) error {
 	zClient := m.(*Client)
-
-	id := d.Get("id").(string)
-	log.Printf("[INFO] Getting data for server group %s\n", id)
-
-	resp, _, err := zClient.applicationsegment.Get(id)
-	if err != nil {
-		return err
+	var resp *applicationsegment.ApplicationSegmentResource
+	id, ok := d.Get("id").(string)
+	if ok && id != "" {
+		log.Printf("[INFO] Getting data for server group %s\n", id)
+		res, _, err := zClient.applicationsegment.Get(id)
+		if err != nil {
+			return err
+		}
+		resp = res
 	}
-
-	d.SetId(resp.ID)
-	_ = d.Set("segment_group_id", resp.SegmentGroupId)
-	_ = d.Set("segment_group_name", resp.SegmentGroupName)
-	_ = d.Set("bypass_type", resp.BypassType)
-	_ = d.Set("config_space", resp.ConfigSpace)
-	_ = d.Set("creation_time", resp.CreationTime)
-	_ = d.Set("description", resp.Description)
-	_ = d.Set("domain_names", resp.DomainNames)
-	_ = d.Set("double_encrypt", resp.DoubleEncrypt)
-	_ = d.Set("enabled", resp.Enabled)
-	_ = d.Set("health_checktype", resp.HealthCheckType)
-	_ = d.Set("health_reporting", resp.HealthReporting)
-	_ = d.Set("ip_anchored", resp.IpAnchored)
-	_ = d.Set("is_cname_enabled", resp.IsCnameEnabled)
-	_ = d.Set("modifiedby", resp.ModifiedBy)
-	_ = d.Set("modified_time", resp.ModifiedTime)
-	_ = d.Set("name", resp.Name)
-	_ = d.Set("passive_health_enabled", resp.PassiveHealthEnabled)
-	_ = d.Set("tcp_port_ranges", resp.TcpPortRanges)
-	_ = d.Set("udp_port_ranges", resp.UdpPortRanges)
-
-	if err := d.Set("clientless_apps", flattenClientlessApps(resp)); err != nil {
-		return fmt.Errorf("failed to read clientless apps %s", err)
+	name, ok := d.Get("name").(string)
+	if id == "" && ok && name != "" {
+		log.Printf("[INFO] Getting data for server group name %s\n", name)
+		res, _, err := zClient.applicationsegment.GetByName(name)
+		if err != nil {
+			return err
+		}
+		resp = res
 	}
-	if err := d.Set("server_groups", flattenAppServerGroups(resp)); err != nil {
-		return fmt.Errorf("failed to read app server groups %s", err)
+	if resp != nil {
+		d.SetId(resp.ID)
+		_ = d.Set("segment_group_id", resp.SegmentGroupId)
+		_ = d.Set("segment_group_name", resp.SegmentGroupName)
+		_ = d.Set("bypass_type", resp.BypassType)
+		_ = d.Set("config_space", resp.ConfigSpace)
+		_ = d.Set("creation_time", resp.CreationTime)
+		_ = d.Set("description", resp.Description)
+		_ = d.Set("domain_names", resp.DomainNames)
+		_ = d.Set("double_encrypt", resp.DoubleEncrypt)
+		_ = d.Set("enabled", resp.Enabled)
+		_ = d.Set("health_checktype", resp.HealthCheckType)
+		_ = d.Set("health_reporting", resp.HealthReporting)
+		_ = d.Set("ip_anchored", resp.IpAnchored)
+		_ = d.Set("is_cname_enabled", resp.IsCnameEnabled)
+		_ = d.Set("modifiedby", resp.ModifiedBy)
+		_ = d.Set("modified_time", resp.ModifiedTime)
+		_ = d.Set("name", resp.Name)
+		_ = d.Set("passive_health_enabled", resp.PassiveHealthEnabled)
+		_ = d.Set("tcp_port_ranges", resp.TcpPortRanges)
+		_ = d.Set("udp_port_ranges", resp.UdpPortRanges)
+
+		if err := d.Set("clientless_apps", flattenClientlessApps(resp)); err != nil {
+			return fmt.Errorf("failed to read clientless apps %s", err)
+		}
+		if err := d.Set("server_groups", flattenAppServerGroups(resp)); err != nil {
+			return fmt.Errorf("failed to read app server groups %s", err)
+		}
+	} else {
+		return fmt.Errorf("couldn't find any application with name '%s' or id '%s'", name, id)
 	}
 
 	return nil

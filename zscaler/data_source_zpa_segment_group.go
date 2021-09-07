@@ -1,7 +1,8 @@
 package zscaler
 
 import (
-	"strconv"
+	"fmt"
+	"log"
 
 	"github.com/SecurityGeekIO/terraform-provider-zpa/gozscaler/segmentgroup"
 	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/schema"
@@ -25,15 +26,15 @@ func dataSourceSegmentGroup() *schema.Resource {
 							Computed: true,
 						},
 						"creation_time": {
-							Type:     schema.TypeInt,
+							Type:     schema.TypeString,
 							Computed: true,
 						},
 						"default_idle_timeout": {
-							Type:     schema.TypeInt,
+							Type:     schema.TypeString,
 							Computed: true,
 						},
 						"default_max_age": {
-							Type:     schema.TypeInt,
+							Type:     schema.TypeString,
 							Computed: true,
 						},
 						"description": {
@@ -62,7 +63,7 @@ func dataSourceSegmentGroup() *schema.Resource {
 							Computed: true,
 						},
 						"id": {
-							Type:     schema.TypeInt,
+							Type:     schema.TypeString,
 							Computed: true,
 						},
 						"ip_anchored": {
@@ -75,11 +76,11 @@ func dataSourceSegmentGroup() *schema.Resource {
 							Elem:     &schema.Schema{Type: schema.TypeString},
 						},
 						"modifiedby": {
-							Type:     schema.TypeInt,
+							Type:     schema.TypeString,
 							Computed: true,
 						},
 						"modified_time": {
-							Type:     schema.TypeInt,
+							Type:     schema.TypeString,
 							Computed: true,
 						},
 						"name": {
@@ -100,7 +101,7 @@ func dataSourceSegmentGroup() *schema.Resource {
 										Computed: true,
 									},
 									"creation_time": {
-										Type:     schema.TypeInt,
+										Type:     schema.TypeString,
 										Computed: true,
 									},
 									"description": {
@@ -112,7 +113,7 @@ func dataSourceSegmentGroup() *schema.Resource {
 										Computed: true,
 									},
 									"id": {
-										Type:     schema.TypeInt,
+										Type:     schema.TypeString,
 										Computed: true,
 									},
 									"dynamic_discovery": {
@@ -120,11 +121,11 @@ func dataSourceSegmentGroup() *schema.Resource {
 										Computed: true,
 									},
 									"modifiedby": {
-										Type:     schema.TypeInt,
+										Type:     schema.TypeString,
 										Computed: true,
 									},
 									"modified_time": {
-										Type:     schema.TypeInt,
+										Type:     schema.TypeString,
 										Computed: true,
 									},
 									"name": {
@@ -162,7 +163,7 @@ func dataSourceSegmentGroup() *schema.Resource {
 				Computed: true,
 			},
 			"creation_time": {
-				Type:     schema.TypeInt,
+				Type:     schema.TypeString,
 				Computed: true,
 			},
 			"description": {
@@ -178,23 +179,23 @@ func dataSourceSegmentGroup() *schema.Resource {
 				Optional: true,
 			},
 			"modifiedby": {
-				Type:     schema.TypeInt,
+				Type:     schema.TypeString,
 				Computed: true,
 			},
 			"modified_time": {
-				Type:     schema.TypeInt,
+				Type:     schema.TypeString,
 				Computed: true,
 			},
 			"name": {
 				Type:     schema.TypeString,
-				Computed: true,
+				Optional: true,
 			},
 			"policy_migrated": {
 				Type:     schema.TypeBool,
 				Computed: true,
 			},
 			"tcp_keep_alive_enabled": {
-				Type:     schema.TypeInt,
+				Type:     schema.TypeString,
 				Computed: true,
 			},
 		},
@@ -204,38 +205,42 @@ func dataSourceSegmentGroup() *schema.Resource {
 func dataSourceSegmentGroupRead(d *schema.ResourceData, m interface{}) error {
 	zClient := m.(*Client)
 
-	// id := d.Get("id").(string)
-	// log.Printf("[INFO] Getting data for segment group %s\n", id)
-
-	// resp, _, err := zClient.segmentgroup.Get(id)
-	// if err != nil {
-	// 	return err
-	// }
-
-	id, err := strconv.ParseInt(d.Get("id").(string), 10, 64)
-	if err != nil {
-		return err
+	var resp *segmentgroup.SegmentGroup
+	id, ok := d.Get("id").(string)
+	if ok && id != "" {
+		log.Printf("[INFO] Getting data for server group %s\n", id)
+		res, _, err := zClient.segmentgroup.Get(id)
+		if err != nil {
+			return err
+		}
+		resp = res
 	}
-
-	resp, _, err := zClient.segmentgroup.Get(id)
-	if err != nil {
-		return err
+	name, ok := d.Get("name").(string)
+	if ok && name != "" {
+		log.Printf("[INFO] Getting data for server group name %s\n", name)
+		res, _, err := zClient.segmentgroup.GetByName(name)
+		if err != nil {
+			return err
+		}
+		resp = res
 	}
+	if resp != nil {
+		d.SetId(resp.ID)
+		_ = d.Set("config_space", resp.ConfigSpace)
+		_ = d.Set("creation_time", resp.CreationTime)
+		_ = d.Set("description", resp.Description)
+		_ = d.Set("enabled", resp.Enabled)
+		_ = d.Set("modifiedby", resp.ModifiedBy)
+		_ = d.Set("modified_time", resp.ModifiedTime)
+		_ = d.Set("name", resp.Name)
+		_ = d.Set("policy_migrated", resp.PolicyMigrated)
+		_ = d.Set("tcp_keep_alive_enabled", resp.TcpKeepAliveEnabled)
 
-	//d.SetId(strconv.Itoa(resp.ID))
-	d.SetId(strconv.FormatInt(int64(resp.ID), 10))
-	_ = d.Set("config_space", resp.ConfigSpace)
-	_ = d.Set("creation_time", resp.CreationTime)
-	_ = d.Set("description", resp.Description)
-	_ = d.Set("enabled", resp.Enabled)
-	_ = d.Set("modifiedby", resp.ModifiedBy)
-	_ = d.Set("modified_time", resp.ModifiedTime)
-	_ = d.Set("name", resp.Name)
-	_ = d.Set("policy_migrated", resp.PolicyMigrated)
-	_ = d.Set("tcp_keep_alive_enabled", resp.TcpKeepAliveEnabled)
-
-	if err := d.Set("applications", flattenSegmentGroupApplications(resp)); err != nil {
-		return err
+		if err := d.Set("applications", flattenSegmentGroupApplications(resp)); err != nil {
+			return fmt.Errorf("failed to read applications %s", err)
+		}
+	} else {
+		return fmt.Errorf("couldn't find any application with name '%s' or id '%s'", name, id)
 	}
 
 	return nil
@@ -281,7 +286,7 @@ func flattenAppServerGroup(segmentGroup segmentgroup.Application) []interface{} 
 			"creation_time": segmentServerGroup.CreationTime,
 			"description":   segmentServerGroup.Description,
 			"enabled":       segmentServerGroup.Enabled,
-			//"id":           segmentServerGroup.ID,
+			"id":            segmentServerGroup.ID,
 			"modifiedby":    segmentServerGroup.ModifiedBy,
 			"modified_time": segmentServerGroup.ModifiedTime,
 			"name":          segmentServerGroup.Name,

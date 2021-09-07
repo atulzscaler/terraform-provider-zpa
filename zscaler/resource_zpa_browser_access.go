@@ -171,7 +171,7 @@ func resourceBrowserAccess() *schema.Resource {
 					},
 				},
 			},
-			"app_server_groups": {
+			"server_groups": {
 				Type:        schema.TypeSet,
 				Optional:    true,
 				Description: "List of the server group IDs.",
@@ -243,7 +243,7 @@ func resourceBrowserAccessRead(d *schema.ResourceData, m interface{}) error {
 	if err := d.Set("clientless_apps", flattenBaClientlessApps(resp)); err != nil {
 		return fmt.Errorf("failed to read clientless apps %s", err)
 	}
-	if err := d.Set("app_server_groups", flattenClientlessAppServerGroups(resp)); err != nil {
+	if err := d.Set("server_groups", flattenClientlessAppServerGroups(resp)); err != nil {
 		return fmt.Errorf("failed to read app server groups %s", err)
 	}
 
@@ -331,7 +331,7 @@ func expandClientlessApps(d *schema.ResourceData) []browseraccess.ClientlessApps
 }
 
 func expandClientlessAppServerGroups(d *schema.ResourceData) []browseraccess.AppServerGroups {
-	serverGroupsInterface, ok := d.GetOk("app_server_groups")
+	serverGroupsInterface, ok := d.GetOk("server_groups")
 	if ok {
 		serverGroup := serverGroupsInterface.(*schema.Set)
 		log.Printf("[INFO] app server groups data: %+v\n", serverGroup)

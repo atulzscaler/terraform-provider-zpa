@@ -3,6 +3,7 @@ package idpcontroller
 import (
 	"fmt"
 	"net/http"
+	"strings"
 )
 
 const (
@@ -68,4 +69,21 @@ func (service *Service) Get(IdpID string) (*IdpController, *http.Response, error
 	}
 
 	return v, resp, nil
+}
+
+func (service *Service) GetByName(name string) (*IdpController, *http.Response, error) {
+	var v []IdpController
+	relativeURL := fmt.Sprintf(mgmtConfig + service.Client.Config.CustomerID + idpControllerGroupEndpoint)
+	resp, err := service.Client.NewRequestDo("GET", relativeURL, struct{ pagesize int }{
+		pagesize: 500,
+	}, nil, &v)
+	if err != nil {
+		return nil, nil, err
+	}
+	for _, idpController := range v {
+		if strings.EqualFold(idpController.Name, name) {
+			return &idpController, resp, nil
+		}
+	}
+	return nil, resp, fmt.Errorf("no Idp-Controller named '%s' was found", name)
 }
