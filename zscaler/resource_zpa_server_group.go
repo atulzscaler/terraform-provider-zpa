@@ -181,7 +181,6 @@ func resourceServerGroupDelete(d *schema.ResourceData, m interface{}) error {
 }
 
 func expandServerGroup(d *schema.ResourceData) servergroup.ServerGroup {
-	// req := servergroup.ServerGroup{
 	return servergroup.ServerGroup{
 		Enabled:            d.Get("enabled").(bool),
 		Name:               d.Get("name").(string),
@@ -194,7 +193,6 @@ func expandServerGroup(d *schema.ResourceData) servergroup.ServerGroup {
 		Servers:            expandApplicationServers(d),
 	}
 
-	// return req
 }
 
 func expandAppConnectorGroups(d *schema.ResourceData) []servergroup.AppConnectorGroups {
