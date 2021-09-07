@@ -3,6 +3,7 @@ package servergroup
 import (
 	"fmt"
 	"net/http"
+	"strings"
 )
 
 const (
@@ -54,37 +55,37 @@ type AppConnectorGroups struct {
 }
 
 type Connectors struct {
-	ApplicationStartTime     string            `json:"applicationStartTime,omitempty"`
-	AppConnectorGroupId      string            `json:"appConnectorGroupId,omitempty"`
-	AppConnectorGroupName    string            `json:"appConnectorGroupName,omitempty"`
-	ControlChannelStatus     string            `json:"controlChannelStatus,omitempty"`
-	CreationTime             string            `json:"creationTime,omitempty"`
-	CtrlBrokerName           string            `json:"ctrlBrokerName,omitempty"`
-	CurrentVersion           string            `json:"currentVersion,omitempty"`
-	Description              string            `json:"description,omitempty"`
-	Enabled                  bool              `json:"enabled,omitempty"`
-	ExpectedUpgradeTime      string            `json:"expectedUpgradeTime,omitempty"`
-	ExpectedVersion          string            `json:"expectedVersion,omitempty"`
-	Fingerprint              string            `json:"fingerprint,omitempty"`
-	ID                       string            `json:"id,omitempty"`
-	IpAcl                    []string          `json:"ipAcl,omitempty"`
-	IssuedCertId             string            `json:"issuedCertId,omitempty"`
-	LastBrokerConnecttime    string            `json:"lastBrokerConnectTime,omitempty"`
-	LastBrokerDisconnectTime string            `json:"lastBrokerDisconnectTime,omitempty"`
-	LastUpgradeTime          string            `json:"lastUpgradeTime,omitempty"`
-	Latitude                 float64           `json:"latitude,omitempty"`
-	Location                 string            `json:"location,omitempty"`
-	Longitude                float64           `json:"longitude,string,omitempty"`
-	ModifiedBy               string            `json:"modifiedBy,omitempty"`
-	ModifiedTime             string            `json:"modifiedTime,omitempty"`
-	Name                     string            `json:"name"`
-	Platform                 string            `json:"platform,omitempty"`
-	PreviousVersion          string            `json:"previousVersion,omitempty"`
-	PrivateIp                string            `json:"privateIp,omitempty"`
-	PublicIp                 string            `json:"publicIp,omitempty"`
-	SigningCert              map[string]string `json:"signingCert,omitempty"`
-	UpgradeAttempt           string            `json:"upgradeAttempt,omitempty"`
-	UpgradeStatus            string            `json:"upgradeStatus,omitempty"`
+	ApplicationStartTime     string                 `json:"applicationStartTime,omitempty"`
+	AppConnectorGroupId      string                 `json:"appConnectorGroupId,omitempty"`
+	AppConnectorGroupName    string                 `json:"appConnectorGroupName,omitempty"`
+	ControlChannelStatus     string                 `json:"controlChannelStatus,omitempty"`
+	CreationTime             string                 `json:"creationTime,omitempty"`
+	CtrlBrokerName           string                 `json:"ctrlBrokerName,omitempty"`
+	CurrentVersion           string                 `json:"currentVersion,omitempty"`
+	Description              string                 `json:"description,omitempty"`
+	Enabled                  bool                   `json:"enabled,omitempty"`
+	ExpectedUpgradeTime      string                 `json:"expectedUpgradeTime,omitempty"`
+	ExpectedVersion          string                 `json:"expectedVersion,omitempty"`
+	Fingerprint              string                 `json:"fingerprint,omitempty"`
+	ID                       string                 `json:"id,omitempty"`
+	IpAcl                    []string               `json:"ipAcl,omitempty"`
+	IssuedCertId             string                 `json:"issuedCertId,omitempty"`
+	LastBrokerConnecttime    string                 `json:"lastBrokerConnectTime,omitempty"`
+	LastBrokerDisconnectTime string                 `json:"lastBrokerDisconnectTime,omitempty"`
+	LastUpgradeTime          string                 `json:"lastUpgradeTime,omitempty"`
+	Latitude                 float64                `json:"latitude,omitempty"`
+	Location                 string                 `json:"location,omitempty"`
+	Longitude                float64                `json:"longitude,string,omitempty"`
+	ModifiedBy               string                 `json:"modifiedBy,omitempty"`
+	ModifiedTime             string                 `json:"modifiedTime,omitempty"`
+	Name                     string                 `json:"name"`
+	Platform                 string                 `json:"platform,omitempty"`
+	PreviousVersion          string                 `json:"previousVersion,omitempty"`
+	PrivateIp                string                 `json:"privateIp,omitempty"`
+	PublicIp                 string                 `json:"publicIp,omitempty"`
+	SigningCert              map[string]interface{} `json:"signingCert,omitempty"`
+	UpgradeAttempt           string                 `json:"upgradeAttempt,omitempty"`
+	UpgradeStatus            string                 `json:"upgradeStatus,omitempty"`
 }
 
 type AppServerGroups struct {
@@ -120,6 +121,26 @@ func (service *Service) Get(groupId string) (*ServerGroup, *http.Response, error
 		return nil, nil, err
 	}
 	return v, resp, nil
+}
+
+func (service *Service) GetByName(serverGroupName string) (*ServerGroup, *http.Response, error) {
+	var v struct {
+		List []ServerGroup `json:"list"`
+	}
+
+	relativeURL := mgmtConfig + service.Client.Config.CustomerID + serverGroupEndpoint
+	resp, err := service.Client.NewRequestDo("GET", relativeURL, struct{ pagesize int }{
+		pagesize: 500,
+	}, nil, &v)
+	if err != nil {
+		return nil, nil, err
+	}
+	for _, app := range v.List {
+		if strings.EqualFold(app.Name, serverGroupName) {
+			return &app, resp, nil
+		}
+	}
+	return nil, resp, fmt.Errorf("no server group named '%s' was found", serverGroupName)
 }
 
 func (service *Service) Create(serverGroup *ServerGroup) (*ServerGroup, *http.Response, error) {

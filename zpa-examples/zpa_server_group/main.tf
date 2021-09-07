@@ -9,6 +9,15 @@ terraform {
 
 provider "zpa" {}
 
+// data "zpa_server_group" "all" { 
+//   name = "All Other Services"
+// }
+
+// output "server_group" {
+//     value = data.zpa_server_group.all
+// }
+
+
 resource "zpa_server_group" "example" {
   name = "example"
   description = "example"
