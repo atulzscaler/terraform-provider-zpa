@@ -10,12 +10,11 @@ terraform {
 provider "zpa" {}
 
 
-// Testing Data Source Posture Profile
+// Testing Data Source Trusted Network
 data "zpa_trusted_network" "example" {
-    // id = "216196257331283524"
  name = "SGIO-Trusted-Networks"
 }
 
 output "all_trusted_network" {
-  value = data.zpa_trusted_network.example.id
+  value = data.zpa_trusted_network.example
 }

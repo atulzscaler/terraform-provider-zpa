@@ -33,22 +33,19 @@ func (service *Service) Get(networkId string) (*TrustedNetwork, *http.Response, 
 	return v, resp, nil
 }
 
-func (service *Service) GetByName(trustedNetworkName string) (*TrustedNetwork, *http.Response, error) {
-	var v struct {
-		List []TrustedNetwork `json:"list"`
-	}
-
-	relativeURL := mgmtConfig + service.Client.Config.CustomerID + trustedNetworkEndpoint
+func (service *Service) GetByName(name string) (*TrustedNetwork, *http.Response, error) {
+	var v []TrustedNetwork
+	relativeURL := fmt.Sprintf(mgmtConfig + service.Client.Config.CustomerID + trustedNetworkEndpoint)
 	resp, err := service.Client.NewRequestDo("GET", relativeURL, struct{ pagesize int }{
 		pagesize: 500,
 	}, nil, &v)
 	if err != nil {
 		return nil, nil, err
 	}
-	for _, network := range v.List {
-		if strings.EqualFold(network.Name, trustedNetworkName) {
-			return &network, resp, nil
+	for _, trustedNetwork := range v {
+		if strings.EqualFold(trustedNetwork.Name, name) {
+			return &trustedNetwork, resp, nil
 		}
 	}
-	return nil, resp, fmt.Errorf("no posture profile named '%s' was found", trustedNetworkName)
+	return nil, resp, fmt.Errorf("no saml trusted network named '%s' was found", name)
 }

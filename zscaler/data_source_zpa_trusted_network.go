@@ -60,6 +60,7 @@ func dataSourceTrustedNetworkRead(d *schema.ResourceData, m interface{}) error {
 			return err
 		}
 		resp = res
+
 	}
 	name, ok := d.Get("name").(string)
 	if ok && name != "" {
