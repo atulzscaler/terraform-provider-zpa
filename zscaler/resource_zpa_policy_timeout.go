@@ -180,7 +180,6 @@ func resourcePolicyTimeoutCreate(d *schema.ResourceData, m interface{}) error {
 	return resourcePolicyTimeoutRead(d, m)
 }
 
-// Please review read operations. It needs to pull the policySetId and RuleId in order to read a specific rule.
 func resourcePolicyTimeoutRead(d *schema.ResourceData, m interface{}) error {
 	zClient := m.(*Client)
 
@@ -356,68 +355,3 @@ func flattenPolicyTimeoutOperands(conditionOperand []policysetrule.Operands) []i
 
 	return conditionOperands
 }
-
-/*
-func expandPolicyTimeoutRuleAppServerGroups(d *schema.ResourceData) []policysetrule.AppServerGroups {
-	appServerGroupsInterface, ok := d.GetOk("app_server_groups")
-	if ok {
-		appServer := appServerGroupsInterface.([]interface{})
-		log.Printf("[INFO] app server groups data: %+v\n", appServer)
-		var appServerGroups []policysetrule.AppServerGroups
-		for _, appServerGroup := range appServer {
-			appServerGroup, _ := appServerGroup.(map[string]interface{})
-			if appServerGroup != nil {
-				appServerGroups = append(appServerGroups, policysetrule.AppServerGroups{
-					ID: appServerGroup["id"].(string),
-				})
-			}
-		}
-		return appServerGroups
-	}
-
-	return []policysetrule.AppServerGroups{}
-}
-
-func expandPolicyTimeoutAppConnectorGroups(d *schema.ResourceData) []policysetrule.AppConnectorGroups {
-	appConnectorGroupsInterface, ok := d.GetOk("app_connector_groups")
-	if ok {
-		appConnector := appConnectorGroupsInterface.([]interface{})
-		log.Printf("[INFO] app connector groups data: %+v\n", appConnector)
-		var appConnectorGroups []policysetrule.AppConnectorGroups
-		for _, appConnectorGroup := range appConnector {
-			appConnectorGroup, _ := appConnectorGroup.(map[string]interface{})
-			if appConnectorGroup != nil {
-				appConnectorGroups = append(appConnectorGroups, policysetrule.AppConnectorGroups{
-					ID: appConnectorGroup["id"].(string),
-				})
-			}
-		}
-		return appConnectorGroups
-	}
-
-	return []policysetrule.AppConnectorGroups{}
-}
-
-func flattenPolicyTimeoutServerGroups(appServerGroup []policysetrule.AppServerGroups) []interface{} {
-	policyRuleServerGroups := make([]interface{}, len(appServerGroup))
-	for i, serverGroup := range appServerGroup {
-		policyRuleServerGroups[i] = map[string]interface{}{
-			"id": serverGroup.ID,
-		}
-	}
-
-	return policyRuleServerGroups
-}
-
-func flattenPolicyTimeoutAppConnectorGroups(appConnectorGroups []policysetrule.AppConnectorGroups) []interface{} {
-	policyRuleAppConnectorGroups := make([]interface{}, len(appConnectorGroups))
-	for i, val := range appConnectorGroups {
-		policyRuleAppConnectorGroups[i] = map[string]interface{}{
-			"id": val.ID,
-		}
-	}
-
-	return policyRuleAppConnectorGroups
-}
-
-*/
