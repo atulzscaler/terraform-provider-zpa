@@ -17,12 +17,12 @@ type BaCertificate struct {
 	Certificate         string   `json:"certificate,omitempty"`
 	CreationTime        string   `json:"creationTime,omitempty"`
 	Description         string   `json:"description,omitempty"`
-	ID                  string   `json:"id"`
+	ID                  string   `json:"id,omitempty"`
 	IssuedBy            string   `json:"issuedBy,omitempty"`
 	IssuedTo            string   `json:"issuedTo,omitempty"`
 	ModifiedBy          string   `json:"modifiedBy,omitempty"`
 	ModifiedTime        string   `json:"modifiedTime,omitempty"`
-	Name                string   `json:"name"`
+	Name                string   `json:"name,omitempty"`
 	PublicKey           string   `json:"publicKey,omitempty"`
 	San                 []string `json:"san,omitempty"`
 	SerialNo            string   `json:"serialNo,omitempty"`
@@ -34,7 +34,7 @@ type BaCertificate struct {
 func (service *Service) Get(baCertificateId string) (*BaCertificate, *http.Response, error) {
 	v := new(BaCertificate)
 	relativeURL := fmt.Sprintf("%v/%v", mgmtConfig+service.Client.Config.CustomerID+baCertificateEndpoint, baCertificateId)
-	resp, err := service.Client.NewRequestDo("GET", relativeURL, nil, nil, v)
+	resp, err := service.Client.NewRequestDo("GET", relativeURL, nil, nil, &v)
 	if err != nil {
 		return nil, nil, err
 	}
@@ -42,22 +42,19 @@ func (service *Service) Get(baCertificateId string) (*BaCertificate, *http.Respo
 	return v, resp, nil
 }
 
-func (service *Service) GetByName(baCertificateName string) (*BaCertificate, *http.Response, error) {
-	var v struct {
-		List []BaCertificate `json:"list"`
-	}
-
-	relativeURL := mgmtConfig + service.Client.Config.CustomerID + baCertificateEndpoint
+func (service *Service) GetByName(name string) (*BaCertificate, *http.Response, error) {
+	var v []BaCertificate
+	relativeURL := fmt.Sprintf(mgmtConfig + service.Client.Config.CustomerID + baCertificateEndpoint)
 	resp, err := service.Client.NewRequestDo("GET", relativeURL, struct{ pagesize int }{
 		pagesize: 500,
 	}, nil, &v)
 	if err != nil {
 		return nil, nil, err
 	}
-	for _, app := range v.List {
-		if strings.EqualFold(app.Name, baCertificateName) {
-			return &app, resp, nil
+	for _, baCertificate := range v {
+		if strings.EqualFold(baCertificate.Name, name) {
+			return &baCertificate, resp, nil
 		}
 	}
-	return nil, resp, fmt.Errorf("no application named '%s' was found", baCertificateName)
+	return nil, resp, fmt.Errorf("no browser access certificate named '%s' was found", name)
 }
