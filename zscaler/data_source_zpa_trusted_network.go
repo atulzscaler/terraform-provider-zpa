@@ -87,20 +87,3 @@ func dataSourceTrustedNetworkRead(d *schema.ResourceData, m interface{}) error {
 
 	return nil
 }
-
-func flattenTrustedNetwork(trustedNetwork []trustednetwork.TrustedNetwork) []interface{} {
-	trustedNetworks := make([]interface{}, len(trustedNetwork))
-	for i, trustedNetworksItem := range trustedNetwork {
-		trustedNetworks[i] = map[string]interface{}{
-			"creation_time": trustedNetworksItem.CreationTime,
-			"domain":        trustedNetworksItem.Domain,
-			"id":            trustedNetworksItem.ID,
-			"modifiedby":    trustedNetworksItem.ModifiedBy,
-			"modified_time": trustedNetworksItem.ModifiedTime,
-			"name":          trustedNetworksItem.Name,
-			"network_id":    trustedNetworksItem.NetworkId,
-			"zscaler_cloud": trustedNetworksItem.ZscalerCloud,
-		}
-	}
-	return trustedNetworks
-}
