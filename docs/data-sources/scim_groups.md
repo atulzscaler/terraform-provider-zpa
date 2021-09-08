@@ -17,22 +17,14 @@ description: |-
 
 ### Optional
 
-- **id** (Number) The ID of this resource.
-- **list** (Block Set) (see [below for nested schema](#nestedblock--list))
-
-<a id="nestedblock--list"></a>
-### Nested Schema for `list`
-
-Required:
-
-- **idp_id** (Number)
-
-Read-Only:
-
-- **creation_time** (Number)
 - **id** (String) The ID of this resource.
+- **idp_id** (String)
+
+### Read-Only
+
+- **creation_time** (String)
 - **idp_group_id** (String)
-- **modified_time** (Number)
+- **modified_time** (String)
 - **name** (String)
 
 

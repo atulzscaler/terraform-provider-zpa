@@ -10,10 +10,9 @@ terraform {
 provider "zpa" {}
 
 data "zpa_idp_controller" "all" {
- id = "216196257331281956"
-//  name = "SGIO-Admin-Okta"
+ name = "SGIO-User-Okta"
 }
 
 output "idp_controller" {
-    value = data.zpa_idp_controller.all
+    value = data.zpa_idp_controller.all.id
 }

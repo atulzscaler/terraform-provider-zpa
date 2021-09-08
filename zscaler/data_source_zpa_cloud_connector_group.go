@@ -1,8 +1,8 @@
 package zscaler
 
 import (
+	"fmt"
 	"log"
-	"strconv"
 
 	"github.com/SecurityGeekIO/terraform-provider-zpa/gozscaler/cloudconnectorgroup"
 	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/schema"
@@ -65,6 +65,11 @@ func dataSourceCloudConnectorGroup() *schema.Resource {
 							Type:     schema.TypeString,
 							Computed: true,
 						},
+						"signing_cert": {
+							Type:     schema.TypeMap,
+							Elem:     schema.TypeString,
+							Computed: true,
+						},
 					},
 				},
 			},
@@ -78,7 +83,7 @@ func dataSourceCloudConnectorGroup() *schema.Resource {
 			},
 			"id": {
 				Type:     schema.TypeString,
-				Computed: true,
+				Optional: true,
 			},
 			"modifiedby": {
 				Type:     schema.TypeInt,
@@ -90,7 +95,7 @@ func dataSourceCloudConnectorGroup() *schema.Resource {
 			},
 			"name": {
 				Type:     schema.TypeString,
-				Computed: true,
+				Optional: true,
 			},
 			"zia_cloud": {
 				Type:     schema.TypeString,
@@ -107,25 +112,42 @@ func dataSourceCloudConnectorGroup() *schema.Resource {
 func dataSourceCloudConnectorGroupRead(d *schema.ResourceData, m interface{}) error {
 	zClient := m.(*Client)
 
-	id := d.Get("id").(string)
-	log.Printf("[INFO] Getting data for cloud connector group %s\n", id)
-
-	resp, _, err := zClient.cloudconnectorgroup.Get()
-	if err != nil {
-		return err
+	var resp *cloudconnectorgroup.CloudConnectorGroup
+	id, ok := d.Get("id").(string)
+	if ok && id != "" {
+		log.Printf("[INFO] Getting data for cloud connector group  %s\n", id)
+		res, _, err := zClient.cloudconnectorgroup.Get(id)
+		if err != nil {
+			return err
+		}
+		resp = res
 	}
+	name, ok := d.Get("name").(string)
+	if ok && name != "" {
+		log.Printf("[INFO] Getting data for cloud connector group name %s\n", name)
+		res, _, err := zClient.cloudconnectorgroup.GetByName(name)
+		if err != nil {
+			return err
+		}
+		resp = res
+	}
+	if resp != nil {
 
-	d.SetId(strconv.Itoa(resp.ID))
-	_ = d.Set("creation_time", resp.CreationTime)
-	_ = d.Set("description", resp.Description)
-	_ = d.Set("enabled", resp.Enabled)
-	_ = d.Set("geolocation_id", resp.GeolocationId)
-	_ = d.Set("modifiedby", resp.ModifiedBy)
-	_ = d.Set("modified_time", resp.ModifiedTime)
-	_ = d.Set("name", resp.Name)
-	_ = d.Set("zia_cloud", resp.ZiaCloud)
-	_ = d.Set("zia_org_id", resp.ZiaOrgid)
-	_ = d.Set("cloud_connectors", flattenCloudConnectors(resp))
+		d.SetId(resp.ID)
+		_ = d.Set("creation_time", resp.CreationTime)
+		_ = d.Set("description", resp.Description)
+		_ = d.Set("enabled", resp.Enabled)
+		_ = d.Set("geolocation_id", resp.GeolocationId)
+		_ = d.Set("modifiedby", resp.ModifiedBy)
+		_ = d.Set("modified_time", resp.ModifiedTime)
+		_ = d.Set("name", resp.Name)
+		_ = d.Set("zia_cloud", resp.ZiaCloud)
+		_ = d.Set("zia_org_id", resp.ZiaOrgid)
+		_ = d.Set("cloud_connectors", flattenCloudConnectors(resp))
+
+	} else {
+		return fmt.Errorf("couldn't find any cloud connector group with name '%s' or id '%s'", name, id)
+	}
 
 	return nil
 }

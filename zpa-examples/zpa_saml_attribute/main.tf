@@ -9,12 +9,10 @@ terraform {
 
 provider "zpa" {}
 
-
-data "zpa_machine_group" "all" {
-  // id = 216196257331282185
-  name = "MGR01"
+data "zpa_saml_attribute" "email_user_sso" {
+    name = "Email_User SSO"
 }
 
-output "all_machine_group" {
-  value = data.zpa_machine_group.all.id
+output "zpa_saml_attribute" {
+    value = data.zpa_saml_attribute.email_user_sso
 }

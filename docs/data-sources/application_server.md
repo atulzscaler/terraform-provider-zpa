@@ -17,6 +17,7 @@ description: |-
 
 ### Optional
 
+- **id** (String) The ID of this resource.
 - **name** (String)
 
 ### Read-Only
@@ -24,11 +25,10 @@ description: |-
 - **address** (String)
 - **app_server_group_ids** (Set of String)
 - **config_space** (String)
-- **creation_time** (Number)
+- **creation_time** (String)
 - **description** (String)
 - **enabled** (Boolean)
-- **id** (String) The ID of this resource.
-- **modified_time** (Number)
-- **modifiedby** (Number)
+- **modified_time** (String)
+- **modifiedby** (String)
 
 

@@ -7,6 +7,7 @@ import (
 
 	"github.com/SecurityGeekIO/terraform-provider-zpa/gozscaler/client"
 	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/schema"
+	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/validation"
 )
 
 func resourceApplicationServer() *schema.Resource {
@@ -20,9 +21,10 @@ func resourceApplicationServer() *schema.Resource {
 		},
 		Schema: map[string]*schema.Schema{
 			"name": {
-				Type:        schema.TypeString,
-				Required:    true,
-				Description: "This field defines the name of the server.",
+				Type:         schema.TypeString,
+				Required:     true,
+				ValidateFunc: validation.StringIsNotEmpty,
+				Description:  "This field defines the name of the server.",
 			},
 			"description": {
 				Type:        schema.TypeString,
@@ -30,9 +32,10 @@ func resourceApplicationServer() *schema.Resource {
 				Description: "This field defines the description of the server.",
 			},
 			"address": {
-				Type:        schema.TypeString,
-				Required:    true,
-				Description: "This field defines the domain or IP address of the server.",
+				Type:         schema.TypeString,
+				Required:     true,
+				ValidateFunc: validation.StringIsNotEmpty,
+				Description:  "This field defines the domain or IP address of the server.",
 			},
 			"enabled": {
 				Type:        schema.TypeBool,

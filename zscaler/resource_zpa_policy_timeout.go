@@ -21,21 +21,10 @@ func resourcePolicyTimeout() *schema.Resource {
 		Schema: map[string]*schema.Schema{
 			"action": {
 				Type:        schema.TypeString,
-				Optional:    true,
+				Required:    true,
 				Description: "  This is for providing the rule action.",
 				ValidateFunc: validation.StringInSlice([]string{
-					"ALLOW",
-					"DENY",
-					"LOG",
 					"RE_AUTH",
-					"NEVER",
-					"BYPASS",
-					"INTERCEPT",
-					"NO_DOWNLOAD",
-					"BYPASS_RE_AUTH",
-					"INTERCEPT_ACCESSIBLE",
-					"ISOLATE",
-					"BYPASS_ISOLATE",
 				}, false),
 			},
 			"action_id": {
@@ -102,42 +91,6 @@ func resourcePolicyTimeout() *schema.Resource {
 				Type:     schema.TypeString,
 				Optional: true,
 			},
-			"app_server_groups": {
-				Type:        schema.TypeList,
-				Optional:    true,
-				Description: "ID of the server group.",
-				Elem: &schema.Resource{
-					Schema: map[string]*schema.Schema{
-						"id": {
-							Type:     schema.TypeString,
-							Optional: true,
-						},
-						//  "id": {
-						//      Type:     schema.TypeSet,
-						//      Optional: true,
-						//      Elem:     &schema.Schema{Type: schema.TypeInt},
-						//  },
-					},
-				},
-			},
-			"app_connector_groups": {
-				Type:        schema.TypeList,
-				Optional:    true,
-				Description: "This field is a json array of app-connector-id only.",
-				Elem: &schema.Resource{
-					Schema: map[string]*schema.Schema{
-						"id": {
-							Type:     schema.TypeString,
-							Optional: true,
-						},
-						//  "id": {
-						//      Type:     schema.TypeSet,
-						//      Optional: true,
-						//      Elem:     &schema.Schema{Type: schema.TypeInt},
-						//  },
-					},
-				},
-			},
 			"conditions": {
 				Type:        schema.TypeList,
 				Optional:    true,
@@ -192,18 +145,12 @@ func resourcePolicyTimeout() *schema.Resource {
 										Optional:    true,
 										Description: "  This is for specifying the policy critiera.",
 										ValidateFunc: validation.StringInSlice([]string{
-											"USER",
-											"USER_GROUP",
-											"LOCATION",
 											"APP",
 											"APP_GROUP",
-											"SAML",
-											"POSTURE",
 											"CLIENT_TYPE",
 											"IDP",
-											"TRUSTED_NETWORK",
-											"EDGE_CONNECTOR_GROUP",
-											"MACHINE_GRP",
+											"POSTURE",
+											"SAML",
 											"SCIM",
 											"SCIM_GROUP",
 										}, false),
@@ -233,7 +180,6 @@ func resourcePolicyTimeoutCreate(d *schema.ResourceData, m interface{}) error {
 	return resourcePolicyTimeoutRead(d, m)
 }
 
-// Please review read operations. It needs to pull the policySetId and RuleId in order to read a specific rule.
 func resourcePolicyTimeoutRead(d *schema.ResourceData, m interface{}) error {
 	zClient := m.(*Client)
 
@@ -270,8 +216,6 @@ func resourcePolicyTimeoutRead(d *schema.ResourceData, m interface{}) error {
 	_ = d.Set("reauth_timeout", resp.ReauthTimeout)
 	_ = d.Set("rule_order", resp.RuleOrder)
 	_ = d.Set("conditions", flattenPolicyTimeoutConditions(resp.Conditions))
-	_ = d.Set("app_server_groups", flattenPolicyTimeoutServerGroups(resp.AppServerGroups))
-	_ = d.Set("app_connector_groups", flattenPolicyTimeoutAppConnectorGroups(resp.AppConnectorGroups))
 
 	return nil
 }
@@ -310,8 +254,6 @@ func resourcePolicyTimeoutDelete(d *schema.ResourceData, m interface{}) error {
 
 }
 
-// Please review the expand and flattening functions. Condition is actually a slice inside PolicyRule
-//https://help.zscaler.com/zpa/api-reference#/policy-set-controller/addRuleToPolicySet
 func expandCreatePolicyTimeoutRule(d *schema.ResourceData) policysetrule.PolicyRule {
 	policySetID, ok := d.Get("policy_set_id").(string)
 	if !ok {
@@ -319,64 +261,22 @@ func expandCreatePolicyTimeoutRule(d *schema.ResourceData) policysetrule.PolicyR
 	}
 	log.Printf("[INFO] action_id:%v\n", d.Get("action_id"))
 	return policysetrule.PolicyRule{
-		Action:             d.Get("action").(string),
-		ActionID:           d.Get("action_id").(string),
-		CustomMsg:          d.Get("custom_msg").(string),
-		Description:        d.Get("description").(string),
-		ID:                 d.Get("id").(string),
-		Name:               d.Get("name").(string),
-		Operator:           d.Get("operator").(string),
-		PolicySetID:        policySetID,
-		PolicyType:         d.Get("policy_type").(string),
-		Priority:           d.Get("priority").(string),
-		ReauthDefaultRule:  d.Get("reauth_default_rule").(bool),
-		ReauthIdleTimeout:  d.Get("reauth_idle_timeout").(string),
-		ReauthTimeout:      d.Get("reauth_timeout").(string),
-		RuleOrder:          d.Get("rule_order").(string),
-		Conditions:         expandPolicyTimeoutConditionSet(d),
-		AppServerGroups:    expandPolicyTimeoutRuleAppServerGroups(d),
-		AppConnectorGroups: expandPolicyTimeoutAppConnectorGroups(d),
+		Action:            d.Get("action").(string),
+		ActionID:          d.Get("action_id").(string),
+		CustomMsg:         d.Get("custom_msg").(string),
+		Description:       d.Get("description").(string),
+		ID:                d.Get("id").(string),
+		Name:              d.Get("name").(string),
+		Operator:          d.Get("operator").(string),
+		PolicySetID:       policySetID,
+		PolicyType:        d.Get("policy_type").(string),
+		Priority:          d.Get("priority").(string),
+		ReauthDefaultRule: d.Get("reauth_default_rule").(bool),
+		ReauthIdleTimeout: d.Get("reauth_idle_timeout").(string),
+		ReauthTimeout:     d.Get("reauth_timeout").(string),
+		RuleOrder:         d.Get("rule_order").(string),
+		Conditions:        expandPolicyTimeoutConditionSet(d),
 	}
-}
-
-func expandPolicyTimeoutRuleAppServerGroups(d *schema.ResourceData) []policysetrule.AppServerGroups {
-	appServerGroupsInterface, ok := d.GetOk("app_server_groups")
-	if ok {
-		appServer := appServerGroupsInterface.([]interface{})
-		log.Printf("[INFO] app server groups data: %+v\n", appServer)
-		var appServerGroups []policysetrule.AppServerGroups
-		for _, appServerGroup := range appServer {
-			appServerGroup, _ := appServerGroup.(map[string]interface{})
-			if appServerGroup != nil {
-				appServerGroups = append(appServerGroups, policysetrule.AppServerGroups{
-					ID: appServerGroup["id"].(string),
-				})
-			}
-		}
-		return appServerGroups
-	}
-
-	return []policysetrule.AppServerGroups{}
-}
-
-func expandPolicyTimeoutAppConnectorGroups(d *schema.ResourceData) []policysetrule.AppConnectorGroups {
-	appConnectorGroupsInterface, ok := d.GetOk("app_connector_groups")
-	if ok {
-		appConnector := appConnectorGroupsInterface.([]interface{})
-		log.Printf("[INFO] app connector groups data: %+v\n", appConnector)
-		var appConnectorGroups []policysetrule.AppConnectorGroups
-		for _, appConnectorGroup := range appConnector {
-			appConnectorGroup, _ := appConnectorGroup.(map[string]interface{})
-			if appConnectorGroup != nil {
-				appConnectorGroups = append(appConnectorGroups, policysetrule.AppConnectorGroups{
-					ID: appConnectorGroup["id"].(string),
-				})
-			}
-		}
-		return appConnectorGroups
-	}
-
-	return []policysetrule.AppConnectorGroups{}
 }
 
 func expandPolicyTimeoutConditionSet(d *schema.ResourceData) []policysetrule.Conditions {
@@ -454,26 +354,4 @@ func flattenPolicyTimeoutOperands(conditionOperand []policysetrule.Operands) []i
 	}
 
 	return conditionOperands
-}
-
-func flattenPolicyTimeoutServerGroups(appServerGroup []policysetrule.AppServerGroups) []interface{} {
-	policyRuleServerGroups := make([]interface{}, len(appServerGroup))
-	for i, serverGroup := range appServerGroup {
-		policyRuleServerGroups[i] = map[string]interface{}{
-			"id": serverGroup.ID,
-		}
-	}
-
-	return policyRuleServerGroups
-}
-
-func flattenPolicyTimeoutAppConnectorGroups(appConnectorGroups []policysetrule.AppConnectorGroups) []interface{} {
-	policyRuleAppConnectorGroups := make([]interface{}, len(appConnectorGroups))
-	for i, val := range appConnectorGroups {
-		policyRuleAppConnectorGroups[i] = map[string]interface{}{
-			"id": val.ID,
-		}
-	}
-
-	return policyRuleAppConnectorGroups
 }

@@ -56,7 +56,6 @@ resource "zpa_application_server" "cahlesx02" {
   app_server_group_ids             = [ zpa_server_group.sgio_vcenter_servers.id ]
 }
 
-/*
 resource "zpa_application_server" "pan220" {
   name                          = "pan220.securitygeek.io"
   description                   = "pan220.securitygeek.io"
@@ -120,4 +119,3 @@ resource "zpa_application_server" "vcd125-ad01" {
   enabled                       = true
   app_server_group_ids             = [ zpa_server_group.all_other_services.id ]
 }
-*/

@@ -28,12 +28,12 @@ description: |-
 - **app_connector_groups** (List of Object) (see [below for nested schema](#nestedatt--app_connector_groups))
 - **applications** (List of Object) (see [below for nested schema](#nestedatt--applications))
 - **config_space** (String)
-- **creation_time** (Number)
+- **creation_time** (String)
 - **description** (String)
 - **dynamic_discovery** (Boolean)
 - **enabled** (Boolean)
 - **ip_anchored** (Boolean)
-- **modified_time** (Number)
+- **modified_time** (String)
 - **modifiedby** (String)
 - **servers** (List of Object) (see [below for nested schema](#nestedatt--servers))
 
@@ -45,39 +45,39 @@ Read-Only:
 - **city_country** (String)
 - **connectors** (List of Object) (see [below for nested schema](#nestedobjatt--app_connector_groups--connectors))
 - **country_code** (String)
-- **creation_time** (Number)
+- **creation_time** (String)
 - **description** (String)
 - **dns_query_type** (String)
 - **enabled** (Boolean)
-- **geolocation_id** (Number)
-- **id** (Number)
+- **geolocation_id** (String)
+- **id** (String)
 - **latitude** (String)
 - **location** (String)
 - **longitude** (String)
-- **modified_time** (Number)
-- **modifiedby** (Number)
+- **modified_time** (String)
+- **modifiedby** (String)
 - **name** (String)
 - **server_groups** (List of Object) (see [below for nested schema](#nestedobjatt--app_connector_groups--server_groups))
 - **siem_app_connector_group** (Boolean)
 - **upgrade_day** (String)
 - **upgrade_time_in_secs** (String)
-- **version_profile_id** (Number)
+- **version_profile_id** (String)
 
 <a id="nestedobjatt--app_connector_groups--connectors"></a>
 ### Nested Schema for `app_connector_groups.connectors`
 
 Read-Only:
 
-- **creation_time** (Number)
+- **creation_time** (String)
 - **description** (String)
 - **enabled** (Boolean)
 - **fingerprint** (String)
-- **id** (Number)
-- **issued_cert_id** (Number)
-- **modified_time** (Number)
-- **modifiedby** (Number)
+- **id** (String)
+- **issued_cert_id** (String)
+- **modified_time** (String)
+- **modifiedby** (String)
 - **name** (String)
-- **upgrade_attempt** (Number)
+- **upgrade_attempt** (String)
 
 
 <a id="nestedobjatt--app_connector_groups--server_groups"></a>
@@ -90,8 +90,8 @@ Read-Only:
 - **description** (String)
 - **dynamic_discovery** (Boolean)
 - **enabled** (Boolean)
-- **id** (Number)
-- **modified_time** (Number)
+- **id** (String)
+- **modified_time** (String)
 - **modifiedby** (String)
 - **name** (String)
 
@@ -102,7 +102,7 @@ Read-Only:
 
 Read-Only:
 
-- **id** (Number)
+- **id** (String)
 - **name** (String)
 
 
@@ -114,12 +114,12 @@ Read-Only:
 - **address** (String)
 - **app_server_group_ids** (List of String)
 - **config_space** (String)
-- **creation_time** (Number)
+- **creation_time** (String)
 - **description** (String)
 - **enabled** (Boolean)
-- **id** (Number)
-- **modified_time** (Number)
-- **modifiedby** (Number)
+- **id** (String)
+- **modified_time** (String)
+- **modifiedby** (String)
 - **name** (String)
 
 

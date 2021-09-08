@@ -3,8 +3,6 @@ package zscaler
 import (
 	"fmt"
 	"log"
-	"strconv"
-	"time"
 
 	"github.com/SecurityGeekIO/terraform-provider-zpa/gozscaler/samlattribute"
 	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/schema"
@@ -14,53 +12,41 @@ func dataSourceSamlAttribute() *schema.Resource {
 	return &schema.Resource{
 		Read: dataSourceSamlAttributeRead,
 		Schema: map[string]*schema.Schema{
+			"creation_time": {
+				Type:     schema.TypeString,
+				Computed: true,
+			},
 			"id": {
-				Type:     schema.TypeInt,
+				Type:     schema.TypeString,
 				Optional: true,
 			},
-			"list": {
-				Type:     schema.TypeList,
+			"idp_id": {
+				Type:     schema.TypeString,
 				Computed: true,
-				Elem: &schema.Resource{
-					Schema: map[string]*schema.Schema{
-						"creationtime": {
-							Type:     schema.TypeInt,
-							Computed: true,
-						},
-						"id": {
-							Type:     schema.TypeInt,
-							Computed: true,
-						},
-						"idp_id": {
-							Type:     schema.TypeInt,
-							Computed: true,
-						},
-						"idp_name": {
-							Type:     schema.TypeString,
-							Computed: true,
-						},
-						"modifiedby": {
-							Type:     schema.TypeInt,
-							Computed: true,
-						},
-						"modified_time": {
-							Type:     schema.TypeInt,
-							Computed: true,
-						},
-						"name": {
-							Type:     schema.TypeString,
-							Computed: true,
-						},
-						"saml_name": {
-							Type:     schema.TypeString,
-							Computed: true,
-						},
-						"user_attribute": {
-							Type:     schema.TypeBool,
-							Computed: true,
-						},
-					},
-				},
+			},
+			"idp_name": {
+				Type:     schema.TypeString,
+				Optional: true,
+			},
+			"modifiedby": {
+				Type:     schema.TypeString,
+				Computed: true,
+			},
+			"modified_time": {
+				Type:     schema.TypeString,
+				Computed: true,
+			},
+			"name": {
+				Type:     schema.TypeString,
+				Optional: true,
+			},
+			"saml_name": {
+				Type:     schema.TypeString,
+				Computed: true,
+			},
+			"user_attribute": {
+				Type:     schema.TypeBool,
+				Computed: true,
 			},
 		},
 	}
@@ -69,56 +55,38 @@ func dataSourceSamlAttribute() *schema.Resource {
 func dataSourceSamlAttributeRead(d *schema.ResourceData, m interface{}) error {
 	zClient := m.(*Client)
 
-	var samlAttribute int64
-	samlAttribute = 0
-	if samlAttributeInterface, ok := d.GetOk("id"); ok {
-		samlAttribute = int64(samlAttributeInterface.(int))
-	}
-
-	if samlAttribute != 0 {
-		log.Printf("[INFO] Getting data for saml attribute %d\n", samlAttribute)
-		// Getting specific saml attribute ID
-		resp, _, err := zClient.samlattribute.Get(fmt.Sprintf("%d", samlAttribute))
+	var resp *samlattribute.SamlAttribute
+	id, ok := d.Get("id").(string)
+	if ok && id != "" {
+		log.Printf("[INFO] Getting data for saml attribute %s\n", id)
+		res, _, err := zClient.samlattribute.Get(id)
 		if err != nil {
 			return err
 		}
+		resp = res
 
-		// Add the one saml attribute ID we received
-		d.SetId(fmt.Sprintf("%d", resp.ID))
-		// Now we make a slice of saml attributes, so we can add the one saml attribute to the resource list after flattening
-		samlAttributes := make([]samlattribute.SamlAttribute, 0)
-		samlAttributes = append(samlAttributes, *resp)
-		d.Set("list", flattenSamlAttributes(samlAttributes))
+	}
+	name, ok := d.Get("name").(string)
+	if ok && id == "" && name != "" {
+		log.Printf("[INFO] Getting data for saml attribute %s\n", name)
+		res, _, err := zClient.samlattribute.GetByName(name)
+		if err != nil {
+			return err
+		}
+		resp = res
+	}
+	if resp != nil {
+		d.SetId(resp.ID)
+		_ = d.Set("creation_time", resp.CreationTime)
+		_ = d.Set("idp_id", resp.IdpId)
+		_ = d.Set("idp_name", resp.IdpName)
+		_ = d.Set("modifiedby", resp.ModifiedBy)
+		_ = d.Set("modified_time", resp.ModifiedTime)
+		_ = d.Set("name", resp.Name)
+		_ = d.Set("saml_name", resp.SamlName)
+		_ = d.Set("user_attribute", resp.UserAttribute)
 	} else {
-		log.Printf("[INFO] Getting data for all saml attributes \n")
-		// Getting all saml attribute IDs
-		resp, _, err := zClient.samlattribute.GetAll()
-		if err != nil {
-			return err
-		}
-
-		// In case of all saml attributes returned, I don't now which ID to set as ID here, so I add time from documentation
-		d.SetId(strconv.FormatInt(time.Now().Unix(), 10))
-		d.Set("list", flattenSamlAttributes(resp))
+		return fmt.Errorf("couldn't find any saml attribute with name '%s' or id '%s'", name, id)
 	}
-
 	return nil
-}
-
-func flattenSamlAttributes(samlAttributeResponse []samlattribute.SamlAttribute) []interface{} {
-	samlAttributes := make([]interface{}, len(samlAttributeResponse))
-	for i, samlAttributeItem := range samlAttributeResponse {
-		samlAttributes[i] = map[string]interface{}{
-			"creation_time":  samlAttributeItem.CreationTime,
-			"id":             samlAttributeItem.ID,
-			"idp_id":         samlAttributeItem.IdpId,
-			"idp_name":       samlAttributeItem.IdpName,
-			"modifiedby":     samlAttributeItem.ModifiedBy,
-			"modified_time":  samlAttributeItem.ModifiedTime,
-			"name":           samlAttributeItem.Name,
-			"saml_name":      samlAttributeItem.SamlName,
-			"user_attribute": samlAttributeItem.UserAttribute,
-		}
-	}
-	return samlAttributes
 }

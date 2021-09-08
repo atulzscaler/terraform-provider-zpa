@@ -9,35 +9,37 @@ terraform {
 
 provider "zpa" {}
 
-// data "zpa_segment_group" "all" { 
-//   id = 216196257331282475
-// }
+data "zpa_segment_group" "all" { 
+  name = "Browser Access Apps"
+}
 
-// output "segment_group" {
-//     value = data.zpa_segment_group.all
-// }
+output "segment_group" {
+    value = data.zpa_segment_group.all.id
+}
 
+/*
 
-// resource "zpa_application_segment" "all_other_services" {
-//     name = "All Other Services"
-//     description = "All Other Services"
-//     enabled = true
-//     health_reporting = "ON_ACCESS"
-//     bypasstype = "NEVER"
-//     tcpportranges = ["1", "52", "54", "65535"]
-//     domainnames = ["*.securitygeek.io"]
-//     // segmentgroupid = zpa_segment_group.sg_all_other_services.id
-//     // servergroups {
-//     //     id = 216196257331282438
-//     // }
-// }
+resource "zpa_application_segment" "ap_example" {
+    name = "ap_example"
+    description = "ap_example"
+    enabled = true
+    health_reporting = "ON_ACCESS"
+    bypass_type = "NEVER"
+    tcp_port_ranges = ["1", "52", "54", "65535"]
+    domain_names = ["*.acme.com"]
+    // segmentgroupid = zpa_segment_group.sg_all_other_services.id
+    server_groups {
+        id = 216196257331283727
+    }
+}
 
- resource "zpa_segment_group" "sg_all_other_services" {
-   name = "All Other Services"
-   description = "All Other Services"
+ resource "zpa_segment_group" "sg_example" {
+   name = "sg_example"
+   description = "sg_example"
    enabled = true
    policy_migrated = true
-    // applications  {
-    //     id = zpa_application_segment.all_other_services.id
-    // }
+    applications  {
+        id = zpa_application_segment.ap_example.id
+    }
  }
+ */
