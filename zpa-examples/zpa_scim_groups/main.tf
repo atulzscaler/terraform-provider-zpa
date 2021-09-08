@@ -10,9 +10,8 @@ terraform {
 provider "zpa" {}
 
 data "zpa_scim_groups" "all" {
-    list {
-        idpid = 216196257331282118
-    }
+    id = 255069
+    // idp_id = "216196257331281933"
 }
 
 output "scim_groups" {

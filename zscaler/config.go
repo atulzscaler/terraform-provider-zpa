@@ -16,6 +16,7 @@ import (
 	"github.com/SecurityGeekIO/terraform-provider-zpa/gozscaler/policysetrule"
 	"github.com/SecurityGeekIO/terraform-provider-zpa/gozscaler/postureprofile"
 	"github.com/SecurityGeekIO/terraform-provider-zpa/gozscaler/samlattribute"
+	"github.com/SecurityGeekIO/terraform-provider-zpa/gozscaler/scimattributeheader"
 	"github.com/SecurityGeekIO/terraform-provider-zpa/gozscaler/scimgroup"
 	"github.com/SecurityGeekIO/terraform-provider-zpa/gozscaler/segmentgroup"
 	"github.com/SecurityGeekIO/terraform-provider-zpa/gozscaler/servergroup"
@@ -40,6 +41,7 @@ type Client struct {
 	policysetrule       policysetrule.Service
 	samlattribute       samlattribute.Service
 	scimgroup           scimgroup.Service
+	scimattributeheader scimattributeheader.Service
 	segmentgroup        segmentgroup.Service
 	servergroup         servergroup.Service
 	trustednetwork      trustednetwork.Service
@@ -72,6 +74,7 @@ func (c *Config) Client() (*Client, error) {
 		policysetrule:       *policysetrule.New(config),
 		samlattribute:       *samlattribute.New(config),
 		scimgroup:           *scimgroup.New(config),
+		scimattributeheader: *scimattributeheader.New(config),
 		segmentgroup:        *segmentgroup.New(config),
 		servergroup:         *servergroup.New(config),
 		trustednetwork:      *trustednetwork.New(config),

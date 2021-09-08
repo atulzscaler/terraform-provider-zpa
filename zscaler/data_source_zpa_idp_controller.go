@@ -2,7 +2,6 @@ package zscaler
 
 import (
 	"log"
-	"strconv"
 
 	"github.com/SecurityGeekIO/terraform-provider-zpa/gozscaler/idpcontroller"
 	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/schema"
@@ -13,7 +12,7 @@ func dataSourceIdpController() *schema.Resource {
 		Read: dataSourceIdpControllerRead,
 		Schema: map[string]*schema.Schema{
 			"admin_metadata": {
-				Type:     schema.TypeList,
+				Type:     schema.TypeSet,
 				Computed: true,
 				Elem: &schema.Resource{
 					Schema: map[string]*schema.Schema{
@@ -37,7 +36,7 @@ func dataSourceIdpController() *schema.Resource {
 				},
 			},
 			"auto_provision": {
-				Type:     schema.TypeInt,
+				Type:     schema.TypeString,
 				Computed: true,
 			},
 			"certificates": {
@@ -58,18 +57,18 @@ func dataSourceIdpController() *schema.Resource {
 							Computed: true,
 						},
 						"valid_from_in_sec": {
-							Type:     schema.TypeInt,
+							Type:     schema.TypeString,
 							Computed: true,
 						},
 						"valid_to_in_sec": {
-							Type:     schema.TypeInt,
+							Type:     schema.TypeString,
 							Computed: true,
 						},
 					},
 				},
 			},
 			"creation_time": {
-				Type:     schema.TypeInt,
+				Type:     schema.TypeString,
 				Computed: true,
 			},
 			"description": {
@@ -90,8 +89,9 @@ func dataSourceIdpController() *schema.Resource {
 				Computed: true,
 			},
 			"enabled": {
-				Type:     schema.TypeBool,
-				Computed: true,
+				Type:        schema.TypeBool,
+				Computed:    true,
+				Description: "Default value if null is True",
 			},
 			"id": {
 				Type:     schema.TypeString,
@@ -110,11 +110,11 @@ func dataSourceIdpController() *schema.Resource {
 				Computed: true,
 			},
 			"modifiedby": {
-				Type:     schema.TypeInt,
+				Type:     schema.TypeString,
 				Computed: true,
 			},
 			"modified_time": {
-				Type:     schema.TypeInt,
+				Type:     schema.TypeString,
 				Computed: true,
 			},
 			"name": {
@@ -146,7 +146,7 @@ func dataSourceIdpController() *schema.Resource {
 				Computed: true,
 			},
 			"sign_saml_request": {
-				Type:     schema.TypeInt,
+				Type:     schema.TypeString,
 				Computed: true,
 			},
 			"sso_type": {
@@ -159,7 +159,7 @@ func dataSourceIdpController() *schema.Resource {
 				Computed: true,
 			},
 			"user_metadata": {
-				Type:     schema.TypeList,
+				Type:     schema.TypeSet,
 				Computed: true,
 				Elem: &schema.Resource{
 					Schema: map[string]*schema.Schema{
@@ -176,7 +176,7 @@ func dataSourceIdpController() *schema.Resource {
 							Computed: true,
 						},
 						"sp_post_url": {
-							Type:     schema.TypeInt,
+							Type:     schema.TypeString,
 							Computed: true,
 						},
 					},
@@ -198,7 +198,8 @@ func dataSourceIdpControllerRead(d *schema.ResourceData, m interface{}) error {
 	}
 
 	//d.SetId(strconv.Itoa(resp.ID))
-	d.SetId(strconv.FormatInt(int64(resp.ID), 10))
+	// d.SetId(strconv.FormatInt(int64(resp.ID), 10))
+	d.SetId(resp.ID)
 	_ = d.Set("auto_provision", resp.AutoProvision)
 	_ = d.Set("creation_time", resp.CreationTime)
 	_ = d.Set("description", resp.Description)
@@ -221,12 +222,18 @@ func dataSourceIdpControllerRead(d *schema.ResourceData, m interface{}) error {
 	_ = d.Set("sign_saml_request", resp.SignSamlRequest)
 	_ = d.Set("sso_type", resp.SsoType)
 	_ = d.Set("use_custom_sp_metadata", resp.UseCustomSpMetadata)
-	_ = d.Set("user_metadata", resp.UserMetadata)
-	_ = d.Set("sp_entity_id", resp.UserMetadata.SpEntityId)
-	_ = d.Set("sp_metadata_url", resp.UserMetadata.SpMetadataUrl)
-	_ = d.Set("sp_post_url", resp.UserMetadata.SpPostUrl)
-	_ = d.Set("certificates", flattenIdpCertificates(resp.Certificates))
-	// _ = d.Set("usermetadata", flattenIdpUserMetadata(resp.UserMetadata))
+	_ = d.Set("user_metadata.certificate_url", resp.UserMetadata.CertificateUrl)
+	_ = d.Set("user_metadata.sp_entity_id", resp.UserMetadata.SpEntityId)
+	_ = d.Set("user_metadata.sp_metadata_url", resp.UserMetadata.SpMetadataUrl)
+	_ = d.Set("user_metadata.sp_post_url", resp.UserMetadata.SpPostUrl)
+	_ = d.Set("admin_metadata.certificate_url", resp.AdminMetadata.CertificateUrl)
+	_ = d.Set("admin_metadata.sp_entity_id", resp.AdminMetadata.SpEntityId)
+	_ = d.Set("admin_metadata.sp_metadata_url", resp.AdminMetadata.SpMetadataUrl)
+	_ = d.Set("admin_metadata.sp_post_url", resp.AdminMetadata.SpPostUrl)
+
+	if err := d.Set("certificates", flattenIdpCertificates(resp.Certificates)); err != nil {
+		return err
+	}
 
 	return nil
 }
@@ -237,23 +244,11 @@ func flattenIdpCertificates(idpCertificate []idpcontroller.Certificates) []inter
 		idpCertificates[i] = map[string]interface{}{
 			"certificate":       idpCertificateItems.Certificate,
 			"cname":             idpCertificateItems.Cname,
-			"serialno":          idpCertificateItems.Serialno,
+			"serial_no":         idpCertificateItems.SerialNo,
 			"valid_from_in_sec": idpCertificateItems.ValidFrominSec,
 			"valid_to_in_sec":   idpCertificateItems.ValidToinSec,
 		}
 	}
+
 	return idpCertificates
 }
-
-// func flattenIdpUserMetadata(idpUserMetadata idpcontroller.UserMetadata) []interface{} {
-// 	userMetadata := make([]interface{}, len())
-// 	for i, userMetadataItems := range idpUserMetadata {
-// 		userMetadata[i] = map[string]interface{}{
-// 			"certificateurl": userMetadataItems.CertificateUrl,
-// 			"spentityid":     userMetadataItems.SpEntityId,
-// 			"spmetadataurl":  userMetadataItems.SpMetadataUrl,
-// 			"spposturl":      userMetadataItems.SpPostUrl,
-// 		}
-// 	}
-// 	return userMetadata
-// }

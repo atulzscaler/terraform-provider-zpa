@@ -96,7 +96,6 @@ func dataSourceBaCertificateRead(d *schema.ResourceData, m interface{}) error {
 		return err
 	}
 
-	// d.SetId(strconv.Itoa(resp.ID))
 	d.SetId(strconv.FormatInt(int64(resp.ID), 10))
 	_ = d.Set("cname", resp.CName)
 	_ = d.Set("cert_chain", resp.CertChain)

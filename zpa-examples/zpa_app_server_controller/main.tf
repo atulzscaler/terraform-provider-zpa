@@ -9,6 +9,15 @@ terraform {
 
 provider "zpa" {}
 
+data "zpa_application_server" "example" {
+  id = "216196257331283275"
+}
+
+output "all_application_server" {
+  value = data.zpa_application_server.example
+}
+
+/*
 
 data "zpa_app_connector_group" "example" {
   id = 216196257331281931
@@ -20,7 +29,7 @@ resource "zpa_server_group" "example1" {
   description = "example1"
   enabled = true
   dynamic_discovery = false
-  appconnector_groups {
+  app_connector_groups {
     id = data.zpa_app_connector_group.example.id
   }
 }
@@ -30,7 +39,7 @@ resource "zpa_server_group" "example2" {
   description = "example2"
   enabled = true
   dynamic_discovery = false
-  appconnector_groups {
+  app_connector_groups {
     id = data.zpa_app_connector_group.example.id
   }
 }
@@ -49,3 +58,4 @@ resource "zpa_application_server" "example" {
 output "all_application_server" {
   value = zpa_application_server.example
 }
+*/

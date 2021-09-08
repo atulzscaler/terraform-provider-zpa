@@ -2,7 +2,6 @@ package zscaler
 
 import (
 	"log"
-	"strconv"
 
 	"github.com/SecurityGeekIO/terraform-provider-zpa/gozscaler/policysetglobal"
 	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/schema"
@@ -13,7 +12,7 @@ func dataSourcePolicySetGlobal() *schema.Resource {
 		Read: dataSourcePolicySetGlobalRead,
 		Schema: map[string]*schema.Schema{
 			"creation_time": {
-				Type:     schema.TypeInt,
+				Type:     schema.TypeString,
 				Computed: true,
 			},
 			"description": {
@@ -29,11 +28,11 @@ func dataSourcePolicySetGlobal() *schema.Resource {
 				Optional: true,
 			},
 			"modifiedby": {
-				Type:     schema.TypeInt,
+				Type:     schema.TypeString,
 				Computed: true,
 			},
 			"modified_time": {
-				Type:     schema.TypeInt,
+				Type:     schema.TypeString,
 				Computed: true,
 			},
 			"name": {
@@ -41,7 +40,7 @@ func dataSourcePolicySetGlobal() *schema.Resource {
 				Computed: true,
 			},
 			"policy_type": {
-				Type:     schema.TypeInt,
+				Type:     schema.TypeString,
 				Computed: true,
 			},
 			"rules": {
@@ -54,7 +53,7 @@ func dataSourcePolicySetGlobal() *schema.Resource {
 							Computed: true,
 						},
 						"action_id": {
-							Type:     schema.TypeInt,
+							Type:     schema.TypeString,
 							Computed: true,
 						},
 						"bypass_default_rule": {
@@ -62,7 +61,7 @@ func dataSourcePolicySetGlobal() *schema.Resource {
 							Computed: true,
 						},
 						"creation_time": {
-							Type:     schema.TypeInt,
+							Type:     schema.TypeString,
 							Computed: true,
 						},
 						"custom_msg": {
@@ -74,7 +73,7 @@ func dataSourcePolicySetGlobal() *schema.Resource {
 							Computed: true,
 						},
 						"id": {
-							Type:     schema.TypeInt,
+							Type:     schema.TypeString,
 							Computed: true,
 						},
 						"isolation_default_rule": {
@@ -82,11 +81,11 @@ func dataSourcePolicySetGlobal() *schema.Resource {
 							Computed: true,
 						},
 						"modifiedby": {
-							Type:     schema.TypeInt,
+							Type:     schema.TypeString,
 							Computed: true,
 						},
 						"modified_time": {
-							Type:     schema.TypeInt,
+							Type:     schema.TypeString,
 							Computed: true,
 						},
 						"name": {
@@ -98,15 +97,15 @@ func dataSourcePolicySetGlobal() *schema.Resource {
 							Computed: true,
 						},
 						"policy_set_id": {
-							Type:     schema.TypeInt,
+							Type:     schema.TypeString,
 							Computed: true,
 						},
 						"policy_type": {
-							Type:     schema.TypeInt,
+							Type:     schema.TypeString,
 							Computed: true,
 						},
 						"priority": {
-							Type:     schema.TypeInt,
+							Type:     schema.TypeString,
 							Computed: true,
 						},
 						"reauth_default_rule": {
@@ -114,23 +113,23 @@ func dataSourcePolicySetGlobal() *schema.Resource {
 							Computed: true,
 						},
 						"reauth_idle_timeout": {
-							Type:     schema.TypeInt,
+							Type:     schema.TypeString,
 							Computed: true,
 						},
 						"reauth_timeout": {
-							Type:     schema.TypeInt,
+							Type:     schema.TypeString,
 							Computed: true,
 						},
 						"rule_order": {
-							Type:     schema.TypeInt,
+							Type:     schema.TypeString,
 							Computed: true,
 						},
 						"zpn_cbi_profile_id": {
-							Type:     schema.TypeInt,
+							Type:     schema.TypeString,
 							Computed: true,
 						},
 						"zpn_inspection_profile_id": {
-							Type:     schema.TypeInt,
+							Type:     schema.TypeString,
 							Computed: true,
 						},
 						"zpn_inspection_profile_name": {
@@ -143,23 +142,27 @@ func dataSourcePolicySetGlobal() *schema.Resource {
 							Elem: &schema.Resource{
 								Schema: map[string]*schema.Schema{
 									"creation_time": {
-										Type:     schema.TypeInt,
+										Type:     schema.TypeString,
 										Computed: true,
 									},
 									"id": {
-										Type:     schema.TypeInt,
+										Type:     schema.TypeString,
 										Computed: true,
 									},
 									"modifiedby": {
-										Type:     schema.TypeInt,
+										Type:     schema.TypeString,
 										Computed: true,
 									},
 									"modified_time": {
-										Type:     schema.TypeInt,
+										Type:     schema.TypeString,
 										Computed: true,
 									},
 									"negated": {
 										Type:     schema.TypeBool,
+										Computed: true,
+									},
+									"operator": {
+										Type:     schema.TypeString,
 										Computed: true,
 									},
 									"operands": {
@@ -168,15 +171,15 @@ func dataSourcePolicySetGlobal() *schema.Resource {
 										Elem: &schema.Resource{
 											Schema: map[string]*schema.Schema{
 												"creation_time": {
-													Type:     schema.TypeInt,
+													Type:     schema.TypeString,
 													Computed: true,
 												},
 												"id": {
-													Type:     schema.TypeInt,
+													Type:     schema.TypeString,
 													Computed: true,
 												},
 												"idp_id": {
-													Type:     schema.TypeInt,
+													Type:     schema.TypeString,
 													Computed: true,
 												},
 												"lhs": {
@@ -184,11 +187,11 @@ func dataSourcePolicySetGlobal() *schema.Resource {
 													Computed: true,
 												},
 												"modifiedby": {
-													Type:     schema.TypeInt,
+													Type:     schema.TypeString,
 													Computed: true,
 												},
 												"modified_time": {
-													Type:     schema.TypeInt,
+													Type:     schema.TypeString,
 													Computed: true,
 												},
 												"name": {
@@ -222,9 +225,7 @@ func dataSourcePolicySetGlobal() *schema.Resource {
 
 func dataSourcePolicySetGlobalRead(d *schema.ResourceData, m interface{}) error {
 	zClient := m.(*Client)
-
-	id := d.Get("id").(string)
-	log.Printf("[INFO] Getting data for global policy set %s\n", id)
+	log.Printf("[INFO] Getting data for global policy set\n")
 
 	resp, _, err := zClient.policysetglobal.Get()
 	if err != nil {
@@ -232,7 +233,7 @@ func dataSourcePolicySetGlobalRead(d *schema.ResourceData, m interface{}) error 
 	}
 
 	log.Printf("[INFO] Getting Policy Set Global Rules:\n%+v\n", resp)
-	d.SetId(strconv.FormatInt(int64(resp.ID), 10))
+	d.SetId(resp.ID)
 	_ = d.Set("creation_time", resp.CreationTime)
 	_ = d.Set("description", resp.Description)
 	_ = d.Set("enabled", resp.Enabled)
@@ -288,11 +289,12 @@ func flattenRuleConditions(conditions policysetglobal.Rules) []interface{} {
 			"modifiedby":    ruleCondition.ModifiedBy,
 			"modified_time": ruleCondition.ModifiedTime,
 			"negated":       ruleCondition.Negated,
+			"operator":      ruleCondition.Operator,
 			"operands":      flattenConditionOperands(ruleCondition),
 			// Needs to figure it out how to deal with this parameter. Returning the following error:
 			//  Error: Invalid address to set: []string{"rules", "0", "conditions", "0", "operator"}
 			// Works fine when removed.
-			//"operator":     ruleCondition.Operator,
+
 		}
 	}
 

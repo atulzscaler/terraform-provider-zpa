@@ -10,71 +10,71 @@ const (
 )
 
 type PolicySet struct {
-	CreationTime int32   `json:"creationTime,string,omitempty"`
+	CreationTime string  `json:"creationTime,omitempty"`
 	Description  string  `json:"description,omitempty"`
 	Enabled      bool    `json:"enabled"`
-	ID           int64   `json:"id,string,omitempty"`
-	ModifiedBy   int64   `json:"modifiedBy,string,omitempty"`
-	ModifiedTime int32   `json:"modifiedTime,string,omitempty"`
+	ID           string  `json:"id,omitempty"`
+	ModifiedBy   string  `json:"modifiedBy,omitempty"`
+	ModifiedTime string  `json:"modifiedTime,omitempty"`
 	Name         string  `json:"name,omitempty"`
-	PolicyType   int32   `json:"policyType,string,omitempty"`
+	PolicyType   string  `json:"policyType,omitempty"`
 	Rules        []Rules `json:"rules"`
 }
 
 type Rules struct {
 	Action                   string       `json:"action,omitempty"`
-	ActionID                 int64        `json:"actionId,string,omitempty"`
+	ActionID                 string       `json:"actionId,omitempty"`
 	BypassDefaultRule        bool         `json:"bypassDefaultRule,omitempty"`
-	CreationTime             int32        `json:"creationTime,string,omitempty"`
+	CreationTime             string       `json:"creationTime,omitempty"`
 	CustomMsg                string       `json:"customMsg,omitempty"`
 	Description              string       `json:"description,omitempty"`
-	ID                       int64        `json:"id,string,omitempty"`
+	ID                       string       `json:"id,omitempty"`
 	IsolationDefaultRule     bool         `json:"isolationDefaultRule,omitempty"`
-	ModifiedBy               int64        `json:"modifiedBy,string,omitempty"`
-	ModifiedTime             int32        `json:"modifiedTime,string,omitempty"`
+	ModifiedBy               string       `json:"modifiedBy,omitempty"`
+	ModifiedTime             string       `json:"modifiedTime,omitempty"`
 	Name                     string       `json:"name,omitempty"`
 	Operator                 string       `json:"operator,omitempty"`
-	PolicySetID              int64        `json:"policySetId,string,omitempty"`
-	PolicyType               int32        `json:"policyType,string,omitempty"`
-	Priority                 int32        `json:"priority,string,omitempty"`
+	PolicySetID              string       `json:"policySetId,omitempty"`
+	PolicyType               string       `json:"policyType,omitempty"`
+	Priority                 string       `json:"priority,omitempty"`
 	ReauthDefaultRule        bool         `json:"reauthDefaultRule,omitempty"`
-	ReauthIdleTimeout        int32        `json:"reauthIdleTimeout,string,omitempty"`
-	ReauthTimeout            int32        `json:"reauthTimeout,string,omitempty"`
-	RuleOrder                int32        `json:"ruleOrder,string,omitempty"`
-	ZpnCbiProfileID          int64        `json:"zpnCbiProfileId,string,omitempty"`
-	ZpnInspectionProfileId   int64        `json:"zpnInspectionProfileId,string,omitempty"`
-	ZpnInspectionProfileName string       `json:"zpnInspectionProfileName,string,omitempty"`
+	ReauthIdleTimeout        string       `json:"reauthIdleTimeout,omitempty"`
+	ReauthTimeout            string       `json:"reauthTimeout,omitempty"`
+	RuleOrder                string       `json:"ruleOrder,omitempty"`
+	ZpnCbiProfileID          string       `json:"zpnCbiProfileId,omitempty"`
+	ZpnInspectionProfileId   string       `json:"zpnInspectionProfileId,omitempty"`
+	ZpnInspectionProfileName string       `json:"zpnInspectionProfileName,omitempty"`
 	Conditions               []Conditions `json:"conditions,omitempty"`
 }
 type Conditions struct {
-	CreationTime int32       `json:"creationTime,string,omitempty"`
-	ID           int64       `json:"id,string,omitempty"`
-	ModifiedBy   int64       `json:"modifiedBy,string,omitempty"`
-	ModifiedTime int32       `json:"modifiedTime,string,omitempty"`
+	CreationTime string      `json:"creationTime,omitempty"`
+	ID           string      `json:"id,omitempty"`
+	ModifiedBy   string      `json:"modifiedBy,omitempty"`
+	ModifiedTime string      `json:"modifiedTime,omitempty"`
 	Negated      bool        `json:"negated,omitempty"`
 	Operands     *[]Operands `json:"operands,omitempty"`
 	Operator     string      `json:"operator,omitempty"`
 }
 type Operands struct {
-	CreationTime int32  `json:"creationTime,string,omitempty"`
-	ID           int64  `json:"id,string,omitempty"`
-	IdpID        int64  `json:"idpId,string,omitempty"`
+	CreationTime string `json:"creationTime,omitempty"`
+	ID           string `json:"id,omitempty"`
+	IdpID        string `json:"idpId,omitempty"`
 	LHS          string `json:"lhs,omitempty"`
-	ModifiedBy   int64  `json:"modifiedBy,string,omitempty"`
-	ModifiedTime int32  `json:"modifiedTime,string,omitempty"`
+	ModifiedBy   string `json:"modifiedBy,omitempty"`
+	ModifiedTime string `json:"modifiedTime,omitempty"`
 	Name         string `json:"name,omitempty"`
 	ObjectType   string `json:"objectType,omitempty"`
 	RHS          string `json:"rhs,omitempty"`
 }
 type AppServerGroups struct {
 	ConfigSpace      string `json:"configSpace,omitempty"`
-	CreationTime     int32  `json:"creationTime,string,omitempty"`
+	CreationTime     string `json:"creationTime,omitempty"`
 	Description      string `json:"description,omitempty"`
 	Enabled          bool   `json:"enabled,omitempty"`
-	ID               int64  `json:"id,string,omitempty"`
+	ID               string `json:"id,omitempty"`
 	DynamicDiscovery bool   `json:"dynamicDiscovery,omitempty"`
-	ModifiedBy       int64  `json:"modifiedBy,string,omitempty"`
-	ModifiedTime     int32  `json:"modifiedTime,string,omitempty"`
+	ModifiedBy       string `json:"modifiedBy,omitempty"`
+	ModifiedTime     string `json:"modifiedTime,omitempty"`
 	Name             string `json:"name,omitempty"`
 }
 
@@ -160,30 +160,26 @@ func (service *Service) Get() (*PolicySet, *http.Response, error) {
 	return v, resp, nil
 }
 
-func (service *Service) Create(policySetId string) (*PolicySet, *http.Response, error) {
+// Get the authentication policy and all rules for a Timeout policy rule
+func (service *Service) GetReauth() (*PolicySet, *http.Response, error) {
 	v := new(PolicySet)
-	relativeURL := fmt.Sprintf(mgmtConfig+service.Client.Config.CustomerID+"/policySet/%v/rule", policySetId)
-	resp, err := service.Client.NewRequestDo("POST", relativeURL, nil, nil, &v)
+	relativeURL := fmt.Sprintf(mgmtConfig + service.Client.Config.CustomerID + "/policySet/reauth")
+	resp, err := service.Client.NewRequestDo("GET", relativeURL, nil, nil, &v)
 	if err != nil {
 		return nil, nil, err
 	}
+
 	return v, resp, nil
 }
 
-func (service *Service) Update(policySetId string, ruleId PolicySet) (*http.Response, error) {
-	path := fmt.Sprintf(mgmtConfig+service.Client.Config.CustomerID+"/policySet/%v/rules/%v", policySetId, ruleId)
-	resp, err := service.Client.NewRequestDo("PUT", path, nil, nil, nil)
+// Get the authentication policy and all rules for a Client Forwarding Policy Rule
+func (service *Service) GetBypass() (*PolicySet, *http.Response, error) {
+	v := new(PolicySet)
+	relativeURL := fmt.Sprintf(mgmtConfig + service.Client.Config.CustomerID + "/policySet/bypass")
+	resp, err := service.Client.NewRequestDo("GET", relativeURL, nil, nil, &v)
 	if err != nil {
-		return nil, err
+		return nil, nil, err
 	}
-	return resp, err
-}
 
-func (service *Service) Delete(policySetId string, ruleId PolicySet) (*http.Response, error) {
-	path := fmt.Sprintf(mgmtConfig+service.Client.Config.CustomerID+"/policySet/%v/rules/%v", policySetId, ruleId)
-	resp, err := service.Client.NewRequestDo("DELETE", path, nil, nil, nil)
-	if err != nil {
-		return nil, err
-	}
-	return resp, err
+	return v, resp, nil
 }
