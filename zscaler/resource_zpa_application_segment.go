@@ -63,11 +63,10 @@ func resourceApplicationSegment() *schema.Resource {
 				Description: "Description of the application.",
 			},
 			"domain_names": {
-				Type:         schema.TypeList,
-				Required:     true,
-				Description:  "List of domains and IPs.",
-				Elem:         &schema.Schema{Type: schema.TypeString},
-				ValidateFunc: validation.StringIsNotEmpty,
+				Type:        schema.TypeList,
+				Required:    true,
+				Description: "List of domains and IPs.",
+				Elem:        &schema.Schema{Type: schema.TypeString},
 			},
 			"double_encrypt": {
 				Type:        schema.TypeBool,
