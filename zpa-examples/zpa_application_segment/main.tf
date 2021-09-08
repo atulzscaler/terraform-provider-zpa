@@ -9,44 +9,9 @@ terraform {
 
 provider "zpa" {}
 
-// data "zpa_application_segment" "example" {
-//   name = "All Other Services"
-// }
-
-// output "example_zpa_application_segment" {
-//   value = data.zpa_application_segment.example.id
-// }
-
-
+/*
 data "zpa_app_connector_group" "example" {
   name = "SGIO-Vancouver"
-}
-
- resource "zpa_segment_group" "example" {
-   name = "example"
-   description = "example"
-   enabled = true
-   policy_migrated = false
- }
-
-resource "zpa_server_group" "example1" {
-  name = "example1"
-  description = "example1"
-  enabled = true
-  dynamic_discovery = true
-  app_connector_groups {
-    id = [data.zpa_app_connector_group.example.id]
-  }
-}
-
-resource "zpa_server_group" "example2" {
-  name = "example2"
-  description = "example2"
-  enabled = true
-  dynamic_discovery = true
-  app_connector_groups {
-    id = [data.zpa_app_connector_group.example.id]
-  }
 }
 
 resource "zpa_application_segment" "example" {
@@ -60,12 +25,46 @@ resource "zpa_application_segment" "example" {
     domain_names = ["acme.com"]
     segment_group_id = zpa_segment_group.example.id
     server_groups {
-        id = [
-          zpa_server_group.example1.id,
-          zpa_server_group.example2.id ]
+        id = [ zpa_server_group.example.id]
     }
 }
 
-output "all_application_segment" {
-  value = zpa_application_segment.example
+resource "zpa_server_group" "example" {
+  name = "example1"
+  description = "example1"
+  enabled = true
+  dynamic_discovery = true
+  app_connector_groups {
+    id = [data.zpa_app_connector_group.example.id]
+  }
+}
+*/
+ resource "zpa_segment_group" "example" {
+   name = "example1"
+   description = "example1"
+   enabled = true
+   policy_migrated = false
+ }
+
+resource "zpa_policyset_rule" "example" {
+  name                          = "example"
+  description                   = "example"
+  action                        = "ALLOW"
+  rule_order                     = 2
+  operator = "AND"
+  policy_set_id = data.zpa_policy_set_global.all.id
+
+  conditions {
+    negated = false
+    operator = "OR"
+    operands {
+      name =  "example"
+      object_type = "APP_GROUP"
+      lhs = "id"
+      rhs = zpa_segment_group.example.id
+    }
+  }
+}
+
+  data "zpa_policy_set_global" "all" {
 }
