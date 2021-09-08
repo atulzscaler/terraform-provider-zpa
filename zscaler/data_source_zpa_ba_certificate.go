@@ -108,6 +108,7 @@ func dataSourceBaCertificateRead(d *schema.ResourceData, m interface{}) error {
 		resp = res
 	}
 	if resp != nil {
+		d.SetId(resp.ID)
 		_ = d.Set("cname", resp.CName)
 		_ = d.Set("cert_chain", resp.CertChain)
 		_ = d.Set("certificate", resp.Certificate)
