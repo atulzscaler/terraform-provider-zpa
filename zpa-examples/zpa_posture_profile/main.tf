@@ -12,10 +12,9 @@ provider "zpa" {}
 
 // Testing Data Source Posture Profile
 data "zpa_posture_profile" "example" {
-    // id = "216196257331283524"
  name = "sgio-windows-domain"
 }
 
 output "all_posture_profile" {
-  value = data.zpa_posture_profile.example.id
+  value = data.zpa_posture_profile.example
 }
