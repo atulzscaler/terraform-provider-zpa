@@ -10,10 +10,10 @@ terraform {
 provider "zpa" {}
 
 data "zpa_ba_certificate" "all" {
-    id = 216196257331282104
+ name = "jenkins.securitygeek.io"
 
 }
 
 output "all_zpa_ba_certificate" {
-  value = data.zpa_ba_certificate.all
+  value = data.zpa_ba_certificate.all.id
 }

@@ -1,8 +1,10 @@
 package zscaler
 
 import (
-	"strconv"
+	"fmt"
+	"log"
 
+	"github.com/SecurityGeekIO/terraform-provider-zpa/gozscaler/bacertificate"
 	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/schema"
 )
 
@@ -23,7 +25,7 @@ func dataSourceBaCertificate() *schema.Resource {
 				Computed: true,
 			},
 			"creation_time": {
-				Type:     schema.TypeInt,
+				Type:     schema.TypeString,
 				Computed: true,
 			},
 			"description": {
@@ -43,16 +45,16 @@ func dataSourceBaCertificate() *schema.Resource {
 				Computed: true,
 			},
 			"modifiedby": {
-				Type:     schema.TypeInt,
+				Type:     schema.TypeString,
 				Computed: true,
 			},
 			"modified_time": {
-				Type:     schema.TypeInt,
+				Type:     schema.TypeString,
 				Computed: true,
 			},
 			"name": {
 				Type:     schema.TypeString,
-				Computed: true,
+				Optional: true,
 			},
 			"public_key": {
 				Type:     schema.TypeString,
@@ -72,11 +74,11 @@ func dataSourceBaCertificate() *schema.Resource {
 				Computed: true,
 			},
 			"valid_from_in_epochsec": {
-				Type:     schema.TypeInt,
+				Type:     schema.TypeString,
 				Computed: true,
 			},
 			"valid_to_in_epochsec": {
-				Type:     schema.TypeInt,
+				Type:     schema.TypeString,
 				Computed: true,
 			},
 		},
@@ -86,33 +88,46 @@ func dataSourceBaCertificate() *schema.Resource {
 func dataSourceBaCertificateRead(d *schema.ResourceData, m interface{}) error {
 	zClient := m.(*Client)
 
-	id, err := strconv.ParseInt(d.Get("id").(string), 10, 64)
-	if err != nil {
-		return err
+	var resp *bacertificate.BaCertificate
+	id, ok := d.Get("id").(string)
+	if ok && id != "" {
+		log.Printf("[INFO] Getting data for browser certificate %s\n", id)
+		res, _, err := zClient.bacertificate.Get(id)
+		if err != nil {
+			return err
+		}
+		resp = res
 	}
-
-	resp, _, err := zClient.bacertificate.Get(id)
-	if err != nil {
-		return err
+	name, ok := d.Get("name").(string)
+	if id == "" && ok && name != "" {
+		log.Printf("[INFO] Getting data for browser certificate name %s\n", name)
+		res, _, err := zClient.bacertificate.GetByName(name)
+		if err != nil {
+			return err
+		}
+		resp = res
 	}
-
-	d.SetId(strconv.FormatInt(int64(resp.ID), 10))
-	_ = d.Set("cname", resp.CName)
-	_ = d.Set("cert_chain", resp.CertChain)
-	_ = d.Set("certificate", resp.Certificate)
-	_ = d.Set("creation_time", resp.CreationTime)
-	_ = d.Set("description", resp.Description)
-	_ = d.Set("issued_by", resp.IssuedBy)
-	_ = d.Set("issued_to", resp.IssuedTo)
-	_ = d.Set("modifiedby", resp.ModifiedBy)
-	_ = d.Set("modified_time", resp.ModifiedTime)
-	_ = d.Set("name", resp.Name)
-	_ = d.Set("public_key", resp.PublicKey)
-	_ = d.Set("san", resp.San)
-	_ = d.Set("serial_no", resp.SerialNo)
-	_ = d.Set("status", resp.Status)
-	_ = d.Set("valid_from_in_epochsec", resp.ValidFromInEpochSec)
-	_ = d.Set("valid_to_in_epochsec", resp.ValidToInEpochSec)
+	if resp != nil {
+		d.SetId(resp.ID)
+		_ = d.Set("cname", resp.CName)
+		_ = d.Set("cert_chain", resp.CertChain)
+		_ = d.Set("certificate", resp.Certificate)
+		_ = d.Set("creation_time", resp.CreationTime)
+		_ = d.Set("description", resp.Description)
+		_ = d.Set("issued_by", resp.IssuedBy)
+		_ = d.Set("issued_to", resp.IssuedTo)
+		_ = d.Set("modifiedby", resp.ModifiedBy)
+		_ = d.Set("modified_time", resp.ModifiedTime)
+		_ = d.Set("name", resp.Name)
+		_ = d.Set("public_key", resp.PublicKey)
+		_ = d.Set("san", resp.San)
+		_ = d.Set("serial_no", resp.SerialNo)
+		_ = d.Set("status", resp.Status)
+		_ = d.Set("valid_from_in_epochsec", resp.ValidFromInEpochSec)
+		_ = d.Set("valid_to_in_epochsec", resp.ValidToInEpochSec)
+	} else {
+		return fmt.Errorf("couldn't find any browser certificate with name '%s' or id '%s'", name, id)
+	}
 
 	return nil
 }
