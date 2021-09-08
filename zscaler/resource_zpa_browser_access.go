@@ -105,7 +105,6 @@ func resourceBrowserAccess() *schema.Resource {
 							Type:     schema.TypeString,
 							Computed: true,
 						},
-						//Causing panic: interface conversion: interface {} is nil, not string
 						"application_port": {
 							Type:     schema.TypeString,
 							Optional: true,
@@ -202,7 +201,7 @@ func resourceBrowserAccessCreate(d *schema.ResourceData, m interface{}) error {
 		return err
 	}
 
-	log.Printf("[INFO] Created application segment request. ID: %v\n", browseraccess.ID)
+	log.Printf("[INFO] Created browser access request. ID: %v\n", browseraccess.ID)
 	d.SetId(browseraccess.ID)
 
 	return resourceBrowserAccessRead(d, m)
@@ -214,7 +213,7 @@ func resourceBrowserAccessRead(d *schema.ResourceData, m interface{}) error {
 	resp, _, err := zClient.browseraccess.Get(d.Id())
 	if err != nil {
 		if err.(*client.ErrorResponse).IsObjectNotFound() {
-			log.Printf("[WARN] Removing segment group %s from state because it no longer exists in ZPA", d.Id())
+			log.Printf("[WARN] Removing browser access %s from state because it no longer exists in ZPA", d.Id())
 			d.SetId("")
 			return nil
 		}
@@ -308,7 +307,7 @@ func expandClientlessApps(d *schema.ResourceData) []browseraccess.ClientlessApps
 				clientlessApps = append(clientlessApps, browseraccess.ClientlessApps{
 					AllowOptions:        clientlessApp["allow_options"].(bool),
 					AppId:               clientlessApp["app_id"].(string),
-					ApplicationPort:     clientlessApp["application_port"].(string), //Causing panic: interface conversion: interface {} is nil, not string
+					ApplicationPort:     clientlessApp["application_port"].(string),
 					ApplicationProtocol: clientlessApp["application_protocol"].(string),
 					CertificateId:       clientlessApp["certificate_id"].(string),
 					CertificateName:     clientlessApp["certificate_name"].(string),
