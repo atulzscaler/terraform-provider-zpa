@@ -13,7 +13,7 @@ provider "zpa" {}
 resource "zpa_policy_forwarding" "example" {
   name                          = "example"
   description                   = "example"
-  action                        = "INTERCEPT"
+  action                        = "INTERCEPT_ACCESSIBLE"
   operator = "AND"
   policy_set_id = data.zpa_policy_forwarding.all.id
 }
