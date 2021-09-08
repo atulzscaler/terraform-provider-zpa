@@ -44,7 +44,7 @@ func (service *Service) Get(baCertificateId string) (*BaCertificate, *http.Respo
 
 func (service *Service) GetByName(name string) (*BaCertificate, *http.Response, error) {
 	var v []BaCertificate
-	relativeURL := fmt.Sprintf(mgmtConfig + service.Client.Config.CustomerID + baCertificateEndpoint)
+	relativeURL := fmt.Sprintf("%s/issued", mgmtConfig+service.Client.Config.CustomerID+baCertificateEndpoint)
 	resp, err := service.Client.NewRequestDo("GET", relativeURL, struct{ pagesize int }{
 		pagesize: 500,
 	}, nil, &v)

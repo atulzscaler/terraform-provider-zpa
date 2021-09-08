@@ -99,7 +99,7 @@ func dataSourceBaCertificateRead(d *schema.ResourceData, m interface{}) error {
 		resp = res
 	}
 	name, ok := d.Get("name").(string)
-	if ok && name != "" {
+	if id == "" && ok && name != "" {
 		log.Printf("[INFO] Getting data for browser certificate name %s\n", name)
 		res, _, err := zClient.bacertificate.GetByName(name)
 		if err != nil {
