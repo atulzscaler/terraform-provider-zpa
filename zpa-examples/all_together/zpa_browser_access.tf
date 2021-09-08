@@ -19,6 +19,6 @@ resource "zpa_browser_access" "browser_access_apps" {
         domain = "sales.securitygeek.io"
     }
     server_groups {
-        id = zpa_server_group.browser_access_apps.id
+        id = [zpa_server_group.browser_access_apps.id]
     }
 }
