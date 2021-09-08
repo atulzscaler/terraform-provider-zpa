@@ -10,7 +10,6 @@ terraform {
 provider "zpa" {}
 
 data "zpa_idp_controller" "all" {
-//  id = "216196257331281956"
  name = "SGIO-User-Okta"
 }
 
