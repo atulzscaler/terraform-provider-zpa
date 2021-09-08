@@ -46,7 +46,7 @@ func (service *Service) GetByName(scimAttributeName, IdpId string) (*ScimAttribu
 	var v struct {
 		List []ScimAttributeHeader `json:"list"`
 	}
-	relativeURL := fmt.Sprintf("%s/%s", mgmtConfig+service.Client.Config.CustomerID+idpId+scimAttrEndpoint, IdpId)
+	relativeURL := fmt.Sprintf("%s/%s%s", mgmtConfig+service.Client.Config.CustomerID+idpId, IdpId, scimAttrEndpoint)
 	resp, err := service.Client.NewRequestDo("GET", relativeURL, struct{ pagesize int }{
 		pagesize: 500,
 	}, nil, &v)
