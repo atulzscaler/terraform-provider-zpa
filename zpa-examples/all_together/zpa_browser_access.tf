@@ -1,3 +1,4 @@
+
 // Creating Browser Access Application
 resource "zpa_browser_access" "browser_access_apps" {
     name = "Browser Access Apps"

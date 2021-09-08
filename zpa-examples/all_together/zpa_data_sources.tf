@@ -12,7 +12,7 @@ data "zpa_policy_set_global" "all" {
 }
 
 data "zpa_idp_controller" "sgio_user_okta" {
- id = "SGIO-User-Okta"
+ name = "SGIO-User-Okta"
 }
 
 // Okta IDP SCIM Groups
