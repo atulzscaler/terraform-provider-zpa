@@ -22,8 +22,6 @@ github.com/Masterminds/sprig
 # github.com/agext/levenshtein v1.2.2
 ## explicit
 github.com/agext/levenshtein
-# github.com/apparentlymart/go-textseg v1.0.0
-## explicit
 # github.com/apparentlymart/go-textseg/v12 v12.0.0
 ## explicit; go 1.14
 github.com/apparentlymart/go-textseg/v12/textseg
