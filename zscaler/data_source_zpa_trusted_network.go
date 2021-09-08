@@ -1,9 +1,8 @@
 package zscaler
 
 import (
+	"fmt"
 	"log"
-	"strconv"
-	"time"
 
 	"github.com/SecurityGeekIO/terraform-provider-zpa/gozscaler/trustednetwork"
 	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/schema"
@@ -13,49 +12,37 @@ func dataSourceTrustedNetwork() *schema.Resource {
 	return &schema.Resource{
 		Read: dataSourceTrustedNetworkRead,
 		Schema: map[string]*schema.Schema{
+			"creation_time": {
+				Type:     schema.TypeString,
+				Computed: true,
+			},
+			"domain": {
+				Type:     schema.TypeString,
+				Computed: true,
+			},
 			"id": {
 				Type:     schema.TypeString,
 				Optional: true,
 			},
-			"list": {
-				Type:     schema.TypeList,
+			"modifiedby": {
+				Type:     schema.TypeString,
 				Computed: true,
-				Elem: &schema.Resource{
-					Schema: map[string]*schema.Schema{
-						"creation_time": {
-							Type:     schema.TypeInt,
-							Computed: true,
-						},
-						"domain": {
-							Type:     schema.TypeString,
-							Computed: true,
-						},
-						"id": {
-							Type:     schema.TypeString,
-							Required: true,
-						},
-						"modifiedby": {
-							Type:     schema.TypeInt,
-							Computed: true,
-						},
-						"modified_time": {
-							Type:     schema.TypeInt,
-							Computed: true,
-						},
-						"name": {
-							Type:     schema.TypeString,
-							Computed: true,
-						},
-						"network_id": {
-							Type:     schema.TypeString,
-							Computed: true,
-						},
-						"zscaler_cloud": {
-							Type:     schema.TypeString,
-							Computed: true,
-						},
-					},
-				},
+			},
+			"modified_time": {
+				Type:     schema.TypeString,
+				Computed: true,
+			},
+			"name": {
+				Type:     schema.TypeString,
+				Optional: true,
+			},
+			"network_id": {
+				Type:     schema.TypeString,
+				Computed: true,
+			},
+			"zscaler_cloud": {
+				Type:     schema.TypeString,
+				Computed: true,
 			},
 		},
 	}
@@ -64,54 +51,39 @@ func dataSourceTrustedNetwork() *schema.Resource {
 func dataSourceTrustedNetworkRead(d *schema.ResourceData, m interface{}) error {
 	zClient := m.(*Client)
 
-	trustedNetworkID := ""
-	if trustedNetworkIDInterface, ok := d.GetOk("id"); ok {
-		trustedNetworkID = trustedNetworkIDInterface.(string)
+	var resp *trustednetwork.TrustedNetwork
+	id, ok := d.Get("id").(string)
+	if ok && id != "" {
+		log.Printf("[INFO] Getting data for trusted network %s\n", id)
+		res, _, err := zClient.trustednetwork.Get(id)
+		if err != nil {
+			return err
+		}
+		resp = res
+
 	}
-
-	if len(trustedNetworkID) != 0 {
-		log.Printf("[INFO] Getting data for posture profile %s\n", trustedNetworkID)
-		// Getting specific posture ID
-		resp, _, err := zClient.trustednetwork.Get(trustedNetworkID)
+	name, ok := d.Get("name").(string)
+	if ok && name != "" {
+		log.Printf("[INFO] Getting data for trusted network name %s\n", name)
+		res, _, err := zClient.trustednetwork.GetByName(name)
 		if err != nil {
 			return err
 		}
-
-		// Add the one posture profile ID we received
+		resp = res
+	}
+	if resp != nil {
 		d.SetId(resp.ID)
-		// Now we make a slice of posture profiles, so we can add the one posture profile to the resource list after flattening
-		trustedNetworks := make([]trustednetwork.TrustedNetwork, 0)
-		trustedNetworks = append(trustedNetworks, *resp)
-		d.Set("list", flattenTrustedNetwork(trustedNetworks))
-	} else {
-		log.Printf("[INFO] Getting data for all posture profiles \n")
-		// Getting all posture IDs
-		resp, _, err := zClient.trustednetwork.GetAll()
-		if err != nil {
-			return err
-		}
+		_ = d.Set("creation_time", resp.CreationTime)
+		_ = d.Set("domain", resp.Domain)
+		_ = d.Set("modifiedby", resp.ModifiedBy)
+		_ = d.Set("modified_time", resp.ModifiedTime)
+		_ = d.Set("name", resp.Name)
+		_ = d.Set("network_id", resp.NetworkId)
+		_ = d.Set("zscaler_cloud", resp.ZscalerCloud)
 
-		// In case of all posture profiles returned, I don't now which ID to set as ID here, so I add time from documentation
-		d.SetId(strconv.FormatInt(time.Now().Unix(), 10))
-		d.Set("list", flattenTrustedNetwork(resp))
+	} else {
+		return fmt.Errorf("couldn't find any trusted network with name '%s' or id '%s'", name, id)
 	}
 
 	return nil
-}
-
-func flattenTrustedNetwork(trustedNetwork []trustednetwork.TrustedNetwork) []interface{} {
-	trustedNetworks := make([]interface{}, len(trustedNetwork))
-	for i, trustedNetworksItem := range trustedNetwork {
-		trustedNetworks[i] = map[string]interface{}{
-			"creation_time": trustedNetworksItem.CreationTime,
-			"domain":        trustedNetworksItem.Domain,
-			"id":            trustedNetworksItem.ID,
-			"modifiedby":    trustedNetworksItem.ModifiedBy,
-			"modified_time": trustedNetworksItem.ModifiedTime,
-			"name":          trustedNetworksItem.Name,
-			"network_id":    trustedNetworksItem.NetworkId,
-			"zscaler_cloud": trustedNetworksItem.ZscalerCloud,
-		}
-	}
-	return trustedNetworks
 }

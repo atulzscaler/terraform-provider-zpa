@@ -66,7 +66,7 @@ func dataSourcePostureProfileRead(d *schema.ResourceData, m interface{}) error {
 		resp = res
 	}
 	name, ok := d.Get("name").(string)
-	if ok && name != "" {
+	if id == "" && ok && name != "" {
 		log.Printf("[INFO] Getting data for posture profile name %s\n", name)
 		res, _, err := zClient.postureprofile.GetByName(name)
 		if err != nil {
