@@ -42,15 +42,14 @@ func Provider() *schema.Provider {
 			   terraform resource name: resource schema
 			   resource formation: provider-resourcename-subresource
 			*/
-			"zpa_application_server":      resourceApplicationServer(),
-			"zpa_application_segment":     resourceApplicationSegment(),
-			"zpa_server_group":            resourceServerGroup(),
-			"zpa_server_group_attachment": resourceServerGroupAttachment(),
-			"zpa_segment_group":           resourceSegmentGroup(),
-			"zpa_browser_access":          resourceBrowserAccess(),
-			"zpa_policyset_rule":          resourcePolicySetRule(),
-			"zpa_policy_timeout":          resourcePolicyTimeout(),
-			"zpa_policy_forwarding":       resourcePolicyForwarding(),
+			"zpa_application_server":  resourceApplicationServer(),
+			"zpa_application_segment": resourceApplicationSegment(),
+			"zpa_server_group":        resourceServerGroup(),
+			"zpa_segment_group":       resourceSegmentGroup(),
+			"zpa_browser_access":      resourceBrowserAccess(),
+			"zpa_policyset_rule":      resourcePolicySetRule(),
+			"zpa_policy_timeout":      resourcePolicyTimeout(),
+			"zpa_policy_forwarding":   resourcePolicyForwarding(),
 		},
 		DataSourcesMap: map[string]*schema.Resource{
 			// terraform date source name: data source schema
