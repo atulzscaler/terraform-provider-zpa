@@ -61,7 +61,7 @@ resource "zpa_application_server" "pan220" {
   description                   = "pan220.securitygeek.io"
   address                       = "pan220.securitygeek.io"
   enabled                       = true
-  app_server_group_ids             = [ zpa_server_group.all_other_services.id ]
+  app_server_group_ids             = [ zpa_server_group.sgio_devops_servers.id ]
 }
 
 resource "zpa_application_server" "trafficgen" {
@@ -69,7 +69,7 @@ resource "zpa_application_server" "trafficgen" {
   description                   = "trafficgen.securitygeek.io"
   address                       = "trafficgen.securitygeek.io"
   enabled                       = true
-  app_server_group_ids             = [ zpa_server_group.all_other_services.id ]
+  app_server_group_ids             = [ zpa_server_group.sgio_devops_servers.id ]
 }
 
 resource "zpa_application_server" "zpa131" {
@@ -77,7 +77,7 @@ resource "zpa_application_server" "zpa131" {
   description                   = "zpa131.securitygeek.io"
   address                       = "zpa131.securitygeek.io"
   enabled                       = true
-  app_server_group_ids             = [ zpa_server_group.all_other_services.id ]
+  app_server_group_ids             = [ zpa_server_group.sgio_devops_servers.id ]
 }
 
 resource "zpa_application_server" "splunk" {
@@ -85,7 +85,7 @@ resource "zpa_application_server" "splunk" {
   description                   = "splunk.securitygeek.io"
   address                       = "splunk.securitygeek.io"
   enabled                       = true
-  app_server_group_ids             = [ zpa_server_group.all_other_services.id ]
+  app_server_group_ids             = [ zpa_server_group.sgio_devops_servers.id ]
 }
 
 resource "zpa_application_server" "nss128" {
@@ -93,7 +93,7 @@ resource "zpa_application_server" "nss128" {
   description                   = "nss128.securitygeek.io"
   address                       = "nss128.securitygeek.io"
   enabled                       = true
-  app_server_group_ids             = [ zpa_server_group.all_other_services.id ]
+  app_server_group_ids             = [ zpa_server_group.sgio_devops_servers.id ]
 }
 
 resource "zpa_application_server" "rdp125" {
@@ -101,7 +101,7 @@ resource "zpa_application_server" "rdp125" {
   description                   = "rdp125.securitygeek.io"
   address                       = "rdp125.securitygeek.io"
   enabled                       = true
-  app_server_group_ids             = [ zpa_server_group.all_other_services.id ]
+  app_server_group_ids             = [ zpa_server_group.sgio_devops_servers.id ]
 }
 
 resource "zpa_application_server" "rdp126" {
@@ -109,7 +109,7 @@ resource "zpa_application_server" "rdp126" {
   description                   = "rdp126.securitygeek.io"
   address                       = "rdp126.securitygeek.io"
   enabled                       = true
-  app_server_group_ids             = [ zpa_server_group.all_other_services.id ]
+  app_server_group_ids             = [ zpa_server_group.sgio_devops_servers.id ]
 }
 
 resource "zpa_application_server" "vcd125-ad01" {
@@ -117,5 +117,5 @@ resource "zpa_application_server" "vcd125-ad01" {
   description                   = "vcd125-ad01.securitygeek.io"
   address                       = "vcd125-ad01securitygeek.io"
   enabled                       = true
-  app_server_group_ids             = [ zpa_server_group.all_other_services.id ]
+  app_server_group_ids             = [ zpa_server_group.sgio_devops_servers.id ]
 }

@@ -13,19 +13,9 @@ data "zpa_app_connector_group" "example" {
   name = "SGIO-Vancouver"
 }
 
-resource "zpa_server_group" "example1" {
-  name = "example1"
-  description = "example1"
-  enabled = true
-  dynamic_discovery = true
-  app_connector_groups {
-    id = [data.zpa_app_connector_group.example.id]
-  }
-}
-
-resource "zpa_server_group" "example2" {
-  name = "example2"
-  description = "example2"
+resource "zpa_server_group" "example" {
+  name = "example"
+  description = "example"
   enabled = true
   dynamic_discovery = true
   app_connector_groups {
@@ -42,7 +32,7 @@ resource "zpa_server_group" "example2" {
 
 // DevOps Browser Access
 data "zpa_ba_certificate" "jenkins_ba" {
-    id = 216196257331282582
+    name = "jenkins.securitygeek.io"
 }
 
 
@@ -67,8 +57,7 @@ resource "zpa_browser_access" "jenkins_app" {
     }
     server_groups {
         id = [
-            zpa_server_group.example1.id,
-            zpa_server_group.example2.id
+            zpa_server_group.example.id,
         ]
     }
 }

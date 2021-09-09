@@ -76,6 +76,7 @@ resource "zpa_policyset_rule" "as_intranet_web_apps" {
   }
 }
 
+/*
 // Browser Access Rule
 resource "zpa_policyset_rule" "browser_access_apps" {
   name                          = "Browser Access Apps"
@@ -117,6 +118,7 @@ resource "zpa_policyset_rule" "browser_access_apps" {
     }
   }
 }
+*/
 
 // Access to all other Apps
 resource "zpa_policyset_rule" "all_other_services" {

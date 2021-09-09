@@ -240,7 +240,7 @@ func dataSourceSegmentGroupRead(d *schema.ResourceData, m interface{}) error {
 			return fmt.Errorf("failed to read applications %s", err)
 		}
 	} else {
-		return fmt.Errorf("couldn't find any application with name '%s' or id '%s'", name, id)
+		return fmt.Errorf("couldn't find any segment group with name '%s' or id '%s'", name, id)
 	}
 
 	return nil

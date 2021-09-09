@@ -72,7 +72,7 @@ func resourceApplicationServerCreate(d *schema.ResourceData, m interface{}) erro
 	if err != nil {
 		return err
 	}
-	log.Printf("[INFO] Created server group request. ID: %v\n", resp)
+	log.Printf("[INFO] Created application server request. ID: %v\n", resp)
 	d.SetId(resp.ID)
 
 	return resourceApplicationServerRead(d, m)
@@ -84,7 +84,7 @@ func resourceApplicationServerRead(d *schema.ResourceData, m interface{}) error 
 	resp, _, err := zClient.appservercontroller.Get(d.Id())
 	if err != nil {
 		if err.(*client.ErrorResponse).IsObjectNotFound() {
-			log.Printf("[WARN] Removing server group %s from state because it no longer exists in ZPA", d.Id())
+			log.Printf("[WARN] Removing application server %s from state because it no longer exists in ZPA", d.Id())
 			d.SetId("")
 			return nil
 		}

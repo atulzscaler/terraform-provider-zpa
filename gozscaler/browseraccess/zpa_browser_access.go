@@ -71,7 +71,7 @@ func (service *Service) Get(id string) (*BrowserAccess, *http.Response, error) {
 	return v, resp, nil
 }
 
-func (service *Service) Create(browserAccess *BrowserAccess) (*BrowserAccess, *http.Response, error) {
+func (service *Service) Create(browserAccess BrowserAccess) (*BrowserAccess, *http.Response, error) {
 	v := new(BrowserAccess)
 	resp, err := service.Client.NewRequestDo("POST", mgmtConfig+service.Client.Config.CustomerID+browserAccessEndpoint, nil, browserAccess, &v)
 	if err != nil {

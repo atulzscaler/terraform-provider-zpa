@@ -71,7 +71,6 @@ func dataSourceScimGroupRead(d *schema.ResourceData, m interface{}) error {
 		resp = res
 	}
 	if resp != nil {
-		// d.SetId(resp.ID)
 		d.SetId(strconv.FormatInt(int64(resp.ID), 10))
 		_ = d.Set("creation_time", resp.CreationTime)
 		_ = d.Set("idp_group_id", resp.IdpGroupId)
@@ -84,18 +83,3 @@ func dataSourceScimGroupRead(d *schema.ResourceData, m interface{}) error {
 	}
 	return nil
 }
-
-// func flattenScimGroups(scimGroupResponse []scimgroup.ScimGroup) []interface{} {
-//  scimGroups := make([]interface{}, len(scimGroupResponse))
-//  for i, scimGroupItem := range scimGroupResponse {
-//      scimGroups[i] = map[string]interface{}{
-//          "creation_time": scimGroupItem.CreationTime,
-//          "id":            scimGroupItem.ID,
-//          "idp_id":        scimGroupItem.IdpId,
-//          "idp_group_id":  scimGroupItem.IdpGroupId,
-//          "modified_time": scimGroupItem.ModifiedTime,
-//          "name":          scimGroupItem.Name,
-//      }
-//  }
-//  return scimGroups
-// }
