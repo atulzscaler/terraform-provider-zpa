@@ -13,21 +13,12 @@ data "zpa_app_connector_group" "example" {
   name = "SGIO-Vancouver"
 }
 
-
-resource "zpa_server_group" "example20" {
-  name = "example20"
-  description = "example20"
-  enabled = true
-  dynamic_discovery = false
-  // applications {
-  //   id = [zpa_application_segment.example.id]
-  // }
-  servers {
-    id = [zpa_application_server.example20.id]
-  }
-  app_connector_groups {
-    id = [data.zpa_app_connector_group.example.id]
-  }
+resource "zpa_application_server" "example" {
+  name                          = "server.acme.com"
+  description                   = "server.acme.com"
+  address                       = "server.acme.com"
+  enabled                       = true
+  app_server_group_ids             = [ zpa_server_group.example.id ]
 }
 
 resource "zpa_server_group" "example30" {
@@ -35,29 +26,11 @@ resource "zpa_server_group" "example30" {
   description = "example30"
   enabled = true
   dynamic_discovery = false
-  // applications {
-  //   id = [zpa_application_segment.example.id]
-  // }
-  servers {
-    id = [zpa_application_server.example20.id]
-  }
   app_connector_groups {
     id = [data.zpa_app_connector_group.example.id]
   }
 }
 
-resource "zpa_application_server" "example20" {
-  name                          = "example20.securitygeek.io"
-  description                   = "example20.securitygeek.io"
-  address                       = "2.2.2.2"
-  enabled                       = true
-  // app_server_group_ids             = [ zpa_server_group.example20.id ]
-}
-
-
-/*
-data "zpa_policy_set_global" "all" {
-}
 
 resource "zpa_segment_group" "example" {
   name = "example"
@@ -74,11 +47,15 @@ resource "zpa_application_segment" "example" {
     bypass_type = "NEVER"
     is_cname_enabled = true
     tcp_port_ranges = ["8080", "8080"]
-    domain_names = ["acme.com"]
+    domain_names = ["server.acme.com"]
     segment_group_id = zpa_segment_group.example.id
-    // server_groups {
-    //     id = [ zpa_server_group.example.id]
-    // }
+    server_groups {
+        id = [ zpa_server_group.example.id]
+    }
+}
+
+/*
+data "zpa_policy_set_global" "all" {
 }
 
 resource "zpa_policyset_rule" "example" {
@@ -94,9 +71,9 @@ resource "zpa_policyset_rule" "example" {
     operator = "OR"
     operands {
       name =  "example"
-      object_type = "APP"
+      object_type = "APP_GROUP"
       lhs = "id"
-      rhs = zpa_application_segment.example.id
+      rhs = zpa_segment_group.example.id
     }
   }
 }
