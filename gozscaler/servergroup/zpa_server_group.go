@@ -13,12 +13,12 @@ const (
 
 type ServerGroup struct {
 	ID                 string               `json:"id,omitempty"`
-	Enabled            bool                 `json:"enabled,omitempty"`
+	Enabled            bool                 `json:"enabled"`
 	Name               string               `json:"name,omitempty"`
 	Description        string               `json:"description,omitempty"`
-	IpAnchored         bool                 `json:"ipAnchored,omitempty"`
+	IpAnchored         bool                 `json:"ipAnchored"`
 	ConfigSpace        string               `json:"configSpace,omitempty"`
-	DynamicDiscovery   bool                 `json:"dynamicDiscovery,omitempty"`
+	DynamicDiscovery   bool                 `json:"dynamicDiscovery"`
 	CreationTime       string               `json:"creationTime,omitempty"`
 	ModifiedBy         string               `json:"modifiedBy,omitempty"`
 	ModifiedTime       string               `json:"modifiedTime,omitempty"`
