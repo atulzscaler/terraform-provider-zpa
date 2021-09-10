@@ -239,6 +239,8 @@ func resourceBrowserAccessRead(d *schema.ResourceData, m interface{}) error {
 	_ = d.Set("health_reporting", resp.HealthReporting)
 	_ = d.Set("tcp_port_ranges", resp.TcpPortRanges)
 	_ = d.Set("udp_port_ranges", resp.UdpPortRanges)
+	// _ = d.Set("clientless_apps", flattenBaClientlessApps(resp))
+	// _ = d.Set("server_groups", flattenClientlessAppServerGroups(resp))
 
 	if err := d.Set("clientless_apps", flattenBaClientlessApps(resp)); err != nil {
 		return fmt.Errorf("failed to read clientless apps %s", err)
