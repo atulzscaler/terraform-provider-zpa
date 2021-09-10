@@ -1,6 +1,12 @@
-Terraform Provider
-==================
-A basic [Terraform](http://terraform.io) provider for Aviatrix. Read this [tutorial](https://docs.aviatrix.com/HowTos/tf_aviatrix_howto.html) as an alternative to the README, only if the instructions are unclear.
+Terraform Provider for Zscaler Private Access
+======================================================
+
+- Website: https://www.terraform.io
+- Documentation: https://help.zscaler.com/zpa
+- [![Gitter chat](https://badges.gitter.im/hashicorp-terraform/Lobby.png)](https://gitter.im/hashicorp-terraform/Lobby)
+- Mailing list: [Google Groups](http://groups.google.com/group/terraform-tool)
+
+<img src="https://cdn.rawgit.com/hashicorp/terraform-website/master/content/source/assets/images/logo-hashicorp.svg" width="600px">
 
 Requirements
 ------------
@@ -66,7 +72,7 @@ go fmt
 go install
 xcopy "$env:GOPATH\bin\terraform-provider-zpa.exe" "$env:APPDATA\terraform.d\plugins\zscaler.com\zpa\zpa\1.0.0\windows_amd64\" /Y
 ```
-Using SecurityGeekIO Provider (Terraform v0.12+)
+Using Zscaler Private Access Provider (Terraform v0.12+)
 -----------------------
 
 Activate the provider by adding the following to `~/.terraformrc` on Linux/Unix.
@@ -88,7 +94,7 @@ providers {
 
 If the rc file is not present, it should be created
 
-Using SecurityGeekIO Provider (Terraform v0.13+)
+Using Zscaler Private Access Provider (Terraform v0.13+)
 -----------------------
 
 For Terraform v0.13+, to use a locally built version of a provider you must add the following snippet to every module
