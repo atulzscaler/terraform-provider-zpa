@@ -41,7 +41,7 @@ resource "zpa_segment_group" "segmentgroup" {
   policy_migrated = true
 }
 
-resource "zpa_application_segment" "example" {
+resource "zpa_application_segment" "applicationsegment" {
     name = "example"
     description = "example"
     enabled = true
