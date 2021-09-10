@@ -20,15 +20,9 @@ resource "zpa_application_server" "appserver" {
   enabled                       = true
 }
 
-<<<<<<< HEAD
-resource "zpa_server_group" "example30" {
-  name = "example30"
-  description = "example30"
-=======
 resource "zpa_server_group" "servergroup" {
   name = "servergroup"
   description = "servergroup"
->>>>>>> improvements
   enabled = true
   dynamic_discovery = false
   app_connector_groups {
