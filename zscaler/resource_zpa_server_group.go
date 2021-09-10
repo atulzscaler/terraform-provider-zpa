@@ -1,6 +1,7 @@
 package zscaler
 
 import (
+	"fmt"
 	"log"
 
 	"github.com/SecurityGeekIO/terraform-provider-zpa/gozscaler/client"
@@ -19,38 +20,6 @@ func resourceServerGroup() *schema.Resource {
 			State: schema.ImportStatePassthrough,
 		},
 		Schema: map[string]*schema.Schema{
-			"applications": {
-				Type:        schema.TypeSet,
-				Optional:    true,
-				Description: "This field is a json array of app-connector-id only.",
-				Elem: &schema.Resource{
-					Schema: map[string]*schema.Schema{
-						"id": {
-							Type:     schema.TypeList,
-							Optional: true,
-							Elem: &schema.Schema{
-								Type: schema.TypeString,
-							},
-						},
-					},
-				},
-			},
-			"app_connector_groups": {
-				Type:        schema.TypeSet,
-				Optional:    true,
-				Description: "List of app-connector IDs.",
-				Elem: &schema.Resource{
-					Schema: map[string]*schema.Schema{
-						"id": {
-							Type:     schema.TypeList,
-							Optional: true,
-							Elem: &schema.Schema{
-								Type: schema.TypeString,
-							},
-						},
-					},
-				},
-			},
 			"config_space": {
 				Type:     schema.TypeString,
 				Optional: true,
@@ -103,6 +72,38 @@ func resourceServerGroup() *schema.Resource {
 					},
 				},
 			},
+			"applications": {
+				Type:        schema.TypeSet,
+				Optional:    true,
+				Description: "This field is a json array of app-connector-id only.",
+				Elem: &schema.Resource{
+					Schema: map[string]*schema.Schema{
+						"id": {
+							Type:     schema.TypeList,
+							Optional: true,
+							Elem: &schema.Schema{
+								Type: schema.TypeString,
+							},
+						},
+					},
+				},
+			},
+			"app_connector_groups": {
+				Type:        schema.TypeSet,
+				Optional:    true,
+				Description: "List of app-connector IDs.",
+				Elem: &schema.Resource{
+					Schema: map[string]*schema.Schema{
+						"id": {
+							Type:     schema.TypeList,
+							Optional: true,
+							Elem: &schema.Schema{
+								Type: schema.TypeString,
+							},
+						},
+					},
+				},
+			},
 		},
 	}
 }
@@ -112,7 +113,10 @@ func resourceServerGroupCreate(d *schema.ResourceData, m interface{}) error {
 
 	req := expandServerGroup(d)
 	log.Printf("[INFO] Creating zpa server group with request\n%+v\n", req)
-
+	if len(req.Servers) > 0 && req.DynamicDiscovery {
+		log.Printf("[ERROR] An application server can only be attached to a server when DynamicDiscovery is disabled\n")
+		return fmt.Errorf("an application server can only be attached to a server when DynamicDiscovery is disabled")
+	}
 	resp, _, err := zClient.servergroup.Create(&req)
 	if err != nil {
 		return err
@@ -156,11 +160,13 @@ func resourceServerGroupRead(d *schema.ResourceData, m interface{}) error {
 
 func resourceServerGroupUpdate(d *schema.ResourceData, m interface{}) error {
 	zClient := m.(*Client)
-
 	id := d.Id()
 	log.Printf("[INFO] Updating server group ID: %v\n", id)
 	req := expandServerGroup(d)
-
+	if (d.HasChange("servers") || d.HasChange("dynamic_discovery")) && req.DynamicDiscovery && len(req.Servers) > 0 {
+		log.Printf("[ERROR] Can't update the server group: an application server can only be attached to a server when DynamicDiscovery is disabled\n")
+		return fmt.Errorf("can't perform the changes: an application server can only be attached to a server when DynamicDiscovery is disabled")
+	}
 	if _, err := zClient.servergroup.Update(id, &req); err != nil {
 		return err
 	}
@@ -202,8 +208,8 @@ func expandAppConnectorGroups(d *schema.ResourceData) []servergroup.AppConnector
 		log.Printf("[INFO] app connector groups data: %+v\n", appConnector)
 		var appConnectorGroups []servergroup.AppConnectorGroups
 		for _, appConnectorGroup := range appConnector.List() {
-			appConnectorGroup, _ := appConnectorGroup.(map[string]interface{})
-			if appConnectorGroup != nil {
+			appConnectorGroup, ok := appConnectorGroup.(map[string]interface{})
+			if ok {
 				for _, id := range appConnectorGroup["id"].([]interface{}) {
 					appConnectorGroups = append(appConnectorGroups, servergroup.AppConnectorGroups{
 						ID: id.(string),
@@ -224,8 +230,8 @@ func expandServerGroupApplications(d *schema.ResourceData) []servergroup.Applica
 		log.Printf("[INFO] server group application data: %+v\n", serverGroupApp)
 		var serverGroupApps []servergroup.Applications
 		for _, serverGroupApp := range serverGroupApp.List() {
-			serverGroupApp, _ := serverGroupApp.(map[string]interface{})
-			if serverGroupApp != nil {
+			serverGroupApp, ok := serverGroupApp.(map[string]interface{})
+			if ok {
 				for _, id := range serverGroupApp["id"].([]interface{}) {
 					serverGroupApps = append(serverGroupApps, servergroup.Applications{
 						ID: id.(string),
