@@ -12,7 +12,7 @@ const (
 )
 
 type SegmentGroup struct {
-	Applications        []Application `json:"applications,omitempty"`
+	Applications        []Application `json:"applications"`
 	ConfigSpace         string        `json:"configSpace,omitempty"`
 	CreationTime        string        `json:"creationTime,omitempty"`
 	Description         string        `json:"description,omitempty"`

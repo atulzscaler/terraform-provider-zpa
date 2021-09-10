@@ -13,33 +13,41 @@ data "zpa_app_connector_group" "example" {
   name = "SGIO-Vancouver"
 }
 
-resource "zpa_application_server" "example" {
+resource "zpa_application_server" "appserver" {
   name                          = "server.acme.com"
   description                   = "server.acme.com"
   address                       = "server.acme.com"
   enabled                       = true
-  app_server_group_ids             = [ zpa_server_group.example.id ]
 }
 
+<<<<<<< HEAD
 resource "zpa_server_group" "example30" {
   name = "example30"
   description = "example30"
+=======
+resource "zpa_server_group" "servergroup" {
+  name = "servergroup"
+  description = "servergroup"
+>>>>>>> improvements
   enabled = true
   dynamic_discovery = false
   app_connector_groups {
     id = [data.zpa_app_connector_group.example.id]
   }
+  servers {
+    id = [zpa_application_server.appserver.id]
+  }
 }
 
 
-resource "zpa_segment_group" "example" {
-  name = "example"
-  description = "example"
+resource "zpa_segment_group" "segmentgroup" {
+  name = "segmentgroup"
+  description = "segmentgroup"
   enabled = true
   policy_migrated = true
 }
 
-resource "zpa_application_segment" "example" {
+resource "zpa_application_segment" "applicationsegment" {
     name = "example"
     description = "example"
     enabled = true
@@ -48,9 +56,9 @@ resource "zpa_application_segment" "example" {
     is_cname_enabled = true
     tcp_port_ranges = ["8080", "8080"]
     domain_names = ["server.acme.com"]
-    segment_group_id = zpa_segment_group.example.id
+    segment_group_id = zpa_segment_group.segmentgroup.id
     server_groups {
-        id = [ zpa_server_group.example.id]
+        id = [ zpa_server_group.servergroup.id]
     }
 }
 
