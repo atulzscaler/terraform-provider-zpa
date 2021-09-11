@@ -6,6 +6,7 @@ import (
 
 	"github.com/SecurityGeekIO/terraform-provider-zpa/gozscaler/browseraccess"
 	"github.com/SecurityGeekIO/terraform-provider-zpa/gozscaler/client"
+	"github.com/SecurityGeekIO/terraform-provider-zpa/gozscaler/segmentgroup"
 	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/schema"
 	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/validation"
 )
@@ -196,6 +197,11 @@ func resourceBrowserAccessCreate(d *schema.ResourceData, m interface{}) error {
 	req := expandBrowserAccess(d)
 	log.Printf("[INFO] Creating browser access request\n%+v\n", req)
 
+	if req.SegmentGroupId == "" {
+		log.Println("[ERROR] Please provde a valid segment group for the application segment")
+		return fmt.Errorf("please provde a valid segment group for the application segment")
+	}
+
 	browseraccess, _, err := zClient.browseraccess.Create(req)
 	if err != nil {
 		return err
@@ -222,7 +228,6 @@ func resourceBrowserAccessRead(d *schema.ResourceData, m interface{}) error {
 	}
 
 	log.Printf("[INFO] Getting browser access:\n%+v\n", resp)
-	_ = d.Set("id", resp.ID)
 	_ = d.Set("segment_group_id", resp.SegmentGroupId)
 	_ = d.Set("segment_group_name", resp.SegmentGroupName)
 	_ = d.Set("bypass_type", resp.BypassType)
@@ -231,6 +236,7 @@ func resourceBrowserAccessRead(d *schema.ResourceData, m interface{}) error {
 	_ = d.Set("name", resp.Name)
 	_ = d.Set("description", resp.Description)
 	_ = d.Set("enabled", resp.Enabled)
+	_ = d.Set("id", resp.ID)
 	_ = d.Set("passive_health_enabled", resp.PassiveHealthEnabled)
 	_ = d.Set("double_encrypt", resp.DoubleEncrypt)
 	_ = d.Set("health_check_type", resp.HealthCheckType)
@@ -239,8 +245,6 @@ func resourceBrowserAccessRead(d *schema.ResourceData, m interface{}) error {
 	_ = d.Set("health_reporting", resp.HealthReporting)
 	_ = d.Set("tcp_port_ranges", resp.TcpPortRanges)
 	_ = d.Set("udp_port_ranges", resp.UdpPortRanges)
-	// _ = d.Set("clientless_apps", flattenBaClientlessApps(resp))
-	// _ = d.Set("server_groups", flattenClientlessAppServerGroups(resp))
 
 	if err := d.Set("clientless_apps", flattenBaClientlessApps(resp)); err != nil {
 		return fmt.Errorf("failed to read clientless apps %s", err)
@@ -260,6 +264,11 @@ func resourceBrowserAccessUpdate(d *schema.ResourceData, m interface{}) error {
 	log.Printf("[INFO] Updating browser access ID: %v\n", id)
 	req := expandBrowserAccess(d)
 
+	if d.HasChange("segment_group_id") && req.SegmentGroupId == "" {
+		log.Println("[ERROR] Please provde a valid segment group for the browser access application segment")
+		return fmt.Errorf("please provde a valid segment group for the browser access application segment")
+	}
+
 	if _, err := zClient.browseraccess.Update(id, &req); err != nil {
 		return err
 	}
@@ -269,13 +278,43 @@ func resourceBrowserAccessUpdate(d *schema.ResourceData, m interface{}) error {
 
 func resourceBrowserAccessDelete(d *schema.ResourceData, m interface{}) error {
 	zClient := m.(*Client)
+	id := d.Id()
+	log.Printf("[INFO] Deleting browser acess application segment with id %v\n", id)
+	segmentGroupId, ok := d.GetOk("segment_group_id")
+	if ok && segmentGroupId != nil {
+		gID, ok := segmentGroupId.(string)
+		if ok && gID != "" {
+			// detach it from segment group first
+			if err := detachBrowserAccessFromGroup(zClient, id, gID); err != nil {
+				return err
+			}
+		}
+	}
 
-	log.Printf("[INFO] Deleting browser access application with id %v\n", d.Id())
-	if _, err := zClient.browseraccess.Delete(d.Id()); err != nil {
+	if _, err := zClient.browseraccess.Delete(id); err != nil {
 		return err
 	}
 
 	return nil
+}
+
+func detachBrowserAccessFromGroup(client *Client, segmentID, segmentGroupId string) error {
+	log.Printf("[INFO] Detaching browser access application segment %s from segment group: %s\n", segmentID, segmentGroupId)
+	segGroup, _, err := client.segmentgroup.Get(segmentGroupId)
+	if err != nil {
+		log.Printf("[error] Error while getting segment group id: %s", segmentGroupId)
+		return err
+	}
+	adaptedApplications := []segmentgroup.Application{}
+	for _, app := range segGroup.Applications {
+		if app.ID != segmentID {
+			adaptedApplications = append(adaptedApplications, app)
+		}
+	}
+	segGroup.Applications = adaptedApplications
+	_, err = client.segmentgroup.Update(segmentGroupId, segGroup)
+	return err
+
 }
 
 func expandBrowserAccess(d *schema.ResourceData) browseraccess.BrowserAccess {
