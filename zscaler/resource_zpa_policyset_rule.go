@@ -447,23 +447,25 @@ func flattenPolicyRuleOperands(conditionOperand []policysetrule.Operands) []inte
 }
 
 func flattenPolicyRuleServerGroups(appServerGroup []policysetrule.AppServerGroups) []interface{} {
-	policyRuleServerGroups := make([]interface{}, len(appServerGroup))
+	result := make([]interface{}, 1)
+	mapIds := make(map[string]interface{})
+	ids := make([]string, len(appServerGroup))
 	for i, serverGroup := range appServerGroup {
-		policyRuleServerGroups[i] = map[string]interface{}{
-			"id": serverGroup.ID,
-		}
+		ids[i] = serverGroup.ID
 	}
-
-	return policyRuleServerGroups
+	mapIds["id"] = ids
+	result[0] = mapIds
+	return result
 }
 
 func flattenPolicyRuleAppConnectorGroups(appConnectorGroups []policysetrule.AppConnectorGroups) []interface{} {
-	policyRuleAppConnectorGroups := make([]interface{}, len(appConnectorGroups))
-	for i, val := range appConnectorGroups {
-		policyRuleAppConnectorGroups[i] = map[string]interface{}{
-			"id": val.ID,
-		}
+	result := make([]interface{}, 1)
+	mapIds := make(map[string]interface{})
+	ids := make([]string, len(appConnectorGroups))
+	for i, group := range appConnectorGroups {
+		ids[i] = group.ID
 	}
-
-	return policyRuleAppConnectorGroups
+	mapIds["id"] = ids
+	result[0] = mapIds
+	return result
 }

@@ -73,7 +73,7 @@ func dataSourceAppConnectorGroup() *schema.Resource {
 							Type:     schema.TypeString,
 							Computed: true,
 						},
-						"issued_certid": {
+						"issued_cert_id": {
 							Type:     schema.TypeString,
 							Computed: true,
 						},
