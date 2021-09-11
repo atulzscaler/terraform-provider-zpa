@@ -19,12 +19,12 @@ type BrowserAccess struct {
 	DomainNames          []string          `json:"domainNames,omitempty"`
 	Name                 string            `json:"name,omitempty"`
 	Description          string            `json:"description,omitempty"`
-	Enabled              bool              `json:"enabled,omitempty"`
-	PassiveHealthEnabled bool              `json:"passiveHealthEnabled,omitempty"`
-	DoubleEncrypt        bool              `json:"doubleEncrypt,omitempty"`
+	Enabled              bool              `json:"enabled"`
+	PassiveHealthEnabled bool              `json:"passiveHealthEnabled"`
+	DoubleEncrypt        bool              `json:"doubleEncrypt"`
 	HealthCheckType      string            `json:"healthCheckType,omitempty"`
-	IsCnameEnabled       bool              `json:"isCnameEnabled,omitempty"`
-	IpAnchored           bool              `json:"ipAnchored,omitempty"`
+	IsCnameEnabled       bool              `json:"isCnameEnabled"`
+	IpAnchored           bool              `json:"ipAnchored"`
 	HealthReporting      string            `json:"healthReporting,omitempty"`
 	CreationTime         string            `json:"creationTime,string,omitempty"`
 	ModifiedBy           string            `json:"modifiedBy,omitempty"`
@@ -36,7 +36,7 @@ type BrowserAccess struct {
 }
 
 type ClientlessApps struct {
-	AllowOptions        bool   `json:"allowOptions,omitempty"`
+	AllowOptions        bool   `json:"allowOptions"`
 	AppId               string `json:"appId,omitempty"`
 	ApplicationPort     string `json:"applicationPort,omitempty"`
 	ApplicationProtocol string `json:"applicationProtocol,omitempty"`
@@ -46,8 +46,8 @@ type ClientlessApps struct {
 	CreationTime        string `json:"creationTime,omitempty"`
 	Description         string `json:"description,omitempty"`
 	Domain              string `json:"domain,omitempty"`
-	Enabled             bool   `json:"enabled,omitempty"`
-	Hidden              bool   `json:"hidden,omitempty"`
+	Enabled             bool   `json:"enabled"`
+	Hidden              bool   `json:"hidden"`
 	ID                  string `json:"id,omitempty"`
 	LocalDomain         string `json:"localDomain,omitempty"`
 	ModifiedBy          string `json:"modifiedBy,omitempty"`
@@ -71,7 +71,7 @@ func (service *Service) Get(id string) (*BrowserAccess, *http.Response, error) {
 	return v, resp, nil
 }
 
-func (service *Service) Create(browserAccess *BrowserAccess) (*BrowserAccess, *http.Response, error) {
+func (service *Service) Create(browserAccess BrowserAccess) (*BrowserAccess, *http.Response, error) {
 	v := new(BrowserAccess)
 	resp, err := service.Client.NewRequestDo("POST", mgmtConfig+service.Client.Config.CustomerID+browserAccessEndpoint, nil, browserAccess, &v)
 	if err != nil {

@@ -196,7 +196,7 @@ func resourceBrowserAccessCreate(d *schema.ResourceData, m interface{}) error {
 	req := expandBrowserAccess(d)
 	log.Printf("[INFO] Creating browser access request\n%+v\n", req)
 
-	browseraccess, _, err := zClient.browseraccess.Create(&req)
+	browseraccess, _, err := zClient.browseraccess.Create(req)
 	if err != nil {
 		return err
 	}
@@ -222,6 +222,7 @@ func resourceBrowserAccessRead(d *schema.ResourceData, m interface{}) error {
 	}
 
 	log.Printf("[INFO] Getting browser access:\n%+v\n", resp)
+	_ = d.Set("id", resp.ID)
 	_ = d.Set("segment_group_id", resp.SegmentGroupId)
 	_ = d.Set("segment_group_name", resp.SegmentGroupName)
 	_ = d.Set("bypass_type", resp.BypassType)
@@ -238,6 +239,8 @@ func resourceBrowserAccessRead(d *schema.ResourceData, m interface{}) error {
 	_ = d.Set("health_reporting", resp.HealthReporting)
 	_ = d.Set("tcp_port_ranges", resp.TcpPortRanges)
 	_ = d.Set("udp_port_ranges", resp.UdpPortRanges)
+	// _ = d.Set("clientless_apps", flattenBaClientlessApps(resp))
+	// _ = d.Set("server_groups", flattenClientlessAppServerGroups(resp))
 
 	if err := d.Set("clientless_apps", flattenBaClientlessApps(resp)); err != nil {
 		return fmt.Errorf("failed to read clientless apps %s", err)

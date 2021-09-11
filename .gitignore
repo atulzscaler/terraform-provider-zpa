@@ -44,3 +44,4 @@ website/vendor
 node_modules
 vendor
 vendor/modules.txt
+zpa-examples/script.sh

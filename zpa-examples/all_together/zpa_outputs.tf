@@ -1,4 +1,5 @@
 
+/*
 ####################### Application Segments Outputs ####################### 
 // Application Segment All Other Services
 output "zpa_application_segment_all_other_services" {
@@ -98,3 +99,4 @@ output "zpa_policyset_rule_browser_access_apps"  {
 output "zpa_policyset_rule_all_other_services" {
   value = zpa_policyset_rule.all_other_services
 }
+*/

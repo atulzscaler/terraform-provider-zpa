@@ -271,7 +271,7 @@ func resourceConnectorGroupRead(d *schema.ResourceData, m interface{}) error {
 	var resp *appconnectorgroup.AppConnectorGroup
 	id, ok := d.Get("id").(string)
 	if ok && id != "" {
-		log.Printf("[INFO] Getting data for appconnector group  %s\n", id)
+		log.Printf("[INFO] Getting data for app connector group  %s\n", id)
 		res, _, err := zClient.appconnectorgroup.Get(id)
 		if err != nil {
 			return err
@@ -280,7 +280,7 @@ func resourceConnectorGroupRead(d *schema.ResourceData, m interface{}) error {
 	}
 	name, ok := d.Get("name").(string)
 	if ok && name != "" {
-		log.Printf("[INFO] Getting data for appconnector group name %s\n", name)
+		log.Printf("[INFO] Getting data for app connector group name %s\n", name)
 		res, _, err := zClient.appconnectorgroup.GetByName(name)
 		if err != nil {
 			return err
@@ -311,7 +311,7 @@ func resourceConnectorGroupRead(d *schema.ResourceData, m interface{}) error {
 			return fmt.Errorf("failed to read server groups %s", err)
 		}
 	} else {
-		return fmt.Errorf("couldn't find any application with name '%s' or id '%s'", name, id)
+		return fmt.Errorf("couldn't find any app connector group with name '%s' or id '%s'", name, id)
 	}
 
 	return nil

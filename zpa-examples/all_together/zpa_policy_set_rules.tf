@@ -1,39 +1,9 @@
-// Access to DevOps Servers
-resource "zpa_policyset_rule" "as_sgio_devops" {
-  name                          = "SGIO DevOps Servers"
-  description                   = "SGIO DevOps Servers"
-  action                        = "ALLOW"
-  rule_order                     = 2
-  operator = "AND"
-  policy_set_id = data.zpa_policy_set_global.all.id
-  conditions {
-    negated = false
-    operator = "OR"
-    operands {
-      name =  "SGIO DevOps Servers"
-      object_type = "APP"
-      lhs = "id"
-      rhs = zpa_application_segment.as_sgio_devops.id
-    }
-  }
-  conditions {
-     negated = false
-     operator = "OR"
-    operands {
-      object_type = "SCIM_GROUP"
-      lhs = data.zpa_idp_controller.sgio_user_okta.id
-      rhs = data.zpa_scim_groups.engineering.id
-      idp_id = data.zpa_idp_controller.sgio_user_okta.id
-    }
-  }
-}
-
 // Access to vCenter Server Rule
 resource "zpa_policyset_rule" "as_vcenter_servers" {
   name                          = "SGIO vCenter Servers"
   description                   = "SGIO vCenter Servers"
   action                        = "ALLOW"
-  rule_order                     = 3
+  rule_order                     = 2
   operator = "AND"
   policy_set_id = data.zpa_policy_set_global.all.id
   conditions {
@@ -63,7 +33,7 @@ resource "zpa_policyset_rule" "as_intranet_web_apps" {
   name                          = "SGIO Intranet Web Apps"
   description                   = "SGIO Intranet Web Apps"
   action                        = "ALLOW"
-  rule_order                     = 4
+  rule_order                     = 3
   operator = "AND"
   policy_set_id = data.zpa_policy_set_global.all.id
   conditions {
@@ -106,6 +76,7 @@ resource "zpa_policyset_rule" "as_intranet_web_apps" {
   }
 }
 
+/*
 // Browser Access Rule
 resource "zpa_policyset_rule" "browser_access_apps" {
   name                          = "Browser Access Apps"
@@ -147,13 +118,14 @@ resource "zpa_policyset_rule" "browser_access_apps" {
     }
   }
 }
+*/
 
 // Access to all other Apps
 resource "zpa_policyset_rule" "all_other_services" {
   name                          = "All Other Services"
   description                   = "All Other Services"
   action                        = "ALLOW"
- rule_order                     = 6
+ rule_order                     = 4
   operator = "AND"
   policy_set_id = data.zpa_policy_set_global.all.id
   conditions {

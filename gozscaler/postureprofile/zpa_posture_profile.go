@@ -3,6 +3,7 @@ package postureprofile
 import (
 	"fmt"
 	"net/http"
+	"strings"
 )
 
 const (
@@ -32,4 +33,21 @@ func (service *Service) Get(id string) (*PostureProfile, *http.Response, error) 
 	}
 
 	return v, resp, nil
+}
+
+func (service *Service) GetByName(name string) (*PostureProfile, *http.Response, error) {
+	var v []PostureProfile
+	relativeURL := fmt.Sprintf(mgmtConfig + service.Client.Config.CustomerID + postureProfileEndpoint)
+	resp, err := service.Client.NewRequestDo("GET", relativeURL, struct{ pagesize int }{
+		pagesize: 500,
+	}, nil, &v)
+	if err != nil {
+		return nil, nil, err
+	}
+	for _, postureProfile := range v {
+		if strings.EqualFold(postureProfile.Name, name) {
+			return &postureProfile, resp, nil
+		}
+	}
+	return nil, resp, fmt.Errorf("no posture profile named '%s' was found", name)
 }

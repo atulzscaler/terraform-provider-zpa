@@ -3,6 +3,7 @@ package trustednetwork
 import (
 	"fmt"
 	"net/http"
+	"strings"
 )
 
 const (
@@ -10,16 +11,15 @@ const (
 	trustedNetworkEndpoint = "/network"
 )
 
-// TrustedNetwork ...
 type TrustedNetwork struct {
-	CreationTime int32  `json:"creationTime,string"`
-	Domain       string `json:"domain"`
-	ID           string `json:"id"`
-	ModifiedBy   int64  `json:"modifiedBy,string"`
-	ModifiedTime int32  `json:"modifiedTime,string"`
-	Name         string `json:"name"`
-	NetworkId    string `json:"networkId"`
-	ZscalerCloud string `json:"zscalerCloud"`
+	CreationTime string `json:"creationTime,omitempty"`
+	Domain       string `json:"domain,omitempty"`
+	ID           string `json:"id,omitempty"`
+	ModifiedBy   string `json:"modifiedBy,omitempty"`
+	ModifiedTime string `json:"modifiedTime,omitempty"`
+	Name         string `json:"name,omitempty"`
+	NetworkId    string `json:"networkId,omitempty"`
+	ZscalerCloud string `json:"zscalerCloud,omitempty"`
 }
 
 func (service *Service) Get(networkId string) (*TrustedNetwork, *http.Response, error) {
@@ -33,11 +33,19 @@ func (service *Service) Get(networkId string) (*TrustedNetwork, *http.Response, 
 	return v, resp, nil
 }
 
-func (service *Service) GetAll() ([]TrustedNetwork, *http.Response, error) {
-	v := make([]TrustedNetwork, 0)
-	resp, err := service.Client.NewRequestDo("GET", mgmtConfig+service.Client.Config.CustomerID+trustedNetworkEndpoint, nil, nil, &v)
+func (service *Service) GetByName(name string) (*TrustedNetwork, *http.Response, error) {
+	var v []TrustedNetwork
+	relativeURL := fmt.Sprintf(mgmtConfig + service.Client.Config.CustomerID + trustedNetworkEndpoint)
+	resp, err := service.Client.NewRequestDo("GET", relativeURL, struct{ pagesize int }{
+		pagesize: 500,
+	}, nil, &v)
 	if err != nil {
 		return nil, nil, err
 	}
-	return v, resp, nil
+	for _, trustedNetwork := range v {
+		if strings.EqualFold(trustedNetwork.Name, name) {
+			return &trustedNetwork, resp, nil
+		}
+	}
+	return nil, resp, fmt.Errorf("no saml trusted network named '%s' was found", name)
 }

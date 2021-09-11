@@ -7,6 +7,7 @@ import (
 
 	"github.com/SecurityGeekIO/terraform-provider-zpa/gozscaler/client"
 	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/schema"
+	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/validation"
 )
 
 func resourceApplicationServer() *schema.Resource {
@@ -20,9 +21,10 @@ func resourceApplicationServer() *schema.Resource {
 		},
 		Schema: map[string]*schema.Schema{
 			"name": {
-				Type:        schema.TypeString,
-				Required:    true,
-				Description: "This field defines the name of the server.",
+				Type:         schema.TypeString,
+				Required:     true,
+				Description:  "This field defines the name of the server.",
+				ValidateFunc: validation.StringIsNotEmpty,
 			},
 			"description": {
 				Type:        schema.TypeString,
@@ -30,9 +32,10 @@ func resourceApplicationServer() *schema.Resource {
 				Description: "This field defines the description of the server.",
 			},
 			"address": {
-				Type:        schema.TypeString,
-				Required:    true,
-				Description: "This field defines the domain or IP address of the server.",
+				Type:         schema.TypeString,
+				Required:     true,
+				ValidateFunc: validation.StringIsNotEmpty,
+				Description:  "This field defines the domain or IP address of the server.",
 			},
 			"enabled": {
 				Type:        schema.TypeBool,
@@ -68,7 +71,7 @@ func resourceApplicationServerCreate(d *schema.ResourceData, m interface{}) erro
 	if err != nil {
 		return err
 	}
-	log.Printf("[INFO] Created server group request. ID: %v\n", resp)
+	log.Printf("[INFO] Created application server request. ID: %v\n", resp)
 	d.SetId(resp.ID)
 
 	return resourceApplicationServerRead(d, m)
@@ -80,7 +83,7 @@ func resourceApplicationServerRead(d *schema.ResourceData, m interface{}) error 
 	resp, _, err := zClient.appservercontroller.Get(d.Id())
 	if err != nil {
 		if err.(*client.ErrorResponse).IsObjectNotFound() {
-			log.Printf("[WARN] Removing server group %s from state because it no longer exists in ZPA", d.Id())
+			log.Printf("[WARN] Removing application server %s from state because it no longer exists in ZPA", d.Id())
 			d.SetId("")
 			return nil
 		}

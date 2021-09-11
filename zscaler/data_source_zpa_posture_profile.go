@@ -1,8 +1,10 @@
 package zscaler
 
 import (
+	"fmt"
 	"log"
 
+	"github.com/SecurityGeekIO/terraform-provider-zpa/gozscaler/postureprofile"
 	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/schema"
 )
 
@@ -12,7 +14,7 @@ func dataSourcePostureProfile() *schema.Resource {
 		Schema: map[string]*schema.Schema{
 			"name": {
 				Type:     schema.TypeString,
-				Computed: true,
+				Optional: true,
 			},
 			"id": {
 				Type:     schema.TypeString,
@@ -53,24 +55,39 @@ func dataSourcePostureProfile() *schema.Resource {
 func dataSourcePostureProfileRead(d *schema.ResourceData, m interface{}) error {
 	zClient := m.(*Client)
 
-	id := d.Get("id").(string)
-	log.Printf("[INFO] Getting data user with id %s\n", id)
-
-	resp, _, err := zClient.postureprofile.Get(id)
-	if err != nil {
-		return err
+	var resp *postureprofile.PostureProfile
+	id, ok := d.Get("id").(string)
+	if ok && id != "" {
+		log.Printf("[INFO] Getting data for posture profile %s\n", id)
+		res, _, err := zClient.postureprofile.Get(id)
+		if err != nil {
+			return err
+		}
+		resp = res
 	}
+	name, ok := d.Get("name").(string)
+	if id == "" && ok && name != "" {
+		log.Printf("[INFO] Getting data for posture profile name %s\n", name)
+		res, _, err := zClient.postureprofile.GetByName(name)
+		if err != nil {
+			return err
+		}
+		resp = res
+	}
+	if resp != nil {
+		d.SetId(resp.ID)
+		_ = d.Set("creation_time", resp.CreationTime)
+		_ = d.Set("domain", resp.Domain)
+		_ = d.Set("modifiedby", resp.ModifiedBy)
+		_ = d.Set("modified_time", resp.ModifiedTime)
+		_ = d.Set("name", resp.Name)
+		_ = d.Set("posture_udid", resp.PostureudId)
+		_ = d.Set("zscaler_cloud", resp.ZscalerCloud)
+		_ = d.Set("zscaler_customer_id", resp.ZscalerCustomerId)
 
-	log.Printf("[INFO] Getting Policy Set Global Rules:\n%+v\n", resp)
-	d.SetId(resp.ID)
-	_ = d.Set("creation_time", resp.CreationTime)
-	_ = d.Set("domain", resp.Domain)
-	_ = d.Set("modifiedby", resp.ModifiedBy)
-	_ = d.Set("modified_time", resp.ModifiedTime)
-	_ = d.Set("name", resp.Name)
-	_ = d.Set("posture_udid", resp.PostureudId)
-	_ = d.Set("zscaler_cloud", resp.ZscalerCloud)
-	_ = d.Set("zscaler_customer_id", resp.ZscalerCustomerId)
+	} else {
+		return fmt.Errorf("couldn't find any posture profile with name '%s' or id '%s'", name, id)
+	}
 
 	return nil
 }

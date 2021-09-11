@@ -13,12 +13,12 @@ const (
 
 type ServerGroup struct {
 	ID                 string               `json:"id,omitempty"`
-	Enabled            bool                 `json:"enabled,omitempty"`
+	Enabled            bool                 `json:"enabled"`
 	Name               string               `json:"name,omitempty"`
 	Description        string               `json:"description,omitempty"`
-	IpAnchored         bool                 `json:"ipAnchored,omitempty"`
+	IpAnchored         bool                 `json:"ipAnchored"`
 	ConfigSpace        string               `json:"configSpace,omitempty"`
-	DynamicDiscovery   bool                 `json:"dynamicDiscovery,omitempty"`
+	DynamicDiscovery   bool                 `json:"dynamicDiscovery"`
 	CreationTime       string               `json:"creationTime,omitempty"`
 	ModifiedBy         string               `json:"modifiedBy,omitempty"`
 	ModifiedTime       string               `json:"modifiedTime,omitempty"`
@@ -37,7 +37,7 @@ type AppConnectorGroups struct {
 	CreationTime          string            `json:"creationTime,omitempty"`
 	Description           string            `json:"description,omitempty"`
 	DnsqueryType          string            `json:"dnsQueryType,omitempty"`
-	Enabled               bool              `json:"enabled,omitempty"`
+	Enabled               bool              `json:"enabled"`
 	GeolocationId         string            `json:"geoLocationId,omitempty"`
 	ID                    string            `json:"id,omitempty"`
 	Latitude              string            `json:"latitude,omitempty"`
@@ -46,7 +46,7 @@ type AppConnectorGroups struct {
 	ModifiedBy            string            `json:"modifiedBy,omitempty"`
 	ModifiedTime          string            `json:"modifiedTime,omitempty"`
 	Name                  string            `json:"name"`
-	SiemAppconnectorGroup bool              `json:"siemAppConnectorGroup,omitempty"`
+	SiemAppconnectorGroup bool              `json:"siemAppConnectorGroup"`
 	UpgradeDay            string            `json:"upgradeDay,omitempty"`
 	UpgradeTimeinSecs     string            `json:"upgradeTimeInSecs,omitempty"`
 	VersionProfileId      string            `json:"versionProfileId,omitempty"`
@@ -63,7 +63,7 @@ type Connectors struct {
 	CtrlBrokerName           string                 `json:"ctrlBrokerName,omitempty"`
 	CurrentVersion           string                 `json:"currentVersion,omitempty"`
 	Description              string                 `json:"description,omitempty"`
-	Enabled                  bool                   `json:"enabled,omitempty"`
+	Enabled                  bool                   `json:"enabled"`
 	ExpectedUpgradeTime      string                 `json:"expectedUpgradeTime,omitempty"`
 	ExpectedVersion          string                 `json:"expectedVersion,omitempty"`
 	Fingerprint              string                 `json:"fingerprint,omitempty"`
@@ -92,9 +92,9 @@ type AppServerGroups struct {
 	ConfigSpace      string `json:"configSpace,omitempty"`
 	CreationTime     string `json:"creationTime,omitempty"`
 	Description      string `json:"description,omitempty"`
-	Enabled          bool   `json:"enabled,omitempty"`
+	Enabled          bool   `json:"enabled"`
 	ID               string `json:"id,omitempty"`
-	DynamicDiscovery bool   `json:"dynamicDiscovery,omitempty"`
+	DynamicDiscovery bool   `json:"dynamicDiscovery"`
 	ModifiedBy       string `json:"modifiedBy,omitempty"`
 	ModifiedTime     string `json:"modifiedTime,omitempty"`
 	Name             string `json:"name"`
@@ -106,7 +106,7 @@ type ApplicationServer struct {
 	ConfigSpace       string   `json:"configSpace,omitempty"`
 	CreationTime      string   `json:"creationTime,omitempty"`
 	Description       string   `json:"description,omitempty"`
-	Enabled           bool     `json:"enabled,omitempty"`
+	Enabled           bool     `json:"enabled"`
 	ID                string   `json:"id,omitempty"`
 	ModifiedBy        string   `json:"modifiedBy,omitempty"`
 	ModifiedTime      string   `json:"modifiedTime,omitempty"`

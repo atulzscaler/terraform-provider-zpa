@@ -9,11 +9,10 @@ terraform {
 
 provider "zpa" {}
 
-data "zpa_ba_certificate" "all" {
- name = "jenkins.securitygeek.io"
-
+data "zpa_saml_attribute" "email_user_sso" {
+    name = "Email_User SSO"
 }
 
-output "all_zpa_ba_certificate" {
-  value = data.zpa_ba_certificate.all.id
+output "zpa_saml_attribute" {
+    value = data.zpa_saml_attribute.email_user_sso
 }

@@ -6,6 +6,7 @@ import (
 	"github.com/SecurityGeekIO/terraform-provider-zpa/gozscaler/client"
 	"github.com/SecurityGeekIO/terraform-provider-zpa/gozscaler/segmentgroup"
 	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/schema"
+	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/validation"
 )
 
 func resourceSegmentGroup() *schema.Resource {
@@ -49,9 +50,10 @@ func resourceSegmentGroup() *schema.Resource {
 				Computed: true,
 			},
 			"name": {
-				Type:        schema.TypeString,
-				Description: "Name of the app group.",
-				Required:    true,
+				Type:         schema.TypeString,
+				Description:  "Name of the app group.",
+				Required:     true,
+				ValidateFunc: validation.StringIsNotEmpty,
 			},
 			"policy_migrated": {
 				Type:     schema.TypeBool,
@@ -105,9 +107,6 @@ func resourceSegmentGroupRead(d *schema.ResourceData, m interface{}) error {
 	_ = d.Set("policy_migrated", resp.PolicyMigrated)
 	_ = d.Set("tcp_keep_alive_enabled", resp.TcpKeepAliveEnabled)
 	_ = d.Set("app_connector_groups", flattenSegmentGroupApplications(resp))
-	// if err := d.Set("applications", flattenSegmentGroupApplications(resp)); err != nil {
-	// 	return fmt.Errorf("failed to read segment group applications %s", err)
-	// }
 	return nil
 }
 
@@ -115,7 +114,7 @@ func resourceSegmentGroupUpdate(d *schema.ResourceData, m interface{}) error {
 	zClient := m.(*Client)
 
 	id := d.Id()
-	log.Printf("[INFO] Updating server group ID: %v\n", id)
+	log.Printf("[INFO] Updating segment group ID: %v\n", id)
 	req := expandSegmentGroup(d)
 
 	if _, err := zClient.segmentgroup.Update(id, &req); err != nil {
@@ -128,19 +127,18 @@ func resourceSegmentGroupUpdate(d *schema.ResourceData, m interface{}) error {
 func resourceSegmentGroupDelete(d *schema.ResourceData, m interface{}) error {
 	zClient := m.(*Client)
 
-	log.Printf("[INFO] Deleting server group ID: %v\n", d.Id())
+	log.Printf("[INFO] Deleting segment group ID: %v\n", d.Id())
 
 	if _, err := zClient.segmentgroup.Delete(d.Id()); err != nil {
 		return err
 	}
 	d.SetId("")
-	log.Printf("[INFO] server group deleted")
+	log.Printf("[INFO] segment group deleted")
 	return nil
 }
 
 func expandSegmentGroup(d *schema.ResourceData) segmentgroup.SegmentGroup {
 	segmentGroup := segmentgroup.SegmentGroup{
-		// return segmentgroup.SegmentGroup{
 		Name:                d.Get("name").(string),
 		Description:         d.Get("description").(string),
 		Enabled:             d.Get("enabled").(bool),
@@ -157,7 +155,6 @@ func expandSegmentGroupApplications(segmentGroupApplication []interface{}) []seg
 	for i, segmentGroupApp := range segmentGroupApplication {
 		segmentGroupItem := segmentGroupApp.(map[string]interface{})
 		segmentGroupApplications[i] = segmentgroup.Application{
-			// ID: int64(appConnectorGroupItem["id"].(int)), // This needs to be *schema.Set
 			ID: segmentGroupItem["id"].(string),
 		}
 

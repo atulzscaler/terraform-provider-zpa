@@ -12,16 +12,16 @@ const (
 )
 
 type SegmentGroup struct {
-	Applications        []Application `json:"applications,omitempty"`
+	Applications        []Application `json:"applications"`
 	ConfigSpace         string        `json:"configSpace,omitempty"`
 	CreationTime        string        `json:"creationTime,omitempty"`
 	Description         string        `json:"description,omitempty"`
-	Enabled             bool          `json:"enabled,omitempty"`
+	Enabled             bool          `json:"enabled"`
 	ID                  string        `json:"id,omitempty"`
 	ModifiedBy          string        `json:"modifiedBy,omitempty"`
 	ModifiedTime        string        `json:"modifiedTime,omitempty"`
 	Name                string        `json:"name"`
-	PolicyMigrated      bool          `json:"policyMigrated,omitempty"`
+	PolicyMigrated      bool          `json:"policyMigrated"`
 	TcpKeepAliveEnabled string        `json:"tcpKeepAliveEnabled,omitempty"`
 }
 
@@ -34,16 +34,16 @@ type Application struct {
 	Description          string           `json:"description,omitempty"`
 	DomainName           string           `json:"domainName,omitempty"`
 	DomainNames          []string         `json:"domainNames,omitempty"`
-	DoubleEncrypt        bool             `json:"doubleEncrypt,omitempty"`
-	Enabled              bool             `json:"enabled,omitempty"`
+	DoubleEncrypt        bool             `json:"doubleEncrypt"`
+	Enabled              bool             `json:"enabled"`
 	HealthCheckType      string           `json:"healthCheckType,omitempty"`
 	ID                   string           `json:"id,omitempty"`
-	IPAnchored           bool             `json:"ipAnchored,omitempty"`
+	IPAnchored           bool             `json:"ipAnchored"`
 	LogFeatures          []string         `json:"logFeatures,omitempty"`
 	ModifiedBy           string           `json:"modifiedBy,omitempty"`
 	ModifiedTime         string           `json:"modifiedTime,omitempty"`
 	Name                 string           `json:"name"`
-	PassiveHealthEnabled bool             `json:"passiveHealthEnabled,omitempty"`
+	PassiveHealthEnabled bool             `json:"passiveHealthEnabled"`
 	ServerGroup          []AppServerGroup `json:"serverGroups,omitempty"`
 	TCPPortRanges        interface{}      `json:"tcpPortRanges,omitempty"`
 	TCPPortsIn           interface{}      `json:"tcpPortsIn,omitempty"`
@@ -54,9 +54,9 @@ type AppServerGroup struct {
 	ConfigSpace      string `json:"configSpace,omitempty"`
 	CreationTime     string `json:"creationTime,omitempty"`
 	Description      string `json:"description,omitempty"`
-	Enabled          bool   `json:"enabled,omitempty"`
+	Enabled          bool   `json:"enabled"`
 	ID               string `json:"id,omitempty"`
-	DynamicDiscovery bool   `json:"dynamicDiscovery,omitempty"`
+	DynamicDiscovery bool   `json:"dynamicDiscovery"`
 	ModifiedBy       string `json:"modifiedBy,omitempty"`
 	ModifiedTime     string `json:"modifiedTime,omitempty"`
 	Name             string `json:"name"`

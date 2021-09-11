@@ -285,7 +285,7 @@ func dataSourceApplicationSegmentRead(d *schema.ResourceData, m interface{}) err
 			return fmt.Errorf("failed to read app server groups %s", err)
 		}
 	} else {
-		return fmt.Errorf("couldn't find any application with name '%s' or id '%s'", name, id)
+		return fmt.Errorf("couldn't find any application segment with name '%s' or id '%s'", name, id)
 	}
 
 	return nil
