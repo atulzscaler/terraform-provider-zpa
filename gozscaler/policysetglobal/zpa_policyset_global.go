@@ -24,12 +24,12 @@ type PolicySet struct {
 type Rules struct {
 	Action                   string       `json:"action,omitempty"`
 	ActionID                 string       `json:"actionId,omitempty"`
-	BypassDefaultRule        bool         `json:"bypassDefaultRule,omitempty"`
+	BypassDefaultRule        bool         `json:"bypassDefaultRule"`
 	CreationTime             string       `json:"creationTime,omitempty"`
 	CustomMsg                string       `json:"customMsg,omitempty"`
 	Description              string       `json:"description,omitempty"`
 	ID                       string       `json:"id,omitempty"`
-	IsolationDefaultRule     bool         `json:"isolationDefaultRule,omitempty"`
+	IsolationDefaultRule     bool         `json:"isolationDefaultRule"`
 	ModifiedBy               string       `json:"modifiedBy,omitempty"`
 	ModifiedTime             string       `json:"modifiedTime,omitempty"`
 	Name                     string       `json:"name,omitempty"`
@@ -37,7 +37,7 @@ type Rules struct {
 	PolicySetID              string       `json:"policySetId,omitempty"`
 	PolicyType               string       `json:"policyType,omitempty"`
 	Priority                 string       `json:"priority,omitempty"`
-	ReauthDefaultRule        bool         `json:"reauthDefaultRule,omitempty"`
+	ReauthDefaultRule        bool         `json:"reauthDefaultRule"`
 	ReauthIdleTimeout        string       `json:"reauthIdleTimeout,omitempty"`
 	ReauthTimeout            string       `json:"reauthTimeout,omitempty"`
 	RuleOrder                string       `json:"ruleOrder,omitempty"`
@@ -51,7 +51,7 @@ type Conditions struct {
 	ID           string      `json:"id,omitempty"`
 	ModifiedBy   string      `json:"modifiedBy,omitempty"`
 	ModifiedTime string      `json:"modifiedTime,omitempty"`
-	Negated      bool        `json:"negated,omitempty"`
+	Negated      bool        `json:"negated"`
 	Operands     *[]Operands `json:"operands,omitempty"`
 	Operator     string      `json:"operator,omitempty"`
 }
@@ -70,84 +70,13 @@ type AppServerGroups struct {
 	ConfigSpace      string `json:"configSpace,omitempty"`
 	CreationTime     string `json:"creationTime,omitempty"`
 	Description      string `json:"description,omitempty"`
-	Enabled          bool   `json:"enabled,omitempty"`
+	Enabled          bool   `json:"enabled"`
 	ID               string `json:"id,omitempty"`
-	DynamicDiscovery bool   `json:"dynamicDiscovery,omitempty"`
+	DynamicDiscovery bool   `json:"dynamicDiscovery"`
 	ModifiedBy       string `json:"modifiedBy,omitempty"`
 	ModifiedTime     string `json:"modifiedTime,omitempty"`
 	Name             string `json:"name,omitempty"`
 }
-
-/*
-type Connectors struct {
-	ApplicationStartTime     int      `json:"applicationStartTime"`
-	AppConnectorGroupID      string   `json:"appConnectorGroupId"`
-	AppConnectorGroupName    string   `json:"appConnectorGroupName"`
-	ControlChannelStatus     string   `json:"controlChannelStatus"`
-	CreationTime             int      `json:"creationTime"`
-	CtrlBrokerName           string   `json:"ctrlBrokerName"`
-	CurrentVersion           string   `json:"currentVersion"`
-	Description              string   `json:"description"`
-	Enabled                  bool     `json:"enabled"`
-	ExpectedUpgradeTime      int      `json:"expectedUpgradeTime"`
-	ExpectedVersion          string   `json:"expectedVersion"`
-	Fingerprint              string   `json:"fingerprint"`
-	ID                       int      `json:"id"`
-	IPACL                    []string `json:"ipAcl"`
-	IssuedCertID             int      `json:"issuedCertId"`
-	LastBrokerConnectTime    int      `json:"lastBrokerConnectTime"`
-	LastBrokerDisconnectTime int      `json:"lastBrokerDisconnectTime"`
-	LastUpgradeTime          int      `json:"lastUpgradeTime"`
-	Latitude                 int      `json:"latitude"`
-	Location                 string   `json:"location"`
-	Longitude                int      `json:"longitude"`
-	ModifiedBy               int      `json:"modifiedBy"`
-	ModifiedTime             int      `json:"modifiedTime"`
-	Name                     string   `json:"name"`
-	Platform                 string   `json:"platform"`
-	PreviousVersion          string   `json:"previousVersion"`
-	PrivateIP                string   `json:"privateIp"`
-	PublicIP                 string   `json:"publicIp"`
-	//	SigningCert              SigningCert `json:"signingCert"`
-	UpgradeAttempt int    `json:"upgradeAttempt"`
-	UpgradeStatus  string `json:"upgradeStatus"`
-}
-
-type AppServerGroups struct {
-	ConfigSpace      string `json:"configSpace"`
-	CreationTime     int32  `json:"creationTime,string"`
-	Description      string `json:"description"`
-	Enabled          bool   `json:"enabled"`
-	ID               int64  `json:"id,string"`
-	DynamicDiscovery bool   `json:"dynamicDiscovery"`
-	ModifiedBy       int64  `json:"modifiedBy,string"`
-	ModifiedTime     int32  `json:"modifiedTime,string"`
-	Name             string `json:"name"`
-}
-type AppConnectorGroups struct {
-	Connectors            []Connectors   `json:"connectors"`
-	CityCountry           string         `json:"cityCountry"`
-	CountryCode           string         `json:"countryCode"`
-	CreationTime          int            `json:"creationTime"`
-	Description           string         `json:"description"`
-	DNSQueryType          string         `json:"dnsQueryType"`
-	Enabled               bool           `json:"enabled"`
-	GeoLocationID         int            `json:"geoLocationId"`
-	ID                    int            `json:"id"`
-	Latitude              string         `json:"latitude"`
-	Location              string         `json:"location"`
-	Longitude             string         `json:"longitude"`
-	ModifiedBy            int            `json:"modifiedBy"`
-	ModifiedTime          int            `json:"modifiedTime"`
-	Name                  string         `json:"name"`
-	ServerGroups          []ServerGroups `json:"serverGroups"`
-	SiemAppConnectorGroup bool           `json:"siemAppConnectorGroup"`
-	UpgradeDay            string         `json:"upgradeDay"`
-	UpgradeTimeInSecs     string         `json:"upgradeTimeInSecs"`
-	VersionProfileID      int            `json:"versionProfileId"`
-}
-
-*/
 
 func (service *Service) Get() (*PolicySet, *http.Response, error) {
 	v := new(PolicySet)
