@@ -23,7 +23,7 @@ description: |-
 
 - **bypass_type** (String) Indicates whether users can bypass ZPA to access applications.
 - **clientless_apps** (Block List) (see [below for nested schema](#nestedblock--clientless_apps))
-- **configspace** (String)
+- **config_space** (String)
 - **description** (String) Description of the application.
 - **domain_names** (List of String) List of domains and IPs.
 - **double_encrypt** (Boolean) Whether Double Encryption is enabled or disabled for the app.

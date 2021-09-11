@@ -89,7 +89,7 @@ func resourceSegmentGroupRead(d *schema.ResourceData, m interface{}) error {
 
 	resp, _, err := zClient.segmentgroup.Get(d.Id())
 	if err != nil {
-		if err.(*client.ErrorResponse).IsObjectNotFound() {
+		if errResp, ok := err.(*client.ErrorResponse); ok && errResp.IsObjectNotFound() {
 			log.Printf("[WARN] Removing segment group %s from state because it no longer exists in ZPA", d.Id())
 			d.SetId("")
 			return nil
@@ -106,7 +106,7 @@ func resourceSegmentGroupRead(d *schema.ResourceData, m interface{}) error {
 	_ = d.Set("name", resp.Name)
 	_ = d.Set("policy_migrated", resp.PolicyMigrated)
 	_ = d.Set("tcp_keep_alive_enabled", resp.TcpKeepAliveEnabled)
-	_ = d.Set("app_connector_groups", flattenSegmentGroupApplications(resp))
+	_ = d.Set("applications", flattenSegmentGroupApplications(resp))
 	return nil
 }
 

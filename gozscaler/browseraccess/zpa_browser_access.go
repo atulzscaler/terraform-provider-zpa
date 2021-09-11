@@ -26,11 +26,11 @@ type BrowserAccess struct {
 	IsCnameEnabled       bool              `json:"isCnameEnabled"`
 	IpAnchored           bool              `json:"ipAnchored"`
 	HealthReporting      string            `json:"healthReporting,omitempty"`
-	CreationTime         string            `json:"creationTime,string,omitempty"`
+	CreationTime         string            `json:"creationTime,omitempty"`
 	ModifiedBy           string            `json:"modifiedBy,omitempty"`
-	ModifiedTime         string            `json:"modifiedTime,string,omitempty"`
-	TcpPortRanges        []interface{}     `json:"tcpPortRanges,omitempty"`
-	UdpPortRanges        []interface{}     `json:"udpPortRanges,omitempty"`
+	ModifiedTime         string            `json:"modifiedTime,omitempty"`
+	TcpPortRanges        []string          `json:"tcpPortRanges,omitempty"`
+	UdpPortRanges        []string          `json:"udpPortRanges,omitempty"`
 	ClientlessApps       []ClientlessApps  `json:"clientlessApps,omitempty"`
 	AppServerGroups      []AppServerGroups `json:"serverGroups,omitempty"`
 }
@@ -58,7 +58,7 @@ type ClientlessApps struct {
 }
 
 type AppServerGroups struct {
-	ID string `json:"id,omitempty"`
+	ID string `json:"id"`
 }
 
 func (service *Service) Get(id string) (*BrowserAccess, *http.Response, error) {
