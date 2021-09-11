@@ -1,4 +1,4 @@
-/*
+
 // Creating Browser Access Application
 resource "zpa_browser_access" "browser_access_apps" {
     name = "Browser Access Apps"
@@ -23,4 +23,3 @@ resource "zpa_browser_access" "browser_access_apps" {
         id = [zpa_server_group.browser_access_apps.id]
     }
 }
-*/

@@ -3,12 +3,11 @@ data "zpa_app_connector_group" "sgio-vancouver" {
   name = "SGIO-Vancouver"
 }
 
-/*
+
 // Sales Browser Certificate
 data "zpa_ba_certificate" "sales_ba" {
     name = "sales.securitygeek.io"
 }
-*/
 
 data "zpa_policy_set_global" "all" {
 }
