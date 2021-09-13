@@ -14,7 +14,6 @@ const (
 type BaCertificate struct {
 	CName               string   `json:"cName,omitempty"`
 	CertChain           string   `json:"certChain,omitempty"`
-	Certificate         string   `json:"certificate,omitempty"`
 	CreationTime        string   `json:"creationTime,omitempty"`
 	Description         string   `json:"description,omitempty"`
 	ID                  string   `json:"id,omitempty"`
@@ -23,7 +22,6 @@ type BaCertificate struct {
 	ModifiedBy          string   `json:"modifiedBy,omitempty"`
 	ModifiedTime        string   `json:"modifiedTime,omitempty"`
 	Name                string   `json:"name,omitempty"`
-	PublicKey           string   `json:"publicKey,omitempty"`
 	San                 []string `json:"san,omitempty"`
 	SerialNo            string   `json:"serialNo,omitempty"`
 	Status              string   `json:"status,omitempty"`

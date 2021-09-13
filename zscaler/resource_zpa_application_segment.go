@@ -13,12 +13,12 @@ import (
 
 func resourceApplicationSegment() *schema.Resource {
 	return &schema.Resource{
-		Create: resourceApplicationSegmentCreate,
-		Read:   resourceApplicationSegmentRead,
-		Update: resourceApplicationSegmentUpdate,
-		Delete: resourceApplicationSegmentDelete,
+		Create:   resourceApplicationSegmentCreate,
+		Read:     resourceApplicationSegmentRead,
+		Update:   resourceApplicationSegmentUpdate,
+		Delete:   resourceApplicationSegmentDelete,
 		Importer: &schema.ResourceImporter{
-			State: schema.ImportStatePassthrough,
+			// State: schema.ImportStatePassthrough,
 		},
 		Schema: map[string]*schema.Schema{
 			"segment_group_id": {

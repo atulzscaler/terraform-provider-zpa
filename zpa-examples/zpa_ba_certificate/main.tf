@@ -15,5 +15,5 @@ data "zpa_ba_certificate" "all" {
 }
 
 output "all_zpa_ba_certificate" {
-  value = data.zpa_ba_certificate.all.id
+  value = data.zpa_ba_certificate.all
 }

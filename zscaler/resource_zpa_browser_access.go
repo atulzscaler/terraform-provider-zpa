@@ -13,12 +13,12 @@ import (
 
 func resourceBrowserAccess() *schema.Resource {
 	return &schema.Resource{
-		Create: resourceBrowserAccessCreate,
-		Read:   resourceBrowserAccessRead,
-		Update: resourceBrowserAccessUpdate,
-		Delete: resourceBrowserAccessDelete,
+		Create:   resourceBrowserAccessCreate,
+		Read:     resourceBrowserAccessRead,
+		Update:   resourceBrowserAccessUpdate,
+		Delete:   resourceBrowserAccessDelete,
 		Importer: &schema.ResourceImporter{
-			State: schema.ImportStatePassthrough,
+			// State: schema.ImportStatePassthrough,
 		},
 		Schema: map[string]*schema.Schema{
 			"id": {

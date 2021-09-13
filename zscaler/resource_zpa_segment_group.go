@@ -11,12 +11,12 @@ import (
 
 func resourceSegmentGroup() *schema.Resource {
 	return &schema.Resource{
-		Create: resourceSegmentGroupCreate,
-		Read:   resourceSegmentGroupRead,
-		Update: resourceSegmentGroupUpdate,
-		Delete: resourceSegmentGroupDelete,
+		Create:   resourceSegmentGroupCreate,
+		Read:     resourceSegmentGroupRead,
+		Update:   resourceSegmentGroupUpdate,
+		Delete:   resourceSegmentGroupDelete,
 		Importer: &schema.ResourceImporter{
-			State: schema.ImportStatePassthrough,
+			// State: schema.ImportStatePassthrough,
 		},
 		Schema: map[string]*schema.Schema{
 			"applications": {

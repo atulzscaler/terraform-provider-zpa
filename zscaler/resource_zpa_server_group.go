@@ -12,12 +12,12 @@ import (
 
 func resourceServerGroup() *schema.Resource {
 	return &schema.Resource{
-		Create: resourceServerGroupCreate,
-		Read:   resourceServerGroupRead,
-		Update: resourceServerGroupUpdate,
-		Delete: resourceServerGroupDelete,
+		Create:   resourceServerGroupCreate,
+		Read:     resourceServerGroupRead,
+		Update:   resourceServerGroupUpdate,
+		Delete:   resourceServerGroupDelete,
 		Importer: &schema.ResourceImporter{
-			State: schema.ImportStatePassthrough,
+			// State: schema.ImportStatePassthrough,
 		},
 		Schema: map[string]*schema.Schema{
 			"config_space": {

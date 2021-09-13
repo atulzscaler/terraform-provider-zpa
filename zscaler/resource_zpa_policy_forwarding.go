@@ -11,12 +11,12 @@ import (
 
 func resourcePolicyForwarding() *schema.Resource {
 	return &schema.Resource{
-		Create: resourcePolicyForwardingCreate,
-		Read:   resourcePolicyForwardingRead,
-		Update: resourcePolicyForwardingUpdate,
-		Delete: resourcePolicyForwardingDelete,
+		Create:   resourcePolicyForwardingCreate,
+		Read:     resourcePolicyForwardingRead,
+		Update:   resourcePolicyForwardingUpdate,
+		Delete:   resourcePolicyForwardingDelete,
 		Importer: &schema.ResourceImporter{
-			State: schema.ImportStatePassthrough,
+			// State: schema.ImportStatePassthrough,
 		},
 		Schema: map[string]*schema.Schema{
 			"action": {

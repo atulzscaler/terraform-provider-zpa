@@ -11,12 +11,12 @@ import (
 
 func resourcePolicyTimeout() *schema.Resource {
 	return &schema.Resource{
-		Create: resourcePolicyTimeoutCreate,
-		Read:   resourcePolicyTimeoutRead,
-		Update: resourcePolicyTimeoutUpdate,
-		Delete: resourcePolicyTimeoutDelete,
+		Create:   resourcePolicyTimeoutCreate,
+		Read:     resourcePolicyTimeoutRead,
+		Update:   resourcePolicyTimeoutUpdate,
+		Delete:   resourcePolicyTimeoutDelete,
 		Importer: &schema.ResourceImporter{
-			State: schema.ImportStatePassthrough,
+			// State: schema.ImportStatePassthrough,
 		},
 		Schema: map[string]*schema.Schema{
 			"action": {

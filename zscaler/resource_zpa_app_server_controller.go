@@ -12,12 +12,12 @@ import (
 
 func resourceApplicationServer() *schema.Resource {
 	return &schema.Resource{
-		Create: resourceApplicationServerCreate,
-		Read:   resourceApplicationServerRead,
-		Update: resourceApplicationServerUpdate,
-		Delete: resourceApplicationServerDelete,
+		Create:   resourceApplicationServerCreate,
+		Read:     resourceApplicationServerRead,
+		Update:   resourceApplicationServerUpdate,
+		Delete:   resourceApplicationServerDelete,
 		Importer: &schema.ResourceImporter{
-			State: schema.ImportStatePassthrough,
+			// State: schema.ImportStatePassthrough,
 		},
 		Schema: map[string]*schema.Schema{
 			"name": {

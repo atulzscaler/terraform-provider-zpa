@@ -40,34 +40,6 @@ func dataSourceIdpController() *schema.Resource {
 				Type:     schema.TypeString,
 				Computed: true,
 			},
-			"certificates": {
-				Type:     schema.TypeList,
-				Computed: true,
-				Elem: &schema.Resource{
-					Schema: map[string]*schema.Schema{
-						"cname": {
-							Type:     schema.TypeString,
-							Computed: true,
-						},
-						"certificate": {
-							Type:     schema.TypeString,
-							Computed: true,
-						},
-						"serial_no": {
-							Type:     schema.TypeString,
-							Computed: true,
-						},
-						"valid_from_in_sec": {
-							Type:     schema.TypeString,
-							Computed: true,
-						},
-						"valid_to_in_sec": {
-							Type:     schema.TypeString,
-							Computed: true,
-						},
-					},
-				},
-			},
 			"creation_time": {
 				Type:     schema.TypeString,
 				Computed: true,
@@ -242,26 +214,8 @@ func dataSourceIdpControllerRead(d *schema.ResourceData, m interface{}) error {
 		_ = d.Set("admin_metadata.sp_metadata_url", resp.AdminMetadata.SpMetadataUrl)
 		_ = d.Set("admin_metadata.sp_post_url", resp.AdminMetadata.SpPostUrl)
 
-		if err := d.Set("certificates", flattenIdpCertificates(resp.Certificates)); err != nil {
-			return err
-		}
 	} else {
 		return fmt.Errorf("couldn't find any idp controller with name '%s' or id '%s'", name, id)
 	}
 	return nil
-}
-
-func flattenIdpCertificates(idpCertificate []idpcontroller.Certificates) []interface{} {
-	idpCertificates := make([]interface{}, len(idpCertificate))
-	for i, idpCertificateItems := range idpCertificate {
-		idpCertificates[i] = map[string]interface{}{
-			"certificate":       idpCertificateItems.Certificate,
-			"cname":             idpCertificateItems.Cname,
-			"serial_no":         idpCertificateItems.SerialNo,
-			"valid_from_in_sec": idpCertificateItems.ValidFrominSec,
-			"valid_to_in_sec":   idpCertificateItems.ValidToinSec,
-		}
-	}
-
-	return idpCertificates
 }
