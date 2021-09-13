@@ -15,9 +15,8 @@ func resourceSegmentGroup() *schema.Resource {
 		Read:     resourceSegmentGroupRead,
 		Update:   resourceSegmentGroupUpdate,
 		Delete:   resourceSegmentGroupDelete,
-		Importer: &schema.ResourceImporter{
-			// State: schema.ImportStatePassthrough,
-		},
+		Importer: &schema.ResourceImporter{},
+
 		Schema: map[string]*schema.Schema{
 			"applications": {
 				Type:     schema.TypeList,

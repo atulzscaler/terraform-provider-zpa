@@ -15,9 +15,8 @@ func resourcePolicySetRule() *schema.Resource {
 		Read:     resourcePolicySetRead,
 		Update:   resourcePolicySetUpdate,
 		Delete:   resourcePolicySetDelete,
-		Importer: &schema.ResourceImporter{
-			// State: schema.ImportStatePassthrough,
-		},
+		Importer: &schema.ResourceImporter{},
+
 		Schema: map[string]*schema.Schema{
 			"action": {
 				Type:        schema.TypeString,

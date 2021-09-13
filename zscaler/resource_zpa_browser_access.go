@@ -17,9 +17,8 @@ func resourceBrowserAccess() *schema.Resource {
 		Read:     resourceBrowserAccessRead,
 		Update:   resourceBrowserAccessUpdate,
 		Delete:   resourceBrowserAccessDelete,
-		Importer: &schema.ResourceImporter{
-			// State: schema.ImportStatePassthrough,
-		},
+		Importer: &schema.ResourceImporter{},
+
 		Schema: map[string]*schema.Schema{
 			"id": {
 				Type:     schema.TypeString,

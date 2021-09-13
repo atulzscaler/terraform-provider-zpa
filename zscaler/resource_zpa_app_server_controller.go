@@ -16,9 +16,8 @@ func resourceApplicationServer() *schema.Resource {
 		Read:     resourceApplicationServerRead,
 		Update:   resourceApplicationServerUpdate,
 		Delete:   resourceApplicationServerDelete,
-		Importer: &schema.ResourceImporter{
-			// State: schema.ImportStatePassthrough,
-		},
+		Importer: &schema.ResourceImporter{},
+
 		Schema: map[string]*schema.Schema{
 			"name": {
 				Type:         schema.TypeString,

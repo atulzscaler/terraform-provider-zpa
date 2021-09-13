@@ -15,9 +15,8 @@ func resourcePolicyTimeout() *schema.Resource {
 		Read:     resourcePolicyTimeoutRead,
 		Update:   resourcePolicyTimeoutUpdate,
 		Delete:   resourcePolicyTimeoutDelete,
-		Importer: &schema.ResourceImporter{
-			// State: schema.ImportStatePassthrough,
-		},
+		Importer: &schema.ResourceImporter{},
+
 		Schema: map[string]*schema.Schema{
 			"action": {
 				Type:        schema.TypeString,

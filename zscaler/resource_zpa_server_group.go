@@ -16,9 +16,8 @@ func resourceServerGroup() *schema.Resource {
 		Read:     resourceServerGroupRead,
 		Update:   resourceServerGroupUpdate,
 		Delete:   resourceServerGroupDelete,
-		Importer: &schema.ResourceImporter{
-			// State: schema.ImportStatePassthrough,
-		},
+		Importer: &schema.ResourceImporter{},
+
 		Schema: map[string]*schema.Schema{
 			"config_space": {
 				Type:     schema.TypeString,
