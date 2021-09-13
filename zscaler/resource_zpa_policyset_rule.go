@@ -166,8 +166,9 @@ func resourcePolicySetRule() *schema.Resource {
 										Optional: true,
 									},
 									"lhs": {
-										Type:     schema.TypeString,
-										Optional: true,
+										Type:        schema.TypeString,
+										Optional:    true,
+										Description: "This signifies the key for the object type. String ID example: id ",
 									},
 									"rhs": {
 										Type:        schema.TypeString,
