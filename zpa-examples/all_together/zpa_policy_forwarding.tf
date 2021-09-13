@@ -1,4 +1,4 @@
-/*
+
 // Access to DevOps Servers
 resource "zpa_policy_forwarding" "sgio_devops_bypass" {
   name                          = "SGIO DevOps Servers Bypass"
@@ -31,5 +31,5 @@ resource "zpa_policy_forwarding" "sgio_devops_bypass" {
 
 data "zpa_policy_forwarding" "all" {
 }
-*/
+
 // Returning error on destruction │ Error: Invalid address to set: []string{"rules", "0", "conditions", "0", "operator"}
