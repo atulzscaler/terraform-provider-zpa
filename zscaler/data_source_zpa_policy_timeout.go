@@ -161,6 +161,10 @@ func dataSourcePolicyTimeout() *schema.Resource {
 										Type:     schema.TypeBool,
 										Computed: true,
 									},
+									"operator": {
+										Type:     schema.TypeString,
+										Computed: true,
+									},
 									"operands": {
 										Type:     schema.TypeList,
 										Computed: true,
