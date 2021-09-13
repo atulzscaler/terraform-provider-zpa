@@ -51,7 +51,7 @@ type Config struct {
 	// Backoff config
 	BackoffConf *BackoffConfig
 	AuthToken   *AuthToken
-	AuthMu      sync.Mutex
+	sync.Mutex
 }
 
 /*
