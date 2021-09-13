@@ -1,4 +1,3 @@
-
 resource "zpa_policy_timeout" "temp_contractors_browser_access" {
   name                          = "Temp Contractors Browser Access"
   description                   = "Temp Contractors Browser Access"
