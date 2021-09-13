@@ -72,10 +72,6 @@ resource "zpa_policy_timeout" "all_other_services" {
   }
 }
 
-output "all_zpa_policy_timeout" {
-  value = zpa_policy_timeout.all_other_services
-}
-
 data "zpa_policy_timeout" "all" {
 }
 
