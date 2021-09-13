@@ -334,7 +334,7 @@ func flattenPolicyTimeoutConditions(conditions []policysetrule.Conditions) []int
 			"id":       ruleConditionItems.ID,
 			"negated":  ruleConditionItems.Negated,
 			"operator": ruleConditionItems.Operator,
-			"operands": flattenPolicyRuleOperands(ruleConditionItems.Operands),
+			"operands": flattenPolicyTimeoutOperands(ruleConditionItems.Operands),
 		}
 	}
 
