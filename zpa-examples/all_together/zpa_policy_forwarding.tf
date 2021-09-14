@@ -29,5 +29,3 @@ resource "zpa_policy_forwarding" "sgio_devops_bypass" {
   }
 }
 
-data "zpa_policy_forwarding" "all" {
-}

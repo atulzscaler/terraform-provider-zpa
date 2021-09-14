@@ -9,11 +9,11 @@ terraform {
 
 provider "zpa" {}
 
-data "zpa_scim_attribute_header" "department" {
-    name = "department"
+data "zpa_scim_attribute_header" "email" {
+    name = "emails.value"
     idp_name = "SGIO-User-Okta"
 }
 
 output "scim_groups_department" {
-    value = data.zpa_scim_attribute_header.department.id
+    value = data.zpa_scim_attribute_header.email.id
 }

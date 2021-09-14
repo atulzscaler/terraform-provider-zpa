@@ -3,7 +3,6 @@ resource "zpa_policyset_rule" "as_vcenter_servers" {
   name                          = "SGIO vCenter Servers"
   description                   = "SGIO vCenter Servers"
   action                        = "ALLOW"
-  rule_order                     = 2
   operator = "AND"
   policy_set_id = data.zpa_policy_set_global.all.id
   conditions {
@@ -33,7 +32,6 @@ resource "zpa_policyset_rule" "as_intranet_web_apps" {
   name                          = "SGIO Intranet Web Apps"
   description                   = "SGIO Intranet Web Apps"
   action                        = "ALLOW"
-  rule_order                     = 3
   operator = "AND"
   policy_set_id = data.zpa_policy_set_global.all.id
   conditions {
@@ -81,7 +79,6 @@ resource "zpa_policyset_rule" "browser_access_apps" {
   name                          = "Browser Access Apps"
   description                   = "Browser Access Apps"
   action                        = "ALLOW"
-  rule_order                     = 5
   operator = "AND"
   policy_set_id = data.zpa_policy_set_global.all.id
   conditions {
@@ -123,7 +120,6 @@ resource "zpa_policyset_rule" "all_other_services" {
   name                          = "All Other Services"
   description                   = "All Other Services"
   action                        = "ALLOW"
- rule_order                     = 4
   operator = "AND"
   policy_set_id = data.zpa_policy_set_global.all.id
   conditions {
