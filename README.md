@@ -1,5 +1,5 @@
-Terraform Provider for Zscaler Private Access
-======================================================
+Terraform Provider for :cloud: Zscaler Private Access :cloud: 
+============================================================
 
 - Website: https://www.terraform.io
 - Documentation: https://help.zscaler.com/zpa
