@@ -5,6 +5,7 @@ layout: "zpa"
 page_title: "ZPA: scim_groups"
 description: |-
   Gets a ZPA SCIM Group details.
+  
 ---
 
 # zpa_scim_groups
