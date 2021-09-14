@@ -77,7 +77,7 @@ resource "zpa_policyset_rule" "crwd_zpa_pre_zta" {
   name                          = "CrowdStrike_ZPA_Pre-ZTA"
   description                   = "CrowdStrike_ZPA_Pre-ZTA"
   action                        = "DENY"
-  rule_order                    = 2
+  rule_order                    = 3
   operator = "AND"
   policy_set_id = data.zpa_policy_set_global.all.id
   conditions {
