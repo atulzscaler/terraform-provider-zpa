@@ -12,7 +12,6 @@ description: |-
 The **zpa_ba_certificate** data source provides details about a specific browser access certificate created in the Zscaler Private Access cloud.
 This data source is required when creating a browser access resource. 
 
-
 ## Example Usage
 
 ```hcl
@@ -21,6 +20,7 @@ data "zpa_ba_certificate" "foo" {
   name = "example.acme.com"
 }
 ```
+
 ## Argument Reference
 
 The following arguments are supported:

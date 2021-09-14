@@ -11,7 +11,6 @@ provider "zpa" {}
 
 
 data "zpa_machine_group" "all" {
-  // id = 216196257331282185
   name = "MGR01"
 }
 
