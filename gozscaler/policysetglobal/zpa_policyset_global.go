@@ -3,6 +3,7 @@ package policysetglobal
 import (
 	"fmt"
 	"net/http"
+	"strconv"
 )
 
 const (
@@ -78,6 +79,10 @@ type AppServerGroups struct {
 	Name             string `json:"name,omitempty"`
 }
 
+type Count struct {
+	Count string `json:"count"`
+}
+
 func (service *Service) Get() (*PolicySet, *http.Response, error) {
 	v := new(PolicySet)
 	relativeURL := fmt.Sprintf(mgmtConfig + service.Client.Config.CustomerID + "/policySet/global")
@@ -111,4 +116,15 @@ func (service *Service) GetBypass() (*PolicySet, *http.Response, error) {
 	}
 
 	return v, resp, nil
+}
+
+func (service *Service) RulesCount() (int, *http.Response, error) {
+	v := new(Count)
+	relativeURL := fmt.Sprintf("/zpn/api/v1/admin/customers/%s/policySet/rules/policyType/GLOBAL_POLICY/count", service.Client.Config.CustomerID)
+	resp, err := service.Client.NewPrivateRequestDo("GET", relativeURL, nil, nil, &v)
+	if err != nil {
+		return 0, nil, err
+	}
+	count, err := strconv.Atoi(v.Count)
+	return count, resp, err
 }

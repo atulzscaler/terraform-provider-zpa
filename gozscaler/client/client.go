@@ -27,7 +27,15 @@ func NewClient(config *gozscaler.Config) (c *Client) {
 	return
 }
 
+func (client *Client) NewPrivateRequestDo(method, url string, options, body, v interface{}) (*http.Response, error) {
+	return client.newRequestDoCustom(method, url, true, options, body, v)
+}
+
 func (client *Client) NewRequestDo(method, url string, options, body, v interface{}) (*http.Response, error) {
+	return client.newRequestDoCustom(method, url, false, options, body, v)
+}
+
+func (client *Client) newRequestDoCustom(method, url string, usePrivateAPI bool, options, body, v interface{}) (*http.Response, error) {
 	client.Config.Lock()
 	defer client.Config.Unlock()
 	if client.Config.AuthToken == nil || client.Config.AuthToken.AccessToken == "" {
@@ -72,7 +80,7 @@ func (client *Client) NewRequestDo(method, url string, options, body, v interfac
 		// we need keep auth token for future http request
 		client.Config.AuthToken = &a
 	}
-	req, err := client.newRequest(method, url, options, body)
+	req, err := client.newRequest(method, url, usePrivateAPI, options, body)
 	if err != nil {
 		return nil, err
 	}
@@ -81,7 +89,7 @@ func (client *Client) NewRequestDo(method, url string, options, body, v interfac
 }
 
 // Generating the Http request
-func (client *Client) newRequest(method, urlPath string, options, body interface{}) (*http.Request, error) {
+func (client *Client) newRequest(method, urlPath string, usePrivateAPI bool, options, body interface{}) (*http.Request, error) {
 	if client.Config.AuthToken == nil || client.Config.AuthToken.AccessToken == "" {
 		log.Printf("[ERROR] Failed to signin the user %s=%s\n", gozscaler.ZPA_CLIENT_ID, client.Config.ClientID)
 		return nil, fmt.Errorf("failed to signin the user %s=%s", gozscaler.ZPA_CLIENT_ID, client.Config.ClientID)
@@ -97,14 +105,17 @@ func (client *Client) newRequest(method, urlPath string, options, body interface
 
 	// Join the path to the base-url
 	u := *client.Config.BaseURL
+	if usePrivateAPI {
+		u = *client.Config.PrivateAPIBaseURL
+	}
 	unescaped, err := url.PathUnescape(urlPath)
 	if err != nil {
 		return nil, err
 	}
 
 	// Set the encoded path data
-	u.RawPath = client.Config.BaseURL.Path + urlPath
-	u.Path = client.Config.BaseURL.Path + unescaped
+	u.RawPath = u.Path + urlPath
+	u.Path = u.Path + unescaped
 
 	// Set the query parameters
 	if options != nil {
