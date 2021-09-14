@@ -3,6 +3,7 @@ resource "zpa_policyset_rule" "crwd_zta_score_40" {
   name                          = "CrowdStrike_ZTA_Score_40"
   description                   = "CrowdStrike_ZTA_Score_40"
   action                        = "DENY"
+  rule_order                    = 1
   operator = "AND"
   policy_set_id = data.zpa_policy_set_global.all.id
   conditions {
@@ -39,6 +40,7 @@ resource "zpa_policyset_rule" "crwd_zta_score_80" {
   name                          = "CrowdStrike_ZTA_Score_80"
   description                   = "CrowdStrike_ZTA_Score_80"
   action                        = "DENY"
+  rule_order                    = 2
   operator = "AND"
   policy_set_id = data.zpa_policy_set_global.all.id
   conditions {
@@ -75,6 +77,7 @@ resource "zpa_policyset_rule" "crwd_zpa_pre_zta" {
   name                          = "CrowdStrike_ZPA_Pre-ZTA"
   description                   = "CrowdStrike_ZPA_Pre-ZTA"
   action                        = "DENY"
+  rule_order                    = 2
   operator = "AND"
   policy_set_id = data.zpa_policy_set_global.all.id
   conditions {
