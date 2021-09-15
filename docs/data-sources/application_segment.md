@@ -12,7 +12,7 @@ description: |-
 The **zpa_application_segment** data source provides details about a specific application segments created in the Zscaler Private Access cloud.
 This data source must be used in the following circumstances:
 
-1. Access policy Rule
+1. Access policy rule
 
 ## Example Usage
 
@@ -22,9 +22,15 @@ data "zpa_application_segment" "foo" {
   name = "example"
 }
 ```
-### Required
+## Argument Reference
 
-- **name** (String) The Name of this resource.
+The following arguments are supported:
+
+* ` name` - (Required) Name. The name of the application segment to be exported.
+
+## Attribute Reference
+
+In addition to all arguments above, the following attributes are exported:
 
 ### Read-Only
 
