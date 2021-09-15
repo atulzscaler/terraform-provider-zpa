@@ -1,7 +1,9 @@
+.. image:: https://app.codacy.com/project/badge/Grade/d9b43cca56244010875a13bf8d5a81fa
+   :target: https://www.codacy.com?utm_source=github.com&amp;utm_medium=referral&amp;utm_content=SecurityGeekIO/terraform-provider-zpa&amp;utm_campaign=Badge_Grade
+
 Terraform Provider for :cloud: Zscaler Private Access :cloud:
 ============================================================
-.. image:: https://app.codacy.com/project/badge/Grade/d9b43cca56244010875a13bf8d5a81fa
-  :target: https://www.codacy.com?utm_source=github.com&amp;utm_medium=referral&amp;utm_content=SecurityGeekIO/terraform-provider-zpa&amp;utm_campaign=Badge_Grade
+
 
 - Website: https://www.terraform.io
 - Documentation: https://help.zscaler.com/zpa
