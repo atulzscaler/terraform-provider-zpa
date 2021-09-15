@@ -15,9 +15,24 @@ This data source must be used in the following circumstances:
 
 1. Server Group (When Dynamic Discovery is set to false)
 
-### Required
+## Example Usage
 
-- **name** (String)
+```hcl
+# ZPA Application Server Data Source
+data "zpa_application_server" "example" {
+ name = "server.example.com"
+}
+```
+
+## Argument Reference
+
+The following arguments are supported:
+
+* ` name` - (Required) Name. The name of the application server to be exported.
+
+## Attribute Reference
+
+In addition to all arguments above, the following attributes are exported:
 
 ### Read-Only
 
