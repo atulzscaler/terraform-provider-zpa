@@ -1,4 +1,4 @@
-Terraform Provider for :cloud: Zscaler Private Access :cloud: 
+Terraform Provider for :cloud: Zscaler Private Access :cloud:
 ============================================================
 
 - Website: https://www.terraform.io
