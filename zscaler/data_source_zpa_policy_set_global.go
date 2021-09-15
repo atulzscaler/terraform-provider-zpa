@@ -271,7 +271,7 @@ func flattenPolicySetRules(policySetRules *policysetglobal.PolicySet) []interfac
 			"reauth_timeout":              ruleItem.ReauthTimeout,
 			"rule_order":                  ruleItem.RuleOrder,
 			"zpn_cbi_profile_id":          ruleItem.ZpnCbiProfileID,
-			"zpn_inspection_profile_id":   ruleItem.ZpnInspectionProfileId,
+			"zpn_inspection_profile_id":   ruleItem.ZpnInspectionProfileID,
 			"zpn_inspection_profile_name": ruleItem.ZpnInspectionProfileName,
 			"conditions":                  flattenRuleConditions(ruleItem),
 		}

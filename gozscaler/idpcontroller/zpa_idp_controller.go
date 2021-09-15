@@ -20,9 +20,9 @@ type IdpController struct {
 	EnableScimBasedPolicy       bool           `json:"enableScimBasedPolicy,omitempty"`
 	Enabled                     bool           `json:"enabled,omitempty"`
 	ID                          string         `json:"id,omitempty"`
-	IdpEntityId                 string         `json:"idpEntityId,omitempty"`
+	IdpEntityID                 string         `json:"idpEntityId,omitempty"`
 	LoginNameAttribute          string         `json:"loginNameAttribute,omitempty"`
-	LoginUrl                    string         `json:"loginUrl,omitempty"`
+	LoginURL                    string         `json:"loginUrl,omitempty"`
 	ModifiedBy                  string         `json:"modifiedBy,omitempty"`
 	ModifiedTime                string         `json:"modifiedTime,omitempty"`
 	Name                        string         `json:"name,omitempty"`
@@ -41,10 +41,10 @@ type IdpController struct {
 }
 
 type AdminMetadata struct {
-	CertificateUrl string `json:"certificateUrl"`
-	SpEntityId     string `json:"spEntityId"`
-	SpMetadataUrl  string `json:"spMetadataUrl"`
-	SpPostUrl      string `json:"spPostUrl"`
+	CertificateURL string `json:"certificateUrl"`
+	SpEntityID     string `json:"spEntityId"`
+	SpMetadataURL  string `json:"spMetadataUrl"`
+	SpPostURL      string `json:"spPostUrl"`
 }
 type Certificates struct {
 	Cname          string `json:"cName,omitempty"`
@@ -54,10 +54,10 @@ type Certificates struct {
 	ValidToinSec   string `json:"validToInSec,omitempty"`
 }
 type UserMetadata struct {
-	CertificateUrl string `json:"certificateUrl,omitempty"`
-	SpEntityId     string `json:"spEntityId,omitempty"`
-	SpMetadataUrl  string `json:"spMetadataUrl,omitempty"`
-	SpPostUrl      string `json:"spPostUrl,omitempty"`
+	CertificateURL string `json:"certificateUrl,omitempty"`
+	SpEntityID     string `json:"spEntityId,omitempty"`
+	SpMetadataURL  string `json:"spMetadataUrl,omitempty"`
+	SpPostURL      string `json:"spPostUrl,omitempty"`
 }
 
 func (service *Service) Get(IdpID string) (*IdpController, *http.Response, error) {

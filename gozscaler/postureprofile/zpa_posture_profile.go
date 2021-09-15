@@ -19,9 +19,9 @@ type PostureProfile struct {
 	ModifiedBy        string `json:"modifiedBy,omitempty"`
 	ModifiedTime      string `json:"modifiedTime,omitempty"`
 	Name              string `json:"name,omitempty"`
-	PostureudId       string `json:"postureUdid,omitempty"`
+	PostureudID       string `json:"postureUdid,omitempty"`
 	ZscalerCloud      string `json:"zscalerCloud,omitempty"`
-	ZscalerCustomerId string `json:"zscalerCustomerId,omitempty"`
+	ZscalerCustomerID string `json:"zscalerCustomerId,omitempty"`
 }
 
 func (service *Service) Get(id string) (*PostureProfile, *http.Response, error) {

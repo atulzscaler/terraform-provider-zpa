@@ -43,7 +43,7 @@ type Rules struct {
 	ReauthTimeout            string       `json:"reauthTimeout,omitempty"`
 	RuleOrder                string       `json:"ruleOrder,omitempty"`
 	ZpnCbiProfileID          string       `json:"zpnCbiProfileId,omitempty"`
-	ZpnInspectionProfileId   string       `json:"zpnInspectionProfileId,omitempty"`
+	ZpnInspectionProfileID   string       `json:"zpnInspectionProfileId,omitempty"`
 	ZpnInspectionProfileName string       `json:"zpnInspectionProfileName,omitempty"`
 	Conditions               []Conditions `json:"conditions,omitempty"`
 }
