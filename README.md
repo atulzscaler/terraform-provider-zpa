@@ -2,7 +2,7 @@
 [![GitHub license](https://img.shields.io/badge/license-MIT-blue.svg)](https://img.shields.io/badge/license-MIT-blue.svg)
 [![Gitter chat](https://badges.gitter.im/hashicorp-terraform/Lobby.png)](https://gitter.im/hashicorp-terraform/Lobby)
 
-Unofficial Terraform Provider for Zscaler Private Access
+***Unofficial Terraform Provider for Zscaler Private Access***
 =========================================================================
 
 **Attention:** This SDK is not affiliated with, nor supported by Zscaler in any way.
