@@ -78,7 +78,7 @@ func dataSourceSamlAttributeRead(d *schema.ResourceData, m interface{}) error {
 	if resp != nil {
 		d.SetId(resp.ID)
 		_ = d.Set("creation_time", resp.CreationTime)
-		_ = d.Set("idp_id", resp.IdpId)
+		_ = d.Set("idp_id", resp.IdpID)
 		_ = d.Set("idp_name", resp.IdpName)
 		_ = d.Set("modifiedby", resp.ModifiedBy)
 		_ = d.Set("modified_time", resp.ModifiedTime)

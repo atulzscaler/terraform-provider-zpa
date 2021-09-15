@@ -14,7 +14,7 @@ const (
 type SamlAttribute struct {
 	CreationTime  string `json:"creationTime,omitempty"`
 	ID            string `json:"id,omitempty"`
-	IdpId         string `json:"idpId,omitempty"`
+	IdpID         string `json:"idpId,omitempty"`
 	IdpName       string `json:"idpName,omitempty"`
 	ModifiedBy    string `json:"modifiedBy,omitempty"`
 	ModifiedTime  string `json:"modifiedTime,omitempty"`
@@ -23,9 +23,9 @@ type SamlAttribute struct {
 	UserAttribute bool   `json:"userAttribute,omitempty"`
 }
 
-func (service *Service) Get(samlattributeId string) (*SamlAttribute, *http.Response, error) {
+func (service *Service) Get(samlAttributeID string) (*SamlAttribute, *http.Response, error) {
 	v := new(SamlAttribute)
-	relativeURL := fmt.Sprintf("%s/%s", mgmtConfig+service.Client.Config.CustomerID+samlAttributeEndpoint, samlattributeId)
+	relativeURL := fmt.Sprintf("%s/%s", mgmtConfig+service.Client.Config.CustomerID+samlAttributeEndpoint, samlAttributeID)
 	resp, err := service.Client.NewRequestDo("GET", relativeURL, nil, nil, v)
 	if err != nil {
 		return nil, nil, err
