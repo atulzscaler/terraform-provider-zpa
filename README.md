@@ -5,7 +5,7 @@
 Terraform Provider for ☁️Zscaler Private Access☁️
 =========================================================================
 
-⚠️ **Attention:** This provider is not affiliated with, nor supported by Zscaler in any way.
+⚠️  **Attention:** This provider is not affiliated with, nor supported by Zscaler in any way.
 
 
 - Website: https://www.terraform.io
