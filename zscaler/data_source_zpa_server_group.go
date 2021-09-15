@@ -366,7 +366,7 @@ func flattenAppConnectorGroups(appConnectorGroup []servergroup.AppConnectorGroup
 			"description":              appConnectorGroup.Description,
 			"dns_query_type":           appConnectorGroup.DnsqueryType,
 			"enabled":                  appConnectorGroup.Enabled,
-			"geolocation_id":           appConnectorGroup.GeolocationId,
+			"geolocation_id":           appConnectorGroup.GeolocationID,
 			"id":                       appConnectorGroup.ID,
 			"latitude":                 appConnectorGroup.Latitude,
 			"location":                 appConnectorGroup.Location,
@@ -377,7 +377,7 @@ func flattenAppConnectorGroups(appConnectorGroup []servergroup.AppConnectorGroup
 			"siem_app_connector_group": appConnectorGroup.SiemAppconnectorGroup,
 			"upgrade_day":              appConnectorGroup.UpgradeDay,
 			"upgrade_time_in_secs":     appConnectorGroup.UpgradeTimeinSecs,
-			"version_profile_id":       appConnectorGroup.VersionProfileId,
+			"version_profile_id":       appConnectorGroup.VersionProfileID,
 			"server_groups":            flattenAppConnectorServerGroups(appConnectorGroup),
 			"connectors":               flattenAppConnectors(appConnectorGroup),
 		}

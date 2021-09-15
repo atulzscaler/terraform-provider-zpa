@@ -117,7 +117,7 @@ func dataSourceScimAttributeHeaderRead(d *schema.ResourceData, m interface{}) er
 		_ = d.Set("creation_time", resp.CreationTime)
 		_ = d.Set("data_type", resp.DataType)
 		_ = d.Set("description", resp.Description)
-		_ = d.Set("idp_id", resp.IdpId)
+		_ = d.Set("idp_id", resp.IdpID)
 		_ = d.Set("modifiedby", resp.ModifiedBy)
 		_ = d.Set("modified_time", resp.ModifiedTime)
 		_ = d.Set("multivalued", resp.MultiValued)

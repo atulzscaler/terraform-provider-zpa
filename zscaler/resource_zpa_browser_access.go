@@ -204,7 +204,7 @@ func resourceBrowserAccessCreate(d *schema.ResourceData, m interface{}) error {
 	req := expandBrowserAccess(d)
 	log.Printf("[INFO] Creating browser access request\n%+v\n", req)
 
-	if req.SegmentGroupId == "" {
+	if req.SegmentGroupID == "" {
 		log.Println("[ERROR] Please provde a valid segment group for the application segment")
 		return fmt.Errorf("please provde a valid segment group for the application segment")
 	}
@@ -234,7 +234,7 @@ func resourceBrowserAccessRead(d *schema.ResourceData, m interface{}) error {
 	}
 
 	log.Printf("[INFO] Getting browser access:\n%+v\n", resp)
-	_ = d.Set("segment_group_id", resp.SegmentGroupId)
+	_ = d.Set("segment_group_id", resp.SegmentGroupID)
 	_ = d.Set("segment_group_name", resp.SegmentGroupName)
 	_ = d.Set("bypass_type", resp.BypassType)
 	_ = d.Set("config_space", resp.ConfigSpace)
@@ -249,8 +249,8 @@ func resourceBrowserAccessRead(d *schema.ResourceData, m interface{}) error {
 	_ = d.Set("is_cname_enabled", resp.IsCnameEnabled)
 	_ = d.Set("ip_anchored", resp.IpAnchored)
 	_ = d.Set("health_reporting", resp.HealthReporting)
-	_ = d.Set("tcp_port_ranges", resp.TcpPortRanges)
-	_ = d.Set("udp_port_ranges", resp.UdpPortRanges)
+	_ = d.Set("tcp_port_ranges", resp.TCPPortRanges)
+	_ = d.Set("udp_port_ranges", resp.UDPPortRanges)
 
 	if err := d.Set("clientless_apps", flattenBaClientlessApps(resp)); err != nil {
 		return fmt.Errorf("failed to read clientless apps %s", err)
@@ -270,7 +270,7 @@ func resourceBrowserAccessUpdate(d *schema.ResourceData, m interface{}) error {
 	log.Printf("[INFO] Updating browser access ID: %v\n", id)
 	req := expandBrowserAccess(d)
 
-	if d.HasChange("segment_group_id") && req.SegmentGroupId == "" {
+	if d.HasChange("segment_group_id") && req.SegmentGroupID == "" {
 		log.Println("[ERROR] Please provde a valid segment group for the browser access application segment")
 		return fmt.Errorf("please provde a valid segment group for the browser access application segment")
 	}
@@ -285,9 +285,9 @@ func resourceBrowserAccessUpdate(d *schema.ResourceData, m interface{}) error {
 func resourceBrowserAccessDelete(d *schema.ResourceData, m interface{}) error {
 	zClient := m.(*Client)
 	id := d.Id()
-	segmentGroupId, ok := d.GetOk("segment_group_id")
-	if ok && segmentGroupId != nil {
-		gID, ok := segmentGroupId.(string)
+	segmentGroupID, ok := d.GetOk("segment_group_id")
+	if ok && segmentGroupID != nil {
+		gID, ok := segmentGroupID.(string)
 		if ok && gID != "" {
 			// detach it from segment group first
 			if err := detachBrowserAccessFromGroup(zClient, id, gID); err != nil {
@@ -303,11 +303,11 @@ func resourceBrowserAccessDelete(d *schema.ResourceData, m interface{}) error {
 	return nil
 }
 
-func detachBrowserAccessFromGroup(client *Client, segmentID, segmentGroupId string) error {
-	log.Printf("[INFO] Detaching browser access  %s from segment group: %s\n", segmentID, segmentGroupId)
-	segGroup, _, err := client.segmentgroup.Get(segmentGroupId)
+func detachBrowserAccessFromGroup(client *Client, segmentID, segmentGroupID string) error {
+	log.Printf("[INFO] Detaching browser access  %s from segment group: %s\n", segmentID, segmentGroupID)
+	segGroup, _, err := client.segmentgroup.Get(segmentGroupID)
 	if err != nil {
-		log.Printf("[error] Error while getting segment group id: %s", segmentGroupId)
+		log.Printf("[error] Error while getting segment group id: %s", segmentGroupID)
 		return err
 	}
 	adaptedApplications := []segmentgroup.Application{}
@@ -317,7 +317,7 @@ func detachBrowserAccessFromGroup(client *Client, segmentID, segmentGroupId stri
 		}
 	}
 	segGroup.Applications = adaptedApplications
-	_, err = client.segmentgroup.Update(segmentGroupId, segGroup)
+	_, err = client.segmentgroup.Update(segmentGroupID, segGroup)
 	return err
 
 }
@@ -332,7 +332,7 @@ func expandBrowserAccess(d *schema.ResourceData) browseraccess.BrowserAccess {
 		IpAnchored:      d.Get("ip_anchored").(bool),
 		IsCnameEnabled:  d.Get("is_cname_enabled").(bool),
 		DomainNames:     expandStringInSlice(d, "domain_names"),
-		SegmentGroupId:  d.Get("segment_group_id").(string),
+		SegmentGroupID:  d.Get("segment_group_id").(string),
 	}
 	if d.HasChange("name") {
 		details.Name = d.Get("name").(string)
@@ -347,10 +347,10 @@ func expandBrowserAccess(d *schema.ResourceData) browseraccess.BrowserAccess {
 		details.ClientlessApps = expandClientlessApps(d)
 	}
 	if d.HasChange("udp_port_ranges") {
-		details.UdpPortRanges = convertToListString(d.Get("udp_port_ranges"))
+		details.UDPPortRanges = convertToListString(d.Get("udp_port_ranges"))
 	}
 	if d.HasChange("tcp_port_ranges") {
-		details.TcpPortRanges = convertToListString(d.Get("tcp_port_ranges"))
+		details.TCPPortRanges = convertToListString(d.Get("tcp_port_ranges"))
 	}
 	return details
 }
@@ -381,10 +381,10 @@ func expandClientlessApps(d *schema.ResourceData) []browseraccess.ClientlessApps
 			if ok {
 				clientlessApps = append(clientlessApps, browseraccess.ClientlessApps{
 					AllowOptions:        clientlessApp["allow_options"].(bool),
-					AppId:               clientlessApp["app_id"].(string),
+					AppID:               clientlessApp["app_id"].(string),
 					ApplicationPort:     clientlessApp["application_port"].(string),
 					ApplicationProtocol: clientlessApp["application_protocol"].(string),
-					CertificateId:       clientlessApp["certificate_id"].(string),
+					CertificateID:       clientlessApp["certificate_id"].(string),
 					CertificateName:     clientlessApp["certificate_name"].(string),
 					Cname:               clientlessApp["cname"].(string),
 					Description:         clientlessApp["description"].(string),
@@ -431,10 +431,10 @@ func flattenBaClientlessApps(clientlessApp *browseraccess.BrowserAccess) []inter
 	for i, clientlessApp := range clientlessApp.ClientlessApps {
 		clientlessApps[i] = map[string]interface{}{
 			"allow_options":        clientlessApp.AllowOptions,
-			"app_id":               clientlessApp.AppId,
+			"app_id":               clientlessApp.AppID,
 			"application_port":     clientlessApp.ApplicationPort,
 			"application_protocol": clientlessApp.ApplicationProtocol,
-			"certificate_id":       clientlessApp.CertificateId,
+			"certificate_id":       clientlessApp.CertificateID,
 			"certificate_name":     clientlessApp.CertificateName,
 			"cname":                clientlessApp.Cname,
 			"description":          clientlessApp.Description,

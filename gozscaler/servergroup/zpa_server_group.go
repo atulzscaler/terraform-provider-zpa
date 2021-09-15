@@ -38,7 +38,7 @@ type AppConnectorGroups struct {
 	Description           string            `json:"description,omitempty"`
 	DnsqueryType          string            `json:"dnsQueryType,omitempty"`
 	Enabled               bool              `json:"enabled"`
-	GeolocationId         string            `json:"geoLocationId,omitempty"`
+	GeolocationID         string            `json:"geoLocationId,omitempty"`
 	ID                    string            `json:"id,omitempty"`
 	Latitude              string            `json:"latitude,omitempty"`
 	Location              string            `json:"location,omitempty"`
@@ -49,14 +49,14 @@ type AppConnectorGroups struct {
 	SiemAppconnectorGroup bool              `json:"siemAppConnectorGroup"`
 	UpgradeDay            string            `json:"upgradeDay,omitempty"`
 	UpgradeTimeinSecs     string            `json:"upgradeTimeInSecs,omitempty"`
-	VersionProfileId      string            `json:"versionProfileId,omitempty"`
+	VersionProfileID      string            `json:"versionProfileId,omitempty"`
 	AppServerGroups       []AppServerGroups `json:"serverGroups,omitempty"`
 	Connectors            []Connectors      `json:"connectors,omitempty"`
 }
 
 type Connectors struct {
 	ApplicationStartTime     string                 `json:"applicationStartTime,omitempty"`
-	AppConnectorGroupId      string                 `json:"appConnectorGroupId,omitempty"`
+	AppConnectorGroupID      string                 `json:"appConnectorGroupId,omitempty"`
 	AppConnectorGroupName    string                 `json:"appConnectorGroupName,omitempty"`
 	ControlChannelStatus     string                 `json:"controlChannelStatus,omitempty"`
 	CreationTime             string                 `json:"creationTime,omitempty"`
@@ -68,8 +68,8 @@ type Connectors struct {
 	ExpectedVersion          string                 `json:"expectedVersion,omitempty"`
 	Fingerprint              string                 `json:"fingerprint,omitempty"`
 	ID                       string                 `json:"id,omitempty"`
-	IpAcl                    []string               `json:"ipAcl,omitempty"`
-	IssuedCertId             string                 `json:"issuedCertId,omitempty"`
+	IPACL                    []string               `json:"ipAcl,omitempty"`
+	IssuedCertID             string                 `json:"issuedCertId,omitempty"`
 	LastBrokerConnecttime    string                 `json:"lastBrokerConnectTime,omitempty"`
 	LastBrokerDisconnectTime string                 `json:"lastBrokerDisconnectTime,omitempty"`
 	LastUpgradeTime          string                 `json:"lastUpgradeTime,omitempty"`
@@ -81,8 +81,8 @@ type Connectors struct {
 	Name                     string                 `json:"name"`
 	Platform                 string                 `json:"platform,omitempty"`
 	PreviousVersion          string                 `json:"previousVersion,omitempty"`
-	PrivateIp                string                 `json:"privateIp,omitempty"`
-	PublicIp                 string                 `json:"publicIp,omitempty"`
+	PrivateIP                string                 `json:"privateIp,omitempty"`
+	PublicIP                 string                 `json:"publicIp,omitempty"`
 	SigningCert              map[string]interface{} `json:"signingCert,omitempty"`
 	UpgradeAttempt           string                 `json:"upgradeAttempt,omitempty"`
 	UpgradeStatus            string                 `json:"upgradeStatus,omitempty"`

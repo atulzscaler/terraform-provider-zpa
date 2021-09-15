@@ -32,8 +32,8 @@ type ApplicationSegmentResource struct {
 	CreationTime         string            `json:"creationTime,omitempty"`
 	ModifiedBy           string            `json:"modifiedBy,omitempty"`
 	ModifiedTime         string            `json:"modifiedTime,omitempty"`
-	TcpPortRanges        []interface{}     `json:"tcpPortRanges,omitempty"`
-	UdpPortRanges        []interface{}     `json:"udpPortRanges,omitempty"`
+	TCPPortRanges        []interface{}     `json:"tcpPortRanges,omitempty"`
+	UDPPortRanges        []interface{}     `json:"udpPortRanges,omitempty"`
 	ClientlessApps       []ClientlessApps  `json:"clientlessApps,omitempty"`
 	ServerGroups         []AppServerGroups `json:"serverGroups,omitempty"`
 	DefaultIdleTimeout   string            `json:"defaultIdleTimeout,omitempty"`
@@ -44,7 +44,7 @@ type ClientlessApps struct {
 	AppId               string `json:"appId,omitempty"`
 	ApplicationPort     string `json:"applicationPort,omitempty"`
 	ApplicationProtocol string `json:"applicationProtocol,omitempty"`
-	CertificateId       string `json:"certificateId,omitempty"`
+	CertificateID       string `json:"certificateId,omitempty"`
 	CertificateName     string `json:"certificateName,omitempty"`
 	Cname               string `json:"cname,omitempty"`
 	CreationTime        string `json:"creationTime,omitempty"`

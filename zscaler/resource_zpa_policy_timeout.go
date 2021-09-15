@@ -225,11 +225,11 @@ func resourcePolicyTimeoutUpdate(d *schema.ResourceData, m interface{}) error {
 	if err != nil {
 		return err
 	}
-	ruleId := d.Id()
-	log.Printf("[INFO] Updating policy rule ID: %v\n", ruleId)
+	ruleID := d.Id()
+	log.Printf("[INFO] Updating policy rule ID: %v\n", ruleID)
 	req := expandCreatePolicyRule(d)
 
-	if _, err := zClient.policysetrule.Update(globalPolicyTimeout.ID, ruleId, &req); err != nil {
+	if _, err := zClient.policysetrule.Update(globalPolicyTimeout.ID, ruleID, &req); err != nil {
 		return err
 	}
 

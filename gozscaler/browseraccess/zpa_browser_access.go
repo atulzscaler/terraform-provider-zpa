@@ -12,7 +12,7 @@ const (
 
 type BrowserAccess struct {
 	ID                   string            `json:"id,omitempty"`
-	SegmentGroupId       string            `json:"segmentGroupId,omitempty"`
+	SegmentGroupID       string            `json:"segmentGroupId,omitempty"`
 	SegmentGroupName     string            `json:"segmentGroupName,omitempty"`
 	BypassType           string            `json:"bypassType,omitempty"`
 	ConfigSpace          string            `json:"configSpace,omitempty"`
@@ -29,18 +29,18 @@ type BrowserAccess struct {
 	CreationTime         string            `json:"creationTime,omitempty"`
 	ModifiedBy           string            `json:"modifiedBy,omitempty"`
 	ModifiedTime         string            `json:"modifiedTime,omitempty"`
-	TcpPortRanges        []string          `json:"tcpPortRanges,omitempty"`
-	UdpPortRanges        []string          `json:"udpPortRanges,omitempty"`
+	TCPPortRanges        []string          `json:"tcpPortRanges,omitempty"`
+	UDPPortRanges        []string          `json:"udpPortRanges,omitempty"`
 	ClientlessApps       []ClientlessApps  `json:"clientlessApps,omitempty"`
 	AppServerGroups      []AppServerGroups `json:"serverGroups,omitempty"`
 }
 
 type ClientlessApps struct {
 	AllowOptions        bool   `json:"allowOptions"`
-	AppId               string `json:"appId,omitempty"`
+	AppID               string `json:"appId,omitempty"`
 	ApplicationPort     string `json:"applicationPort,omitempty"`
 	ApplicationProtocol string `json:"applicationProtocol,omitempty"`
-	CertificateId       string `json:"certificateId,omitempty"`
+	CertificateID       string `json:"certificateId,omitempty"`
 	CertificateName     string `json:"certificateName,omitempty"`
 	Cname               string `json:"cname,omitempty"`
 	CreationTime        string `json:"creationTime,omitempty"`

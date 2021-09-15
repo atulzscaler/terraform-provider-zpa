@@ -275,8 +275,8 @@ func dataSourceApplicationSegmentRead(d *schema.ResourceData, m interface{}) err
 		_ = d.Set("modified_time", resp.ModifiedTime)
 		_ = d.Set("name", resp.Name)
 		_ = d.Set("passive_health_enabled", resp.PassiveHealthEnabled)
-		_ = d.Set("tcp_port_ranges", resp.TcpPortRanges)
-		_ = d.Set("udp_port_ranges", resp.UdpPortRanges)
+		_ = d.Set("tcp_port_ranges", resp.TCPPortRanges)
+		_ = d.Set("udp_port_ranges", resp.UDPPortRanges)
 
 		if err := d.Set("clientless_apps", flattenClientlessApps(resp)); err != nil {
 			return fmt.Errorf("failed to read clientless apps %s", err)
@@ -300,7 +300,7 @@ func flattenClientlessApps(clientlessApp *applicationsegment.ApplicationSegmentR
 			"appid":                clientlessApp.AppId,
 			"application_port":     clientlessApp.ApplicationPort,
 			"application_protocol": clientlessApp.ApplicationProtocol,
-			"certificate_id":       clientlessApp.CertificateId,
+			"certificate_id":       clientlessApp.CertificateID,
 			"certificate_name":     clientlessApp.CertificateName,
 			"cname":                clientlessApp.Cname,
 			"creationtime":         clientlessApp.CreationTime,

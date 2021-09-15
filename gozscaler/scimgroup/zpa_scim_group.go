@@ -15,8 +15,8 @@ const (
 type ScimGroup struct {
 	CreationTime int64  `json:"creationTime,omitempty"`
 	ID           int64  `json:"id,omitempty"`
-	IdpGroupId   string `json:"idpGroupId,omitempty"`
-	IdpId        int64  `json:"idpId,omitempty"`
+	IdpGroupID   string `json:"idpGroupId,omitempty"`
+	IdpID        int64  `json:"idpId,omitempty"`
 	IdpName      string `json:"idpName,omitempty"`
 	ModifiedTime int64  `json:"modifiedTime,omitempty"`
 	Name         string `json:"name,omitempty"`

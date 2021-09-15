@@ -60,9 +60,9 @@ type Connector struct {
 	Name                     string                 `json:"name,omitempty"`
 	Platform                 string                 `json:"platform,omitempty"`
 	PreviousVersion          string                 `json:"previousVersion,omitempty"`
-	PrivateIp                string                 `json:"privateIp,omitempty"`
+	PrivateIP                string                 `json:"privateIp,omitempty"`
 	SigningCert              map[string]interface{} `json:"signingCert,omitempty"`
-	PublicIp                 string                 `json:"publicIp,omitempty"`
+	PublicIP                 string                 `json:"publicIp,omitempty"`
 	UpgradeAttempt           string                 `json:"upgradeAttempt,omitempty"`
 	UpgradeStatus            string                 `json:"upgradeStatus,omitempty"`
 }

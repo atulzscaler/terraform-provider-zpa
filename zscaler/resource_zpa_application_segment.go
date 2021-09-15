@@ -211,8 +211,8 @@ func resourceApplicationSegmentRead(d *schema.ResourceData, m interface{}) error
 	_ = d.Set("name", resp.Name)
 	_ = d.Set("passive_health_enabled", resp.PassiveHealthEnabled)
 	_ = d.Set("ip_anchored", resp.IpAnchored)
-	_ = d.Set("tcp_port_ranges", resp.TcpPortRanges)
-	_ = d.Set("udp_port_ranges", resp.UdpPortRanges)
+	_ = d.Set("tcp_port_ranges", resp.TCPPortRanges)
+	_ = d.Set("udp_port_ranges", resp.UDPPortRanges)
 	_ = d.Set("server_groups", flattenAppServerGroups(resp))
 
 	return nil
@@ -299,8 +299,8 @@ func expandApplicationSegmentRequest(d *schema.ResourceData) applicationsegment.
 		IpAnchored:       d.Get("ip_anchored").(bool),
 		IsCnameEnabled:   d.Get("is_cname_enabled").(bool),
 		Name:             d.Get("name").(string),
-		TcpPortRanges:    d.Get("tcp_port_ranges").([]interface{}),
-		UdpPortRanges:    d.Get("udp_port_ranges").([]interface{}),
+		TCPPortRanges:    d.Get("tcp_port_ranges").([]interface{}),
+		UDPPortRanges:    d.Get("udp_port_ranges").([]interface{}),
 		ServerGroups:     expandAppServerGroups(d),
 	}
 }
