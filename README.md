@@ -1,5 +1,5 @@
 [![Codacy Badge](https://app.codacy.com/project/badge/Grade/d9b43cca56244010875a13bf8d5a81fa)](https://www.codacy.com?utm_source=github.com&amp;utm_medium=referral&amp;utm_content=SecurityGeekIO/terraform-provider-zpa&amp;utm_campaign=Badge_Grade)
-# [React](https://reactjs.org/) &middot; [![GitHub license](https://img.shields.io/badge/license-MIT-blue.svg)]
+[![GitHub license](https://img.shields.io/badge/license-MIT-blue.svg)]
 [![Gitter chat](https://badges.gitter.im/hashicorp-terraform/Lobby.png)](https://gitter.im/hashicorp-terraform/Lobby)
 
 Unofficial Terraform Provider for :cloud: Zscaler Private Access :cloud:
