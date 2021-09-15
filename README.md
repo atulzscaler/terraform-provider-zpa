@@ -123,7 +123,8 @@ Visit [here](https://github.com/SecurityGeekIO/terraform-provider-zpa/tree/maste
 
 Issues
 =========
-Please feel free to open an issue using `Github Issues <https://github.com/SecurityGeekIO/terraform-provider-zpa/issues>`_ if you run into any problems using this ZPA Terraform provider.
+Please feel free to open an issue using [Github Issues](https://github.com/SecurityGeekIO/terraform-provider-zpa/issues) if you run into any problems using this ZPA Terraform provider.
+
 
 License
 =========
