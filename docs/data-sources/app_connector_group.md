@@ -5,6 +5,7 @@ layout: "zpa"
 page_title: "ZPA: app_connector_group"
 description: |-
   Gets a ZPA App Connector Group's details.
+  
 ---
 
 # zpa_app_connector_group
