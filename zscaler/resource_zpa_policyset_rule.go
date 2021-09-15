@@ -3,12 +3,22 @@ package zscaler
 import (
 	"log"
 	"strconv"
+	"sync"
 
 	"github.com/SecurityGeekIO/terraform-provider-zpa/gozscaler/client"
 	"github.com/SecurityGeekIO/terraform-provider-zpa/gozscaler/policysetrule"
 	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/schema"
 	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/validation"
 )
+
+type listrules struct {
+	orders map[string]int
+	sync.Mutex
+}
+
+var rules = listrules{
+	orders: make(map[string]int),
+}
 
 func resourcePolicySetRule() *schema.Resource {
 	return &schema.Resource{
@@ -307,6 +317,7 @@ func resourcePolicySetDelete(d *schema.ResourceData, m interface{}) error {
 }
 
 func reorder(orderI interface{}, policySetID, id string, zClient *Client) {
+	defer reorderAll(policySetID, zClient)
 	if orderI == nil {
 		log.Printf("[WARN] Invalid order for policy set %s: %v\n", id, orderI)
 		return
@@ -321,17 +332,25 @@ func reorder(orderI interface{}, policySetID, id string, zClient *Client) {
 		log.Printf("[ERROR] couldn't reorder the policy set, the order may not have taken place:%v %v\n", orderInt, err)
 		return
 	}
-	count, _, err := zClient.policysetglobal.RulesCount()
+	rules.Lock()
+	rules.orders[id] = orderInt
+	rules.Unlock()
+}
 
-	if err != nil || orderInt <= count {
-		_, err := zClient.policysetrule.Reorder(policySetID, id, orderInt)
-		if err != nil {
-			log.Printf("[ERROR] couldn't reorder the policy set, the order may not have taken place: %v\n", err)
+// we keep calling reordering endpoint to reorder all rules after new rule was added
+// because the reorder endpoint shifts all order up to replac the new order.
+func reorderAll(policySetID string, zClient *Client) {
+	rules.Lock()
+	defer rules.Unlock()
+	count, _, _ := zClient.policysetglobal.RulesCount()
+	for k, v := range rules.orders {
+		if v <= count {
+			_, err := zClient.policysetrule.Reorder(policySetID, k, v)
+			if err != nil {
+				log.Printf("[ERROR] couldn't reorder the policy set, the order may not have taken place: %v\n", err)
+			}
 		}
-	} else {
-		log.Printf("[ERROR] couldn't reorder the policy set, order  (%d) out of range %d: %v\n", orderInt, count, err)
 	}
-
 }
 func expandCreatePolicyRule(d *schema.ResourceData) policysetrule.PolicyRule {
 	policySetID, ok := d.Get("policy_set_id").(string)
