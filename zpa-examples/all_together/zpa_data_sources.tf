@@ -32,8 +32,8 @@ data "zpa_idp_controller" "sgio_user_okta" {
  name = "SGIO-User-Okta"
 }
 
-data "zpa_saml_attribute" "email_user_sso" {
-    name = "Email_User SSO"
+data "zpa_saml_attribute" "email_sgio_user_sso" {
+    name = "Email_SGIO-User-Okta"
 }
 
 // Okta IDP SCIM Groups

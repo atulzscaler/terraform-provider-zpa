@@ -29,7 +29,7 @@ resource "zpa_policyset_rule" "crwd_zta_score_40" {
      operator = "OR"
     operands {
       object_type = "SAML"
-      lhs = data.zpa_saml_attribute.email_user_sso.id
+      lhs = data.zpa_saml_attribute.email_sgio_user_sso.id
       rhs = "alison.abbas@securitygeek.io"
       idp_id = data.zpa_idp_controller.sgio_user_okta.id
     }
@@ -66,7 +66,7 @@ resource "zpa_policyset_rule" "crwd_zta_score_80" {
      operator = "OR"
     operands {
       object_type = "SAML"
-      lhs = data.zpa_saml_attribute.email_user_sso.id
+      lhs = data.zpa_saml_attribute.email_sgio_user_sso.id
       rhs = "alison.abbas@securitygeek.io"
       idp_id = data.zpa_idp_controller.sgio_user_okta.id
     }
@@ -103,7 +103,7 @@ resource "zpa_policyset_rule" "crwd_zpa_pre_zta" {
      operator = "OR"
     operands {
       object_type = "SAML"
-      lhs = data.zpa_saml_attribute.email_user_sso.id
+      lhs = data.zpa_saml_attribute.email_sgio_user_sso.id
       rhs = "alison.abbas@securitygeek.io"
       idp_id = data.zpa_idp_controller.sgio_user_okta.id
     }
