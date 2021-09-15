@@ -26,29 +26,29 @@ Building The Provider (Terraform v0.12+)
 Clone repository to: `$GOPATH/src/github.com/SecurityGeekIO/terraform-provider-zpa`
 
 ```sh
-$ mkdir -p $GOPATH/src/github.com/SecurityGeekIO
-$ cd $GOPATH/src/github.com/SecurityGeekIO
+$ mkdir -p $GOPATH/src/github.com/terraform-providers
+$ cd $GOPATH/src/github.com/terraform-providers
 $ git clone https://github.com/SecurityGeekIO/terraform-provider-zpa.git
 ```
 
 To clone on windows
 ```sh
-mkdir %GOPATH%\src\github.com\SecurityGeekIO
-cd %GOPATH%\src\github.com\SecurityGeekIO
+mkdir %GOPATH%\src\github.com\terraform-providers
+cd %GOPATH%\src\github.com\terraform-providers
 git clone https://github.com/SecurityGeekIO/terraform-provider-zpa.git
 ```
 
 Enter the provider directory and build the provider
 
 ```sh
-$ cd $GOPATH/src/github.com/SecurityGeekIO/terraform-provider-zpa
+$ cd $GOPATH/src/github.com/terraform-providers/terraform-provider-zpa
 $ make fmt
 $ make build
 ```
 
 To build on Windows
 ```sh
-cd %GOPATH%\src\github.com\SecurityGeekIO\terraform-provider-zpa
+cd %GOPATH%\src\github.com\terraform-providers\terraform-provider-zpa
 go fmt
 go install
 ```
@@ -65,7 +65,7 @@ $ make build13
 ### Windows
 Run the following commands for cmd:
 ```sh
-cd %GOPATH%\src\github.com\SecurityGeekIO\terraform-provider-zpa
+cd %GOPATH%\src\github.com\terraform-providers\terraform-provider-zpa
 go fmt
 go install
 xcopy "%GOPATH%\bin\terraform-provider-zpa.exe" "%APPDATA%\terraform.d\plugins\zscaler.com\zpa\zpa\1.0.0\windows_amd64\" /Y
@@ -77,6 +77,9 @@ go fmt
 go install
 xcopy "$env:GOPATH\bin\terraform-provider-zpa.exe" "$env:APPDATA\terraform.d\plugins\zscaler.com\zpa\zpa\1.0.0\windows_amd64\" /Y
 ```
+
+**Note**: For contributions created from forks, the repository should still be cloned under the `$GOPATH/src/github.com/terraform-providers/terraform-provider-zpa` directory to allow the provided `make` commands to properly run, build, and test this project.
+
 Using Zscaler Private Access Provider (Terraform v0.12+)
 -----------------------
 
