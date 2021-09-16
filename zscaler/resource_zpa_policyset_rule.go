@@ -356,76 +356,76 @@ func validateOperand(operand policysetrule.Operands, zClient *Client) bool {
 		}))
 	case "POSTURE":
 		if operand.LHS == "" {
-			log.Printf("[WARN] when operand object type is %s LHS must be a valid posture network ID value is empty\n", operand.ObjectType)
+			lhsWarn(operand.ObjectType, "valid posture network ID", operand.LHS, nil)
 			return false
 		}
 		_, _, err := zClient.postureprofile.Get(operand.LHS)
 		if err != nil {
-			log.Printf("[WARN] when operand object type is %s LHS must be a valid posture network ID value is \"%s\"\n", operand.ObjectType, operand.LHS)
+			lhsWarn(operand.ObjectType, "valid posture network ID", operand.LHS, err)
 			return false
 		}
 		if !contains([]string{"true", "false"}, operand.RHS) {
-			log.Printf("[WARN] when operand object type is %s RHS must be \"true\"/\"false\" value is %#v\n", operand.ObjectType, operand.RHS)
+			rhsWarn(operand.ObjectType, "\"true\"/\"false\"", operand.RHS, nil)
 			return false
 		}
 		return true
 	case "TRUSTED_NETWORK":
 		if operand.LHS == "" {
-			log.Printf("[WARN] when operand object type is %s LHS must be a valid trusted network ID value is empty\n", operand.ObjectType)
+			lhsWarn(operand.ObjectType, "valid trusted network ID", operand.LHS, nil)
 			return false
 		}
 		_, _, err := zClient.trustednetwork.Get(operand.LHS)
 		if err != nil {
-			log.Printf("[WARN] when operand object type is %s LHS must be a valid trusted network ID value is \"%s\"\n", operand.ObjectType, operand.LHS)
+			lhsWarn(operand.ObjectType, "valid trusted network ID", operand.LHS, err)
 			return false
 		}
 		if operand.RHS != "true" {
-			log.Printf("[WARN] when operand object type is %s RHS must be \"true\" value is %#v\n", operand.ObjectType, operand.RHS)
+			rhsWarn(operand.ObjectType, "\"true\"", operand.RHS, nil)
 			return false
 		}
 		return true
 	case "SAML":
 		if operand.LHS == "" {
-			log.Printf("[WARN] when operand object type is %s LHS must be a valid SAML Attribute ID value is empty\n", operand.ObjectType)
+			lhsWarn(operand.ObjectType, "valid SAML Attribute ID", operand.LHS, nil)
 			return false
 		}
 		_, _, err := zClient.samlattribute.Get(operand.LHS)
 		if err != nil {
-			log.Printf("[WARN] when operand object type is %s LHS must be a valid SAML Attribute ID value is \"%s\"\n", operand.ObjectType, operand.LHS)
+			lhsWarn(operand.ObjectType, "valid SAML Attribute ID", operand.LHS, err)
 			return false
 		}
 		if operand.RHS == "" {
-			log.Printf("[WARN] when operand object type is %s RHS must be set to SAML attribute value. Value is %#v\n", operand.ObjectType, operand.RHS)
+			rhsWarn(operand.ObjectType, "SAML Attribute Value", operand.RHS, nil)
 			return false
 		}
 		return true
 	case "SCIM":
 		if operand.LHS == "" {
-			log.Printf("[WARN] when operand object type is %s LHS must be a valid SCIM Attribute ID value is empty\n", operand.ObjectType)
+			lhsWarn(operand.ObjectType, "valid SCIM Attribute ID", operand.LHS, nil)
 			return false
 		}
 		_, _, err := zClient.scimattributeheader.Get(operand.LHS)
 		if err != nil {
-			log.Printf("[WARN] when operand object type is %s LHS must be a valid SCIM Attribute ID value is \"%s\"\n", operand.ObjectType, operand.LHS)
+			lhsWarn(operand.ObjectType, "valid SCIM Attribute ID", operand.LHS, err)
 			return false
 		}
 		if operand.RHS == "" {
-			log.Printf("[WARN] when operand object type is %s RHS must be set to SCIM attribute value. Value is %#v\n", operand.ObjectType, operand.RHS)
+			rhsWarn(operand.ObjectType, "SCIM Attribute Value", operand.RHS, nil)
 			return false
 		}
 		return true
 	case "SCIM-GROUP":
 		if operand.LHS == "" {
-			log.Printf("[WARN] when operand object type is %s LHS must be a valid SCIM Group Attribute ID value is empty\n", operand.ObjectType)
+			lhsWarn(operand.ObjectType, "valid SCIM Group Attribute ID", operand.LHS, nil)
 			return false
 		}
 		_, _, err := zClient.scimgroup.Get(operand.LHS)
 		if err != nil {
-			log.Printf("[WARN] when operand object type is %s LHS must be a valid SCIM Group Attribute ID value is \"%s\"\n", operand.ObjectType, operand.LHS)
+			lhsWarn(operand.ObjectType, "valid SCIM Group Attribute ID", operand.LHS, err)
 			return false
 		}
 		if operand.RHS == "" {
-			log.Printf("[WARN] when operand object type is %s RHS must be set to SCIM Group Attribute Value. Value is %#v\n", operand.ObjectType, operand.RHS)
+			rhsWarn(operand.ObjectType, "SCIM Group Attribute Value", operand.RHS, nil)
 			return false
 		}
 		return true
@@ -450,24 +450,26 @@ func (g Getter) Get(id string) error {
 	return g(id)
 }
 func customValidate(operand policysetrule.Operands, expectedLHS []string, expectedRHS string, clientRHS Getter) bool {
-	if operand.LHS == "" {
-		log.Printf("[WARN] when operand object type is %s LHS must be set in %#v value is empty\n", operand.ObjectType, expectedLHS)
-		return false
-	}
-	if !contains(expectedLHS, operand.LHS) {
-		log.Printf("[WARN] when operand object type is %s LHS must be set in %#v value is \"%s\"\n", operand.ObjectType, expectedLHS, operand.LHS)
+	if operand.LHS == "" || !contains(expectedLHS, operand.LHS) {
+		lhsWarn(operand.ObjectType, expectedLHS, operand.LHS, nil)
 		return false
 	}
 	if operand.RHS == "" {
-		log.Printf("[WARN] when operand object type is %s RHS must be %s, value is empty\n", operand.ObjectType, expectedRHS)
+		rhsWarn(operand.ObjectType, expectedRHS, operand.RHS, nil)
 		return false
 	}
 	err := clientRHS.Get(operand.RHS)
 	if err != nil {
-		log.Printf("[WARN] when operand object type is %s RHS must be %s, value is \"%s\" , %v\n", operand.ObjectType, expectedRHS, operand.RHS, err)
+		rhsWarn(operand.ObjectType, expectedRHS, operand.RHS, err)
 		return false
 	}
 	return true
+}
+func rhsWarn(objType, expected, rhs interface{}, err error) {
+	log.Printf("[WARN] when operand object type is %v RHS must be %#v, value is \"%v\", %v\n", objType, expected, rhs, err)
+}
+func lhsWarn(objType, expected, lhs interface{}, err error) {
+	log.Printf("[WARN] when operand object type is %v LHS must be %#v value is \"%v\", %v\n", objType, expected, lhs, err)
 }
 func resourcePolicySetDelete(d *schema.ResourceData, m interface{}) error {
 	zClient := m.(*Client)
