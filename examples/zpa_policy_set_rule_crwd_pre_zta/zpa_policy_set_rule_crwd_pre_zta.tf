@@ -10,13 +10,22 @@ terraform {
 provider "zpa" {}
 
 // CrowdStrike_ZTA_Score_Policy
-resource "zpa_policyset_rule" "crwd_zta_score_40" {
-  name                          = "CrowdStrike_ZTA_Score_40"
-  description                   = "CrowdStrike_ZTA_Score_40"
+resource "zpa_policyset_rule" "crwd_zpa_pre_zta" {
+  name                          = "CrowdStrike_ZPA_Pre-ZTA"
+  description                   = "CrowdStrike_ZPA_Pre-ZTA"
   action                        = "DENY"
   rule_order                    = 1
   operator = "AND"
   policy_set_id = data.zpa_policy_set_global.all.id
+  // conditions {
+  //   negated = false
+  //   operator = "OR"
+  //   operands {
+  //     object_type = "APP_GROUP"
+  //     lhs = "id"
+  //     rhs = zpa_segment_group.sg_sgio_intranet_web_apps.id
+  //   }
+  // }
   conditions {
     negated = false
     operator = "OR"
@@ -47,19 +56,6 @@ resource "zpa_policyset_rule" "crwd_zta_score_40" {
   }
 }
 
-resource "zpa_application_segment" "as_intranet_web_apps" {
-    name = "SGIO Intranet Web Apps"
-    description = "SGIO Intranet Web Apps"
-    enabled = true
-    health_reporting = "ON_ACCESS"
-    bypass_type = "NEVER"
-    tcp_port_ranges = ["80", "80"]
-    domain_names = ["intranet.securitygeek.io", "qa.securitygeek.io"]
-    segment_group_id = zpa_segment_group.sg_sgio_intranet_web_apps.id
-    server_groups {
-        id = [zpa_server_group.sgio_intranet_web_apps.id]
-    }
-}
 
 resource "zpa_server_group" "sgio_intranet_web_apps" {
   name = "SGIO Intranet Web Apps"
@@ -74,6 +70,20 @@ resource "zpa_server_group" "sgio_intranet_web_apps" {
   app_connector_groups {
     id = [data.zpa_app_connector_group.sgio-vancouver.id]
   }
+}
+
+resource "zpa_application_segment" "as_intranet_web_apps" {
+    name = "SGIO Intranet Web Apps"
+    description = "SGIO Intranet Web Apps"
+    enabled = true
+    health_reporting = "ON_ACCESS"
+    bypass_type = "NEVER"
+    tcp_port_ranges = ["80", "80"]
+    domain_names = ["intranet.securitygeek.io", "qa.securitygeek.io"]
+    segment_group_id = zpa_segment_group.sg_sgio_intranet_web_apps.id
+    server_groups {
+        id = [zpa_server_group.sgio_intranet_web_apps.id]
+    }
 }
 
    resource "zpa_segment_group" "sg_sgio_intranet_web_apps" {
@@ -100,8 +110,8 @@ data "zpa_saml_attribute" "email_sgio_user_sso" {
     name = "Email_SGIO-User-Okta"
 }
 
-data "zpa_posture_profile" "crwd_zta_score_40" {
- name = "CrowdStrike_ZPA_ZTA_40"
+data "zpa_posture_profile" "crwd_zpa_pre_zta" {
+ name = "CrowdStrike_ZPA_Pre-ZTA"
 }
 
 data "zpa_app_connector_group" "sgio-vancouver" {
