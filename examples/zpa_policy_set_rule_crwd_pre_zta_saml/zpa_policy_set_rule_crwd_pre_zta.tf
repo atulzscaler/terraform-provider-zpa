@@ -17,15 +17,15 @@ resource "zpa_policyset_rule" "crwd_zpa_pre_zta" {
   rule_order                    = 1
   operator = "AND"
   policy_set_id = data.zpa_policy_set_global.all.id
-  // conditions {
-  //   negated = false
-  //   operator = "OR"
-  //   operands {
-  //     object_type = "APP_GROUP"
-  //     lhs = "id"
-  //     rhs = zpa_segment_group.sg_sgio_intranet_web_apps.id
-  //   }
-  // }
+  conditions {
+    negated = false
+    operator = "OR"
+    operands {
+      object_type = "APP_GROUP"
+      lhs = "id"
+      rhs = zpa_segment_group.sg_sgio_intranet_web_apps.id
+    }
+  }
   conditions {
     negated = false
     operator = "OR"
@@ -47,7 +47,7 @@ resource "zpa_policyset_rule" "crwd_zpa_pre_zta" {
   }
 }
 
-
+// Create Server Group
 resource "zpa_server_group" "sgio_intranet_web_apps" {
   name = "SGIO Intranet Web Apps"
   description = "SGIO Intranet Web Apps"
@@ -63,6 +63,7 @@ resource "zpa_server_group" "sgio_intranet_web_apps" {
   }
 }
 
+// Create Application Segment
 resource "zpa_application_segment" "as_intranet_web_apps" {
     name = "SGIO Intranet Web Apps"
     description = "SGIO Intranet Web Apps"
@@ -77,6 +78,7 @@ resource "zpa_application_segment" "as_intranet_web_apps" {
     }
 }
 
+// Create Segment Group
    resource "zpa_segment_group" "sg_sgio_intranet_web_apps" {
    name = "SGIO Intranet Web Apps"
    description = "SGIO Intranet Web Apps"
@@ -84,6 +86,7 @@ resource "zpa_application_segment" "as_intranet_web_apps" {
    policy_migrated = true
  }
 
+// Create Application Server
  resource "zpa_application_server" "intranet" {
   name                          = "intranet.securitygeek.io"
   description                   = "intranet.securitygeek.io"
