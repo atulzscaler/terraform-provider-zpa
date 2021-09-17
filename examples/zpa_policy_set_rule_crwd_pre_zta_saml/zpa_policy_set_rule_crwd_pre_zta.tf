@@ -26,18 +26,6 @@ resource "zpa_policyset_rule" "crwd_zpa_pre_zta" {
       rhs = zpa_segment_group.sg_sgio_intranet_web_apps.id
     }
   }
-<<<<<<< HEAD:examples/zpa_policy_set_rule_crwd_pre_zta/zpa_policy_set_rule_crwd_pre_zta.tf
-  conditions {
-    negated = false
-    operator = "OR"
-    operands {
-      object_type = "APP"
-      lhs = "id"
-      rhs = zpa_application_segment.as_intranet_web_apps.id
-    }
-  }
-=======
->>>>>>> policy-check-objecttypes:examples/zpa_policy_set_rule_crwd_pre_zta_saml/zpa_policy_set_rule_crwd_pre_zta.tf
   conditions {
     negated = false
     operator = "OR"
