@@ -47,7 +47,7 @@ type Connector struct {
 	ExpectedVersion          string                 `json:"expectedVersion,omitempty"`
 	Fingerprint              string                 `json:"fingerprint,omitempty"`
 	ID                       string                 `json:"id,omitempty"`
-	IpAcl                    string                 `json:"ipAcl,omitempty"`
+	IPACL                    string                 `json:"ipAcl,omitempty"`
 	IssuedCertID             string                 `json:"issuedCertId,omitempty"`
 	LastBrokerConnectTime    string                 `json:"lastBrokerConnectTime,omitempty"`
 	LastBrokerDisconnectTime string                 `json:"lastBrokerDisconnectTime,omitempty"`
