@@ -326,7 +326,7 @@ func validateOperand(operand policysetrule.Operands, zClient *Client) bool {
 			_, _, err := zClient.applicationsegment.Get(id)
 			return err
 		}))
-	case "APP-GROUP":
+	case "APP_GROUP":
 		return customValidate(operand, []string{"id"}, "Segment Group ID", Getter(func(id string) error {
 			_, _, err := zClient.segmentgroup.Get(id)
 			return err
@@ -359,7 +359,7 @@ func validateOperand(operand policysetrule.Operands, zClient *Client) bool {
 			lhsWarn(operand.ObjectType, "valid posture network ID", operand.LHS, nil)
 			return false
 		}
-		_, _, err := zClient.postureprofile.Get(operand.LHS)
+		_, _, err := zClient.postureprofile.GetByPostureUDID(operand.LHS)
 		if err != nil {
 			lhsWarn(operand.ObjectType, "valid posture network ID", operand.LHS, err)
 			return false
@@ -374,7 +374,7 @@ func validateOperand(operand policysetrule.Operands, zClient *Client) bool {
 			lhsWarn(operand.ObjectType, "valid trusted network ID", operand.LHS, nil)
 			return false
 		}
-		_, _, err := zClient.trustednetwork.Get(operand.LHS)
+		_, _, err := zClient.trustednetwork.GetByNetID(operand.LHS)
 		if err != nil {
 			lhsWarn(operand.ObjectType, "valid trusted network ID", operand.LHS, err)
 			return false
@@ -414,7 +414,7 @@ func validateOperand(operand policysetrule.Operands, zClient *Client) bool {
 			return false
 		}
 		return true
-	case "SCIM-GROUP":
+	case "SCIM_GROUP":
 		if operand.LHS == "" {
 			lhsWarn(operand.ObjectType, "valid SCIM Group Attribute ID", operand.LHS, nil)
 			return false
