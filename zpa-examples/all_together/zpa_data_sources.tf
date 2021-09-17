@@ -3,18 +3,37 @@ data "zpa_app_connector_group" "sgio-vancouver" {
   name = "SGIO-Vancouver"
 }
 
-/*
+
 // Sales Browser Certificate
 data "zpa_ba_certificate" "sales_ba" {
     name = "sales.securitygeek.io"
 }
-*/
 
-data "zpa_policy_set_global" "all" {
+// Posture Profiles
+data "zpa_posture_profile" "crwd_zta_score_40" {
+ name = "CrowdStrike_ZPA_ZTA_40"
 }
+
+data "zpa_posture_profile" "crwd_zta_score_80" {
+ name = "CrowdStrike_ZPA_ZTA_80"
+}
+
+data "zpa_posture_profile" "crwd_zpa_pre_zta" {
+ name = "CrowdStrike_ZPA_Pre-ZTA"
+}
+
+data "zpa_policy_set_global" "all" {}
+
+data "zpa_policy_timeout" "all" {}
+
+data "zpa_policy_forwarding" "all" {}
 
 data "zpa_idp_controller" "sgio_user_okta" {
  name = "SGIO-User-Okta"
+}
+
+data "zpa_saml_attribute" "email_user_sso" {
+    name = "Email_User SSO"
 }
 
 // Okta IDP SCIM Groups

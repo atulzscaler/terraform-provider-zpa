@@ -161,6 +161,10 @@ func dataSourcePolicyTimeout() *schema.Resource {
 										Type:     schema.TypeBool,
 										Computed: true,
 									},
+									"operator": {
+										Type:     schema.TypeString,
+										Computed: true,
+									},
 									"operands": {
 										Type:     schema.TypeList,
 										Computed: true,
@@ -267,7 +271,7 @@ func flattenPolicyTimeout(policyTimeoutRules *policysetglobal.PolicySet) []inter
 			"reauth_timeout":              ruleItem.ReauthTimeout,
 			"rule_order":                  ruleItem.RuleOrder,
 			"zpn_cbi_profile_id":          ruleItem.ZpnCbiProfileID,
-			"zpn_inspection_profile_id":   ruleItem.ZpnInspectionProfileId,
+			"zpn_inspection_profile_id":   ruleItem.ZpnInspectionProfileID,
 			"zpn_inspection_profile_name": ruleItem.ZpnInspectionProfileName,
 			"conditions":                  flattenTimeoutRuleConditions(ruleItem),
 		}

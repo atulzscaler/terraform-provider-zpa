@@ -6,20 +6,24 @@ import (
 
 	"github.com/SecurityGeekIO/terraform-provider-zpa/gozscaler/browseraccess"
 	"github.com/SecurityGeekIO/terraform-provider-zpa/gozscaler/client"
+	"github.com/SecurityGeekIO/terraform-provider-zpa/gozscaler/segmentgroup"
 	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/schema"
 	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/validation"
 )
 
 func resourceBrowserAccess() *schema.Resource {
 	return &schema.Resource{
-		Create: resourceBrowserAccessCreate,
-		Read:   resourceBrowserAccessRead,
-		Update: resourceBrowserAccessUpdate,
-		Delete: resourceBrowserAccessDelete,
-		Importer: &schema.ResourceImporter{
-			State: schema.ImportStatePassthrough,
-		},
+		Create:   resourceBrowserAccessCreate,
+		Read:     resourceBrowserAccessRead,
+		Update:   resourceBrowserAccessUpdate,
+		Delete:   resourceBrowserAccessDelete,
+		Importer: &schema.ResourceImporter{},
+
 		Schema: map[string]*schema.Schema{
+			"id": {
+				Type:     schema.TypeString,
+				Computed: true,
+			},
 			"segment_group_id": {
 				Type:     schema.TypeString,
 				Optional: true,
@@ -37,15 +41,15 @@ func resourceBrowserAccess() *schema.Resource {
 				Type:        schema.TypeList,
 				Optional:    true,
 				Description: "TCP port ranges used to access the app.",
-				Elem:        &schema.Schema{Type: schema.TypeInt},
+				Elem:        &schema.Schema{Type: schema.TypeString},
 			},
 			"udp_port_ranges": {
 				Type:        schema.TypeList,
 				Optional:    true,
 				Description: "UDP port ranges used to access the app.",
-				Elem:        &schema.Schema{Type: schema.TypeInt},
+				Elem:        &schema.Schema{Type: schema.TypeString},
 			},
-			"configspace": {
+			"config_space": {
 				Type:     schema.TypeString,
 				Optional: true,
 			},
@@ -67,6 +71,10 @@ func resourceBrowserAccess() *schema.Resource {
 			},
 			"health_check_type": {
 				Type:     schema.TypeString,
+				Optional: true,
+			},
+			"passive_health_enabled": {
+				Type:     schema.TypeBool,
 				Optional: true,
 			},
 			"enabled": {
@@ -196,6 +204,11 @@ func resourceBrowserAccessCreate(d *schema.ResourceData, m interface{}) error {
 	req := expandBrowserAccess(d)
 	log.Printf("[INFO] Creating browser access request\n%+v\n", req)
 
+	if req.SegmentGroupID == "" {
+		log.Println("[ERROR] Please provde a valid segment group for the application segment")
+		return fmt.Errorf("please provde a valid segment group for the application segment")
+	}
+
 	browseraccess, _, err := zClient.browseraccess.Create(req)
 	if err != nil {
 		return err
@@ -212,18 +225,16 @@ func resourceBrowserAccessRead(d *schema.ResourceData, m interface{}) error {
 
 	resp, _, err := zClient.browseraccess.Get(d.Id())
 	if err != nil {
-		if err.(*client.ErrorResponse).IsObjectNotFound() {
+		if errResp, ok := err.(*client.ErrorResponse); ok && errResp.IsObjectNotFound() {
 			log.Printf("[WARN] Removing browser access %s from state because it no longer exists in ZPA", d.Id())
 			d.SetId("")
 			return nil
 		}
-
 		return err
 	}
 
 	log.Printf("[INFO] Getting browser access:\n%+v\n", resp)
-	_ = d.Set("id", resp.ID)
-	_ = d.Set("segment_group_id", resp.SegmentGroupId)
+	_ = d.Set("segment_group_id", resp.SegmentGroupID)
 	_ = d.Set("segment_group_name", resp.SegmentGroupName)
 	_ = d.Set("bypass_type", resp.BypassType)
 	_ = d.Set("config_space", resp.ConfigSpace)
@@ -231,19 +242,20 @@ func resourceBrowserAccessRead(d *schema.ResourceData, m interface{}) error {
 	_ = d.Set("name", resp.Name)
 	_ = d.Set("description", resp.Description)
 	_ = d.Set("enabled", resp.Enabled)
+	_ = d.Set("id", resp.ID)
 	_ = d.Set("passive_health_enabled", resp.PassiveHealthEnabled)
 	_ = d.Set("double_encrypt", resp.DoubleEncrypt)
 	_ = d.Set("health_check_type", resp.HealthCheckType)
 	_ = d.Set("is_cname_enabled", resp.IsCnameEnabled)
 	_ = d.Set("ip_anchored", resp.IpAnchored)
 	_ = d.Set("health_reporting", resp.HealthReporting)
-	_ = d.Set("tcp_port_ranges", resp.TcpPortRanges)
-	_ = d.Set("udp_port_ranges", resp.UdpPortRanges)
+	_ = d.Set("tcp_port_ranges", resp.TCPPortRanges)
+	_ = d.Set("udp_port_ranges", resp.UDPPortRanges)
 
 	if err := d.Set("clientless_apps", flattenBaClientlessApps(resp)); err != nil {
 		return fmt.Errorf("failed to read clientless apps %s", err)
 	}
-	if err := d.Set("server_groups", flattenClientlessAppServerGroups(resp)); err != nil {
+	if err := d.Set("server_groups", flattenClientlessAppServerGroups(resp.AppServerGroups)); err != nil {
 		return fmt.Errorf("failed to read app server groups %s", err)
 	}
 
@@ -258,6 +270,11 @@ func resourceBrowserAccessUpdate(d *schema.ResourceData, m interface{}) error {
 	log.Printf("[INFO] Updating browser access ID: %v\n", id)
 	req := expandBrowserAccess(d)
 
+	if d.HasChange("segment_group_id") && req.SegmentGroupID == "" {
+		log.Println("[ERROR] Please provde a valid segment group for the browser access application segment")
+		return fmt.Errorf("please provde a valid segment group for the browser access application segment")
+	}
+
 	if _, err := zClient.browseraccess.Update(id, &req); err != nil {
 		return err
 	}
@@ -267,35 +284,92 @@ func resourceBrowserAccessUpdate(d *schema.ResourceData, m interface{}) error {
 
 func resourceBrowserAccessDelete(d *schema.ResourceData, m interface{}) error {
 	zClient := m.(*Client)
-
-	log.Printf("[INFO] Deleting browser access application with id %v\n", d.Id())
-	if _, err := zClient.browseraccess.Delete(d.Id()); err != nil {
+	id := d.Id()
+	segmentGroupID, ok := d.GetOk("segment_group_id")
+	if ok && segmentGroupID != nil {
+		gID, ok := segmentGroupID.(string)
+		if ok && gID != "" {
+			// detach it from segment group first
+			if err := detachBrowserAccessFromGroup(zClient, id, gID); err != nil {
+				return err
+			}
+		}
+	}
+	log.Printf("[INFO] Deleting browser access application with id %v\n", id)
+	if _, err := zClient.browseraccess.Delete(id); err != nil {
 		return err
 	}
 
 	return nil
 }
 
-func expandBrowserAccess(d *schema.ResourceData) browseraccess.BrowserAccess {
-	return browseraccess.BrowserAccess{
-		SegmentGroupId:   d.Get("segment_group_id").(string),
-		SegmentGroupName: d.Get("segment_group_name").(string),
-		BypassType:       d.Get("bypass_type").(string),
-		Description:      d.Get("description").(string),
-		DomainNames:      expandStringInSlice(d, "domain_names"),
-		DoubleEncrypt:    d.Get("double_encrypt").(bool),
-		Enabled:          d.Get("enabled").(bool),
-		HealthReporting:  d.Get("health_reporting").(string),
-		IpAnchored:       d.Get("ip_anchored").(bool),
-		IsCnameEnabled:   d.Get("is_cname_enabled").(bool),
-		Name:             d.Get("name").(string),
-		TcpPortRanges:    d.Get("tcp_port_ranges").([]interface{}),
-		UdpPortRanges:    d.Get("udp_port_ranges").([]interface{}),
-		ClientlessApps:   expandClientlessApps(d),
-		AppServerGroups:  expandClientlessAppServerGroups(d),
+func detachBrowserAccessFromGroup(client *Client, segmentID, segmentGroupID string) error {
+	log.Printf("[INFO] Detaching browser access  %s from segment group: %s\n", segmentID, segmentGroupID)
+	segGroup, _, err := client.segmentgroup.Get(segmentGroupID)
+	if err != nil {
+		log.Printf("[error] Error while getting segment group id: %s", segmentGroupID)
+		return err
 	}
+	adaptedApplications := []segmentgroup.Application{}
+	for _, app := range segGroup.Applications {
+		if app.ID != segmentID {
+			adaptedApplications = append(adaptedApplications, app)
+		}
+	}
+	segGroup.Applications = adaptedApplications
+	_, err = client.segmentgroup.Update(segmentGroupID, segGroup)
+	return err
+
 }
 
+func expandBrowserAccess(d *schema.ResourceData) browseraccess.BrowserAccess {
+	details := browseraccess.BrowserAccess{
+		BypassType:      d.Get("bypass_type").(string),
+		Description:     d.Get("description").(string),
+		DoubleEncrypt:   d.Get("double_encrypt").(bool),
+		Enabled:         d.Get("enabled").(bool),
+		HealthReporting: d.Get("health_reporting").(string),
+		IpAnchored:      d.Get("ip_anchored").(bool),
+		IsCnameEnabled:  d.Get("is_cname_enabled").(bool),
+		DomainNames:     expandStringInSlice(d, "domain_names"),
+		SegmentGroupID:  d.Get("segment_group_id").(string),
+	}
+	if d.HasChange("name") {
+		details.Name = d.Get("name").(string)
+	}
+	if d.HasChange("segment_group_name") {
+		details.SegmentGroupName = d.Get("segment_group_name").(string)
+	}
+	if d.HasChange("server_groups") {
+		details.AppServerGroups = expandClientlessAppServerGroups(d)
+	}
+	if d.HasChange("clientless_apps") {
+		details.ClientlessApps = expandClientlessApps(d)
+	}
+	if d.HasChange("udp_port_ranges") {
+		details.UDPPortRanges = convertToListString(d.Get("udp_port_ranges"))
+	}
+	if d.HasChange("tcp_port_ranges") {
+		details.TCPPortRanges = convertToListString(d.Get("tcp_port_ranges"))
+	}
+	return details
+}
+func convertToListString(obj interface{}) []string {
+	listI, ok := obj.([]interface{})
+	if ok && len(listI) > 0 {
+		list := make([]string, len(listI))
+		for i, e := range listI {
+			s, ok := e.(string)
+			if ok {
+				list[i] = e.(string)
+			} else {
+				log.Printf("[WARN] invalid type: %v\n", s)
+			}
+		}
+		return list
+	}
+	return []string{}
+}
 func expandClientlessApps(d *schema.ResourceData) []browseraccess.ClientlessApps {
 	clientlessInterface, ok := d.GetOk("clientless_apps")
 	if ok {
@@ -307,10 +381,10 @@ func expandClientlessApps(d *schema.ResourceData) []browseraccess.ClientlessApps
 			if ok {
 				clientlessApps = append(clientlessApps, browseraccess.ClientlessApps{
 					AllowOptions:        clientlessApp["allow_options"].(bool),
-					AppId:               clientlessApp["app_id"].(string),
+					AppID:               clientlessApp["app_id"].(string),
 					ApplicationPort:     clientlessApp["application_port"].(string),
 					ApplicationProtocol: clientlessApp["application_protocol"].(string),
-					CertificateId:       clientlessApp["certificate_id"].(string),
+					CertificateID:       clientlessApp["certificate_id"].(string),
 					CertificateName:     clientlessApp["certificate_name"].(string),
 					Cname:               clientlessApp["cname"].(string),
 					Description:         clientlessApp["description"].(string),
@@ -357,10 +431,10 @@ func flattenBaClientlessApps(clientlessApp *browseraccess.BrowserAccess) []inter
 	for i, clientlessApp := range clientlessApp.ClientlessApps {
 		clientlessApps[i] = map[string]interface{}{
 			"allow_options":        clientlessApp.AllowOptions,
-			"app_id":               clientlessApp.AppId,
+			"app_id":               clientlessApp.AppID,
 			"application_port":     clientlessApp.ApplicationPort,
 			"application_protocol": clientlessApp.ApplicationProtocol,
-			"certificate_id":       clientlessApp.CertificateId,
+			"certificate_id":       clientlessApp.CertificateID,
 			"certificate_name":     clientlessApp.CertificateName,
 			"cname":                clientlessApp.Cname,
 			"description":          clientlessApp.Description,
@@ -378,13 +452,14 @@ func flattenBaClientlessApps(clientlessApp *browseraccess.BrowserAccess) []inter
 	return clientlessApps
 }
 
-func flattenClientlessAppServerGroups(serverGroup *browseraccess.BrowserAccess) []interface{} {
-	serverGroups := make([]interface{}, len(serverGroup.AppServerGroups))
-	for i, val := range serverGroup.AppServerGroups {
-		serverGroups[i] = map[string]interface{}{
-			"id": val.ID,
-		}
+func flattenClientlessAppServerGroups(appServerGroup []browseraccess.AppServerGroups) []interface{} {
+	result := make([]interface{}, 1)
+	mapIds := make(map[string]interface{})
+	ids := make([]string, len(appServerGroup))
+	for i, serverGroup := range appServerGroup {
+		ids[i] = serverGroup.ID
 	}
-
-	return serverGroups
+	mapIds["id"] = ids
+	result[0] = mapIds
+	return result
 }

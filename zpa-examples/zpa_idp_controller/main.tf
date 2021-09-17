@@ -14,5 +14,5 @@ data "zpa_idp_controller" "all" {
 }
 
 output "idp_controller" {
-    value = data.zpa_idp_controller.all.id
+    value = data.zpa_idp_controller.all
 }

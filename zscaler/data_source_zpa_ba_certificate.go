@@ -20,10 +20,6 @@ func dataSourceBaCertificate() *schema.Resource {
 				Type:     schema.TypeString,
 				Computed: true,
 			},
-			"certificate": {
-				Type:     schema.TypeString,
-				Computed: true,
-			},
 			"creation_time": {
 				Type:     schema.TypeString,
 				Computed: true,
@@ -55,10 +51,6 @@ func dataSourceBaCertificate() *schema.Resource {
 			"name": {
 				Type:     schema.TypeString,
 				Optional: true,
-			},
-			"public_key": {
-				Type:     schema.TypeString,
-				Computed: true,
 			},
 			"san": {
 				Type:     schema.TypeList,
@@ -111,7 +103,6 @@ func dataSourceBaCertificateRead(d *schema.ResourceData, m interface{}) error {
 		d.SetId(resp.ID)
 		_ = d.Set("cname", resp.CName)
 		_ = d.Set("cert_chain", resp.CertChain)
-		_ = d.Set("certificate", resp.Certificate)
 		_ = d.Set("creation_time", resp.CreationTime)
 		_ = d.Set("description", resp.Description)
 		_ = d.Set("issued_by", resp.IssuedBy)
@@ -119,7 +110,6 @@ func dataSourceBaCertificateRead(d *schema.ResourceData, m interface{}) error {
 		_ = d.Set("modifiedby", resp.ModifiedBy)
 		_ = d.Set("modified_time", resp.ModifiedTime)
 		_ = d.Set("name", resp.Name)
-		_ = d.Set("public_key", resp.PublicKey)
 		_ = d.Set("san", resp.San)
 		_ = d.Set("serial_no", resp.SerialNo)
 		_ = d.Set("status", resp.Status)
@@ -131,31 +121,3 @@ func dataSourceBaCertificateRead(d *schema.ResourceData, m interface{}) error {
 
 	return nil
 }
-
-/*
-func flattenBaCertificates(baCertificateResponse []bacertificate.BaCertificate) []interface{} {
-	baCertificates := make([]interface{}, len(baCertificateResponse))
-	for i, baCertificateItem := range baCertificateResponse {
-		baCertificates[i] = map[string]interface{}{
-			"cname":               baCertificateItem.CName,
-			"certchain":           baCertificateItem.CertChain,
-			"certificate":         baCertificateItem.Certificate,
-			"creationtime":        baCertificateItem.CreationTime,
-			"description":         baCertificateItem.Description,
-			"id":                  baCertificateItem.ID,
-			"issuedby":            baCertificateItem.IssuedBy,
-			"issuedto":            baCertificateItem.IssuedTo,
-			"modifiedby":          baCertificateItem.ModifiedBy,
-			"modifiedtime":        baCertificateItem.ModifiedTime,
-			"name":                baCertificateItem.Name,
-			"publickey":           baCertificateItem.PublicKey,
-			"san":                 baCertificateItem.San,
-			"serialno":            baCertificateItem.SerialNo,
-			"status":              baCertificateItem.Status,
-			"validfrominepochsec": baCertificateItem.ValidFromInEpochSec,
-			"validtoinepochsec":   baCertificateItem.ValidToInEpochSec,
-		}
-	}
-	return baCertificates
-}
-*/

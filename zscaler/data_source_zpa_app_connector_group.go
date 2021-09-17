@@ -73,7 +73,7 @@ func dataSourceAppConnectorGroup() *schema.Resource {
 							Type:     schema.TypeString,
 							Computed: true,
 						},
-						"issued_certid": {
+						"issued_cert_id": {
 							Type:     schema.TypeString,
 							Computed: true,
 						},
@@ -346,8 +346,8 @@ func flattenConnectors(appConnector *appconnectorgroup.AppConnectorGroup) []inte
 			"name":                        appConnector.Name,
 			"platform":                    appConnector.Platform,
 			"previous_version":            appConnector.PreviousVersion,
-			"private_ip":                  appConnector.PrivateIp,
-			"public_ip":                   appConnector.PublicIp,
+			"private_ip":                  appConnector.PrivateIP,
+			"public_ip":                   appConnector.PublicIP,
 			"signing_cert":                appConnector.SigningCert,
 			"upgrade_attempt":             appConnector.UpgradeAttempt,
 			"upgrade_status":              appConnector.UpgradeStatus,

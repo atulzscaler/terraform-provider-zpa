@@ -78,7 +78,7 @@ func dataSourceTrustedNetworkRead(d *schema.ResourceData, m interface{}) error {
 		_ = d.Set("modifiedby", resp.ModifiedBy)
 		_ = d.Set("modified_time", resp.ModifiedTime)
 		_ = d.Set("name", resp.Name)
-		_ = d.Set("network_id", resp.NetworkId)
+		_ = d.Set("network_id", resp.NetworkID)
 		_ = d.Set("zscaler_cloud", resp.ZscalerCloud)
 
 	} else {

@@ -16,7 +16,7 @@ type CloudConnectorGroup struct {
 	Description     string            `json:"description,omitempty"`
 	CloudConnectors []CloudConnectors `json:"cloudConnectors,omitempty"`
 	Enabled         bool              `json:"enabled,omitempty"`
-	GeolocationId   string            `json:"geoLocationId,omitempty"`
+	GeolocationID   string            `json:"geoLocationId,omitempty"`
 	ID              string            `json:"id,omitempty"`
 	ModifiedBy      string            `json:"modifiedBy,omitempty"`
 	ModifiedTime    string            `json:"modifiedTime,omitempty"`
@@ -30,8 +30,8 @@ type CloudConnectors struct {
 	Enabled      bool                   `json:"enabled,omitempty"`
 	Fingerprint  string                 `json:"fingerprint,omitempty"`
 	ID           string                 `json:"id,omitempty"`
-	IpAcl        []string               `json:"ipAcl,omitempty"`
-	IssuedCertId string                 `json:"issuedCertId,omitempty"`
+	IPACL        []string               `json:"ipAcl,omitempty"`
+	IssuedCertID string                 `json:"issuedCertId,omitempty"`
 	ModifiedBy   string                 `json:"modifiedBy,omitempty"`
 	ModifiedTime string                 `json:"modifiedTime,omitempty"`
 	SigningCert  map[string]interface{} `json:"signingCert,omitempty"`

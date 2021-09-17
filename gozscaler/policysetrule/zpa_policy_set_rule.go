@@ -12,7 +12,7 @@ const (
 type PolicyRule struct {
 	Action             string               `json:"action,omitempty"`
 	ActionID           string               `json:"actionId,omitempty"`
-	BypassDefaultRule  bool                 `json:"bypassDefaultRule,omitempty"`
+	BypassDefaultRule  bool                 `json:"bypassDefaultRule"`
 	CustomMsg          string               `json:"customMsg,omitempty"`
 	Description        string               `json:"description,omitempty"`
 	ID                 string               `json:"id,omitempty"`
@@ -21,10 +21,10 @@ type PolicyRule struct {
 	PolicySetID        string               `json:"policySetId"`
 	PolicyType         string               `json:"policyType,omitempty"`
 	Priority           string               `json:"priority,omitempty"`
-	ReauthDefaultRule  bool                 `json:"reauthDefaultRule,omitempty"`
+	ReauthDefaultRule  bool                 `json:"reauthDefaultRule"`
 	ReauthIdleTimeout  string               `json:"reauthIdleTimeout,omitempty"`
 	ReauthTimeout      string               `json:"reauthTimeout,omitempty"`
-	RuleOrder          string               `json:"ruleOrder,omitempty"`
+	RuleOrder          string               `json:"ruleOrder"`
 	Conditions         []Conditions         `json:"conditions,omitempty"`
 	AppServerGroups    []AppServerGroups    `json:"appServerGroups,omitempty"`
 	AppConnectorGroups []AppConnectorGroups `json:"appConnectorGroups,omitempty"`
@@ -32,7 +32,7 @@ type PolicyRule struct {
 
 type Conditions struct {
 	ID       string     `json:"id,omitempty"`
-	Negated  bool       `json:"negated,omitempty"`
+	Negated  bool       `json:"negated"`
 	Operands []Operands `json:"operands,omitempty"`
 	Operator string     `json:"operator,omitempty"`
 }
@@ -78,6 +78,16 @@ func (service *Service) Create(rule *PolicyRule) (*PolicyRule, *http.Response, e
 func (service *Service) Update(policySetID, ruleId string, policySetRule *PolicyRule) (*http.Response, error) {
 	path := fmt.Sprintf(mgmtConfig+service.Client.Config.CustomerID+"/policySet/%s/rule/%s", policySetID, ruleId)
 	resp, err := service.Client.NewRequestDo("PUT", path, nil, policySetRule, nil)
+	if err != nil {
+		return nil, err
+	}
+	return resp, err
+}
+
+// PUT --> /zpn/api/v1/admin/customers/{customerId}​/policySet/{policySetId}/rule/{ruleId}/reorder/{order}
+func (service *Service) Reorder(policySetID, ruleId string, order int) (*http.Response, error) {
+	path := fmt.Sprintf("/zpn/api/v1/admin/customers/%s/policySet/%s/rule/%s/reorder/%d", service.Client.Config.CustomerID, policySetID, ruleId, order)
+	resp, err := service.Client.NewPrivateRequestDo("PUT", path, nil, nil, nil)
 	if err != nil {
 		return nil, err
 	}

@@ -11,13 +11,12 @@ import (
 
 func resourcePolicyTimeout() *schema.Resource {
 	return &schema.Resource{
-		Create: resourcePolicyTimeoutCreate,
-		Read:   resourcePolicyTimeoutRead,
-		Update: resourcePolicyTimeoutUpdate,
-		Delete: resourcePolicyTimeoutDelete,
-		Importer: &schema.ResourceImporter{
-			State: schema.ImportStatePassthrough,
-		},
+		Create:   resourcePolicyTimeoutCreate,
+		Read:     resourcePolicyTimeoutRead,
+		Update:   resourcePolicyTimeoutUpdate,
+		Delete:   resourcePolicyTimeoutDelete,
+		Importer: &schema.ResourceImporter{},
+
 		Schema: map[string]*schema.Schema{
 			"action": {
 				Type:        schema.TypeString,
@@ -226,11 +225,11 @@ func resourcePolicyTimeoutUpdate(d *schema.ResourceData, m interface{}) error {
 	if err != nil {
 		return err
 	}
-	ruleId := d.Id()
-	log.Printf("[INFO] Updating policy rule ID: %v\n", ruleId)
+	ruleID := d.Id()
+	log.Printf("[INFO] Updating policy rule ID: %v\n", ruleID)
 	req := expandCreatePolicyRule(d)
 
-	if _, err := zClient.policysetrule.Update(globalPolicyTimeout.ID, ruleId, &req); err != nil {
+	if _, err := zClient.policysetrule.Update(globalPolicyTimeout.ID, ruleID, &req); err != nil {
 		return err
 	}
 
@@ -334,7 +333,7 @@ func flattenPolicyTimeoutConditions(conditions []policysetrule.Conditions) []int
 			"id":       ruleConditionItems.ID,
 			"negated":  ruleConditionItems.Negated,
 			"operator": ruleConditionItems.Operator,
-			"operands": flattenPolicyRuleOperands(ruleConditionItems.Operands),
+			"operands": flattenPolicyTimeoutOperands(ruleConditionItems.Operands),
 		}
 	}
 

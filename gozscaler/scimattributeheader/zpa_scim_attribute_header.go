@@ -19,7 +19,7 @@ type ScimAttributeHeader struct {
 	DataType        string   `json:"dataType,omitempty"`
 	Description     string   `json:"description,omitempty"`
 	ID              string   `json:"id,omitempty"`
-	IdpId           string   `json:"idpId,omitempty"`
+	IdpID           string   `json:"idpId,omitempty"`
 	ModifiedBy      string   `json:"modifiedBy,omitempty"`
 	ModifiedTime    string   `json:"modifiedTime,omitempty"`
 	MultiValued     bool     `json:"multivalued,omitempty"`

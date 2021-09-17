@@ -1,23 +1,24 @@
 package zscaler
 
 import (
+	"fmt"
 	"log"
 
 	"github.com/SecurityGeekIO/terraform-provider-zpa/gozscaler/applicationsegment"
 	"github.com/SecurityGeekIO/terraform-provider-zpa/gozscaler/client"
+	"github.com/SecurityGeekIO/terraform-provider-zpa/gozscaler/segmentgroup"
 	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/schema"
 	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/validation"
 )
 
 func resourceApplicationSegment() *schema.Resource {
 	return &schema.Resource{
-		Create: resourceApplicationSegmentCreate,
-		Read:   resourceApplicationSegmentRead,
-		Update: resourceApplicationSegmentUpdate,
-		Delete: resourceApplicationSegmentDelete,
-		Importer: &schema.ResourceImporter{
-			State: schema.ImportStatePassthrough,
-		},
+		Create:   resourceApplicationSegmentCreate,
+		Read:     resourceApplicationSegmentRead,
+		Update:   resourceApplicationSegmentUpdate,
+		Delete:   resourceApplicationSegmentDelete,
+		Importer: &schema.ResourceImporter{},
+
 		Schema: map[string]*schema.Schema{
 			"segment_group_id": {
 				Type:     schema.TypeString,
@@ -157,7 +158,10 @@ func resourceApplicationSegmentCreate(d *schema.ResourceData, m interface{}) err
 
 	req := expandApplicationSegmentRequest(d)
 	log.Printf("[INFO] Creating application segment request\n%+v\n", req)
-
+	if req.SegmentGroupId == "" {
+		log.Println("[ERROR] Please provde a valid segment group for the application segment")
+		return fmt.Errorf("please provde a valid segment group for the application segment")
+	}
 	resp, _, err := zClient.applicationsegment.Create(req)
 	if err != nil {
 		return err
@@ -207,8 +211,8 @@ func resourceApplicationSegmentRead(d *schema.ResourceData, m interface{}) error
 	_ = d.Set("name", resp.Name)
 	_ = d.Set("passive_health_enabled", resp.PassiveHealthEnabled)
 	_ = d.Set("ip_anchored", resp.IpAnchored)
-	_ = d.Set("tcp_port_ranges", resp.TcpPortRanges)
-	_ = d.Set("udp_port_ranges", resp.UdpPortRanges)
+	_ = d.Set("tcp_port_ranges", resp.TCPPortRanges)
+	_ = d.Set("udp_port_ranges", resp.UDPPortRanges)
 	_ = d.Set("server_groups", flattenAppServerGroups(resp))
 
 	return nil
@@ -221,6 +225,10 @@ func resourceApplicationSegmentUpdate(d *schema.ResourceData, m interface{}) err
 	log.Printf("[INFO] Updating role ID: %v\n", id)
 	req := expandApplicationSegmentRequest(d)
 
+	if d.HasChange("segment_group_id") && req.SegmentGroupId == "" {
+		log.Println("[ERROR] Please provde a valid segment group for the application segment")
+		return fmt.Errorf("please provde a valid segment group for the application segment")
+	}
 	if _, err := zClient.applicationsegment.Update(id, req); err != nil {
 		return err
 	}
@@ -230,15 +238,44 @@ func resourceApplicationSegmentUpdate(d *schema.ResourceData, m interface{}) err
 
 func resourceApplicationSegmentDelete(d *schema.ResourceData, m interface{}) error {
 	zClient := m.(*Client)
-	log.Printf("[INFO] Deleting application segment with id %v\n", d.Id())
+	id := d.Id()
+	log.Printf("[INFO] Deleting application segment with id %v\n", id)
+	segmentGroupId, ok := d.GetOk("segment_group_id")
+	if ok && segmentGroupId != nil {
+		gID, ok := segmentGroupId.(string)
+		if ok && gID != "" {
+			// detach it from segment group first
+			if err := detachAppSegmentFromGroup(zClient, id, gID); err != nil {
+				return err
+			}
+		}
+	}
 
-	if _, err := zClient.applicationsegment.Delete(d.Id()); err != nil {
+	if _, err := zClient.applicationsegment.Delete(id); err != nil {
 		return err
 	}
 
 	return nil
 }
 
+func detachAppSegmentFromGroup(client *Client, segmentID, segmentGroupId string) error {
+	log.Printf("[INFO] Detaching application segment  %s from segment group: %s\n", segmentID, segmentGroupId)
+	segGroup, _, err := client.segmentgroup.Get(segmentGroupId)
+	if err != nil {
+		log.Printf("[error] Error while getting segment group id: %s", segmentGroupId)
+		return err
+	}
+	adaptedApplications := []segmentgroup.Application{}
+	for _, app := range segGroup.Applications {
+		if app.ID != segmentID {
+			adaptedApplications = append(adaptedApplications, app)
+		}
+	}
+	segGroup.Applications = adaptedApplications
+	_, err = client.segmentgroup.Update(segmentGroupId, segGroup)
+	return err
+
+}
 func expandStringInSlice(d *schema.ResourceData, key string) []string {
 	applicationSegments := d.Get(key).([]interface{})
 	applicationSegmentList := make([]string, len(applicationSegments))
@@ -262,8 +299,8 @@ func expandApplicationSegmentRequest(d *schema.ResourceData) applicationsegment.
 		IpAnchored:       d.Get("ip_anchored").(bool),
 		IsCnameEnabled:   d.Get("is_cname_enabled").(bool),
 		Name:             d.Get("name").(string),
-		TcpPortRanges:    d.Get("tcp_port_ranges").([]interface{}),
-		UdpPortRanges:    d.Get("udp_port_ranges").([]interface{}),
+		TCPPortRanges:    d.Get("tcp_port_ranges").([]interface{}),
+		UDPPortRanges:    d.Get("udp_port_ranges").([]interface{}),
 		ServerGroups:     expandAppServerGroups(d),
 	}
 }

@@ -81,9 +81,9 @@ func dataSourcePostureProfileRead(d *schema.ResourceData, m interface{}) error {
 		_ = d.Set("modifiedby", resp.ModifiedBy)
 		_ = d.Set("modified_time", resp.ModifiedTime)
 		_ = d.Set("name", resp.Name)
-		_ = d.Set("posture_udid", resp.PostureudId)
+		_ = d.Set("posture_udid", resp.PostureudID)
 		_ = d.Set("zscaler_cloud", resp.ZscalerCloud)
-		_ = d.Set("zscaler_customer_id", resp.ZscalerCustomerId)
+		_ = d.Set("zscaler_customer_id", resp.ZscalerCustomerID)
 
 	} else {
 		return fmt.Errorf("couldn't find any posture profile with name '%s' or id '%s'", name, id)

@@ -11,13 +11,12 @@ import (
 
 func resourcePolicyForwarding() *schema.Resource {
 	return &schema.Resource{
-		Create: resourcePolicyForwardingCreate,
-		Read:   resourcePolicyForwardingRead,
-		Update: resourcePolicyForwardingUpdate,
-		Delete: resourcePolicyForwardingDelete,
-		Importer: &schema.ResourceImporter{
-			State: schema.ImportStatePassthrough,
-		},
+		Create:   resourcePolicyForwardingCreate,
+		Read:     resourcePolicyForwardingRead,
+		Update:   resourcePolicyForwardingUpdate,
+		Delete:   resourcePolicyForwardingDelete,
+		Importer: &schema.ResourceImporter{},
+
 		Schema: map[string]*schema.Schema{
 			"action": {
 				Type:        schema.TypeString,
@@ -220,8 +219,6 @@ func resourcePolicyForwardingRead(d *schema.ResourceData, m interface{}) error {
 	_ = d.Set("reauth_timeout", resp.ReauthTimeout)
 	_ = d.Set("rule_order", resp.RuleOrder)
 	_ = d.Set("conditions", flattenPolicyForwardingConditions(resp.Conditions))
-	_ = d.Set("app_server_groups", flattenPolicyForwardingServerGroups(resp.AppServerGroups))
-	_ = d.Set("app_connector_groups", flattenPolicyForwardingAppConnectorGroups(resp.AppConnectorGroups))
 
 	return nil
 }
@@ -360,26 +357,4 @@ func flattenPolicyForwardingOperands(conditionOperand []policysetrule.Operands) 
 	}
 
 	return conditionOperands
-}
-
-func flattenPolicyForwardingServerGroups(appServerGroup []policysetrule.AppServerGroups) []interface{} {
-	policyRuleServerGroups := make([]interface{}, len(appServerGroup))
-	for i, serverGroup := range appServerGroup {
-		policyRuleServerGroups[i] = map[string]interface{}{
-			"id": serverGroup.ID,
-		}
-	}
-
-	return policyRuleServerGroups
-}
-
-func flattenPolicyForwardingAppConnectorGroups(appConnectorGroups []policysetrule.AppConnectorGroups) []interface{} {
-	policyRuleAppConnectorGroups := make([]interface{}, len(appConnectorGroups))
-	for i, val := range appConnectorGroups {
-		policyRuleAppConnectorGroups[i] = map[string]interface{}{
-			"id": val.ID,
-		}
-	}
-
-	return policyRuleAppConnectorGroups
 }

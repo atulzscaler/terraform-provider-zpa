@@ -12,42 +12,42 @@ const (
 
 type BrowserAccess struct {
 	ID                   string            `json:"id,omitempty"`
-	SegmentGroupId       string            `json:"segmentGroupId,omitempty"`
+	SegmentGroupID       string            `json:"segmentGroupId,omitempty"`
 	SegmentGroupName     string            `json:"segmentGroupName,omitempty"`
 	BypassType           string            `json:"bypassType,omitempty"`
 	ConfigSpace          string            `json:"configSpace,omitempty"`
 	DomainNames          []string          `json:"domainNames,omitempty"`
 	Name                 string            `json:"name,omitempty"`
 	Description          string            `json:"description,omitempty"`
-	Enabled              bool              `json:"enabled,omitempty"`
-	PassiveHealthEnabled bool              `json:"passiveHealthEnabled,omitempty"`
-	DoubleEncrypt        bool              `json:"doubleEncrypt,omitempty"`
+	Enabled              bool              `json:"enabled"`
+	PassiveHealthEnabled bool              `json:"passiveHealthEnabled"`
+	DoubleEncrypt        bool              `json:"doubleEncrypt"`
 	HealthCheckType      string            `json:"healthCheckType,omitempty"`
-	IsCnameEnabled       bool              `json:"isCnameEnabled,omitempty"`
-	IpAnchored           bool              `json:"ipAnchored,omitempty"`
+	IsCnameEnabled       bool              `json:"isCnameEnabled"`
+	IpAnchored           bool              `json:"ipAnchored"`
 	HealthReporting      string            `json:"healthReporting,omitempty"`
-	CreationTime         string            `json:"creationTime,string,omitempty"`
+	CreationTime         string            `json:"creationTime,omitempty"`
 	ModifiedBy           string            `json:"modifiedBy,omitempty"`
-	ModifiedTime         string            `json:"modifiedTime,string,omitempty"`
-	TcpPortRanges        []interface{}     `json:"tcpPortRanges,omitempty"`
-	UdpPortRanges        []interface{}     `json:"udpPortRanges,omitempty"`
+	ModifiedTime         string            `json:"modifiedTime,omitempty"`
+	TCPPortRanges        []string          `json:"tcpPortRanges,omitempty"`
+	UDPPortRanges        []string          `json:"udpPortRanges,omitempty"`
 	ClientlessApps       []ClientlessApps  `json:"clientlessApps,omitempty"`
 	AppServerGroups      []AppServerGroups `json:"serverGroups,omitempty"`
 }
 
 type ClientlessApps struct {
-	AllowOptions        bool   `json:"allowOptions,omitempty"`
-	AppId               string `json:"appId,omitempty"`
+	AllowOptions        bool   `json:"allowOptions"`
+	AppID               string `json:"appId,omitempty"`
 	ApplicationPort     string `json:"applicationPort,omitempty"`
 	ApplicationProtocol string `json:"applicationProtocol,omitempty"`
-	CertificateId       string `json:"certificateId,omitempty"`
+	CertificateID       string `json:"certificateId,omitempty"`
 	CertificateName     string `json:"certificateName,omitempty"`
 	Cname               string `json:"cname,omitempty"`
 	CreationTime        string `json:"creationTime,omitempty"`
 	Description         string `json:"description,omitempty"`
 	Domain              string `json:"domain,omitempty"`
-	Enabled             bool   `json:"enabled,omitempty"`
-	Hidden              bool   `json:"hidden,omitempty"`
+	Enabled             bool   `json:"enabled"`
+	Hidden              bool   `json:"hidden"`
 	ID                  string `json:"id,omitempty"`
 	LocalDomain         string `json:"localDomain,omitempty"`
 	ModifiedBy          string `json:"modifiedBy,omitempty"`
@@ -58,7 +58,7 @@ type ClientlessApps struct {
 }
 
 type AppServerGroups struct {
-	ID string `json:"id,omitempty"`
+	ID string `json:"id"`
 }
 
 func (service *Service) Get(id string) (*BrowserAccess, *http.Response, error) {

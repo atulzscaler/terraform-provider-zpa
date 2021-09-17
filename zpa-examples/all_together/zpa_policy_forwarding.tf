@@ -1,3 +1,4 @@
+
 // Access to DevOps Servers
 resource "zpa_policy_forwarding" "sgio_devops_bypass" {
   name                          = "SGIO DevOps Servers Bypass"
@@ -28,5 +29,3 @@ resource "zpa_policy_forwarding" "sgio_devops_bypass" {
   }
 }
 
-data "zpa_policy_forwarding" "all" {
-}

@@ -1,11 +1,9 @@
-/*
 resource "zpa_policy_timeout" "temp_contractors_browser_access" {
   name                          = "Temp Contractors Browser Access"
   description                   = "Temp Contractors Browser Access"
   action                        = "RE_AUTH"
   reauth_idle_timeout           = "600"
   reauth_timeout                = "172800"
-  rule_order                    = 1
   operator                      = "AND"
   policy_set_id                 = data.zpa_policy_timeout.all.id
 
@@ -30,7 +28,3 @@ resource "zpa_policy_timeout" "temp_contractors_browser_access" {
     }
   }
 }
-
-data "zpa_policy_timeout" "all" {
-}
-*/

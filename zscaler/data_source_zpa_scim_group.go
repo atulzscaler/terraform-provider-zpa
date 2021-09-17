@@ -73,9 +73,9 @@ func dataSourceScimGroupRead(d *schema.ResourceData, m interface{}) error {
 	if resp != nil {
 		d.SetId(strconv.FormatInt(int64(resp.ID), 10))
 		_ = d.Set("creation_time", resp.CreationTime)
-		_ = d.Set("idp_group_id", resp.IdpGroupId)
-		_ = d.Set("idp_id", resp.IdpId)
-		_ = d.Set("idp_id", resp.IdpId)
+		_ = d.Set("idp_group_id", resp.IdpGroupID)
+		_ = d.Set("idp_id", resp.IdpID)
+		_ = d.Set("idp_name", resp.IdpName)
 		_ = d.Set("modified_time", resp.ModifiedTime)
 		_ = d.Set("name", resp.Name)
 	} else {

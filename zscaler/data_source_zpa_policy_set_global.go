@@ -271,7 +271,7 @@ func flattenPolicySetRules(policySetRules *policysetglobal.PolicySet) []interfac
 			"reauth_timeout":              ruleItem.ReauthTimeout,
 			"rule_order":                  ruleItem.RuleOrder,
 			"zpn_cbi_profile_id":          ruleItem.ZpnCbiProfileID,
-			"zpn_inspection_profile_id":   ruleItem.ZpnInspectionProfileId,
+			"zpn_inspection_profile_id":   ruleItem.ZpnInspectionProfileID,
 			"zpn_inspection_profile_name": ruleItem.ZpnInspectionProfileName,
 			"conditions":                  flattenRuleConditions(ruleItem),
 		}
@@ -291,10 +291,6 @@ func flattenRuleConditions(conditions policysetglobal.Rules) []interface{} {
 			"negated":       ruleCondition.Negated,
 			"operator":      ruleCondition.Operator,
 			"operands":      flattenConditionOperands(ruleCondition),
-			// Needs to figure it out how to deal with this parameter. Returning the following error:
-			//  Error: Invalid address to set: []string{"rules", "0", "conditions", "0", "operator"}
-			// Works fine when removed.
-
 		}
 	}
 

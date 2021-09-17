@@ -9,31 +9,32 @@ terraform {
 
 provider "zpa" {}
 
-// data "zpa_server_group" "all" { 
-//   name = "All Other Services"
-// }
+data "zpa_app_connector_group" "example" {
+  name = "SGIO-Vancouver"
+}
 
-// output "server_group" {
-//     value = data.zpa_server_group.all
-// }
+resource "zpa_application_server" "example20" {
+  name                          = "example20.securitygeek.io"
+  description                   = "example20.securitygeek.io"
+  address                       = "2.2.2.2"
+  enabled                       = true
+}
 
 
-resource "zpa_server_group" "example" {
-  name = "example"
-  description = "example"
-  enabled = true
+resource "zpa_server_group" "example20" {
+  name = "example20"
+  description = "example20"
+  enabled = false
   dynamic_discovery = false
-  applications {
-    id = ["216196257331283686", "216196257331283691"]
+  app_connector_groups {
+    id = [data.zpa_app_connector_group.example.id]
   }
   servers {
-    id = ["216196257331283699", "216196257331283697"]
-  }
-  app_connector_groups {
-    id = ["216196257331281931", "216196257331282724"]
+    id = [zpa_application_server.example20.id]
   }
 }
 
+
 output "all_zpa_server_group" {
-  value = zpa_server_group.example
+  value = zpa_server_group.example20
 }

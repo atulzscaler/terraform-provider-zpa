@@ -13,12 +13,12 @@ const (
 
 type ServerGroup struct {
 	ID                 string               `json:"id,omitempty"`
-	Enabled            bool                 `json:"enabled,omitempty"`
+	Enabled            bool                 `json:"enabled"`
 	Name               string               `json:"name,omitempty"`
 	Description        string               `json:"description,omitempty"`
-	IpAnchored         bool                 `json:"ipAnchored,omitempty"`
+	IpAnchored         bool                 `json:"ipAnchored"`
 	ConfigSpace        string               `json:"configSpace,omitempty"`
-	DynamicDiscovery   bool                 `json:"dynamicDiscovery,omitempty"`
+	DynamicDiscovery   bool                 `json:"dynamicDiscovery"`
 	CreationTime       string               `json:"creationTime,omitempty"`
 	ModifiedBy         string               `json:"modifiedBy,omitempty"`
 	ModifiedTime       string               `json:"modifiedTime,omitempty"`
@@ -37,8 +37,8 @@ type AppConnectorGroups struct {
 	CreationTime          string            `json:"creationTime,omitempty"`
 	Description           string            `json:"description,omitempty"`
 	DnsqueryType          string            `json:"dnsQueryType,omitempty"`
-	Enabled               bool              `json:"enabled,omitempty"`
-	GeolocationId         string            `json:"geoLocationId,omitempty"`
+	Enabled               bool              `json:"enabled"`
+	GeolocationID         string            `json:"geoLocationId,omitempty"`
 	ID                    string            `json:"id,omitempty"`
 	Latitude              string            `json:"latitude,omitempty"`
 	Location              string            `json:"location,omitempty"`
@@ -46,30 +46,30 @@ type AppConnectorGroups struct {
 	ModifiedBy            string            `json:"modifiedBy,omitempty"`
 	ModifiedTime          string            `json:"modifiedTime,omitempty"`
 	Name                  string            `json:"name"`
-	SiemAppconnectorGroup bool              `json:"siemAppConnectorGroup,omitempty"`
+	SiemAppconnectorGroup bool              `json:"siemAppConnectorGroup"`
 	UpgradeDay            string            `json:"upgradeDay,omitempty"`
 	UpgradeTimeinSecs     string            `json:"upgradeTimeInSecs,omitempty"`
-	VersionProfileId      string            `json:"versionProfileId,omitempty"`
+	VersionProfileID      string            `json:"versionProfileId,omitempty"`
 	AppServerGroups       []AppServerGroups `json:"serverGroups,omitempty"`
 	Connectors            []Connectors      `json:"connectors,omitempty"`
 }
 
 type Connectors struct {
 	ApplicationStartTime     string                 `json:"applicationStartTime,omitempty"`
-	AppConnectorGroupId      string                 `json:"appConnectorGroupId,omitempty"`
+	AppConnectorGroupID      string                 `json:"appConnectorGroupId,omitempty"`
 	AppConnectorGroupName    string                 `json:"appConnectorGroupName,omitempty"`
 	ControlChannelStatus     string                 `json:"controlChannelStatus,omitempty"`
 	CreationTime             string                 `json:"creationTime,omitempty"`
 	CtrlBrokerName           string                 `json:"ctrlBrokerName,omitempty"`
 	CurrentVersion           string                 `json:"currentVersion,omitempty"`
 	Description              string                 `json:"description,omitempty"`
-	Enabled                  bool                   `json:"enabled,omitempty"`
+	Enabled                  bool                   `json:"enabled"`
 	ExpectedUpgradeTime      string                 `json:"expectedUpgradeTime,omitempty"`
 	ExpectedVersion          string                 `json:"expectedVersion,omitempty"`
 	Fingerprint              string                 `json:"fingerprint,omitempty"`
 	ID                       string                 `json:"id,omitempty"`
-	IpAcl                    []string               `json:"ipAcl,omitempty"`
-	IssuedCertId             string                 `json:"issuedCertId,omitempty"`
+	IPACL                    []string               `json:"ipAcl,omitempty"`
+	IssuedCertID             string                 `json:"issuedCertId,omitempty"`
 	LastBrokerConnecttime    string                 `json:"lastBrokerConnectTime,omitempty"`
 	LastBrokerDisconnectTime string                 `json:"lastBrokerDisconnectTime,omitempty"`
 	LastUpgradeTime          string                 `json:"lastUpgradeTime,omitempty"`
@@ -81,8 +81,8 @@ type Connectors struct {
 	Name                     string                 `json:"name"`
 	Platform                 string                 `json:"platform,omitempty"`
 	PreviousVersion          string                 `json:"previousVersion,omitempty"`
-	PrivateIp                string                 `json:"privateIp,omitempty"`
-	PublicIp                 string                 `json:"publicIp,omitempty"`
+	PrivateIP                string                 `json:"privateIp,omitempty"`
+	PublicIP                 string                 `json:"publicIp,omitempty"`
 	SigningCert              map[string]interface{} `json:"signingCert,omitempty"`
 	UpgradeAttempt           string                 `json:"upgradeAttempt,omitempty"`
 	UpgradeStatus            string                 `json:"upgradeStatus,omitempty"`
@@ -92,9 +92,9 @@ type AppServerGroups struct {
 	ConfigSpace      string `json:"configSpace,omitempty"`
 	CreationTime     string `json:"creationTime,omitempty"`
 	Description      string `json:"description,omitempty"`
-	Enabled          bool   `json:"enabled,omitempty"`
+	Enabled          bool   `json:"enabled"`
 	ID               string `json:"id,omitempty"`
-	DynamicDiscovery bool   `json:"dynamicDiscovery,omitempty"`
+	DynamicDiscovery bool   `json:"dynamicDiscovery"`
 	ModifiedBy       string `json:"modifiedBy,omitempty"`
 	ModifiedTime     string `json:"modifiedTime,omitempty"`
 	Name             string `json:"name"`
@@ -106,7 +106,7 @@ type ApplicationServer struct {
 	ConfigSpace       string   `json:"configSpace,omitempty"`
 	CreationTime      string   `json:"creationTime,omitempty"`
 	Description       string   `json:"description,omitempty"`
-	Enabled           bool     `json:"enabled,omitempty"`
+	Enabled           bool     `json:"enabled"`
 	ID                string   `json:"id,omitempty"`
 	ModifiedBy        string   `json:"modifiedBy,omitempty"`
 	ModifiedTime      string   `json:"modifiedTime,omitempty"`

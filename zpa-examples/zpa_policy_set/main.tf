@@ -1,3 +1,4 @@
+/*
 terraform {
     required_providers {
         zpa = {
@@ -73,3 +74,4 @@ data "zpa_idp_controller" "sgio_user_okta" {
 data "zpa_scim_groups" "engineering" {
  id = "255066"
 }
+*/

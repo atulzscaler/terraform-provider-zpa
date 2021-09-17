@@ -18,7 +18,7 @@ type TrustedNetwork struct {
 	ModifiedBy   string `json:"modifiedBy,omitempty"`
 	ModifiedTime string `json:"modifiedTime,omitempty"`
 	Name         string `json:"name,omitempty"`
-	NetworkId    string `json:"networkId,omitempty"`
+	NetworkID    string `json:"networkId,omitempty"`
 	ZscalerCloud string `json:"zscalerCloud,omitempty"`
 }
 

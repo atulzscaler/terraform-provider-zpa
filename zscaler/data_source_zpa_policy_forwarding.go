@@ -161,6 +161,10 @@ func dataSourcePolicyForwarding() *schema.Resource {
 										Type:     schema.TypeBool,
 										Computed: true,
 									},
+									"operator": {
+										Type:     schema.TypeString,
+										Computed: true,
+									},
 									"operands": {
 										Type:     schema.TypeList,
 										Computed: true,
@@ -267,7 +271,7 @@ func flattenPolicyForwarding(policyForwardingRules *policysetglobal.PolicySet) [
 			"reauth_timeout":              ruleItem.ReauthTimeout,
 			"rule_order":                  ruleItem.RuleOrder,
 			"zpn_cbi_profile_id":          ruleItem.ZpnCbiProfileID,
-			"zpn_inspection_profile_id":   ruleItem.ZpnInspectionProfileId,
+			"zpn_inspection_profile_id":   ruleItem.ZpnInspectionProfileID,
 			"zpn_inspection_profile_name": ruleItem.ZpnInspectionProfileName,
 			"conditions":                  flattenPolicyForwardingCondition(ruleItem),
 		}
@@ -287,10 +291,6 @@ func flattenPolicyForwardingCondition(conditions policysetglobal.Rules) []interf
 			"negated":       ruleCondition.Negated,
 			"operator":      ruleCondition.Operator,
 			"operands":      flattenPolicyForwardingConditionOperands(ruleCondition),
-			// Needs to figure it out how to deal with this parameter. Returning the following error:
-			//  Error: Invalid address to set: []string{"rules", "0", "conditions", "0", "operator"}
-			// Works fine when removed.
-
 		}
 	}
 

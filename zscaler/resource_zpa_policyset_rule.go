@@ -2,6 +2,7 @@ package zscaler
 
 import (
 	"log"
+	"strconv"
 
 	"github.com/SecurityGeekIO/terraform-provider-zpa/gozscaler/client"
 	"github.com/SecurityGeekIO/terraform-provider-zpa/gozscaler/policysetrule"
@@ -11,13 +12,12 @@ import (
 
 func resourcePolicySetRule() *schema.Resource {
 	return &schema.Resource{
-		Create: resourcePolicySetCreate,
-		Read:   resourcePolicySetRead,
-		Update: resourcePolicySetUpdate,
-		Delete: resourcePolicySetDelete,
-		Importer: &schema.ResourceImporter{
-			State: schema.ImportStatePassthrough,
-		},
+		Create:   resourcePolicySetCreate,
+		Read:     resourcePolicySetRead,
+		Update:   resourcePolicySetUpdate,
+		Delete:   resourcePolicySetDelete,
+		Importer: &schema.ResourceImporter{},
+
 		Schema: map[string]*schema.Schema{
 			"action": {
 				Type:        schema.TypeString,
@@ -167,8 +167,9 @@ func resourcePolicySetRule() *schema.Resource {
 										Optional: true,
 									},
 									"lhs": {
-										Type:     schema.TypeString,
-										Optional: true,
+										Type:        schema.TypeString,
+										Optional:    true,
+										Description: "This signifies the key for the object type. String ID example: id ",
 									},
 									"rhs": {
 										Type:        schema.TypeString,
@@ -217,7 +218,10 @@ func resourcePolicySetCreate(d *schema.ResourceData, m interface{}) error {
 		return err
 	}
 	d.SetId(policysetrule.ID)
-
+	order, ok := d.GetOk("rule_order")
+	if ok {
+		reorder(order, policysetrule.PolicySetID, policysetrule.ID, zClient)
+	}
 	return resourcePolicySetRead(d, m)
 }
 
@@ -276,7 +280,12 @@ func resourcePolicySetUpdate(d *schema.ResourceData, m interface{}) error {
 	if _, err := zClient.policysetrule.Update(globalPolicySet.ID, ruleId, &req); err != nil {
 		return err
 	}
-
+	if d.HasChange("rule_order") {
+		order, ok := d.GetOk("rule_order")
+		if ok {
+			reorder(order, globalPolicySet.ID, ruleId, zClient)
+		}
+	}
 	return resourcePolicySetRead(d, m)
 }
 
@@ -297,6 +306,33 @@ func resourcePolicySetDelete(d *schema.ResourceData, m interface{}) error {
 
 }
 
+func reorder(orderI interface{}, policySetID, id string, zClient *Client) {
+	if orderI == nil {
+		log.Printf("[WARN] Invalid order for policy set %s: %v\n", id, orderI)
+		return
+	}
+	order, ok := orderI.(string)
+	if !ok || order == "" {
+		log.Printf("[WARN] Invalid order for policy set %s: %v\n", id, order)
+		return
+	}
+	orderInt, err := strconv.Atoi(order)
+	if err != nil || orderInt < 0 {
+		log.Printf("[ERROR] couldn't reorder the policy set, the order may not have taken place:%v %v\n", orderInt, err)
+		return
+	}
+	count, _, err := zClient.policysetglobal.RulesCount()
+
+	if err != nil || orderInt <= count {
+		_, err := zClient.policysetrule.Reorder(policySetID, id, orderInt)
+		if err != nil {
+			log.Printf("[ERROR] couldn't reorder the policy set, the order may not have taken place: %v\n", err)
+		}
+	} else {
+		log.Printf("[ERROR] couldn't reorder the policy set, order  (%d) out of range %d: %v\n", orderInt, count, err)
+	}
+
+}
 func expandCreatePolicyRule(d *schema.ResourceData) policysetrule.PolicyRule {
 	policySetID, ok := d.Get("policy_set_id").(string)
 	if !ok {
@@ -447,23 +483,25 @@ func flattenPolicyRuleOperands(conditionOperand []policysetrule.Operands) []inte
 }
 
 func flattenPolicyRuleServerGroups(appServerGroup []policysetrule.AppServerGroups) []interface{} {
-	policyRuleServerGroups := make([]interface{}, len(appServerGroup))
+	result := make([]interface{}, 1)
+	mapIds := make(map[string]interface{})
+	ids := make([]string, len(appServerGroup))
 	for i, serverGroup := range appServerGroup {
-		policyRuleServerGroups[i] = map[string]interface{}{
-			"id": serverGroup.ID,
-		}
+		ids[i] = serverGroup.ID
 	}
-
-	return policyRuleServerGroups
+	mapIds["id"] = ids
+	result[0] = mapIds
+	return result
 }
 
 func flattenPolicyRuleAppConnectorGroups(appConnectorGroups []policysetrule.AppConnectorGroups) []interface{} {
-	policyRuleAppConnectorGroups := make([]interface{}, len(appConnectorGroups))
-	for i, val := range appConnectorGroups {
-		policyRuleAppConnectorGroups[i] = map[string]interface{}{
-			"id": val.ID,
-		}
+	result := make([]interface{}, 1)
+	mapIds := make(map[string]interface{})
+	ids := make([]string, len(appConnectorGroups))
+	for i, group := range appConnectorGroups {
+		ids[i] = group.ID
 	}
-
-	return policyRuleAppConnectorGroups
+	mapIds["id"] = ids
+	result[0] = mapIds
+	return result
 }

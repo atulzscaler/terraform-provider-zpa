@@ -137,7 +137,7 @@ func dataSourceCloudConnectorGroupRead(d *schema.ResourceData, m interface{}) er
 		_ = d.Set("creation_time", resp.CreationTime)
 		_ = d.Set("description", resp.Description)
 		_ = d.Set("enabled", resp.Enabled)
-		_ = d.Set("geolocation_id", resp.GeolocationId)
+		_ = d.Set("geolocation_id", resp.GeolocationID)
 		_ = d.Set("modifiedby", resp.ModifiedBy)
 		_ = d.Set("modified_time", resp.ModifiedTime)
 		_ = d.Set("name", resp.Name)
@@ -161,8 +161,8 @@ func flattenCloudConnectors(cloudConnectors *cloudconnectorgroup.CloudConnectorG
 			"enabled":        connectorItem.Enabled,
 			"fingerprint":    connectorItem.Fingerprint,
 			"id":             connectorItem.ID,
-			"ipacl":          connectorItem.IpAcl,
-			"issued_cert_id": connectorItem.IssuedCertId,
+			"ipacl":          connectorItem.IPACL,
+			"issued_cert_id": connectorItem.IssuedCertID,
 			"modifiedby":     connectorItem.ModifiedBy,
 			"modified_time":  connectorItem.ModifiedTime,
 			"name":           connectorItem.Name,
