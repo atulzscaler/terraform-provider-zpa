@@ -225,6 +225,9 @@ github.com/bgentry/speakeasy
 ## explicit
 github.com/client9/misspell
 github.com/client9/misspell/cmd/misspell
+# github.com/davecgh/go-spew v1.1.1
+## explicit
+github.com/davecgh/go-spew/spew
 # github.com/fatih/color v1.7.0
 ## explicit
 github.com/fatih/color
@@ -335,6 +338,7 @@ github.com/hashicorp/terraform-plugin-go/tftypes
 ## explicit; go 1.15
 github.com/hashicorp/terraform-plugin-sdk/v2/diag
 github.com/hashicorp/terraform-plugin-sdk/v2/helper/logging
+github.com/hashicorp/terraform-plugin-sdk/v2/helper/resource
 github.com/hashicorp/terraform-plugin-sdk/v2/helper/schema
 github.com/hashicorp/terraform-plugin-sdk/v2/helper/structure
 github.com/hashicorp/terraform-plugin-sdk/v2/helper/validation
@@ -344,6 +348,7 @@ github.com/hashicorp/terraform-plugin-sdk/v2/internal/configs/hcl2shim
 github.com/hashicorp/terraform-plugin-sdk/v2/internal/helper/hashcode
 github.com/hashicorp/terraform-plugin-sdk/v2/internal/plans/objchange
 github.com/hashicorp/terraform-plugin-sdk/v2/internal/plugin/convert
+github.com/hashicorp/terraform-plugin-sdk/v2/internal/plugintest
 github.com/hashicorp/terraform-plugin-sdk/v2/internal/tfdiags
 github.com/hashicorp/terraform-plugin-sdk/v2/meta
 github.com/hashicorp/terraform-plugin-sdk/v2/plugin
