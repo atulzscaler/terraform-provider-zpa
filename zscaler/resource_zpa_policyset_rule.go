@@ -416,16 +416,21 @@ func validateOperand(operand policysetrule.Operands, zClient *Client) bool {
 		return true
 	case "SCIM_GROUP":
 		if operand.LHS == "" {
-			lhsWarn(operand.ObjectType, "valid SCIM Group Attribute ID", operand.LHS, nil)
+			lhsWarn(operand.ObjectType, "valid IDP Controller ID", operand.LHS, nil)
 			return false
 		}
-		_, _, err := zClient.scimgroup.Get(operand.LHS)
+		_, _, err := zClient.idpcontroller.Get(operand.LHS)
 		if err != nil {
-			lhsWarn(operand.ObjectType, "valid SCIM Group Attribute ID", operand.LHS, err)
+			lhsWarn(operand.ObjectType, "valid IDP Controller ID", operand.LHS, err)
 			return false
 		}
 		if operand.RHS == "" {
-			rhsWarn(operand.ObjectType, "SCIM Group Attribute Value", operand.RHS, nil)
+			rhsWarn(operand.ObjectType, "SCIM Group ID", operand.RHS, nil)
+			return false
+		}
+		_, _, err = zClient.scimgroup.Get(operand.RHS)
+		if err != nil {
+			rhsWarn(operand.ObjectType, "SCIM Group ID", operand.RHS, err)
 			return false
 		}
 		return true
