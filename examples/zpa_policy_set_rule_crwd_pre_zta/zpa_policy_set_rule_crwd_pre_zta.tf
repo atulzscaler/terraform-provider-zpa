@@ -17,15 +17,15 @@ resource "zpa_policyset_rule" "crwd_zpa_pre_zta" {
   rule_order                    = 1
   operator = "AND"
   policy_set_id = data.zpa_policy_set_global.all.id
-  // conditions {
-  //   negated = false
-  //   operator = "OR"
-  //   operands {
-  //     object_type = "APP_GROUP"
-  //     lhs = "id"
-  //     rhs = zpa_segment_group.sg_sgio_intranet_web_apps.id
-  //   }
-  // }
+  conditions {
+    negated = false
+    operator = "OR"
+    operands {
+      object_type = "APP_GROUP"
+      lhs = "id"
+      rhs = zpa_segment_group.sg_sgio_intranet_web_apps.id
+    }
+  }
   conditions {
     negated = false
     operator = "OR"
@@ -40,7 +40,7 @@ resource "zpa_policyset_rule" "crwd_zpa_pre_zta" {
     operator = "OR"
     operands {
       object_type = "POSTURE"
-      lhs = data.zpa_posture_profile.crwd_zta_score_40.posture_udid
+      lhs = data.zpa_posture_profile.crwd_zpa_pre_zta.posture_udid
       rhs = false
     }
   }
