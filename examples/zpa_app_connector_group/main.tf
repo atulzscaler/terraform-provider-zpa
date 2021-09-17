@@ -1,20 +1,7 @@
-
-terraform {
-    required_providers {
-        zpa = {
-            version = "1.0.0"
-            source = "zscaler.com/zpa/zpa"
-        }
-    }
+data "zpa_app_connector_group" "aws-connector-group" {
+  name = "AWS Connector Group"
 }
 
-provider "zpa" {
-}
-
-data "zpa_app_connector_group" "SGIOVancouver" {
-  name = "SGIO-Vancouver"
-}
-
-output "all_app_connector_group" {
-  value = data.zpa_app_connector_group.SGIOVancouver.id
+output "get_app_connector_group" {
+  value = data.zpa_app_connector_group.aws-connector-group.id
 }

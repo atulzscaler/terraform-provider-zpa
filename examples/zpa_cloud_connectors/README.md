@@ -1,7 +1,7 @@
-# Retrieve App Connector Group
+# Retrieve Cloud Connector Group
 
-This example will show you how to retrieve an App Connector Group ID to attach to a ZPA Server Group
-This example codifies [this API](https://help.zscaler.com/zpa/api-reference#/connector-group-controller/getAppConnectorGroup).
+This example will show you how to retrieve a Cloud Connector Group ID to attach to a ZPA Access Policy Rule.
+This example codifies [this API](https://help.zscaler.com/zpa/api-reference#/cloud-connector-group-controller/getCloudConnectorGroup).
 
 To run, configure your ZPA provider as described [Here](https://github.com/SecurityGeekIO/terraform-provider-zpa/blob/master/website/docs/index.html.markdown)
 
