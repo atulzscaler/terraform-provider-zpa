@@ -78,9 +78,9 @@ type AppServerGroup struct {
 	Name             string `json:"name,omitempty"`
 }
 
-func (service *Service) Get(appConnectorGroupId string) (*AppConnectorGroup, *http.Response, error) {
+func (service *Service) Get(appConnectorGroupID string) (*AppConnectorGroup, *http.Response, error) {
 	v := new(AppConnectorGroup)
-	path := fmt.Sprintf("%v/%v", mgmtConfig+service.Client.Config.CustomerID+appConnectorGroupEndpoint, appConnectorGroupId)
+	path := fmt.Sprintf("%v/%v", mgmtConfig+service.Client.Config.CustomerID+appConnectorGroupEndpoint, appConnectorGroupID)
 	resp, err := service.Client.NewRequestDo("GET", path, nil, nil, v)
 	if err != nil {
 		return nil, nil, err
