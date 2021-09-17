@@ -22,9 +22,9 @@ type TrustedNetwork struct {
 	ZscalerCloud string `json:"zscalerCloud,omitempty"`
 }
 
-func (service *Service) Get(networkId string) (*TrustedNetwork, *http.Response, error) {
+func (service *Service) Get(networkID string) (*TrustedNetwork, *http.Response, error) {
 	v := new(TrustedNetwork)
-	relativeURL := fmt.Sprintf("%s/%s", mgmtConfig+service.Client.Config.CustomerID+trustedNetworkEndpoint, networkId)
+	relativeURL := fmt.Sprintf("%s/%s", mgmtConfig+service.Client.Config.CustomerID+trustedNetworkEndpoint, networkID)
 	resp, err := service.Client.NewRequestDo("GET", relativeURL, nil, nil, &v)
 	if err != nil {
 		return nil, nil, err
