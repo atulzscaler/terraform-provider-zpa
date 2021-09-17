@@ -1,19 +1,7 @@
-terraform {
-    required_providers {
-        zpa = {
-            version = "1.0.0"
-            source = "zscaler.com/zpa/zpa"
-        }
-    }
+data "zpa_cloud_connector_group" "aws_cloud_connector" {
+  name = "AWS Cloud Connector"
 }
 
-provider "zpa" {}
-
-
-
-data "zpa_cloud_connector_group" "all" {
-}
-
-output "all_cloud_connector_group" {
-  value = data.zpa_cloud_connector_group.all
+output "get_cloud_connector_group" {
+  value = data.zpa_cloud_connector_group.aws_cloud_connector.id
 }
