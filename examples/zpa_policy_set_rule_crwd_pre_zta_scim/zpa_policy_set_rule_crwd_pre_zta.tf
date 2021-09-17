@@ -21,15 +21,6 @@ resource "zpa_policyset_rule" "crwd_zpa_pre_zta" {
     negated = false
     operator = "OR"
     operands {
-      object_type = "APP_GROUP"
-      lhs = "id"
-      rhs = zpa_segment_group.sg_sgio_intranet_web_apps.id
-    }
-  }
-  conditions {
-    negated = false
-    operator = "OR"
-    operands {
       object_type = "APP"
       lhs = "id"
       rhs = zpa_application_segment.as_intranet_web_apps.id
@@ -48,15 +39,15 @@ resource "zpa_policyset_rule" "crwd_zpa_pre_zta" {
      negated = false
      operator = "OR"
     operands {
-      object_type = "SAML"
-      lhs = data.zpa_saml_attribute.email_sgio_user_sso.id
-      rhs = "alison.abbas@securitygeek.io"
+      object_type = "SCIM_GROUP"
+      lhs = data.zpa_idp_controller.sgio_user_okta.id
+      rhs = data.zpa_scim_groups.engineering.id
       idp_id = data.zpa_idp_controller.sgio_user_okta.id
     }
   }
 }
 
-
+// Create Server Group
 resource "zpa_server_group" "sgio_intranet_web_apps" {
   name = "SGIO Intranet Web Apps"
   description = "SGIO Intranet Web Apps"
@@ -72,6 +63,7 @@ resource "zpa_server_group" "sgio_intranet_web_apps" {
   }
 }
 
+// Create Application Segment
 resource "zpa_application_segment" "as_intranet_web_apps" {
     name = "SGIO Intranet Web Apps"
     description = "SGIO Intranet Web Apps"
@@ -86,6 +78,7 @@ resource "zpa_application_segment" "as_intranet_web_apps" {
     }
 }
 
+// Create Segment Group
    resource "zpa_segment_group" "sg_sgio_intranet_web_apps" {
    name = "SGIO Intranet Web Apps"
    description = "SGIO Intranet Web Apps"
@@ -93,6 +86,7 @@ resource "zpa_application_segment" "as_intranet_web_apps" {
    policy_migrated = true
  }
 
+// Create Application Server
  resource "zpa_application_server" "intranet" {
   name                          = "intranet.securitygeek.io"
   description                   = "intranet.securitygeek.io"
@@ -106,8 +100,9 @@ data "zpa_idp_controller" "sgio_user_okta" {
  name = "SGIO-User-Okta"
 }
 
-data "zpa_saml_attribute" "email_sgio_user_sso" {
-    name = "Email_SGIO-User-Okta"
+data "zpa_scim_groups" "engineering" {
+  name = "Engineering"
+  idp_name = "SGIO-User-Okta"
 }
 
 data "zpa_posture_profile" "crwd_zpa_pre_zta" {
