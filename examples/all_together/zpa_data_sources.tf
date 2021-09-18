@@ -60,4 +60,8 @@ data "zpa_scim_groups" "finance" {
 data "zpa_scim_groups" "contractors" {
   name = "Contractors"
   idp_name = "SGIO-User-Okta"
+<<<<<<< HEAD
 }
+=======
+}
+>>>>>>> 09ef52a0480278387d8b608ec7670e327cf8e3a1
