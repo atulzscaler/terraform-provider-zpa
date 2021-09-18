@@ -169,17 +169,20 @@ func resourcePolicyTimeoutCreate(d *schema.ResourceData, m interface{}) error {
 	zClient := m.(*Client)
 
 	req := expandCreatePolicyTimeoutRule(d)
-	log.Printf("[INFO] Creating zpa policy rule with request\n%+v\n", req)
+	log.Printf("[INFO] Creating zpa policy timeout rule with request\n%+v\n", req)
 	if ValidateConditions(req.Conditions, zClient) {
 		policysetrule, _, err := zClient.policysetrule.Create(&req)
 		if err != nil {
 			return err
 		}
 		d.SetId(policysetrule.ID)
-
+		order, ok := d.GetOk("rule_order")
+		if ok {
+			reorder(order, policysetrule.PolicySetID, policysetrule.ID, zClient)
+		}
 		return resourcePolicyTimeoutRead(d, m)
 	} else {
-		return fmt.Errorf("couldn't validate the zpa policy timeout (%s) operands, please make sure you are using valid inputs for APP type, LHS & RHS", req.Name)
+		return fmt.Errorf("couldn't validate the zpa policy timeout rule (%s) operands, please make sure you are using valid inputs for APP type, LHS & RHS", req.Name)
 	}
 
 }
@@ -191,11 +194,11 @@ func resourcePolicyTimeoutRead(d *schema.ResourceData, m interface{}) error {
 	if err != nil {
 		return err
 	}
-	log.Printf("[INFO] Getting Policy Set Rule: globalPolicySet:%s id: %s\n", globalPolicyTimeout.ID, d.Id())
+	log.Printf("[INFO] Getting Policy Set Timeout Rule: globalPolicySet:%s id: %s\n", globalPolicyTimeout.ID, d.Id())
 	resp, _, err := zClient.policysetrule.Get(globalPolicyTimeout.ID, d.Id())
 	if err != nil {
 		if obj, ok := err.(*client.ErrorResponse); ok && obj.IsObjectNotFound() {
-			log.Printf("[WARN] Removing policy rule %s from state because it no longer exists in ZPA", d.Id())
+			log.Printf("[WARN] Removing policy timeout rule %s from state because it no longer exists in ZPA", d.Id())
 			d.SetId("")
 			return nil
 		}
@@ -203,7 +206,7 @@ func resourcePolicyTimeoutRead(d *schema.ResourceData, m interface{}) error {
 		return err
 	}
 
-	log.Printf("[INFO] Got Policy Set Rule:\n%+v\n", resp)
+	log.Printf("[INFO] Got Policy Set Timeout Rule:\n%+v\n", resp)
 	d.SetId(resp.ID)
 	_ = d.Set("action", resp.Action)
 	_ = d.Set("action_id", resp.ActionID)
@@ -237,6 +240,12 @@ func resourcePolicyTimeoutUpdate(d *schema.ResourceData, m interface{}) error {
 		if _, err := zClient.policysetrule.Update(globalPolicyTimeout.ID, ruleID, &req); err != nil {
 			return err
 		}
+		if d.HasChange("rule_order") {
+			order, ok := d.GetOk("rule_order")
+			if ok {
+				reorder(order, globalPolicyTimeout.ID, ruleID, zClient)
+			}
+		}
 		return resourcePolicyTimeoutRead(d, m)
 	} else {
 		return fmt.Errorf("couldn't validate the zpa policy timeout (%s) operands, please make sure you are using valid inputs for APP type, LHS & RHS", req.Name)
@@ -250,7 +259,7 @@ func resourcePolicyTimeoutDelete(d *schema.ResourceData, m interface{}) error {
 		return err
 	}
 
-	log.Printf("[INFO] Deleting IP list with id %v\n", d.Id())
+	log.Printf("[INFO] Deleting Policy Timeout Rule with id %v\n", d.Id())
 
 	if _, err := zClient.policysetrule.Delete(globalPolicyTimeout.ID, d.Id()); err != nil {
 		return err
