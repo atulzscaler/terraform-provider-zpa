@@ -287,17 +287,17 @@ func resourcePolicySetUpdate(d *schema.ResourceData, m interface{}) error {
 	if err != nil {
 		return err
 	}
-	ruleId := d.Id()
-	log.Printf("[INFO] Updating policy rule ID: %v\n", ruleId)
+	ruleID := d.Id()
+	log.Printf("[INFO] Updating policy rule ID: %v\n", ruleID)
 	req := expandCreatePolicyRule(d)
 
-	if _, err := zClient.policysetrule.Update(globalPolicySet.ID, ruleId, &req); err != nil {
+	if _, err := zClient.policysetrule.Update(globalPolicySet.ID, ruleID, &req); err != nil {
 		return err
 	}
 	if d.HasChange("rule_order") {
 		order, ok := d.GetOk("rule_order")
 		if ok {
-			reorder(order, globalPolicySet.ID, ruleId, zClient)
+			reorder(order, globalPolicySet.ID, ruleID, zClient)
 		}
 	}
 	return resourcePolicySetRead(d, m)
