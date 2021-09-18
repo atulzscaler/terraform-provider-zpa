@@ -33,6 +33,7 @@ resource "zpa_application_segment" "example" {
 ```
 
 ```hcl
+# ZPA Segment Group resource
 resource "zpa_segment_group" "example" {
   name = "Example"
   description = "Example"
@@ -42,7 +43,7 @@ resource "zpa_segment_group" "example" {
 ```
 
 ```hcl
-# ZPA Server Group Data Source
+# ZPA Server Group resource
 resource "zpa_server_group" "example" {
   name = "Example"
   description = "Example"
@@ -58,16 +59,18 @@ resource "zpa_server_group" "example" {
 ```
 
 ```hcl
+data "zpa_app_connector_group" "example" {
+  name = "AWS-Connector"
+}
+```
+
+```hcl
+# ZPA Application Server resource
 resource "zpa_application_server" "example" {
   name                          = "Example"
   description                   = "Example"
   address                       = "server.acme.com"
   enabled                       = true
-}
-
-```hcl
-data "zpa_app_connector_group" "example" {
-  name = "AWS-Connector"
 }
 ```
 
