@@ -1,6 +1,10 @@
 package zscaler
 
 import (
+	"fmt"
+	"log"
+
+	"github.com/SecurityGeekIO/terraform-provider-zpa/gozscaler/policysetrule"
 	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/schema"
 )
 
@@ -25,4 +29,178 @@ func ListToStringSlice(v []interface{}) []string {
 	}
 
 	return ans
+}
+
+func ValidateConditions(conditions []policysetrule.Conditions, zClient *Client) bool {
+	for _, condition := range conditions {
+		if !validateOperands(condition.Operands, zClient) {
+			return false
+		}
+	}
+	return true
+}
+func validateOperands(operands []policysetrule.Operands, zClient *Client) bool {
+	for _, operand := range operands {
+		if !validateOperand(operand, zClient) {
+			return false
+		}
+	}
+	return true
+}
+func validateOperand(operand policysetrule.Operands, zClient *Client) bool {
+	switch operand.ObjectType {
+	case "APP":
+		return customValidate(operand, []string{"id"}, "application segment ID", Getter(func(id string) error {
+			_, _, err := zClient.applicationsegment.Get(id)
+			return err
+		}))
+	case "APP_GROUP":
+		return customValidate(operand, []string{"id"}, "Segment Group ID", Getter(func(id string) error {
+			_, _, err := zClient.segmentgroup.Get(id)
+			return err
+		}))
+
+	case "IDP":
+		return customValidate(operand, []string{"id"}, "IDP ID", Getter(func(id string) error {
+			_, _, err := zClient.idpcontroller.Get(id)
+			return err
+		}))
+	case "CLOUD_CONNECTOR_GROUP":
+		return customValidate(operand, []string{"id"}, "cloud connector group ID", Getter(func(id string) error {
+			_, _, err := zClient.cloudconnectorgroup.Get(id)
+			return err
+		}))
+	case "CLIENT_TYPE":
+		return customValidate(operand, []string{"id"}, "'zpn_client_type_zapp' or 'zpn_client_type_exporter'", Getter(func(id string) error {
+			if id != "zpn_client_type_zapp" && id != "zpn_client_type_exporter" {
+				return fmt.Errorf("RHS values must be 'zpn_client_type_zapp' or 'zpn_client_type_exporter' wehn object type is CLIENT_TYPE")
+			}
+			return nil
+		}))
+	case "MACHINE_GRP":
+		return customValidate(operand, []string{"id"}, "machine group ID", Getter(func(id string) error {
+			_, _, err := zClient.machinegroup.Get(id)
+			return err
+		}))
+	case "POSTURE":
+		if operand.LHS == "" {
+			lhsWarn(operand.ObjectType, "valid posture network ID", operand.LHS, nil)
+			return false
+		}
+		_, _, err := zClient.postureprofile.GetByPostureUDID(operand.LHS)
+		if err != nil {
+			lhsWarn(operand.ObjectType, "valid posture network ID", operand.LHS, err)
+			return false
+		}
+		if !contains([]string{"true", "false"}, operand.RHS) {
+			rhsWarn(operand.ObjectType, "\"true\"/\"false\"", operand.RHS, nil)
+			return false
+		}
+		return true
+	case "TRUSTED_NETWORK":
+		if operand.LHS == "" {
+			lhsWarn(operand.ObjectType, "valid trusted network ID", operand.LHS, nil)
+			return false
+		}
+		_, _, err := zClient.trustednetwork.GetByNetID(operand.LHS)
+		if err != nil {
+			lhsWarn(operand.ObjectType, "valid trusted network ID", operand.LHS, err)
+			return false
+		}
+		if operand.RHS != "true" {
+			rhsWarn(operand.ObjectType, "\"true\"", operand.RHS, nil)
+			return false
+		}
+		return true
+	case "SAML":
+		if operand.LHS == "" {
+			lhsWarn(operand.ObjectType, "valid SAML Attribute ID", operand.LHS, nil)
+			return false
+		}
+		_, _, err := zClient.samlattribute.Get(operand.LHS)
+		if err != nil {
+			lhsWarn(operand.ObjectType, "valid SAML Attribute ID", operand.LHS, err)
+			return false
+		}
+		if operand.RHS == "" {
+			rhsWarn(operand.ObjectType, "SAML Attribute Value", operand.RHS, nil)
+			return false
+		}
+		return true
+	case "SCIM":
+		if operand.LHS == "" {
+			lhsWarn(operand.ObjectType, "valid SCIM Attribute ID", operand.LHS, nil)
+			return false
+		}
+		_, _, err := zClient.scimattributeheader.Get(operand.LHS)
+		if err != nil {
+			lhsWarn(operand.ObjectType, "valid SCIM Attribute ID", operand.LHS, err)
+			return false
+		}
+		if operand.RHS == "" {
+			rhsWarn(operand.ObjectType, "SCIM Attribute Value", operand.RHS, nil)
+			return false
+		}
+		return true
+	case "SCIM_GROUP":
+		if operand.LHS == "" {
+			lhsWarn(operand.ObjectType, "valid IDP Controller ID", operand.LHS, nil)
+			return false
+		}
+		_, _, err := zClient.idpcontroller.Get(operand.LHS)
+		if err != nil {
+			lhsWarn(operand.ObjectType, "valid IDP Controller ID", operand.LHS, err)
+			return false
+		}
+		if operand.RHS == "" {
+			rhsWarn(operand.ObjectType, "SCIM Group ID", operand.RHS, nil)
+			return false
+		}
+		_, _, err = zClient.scimgroup.Get(operand.RHS)
+		if err != nil {
+			rhsWarn(operand.ObjectType, "SCIM Group ID", operand.RHS, err)
+			return false
+		}
+		return true
+	default:
+		log.Printf("[WARN] invalid operand object type %s\n", operand.ObjectType)
+		return false
+	}
+}
+
+func contains(list []string, item string) bool {
+	for _, i := range list {
+		if i == item {
+			return true
+		}
+	}
+	return false
+}
+
+type Getter func(id string) error
+
+func (g Getter) Get(id string) error {
+	return g(id)
+}
+func customValidate(operand policysetrule.Operands, expectedLHS []string, expectedRHS string, clientRHS Getter) bool {
+	if operand.LHS == "" || !contains(expectedLHS, operand.LHS) {
+		lhsWarn(operand.ObjectType, expectedLHS, operand.LHS, nil)
+		return false
+	}
+	if operand.RHS == "" {
+		rhsWarn(operand.ObjectType, expectedRHS, operand.RHS, nil)
+		return false
+	}
+	err := clientRHS.Get(operand.RHS)
+	if err != nil {
+		rhsWarn(operand.ObjectType, expectedRHS, operand.RHS, err)
+		return false
+	}
+	return true
+}
+func rhsWarn(objType, expected, rhs interface{}, err error) {
+	log.Printf("[WARN] when operand object type is %v RHS must be %#v, value is \"%v\", %v\n", objType, expected, rhs, err)
+}
+func lhsWarn(objType, expected, lhs interface{}, err error) {
+	log.Printf("[WARN] when operand object type is %v LHS must be %#v value is \"%v\", %v\n", objType, expected, lhs, err)
 }
