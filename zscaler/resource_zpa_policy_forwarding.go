@@ -1,6 +1,7 @@
 package zscaler
 
 import (
+	"fmt"
 	"log"
 
 	"github.com/SecurityGeekIO/terraform-provider-zpa/gozscaler/client"
@@ -173,14 +174,18 @@ func resourcePolicyForwardingCreate(d *schema.ResourceData, m interface{}) error
 
 	req := expandCreatePolicyForwardingRule(d)
 	log.Printf("[INFO] Creating zpa policy forwarding rule with request\n%+v\n", req)
+	if ValidateConditions(req.Conditions, zClient) {
+		policysetrule, _, err := zClient.policysetrule.Create(&req)
+		if err != nil {
+			return err
+		}
+		d.SetId(policysetrule.ID)
 
-	policysetrule, _, err := zClient.policysetrule.Create(&req)
-	if err != nil {
-		return err
+		return resourcePolicyForwardingRead(d, m)
+	} else {
+		return fmt.Errorf("couldn't validate the zpa policy forwarding (%s) operands, please make sure you are using valid inputs for APP type, LHS & RHS", req.Name)
 	}
-	d.SetId(policysetrule.ID)
 
-	return resourcePolicyForwardingRead(d, m)
 }
 
 func resourcePolicyForwardingRead(d *schema.ResourceData, m interface{}) error {
@@ -232,12 +237,15 @@ func resourcePolicyForwardingUpdate(d *schema.ResourceData, m interface{}) error
 	ruleId := d.Id()
 	log.Printf("[INFO] Updating policy forwarding rule ID: %v\n", ruleId)
 	req := expandCreatePolicyRule(d)
-
-	if _, err := zClient.policysetrule.Update(globalPolicyTimeout.ID, ruleId, &req); err != nil {
-		return err
+	if ValidateConditions(req.Conditions, zClient) {
+		if _, err := zClient.policysetrule.Update(globalPolicyTimeout.ID, ruleId, &req); err != nil {
+			return err
+		}
+		return resourcePolicyForwardingRead(d, m)
+	} else {
+		return fmt.Errorf("couldn't validate the zpa policy forwarding (%s) operands, please make sure you are using valid inputs for APP type, LHS & RHS", req.Name)
 	}
 
-	return resourcePolicyForwardingRead(d, m)
 }
 
 func resourcePolicyForwardingDelete(d *schema.ResourceData, m interface{}) error {

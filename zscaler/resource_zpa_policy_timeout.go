@@ -1,6 +1,7 @@
 package zscaler
 
 import (
+	"fmt"
 	"log"
 
 	"github.com/SecurityGeekIO/terraform-provider-zpa/gozscaler/client"
@@ -169,14 +170,18 @@ func resourcePolicyTimeoutCreate(d *schema.ResourceData, m interface{}) error {
 
 	req := expandCreatePolicyTimeoutRule(d)
 	log.Printf("[INFO] Creating zpa policy rule with request\n%+v\n", req)
+	if ValidateConditions(req.Conditions, zClient) {
+		policysetrule, _, err := zClient.policysetrule.Create(&req)
+		if err != nil {
+			return err
+		}
+		d.SetId(policysetrule.ID)
 
-	policysetrule, _, err := zClient.policysetrule.Create(&req)
-	if err != nil {
-		return err
+		return resourcePolicyTimeoutRead(d, m)
+	} else {
+		return fmt.Errorf("couldn't validate the zpa policy timeout (%s) operands, please make sure you are using valid inputs for APP type, LHS & RHS", req.Name)
 	}
-	d.SetId(policysetrule.ID)
 
-	return resourcePolicyTimeoutRead(d, m)
 }
 
 func resourcePolicyTimeoutRead(d *schema.ResourceData, m interface{}) error {
@@ -228,12 +233,14 @@ func resourcePolicyTimeoutUpdate(d *schema.ResourceData, m interface{}) error {
 	ruleID := d.Id()
 	log.Printf("[INFO] Updating policy rule ID: %v\n", ruleID)
 	req := expandCreatePolicyRule(d)
-
-	if _, err := zClient.policysetrule.Update(globalPolicyTimeout.ID, ruleID, &req); err != nil {
-		return err
+	if ValidateConditions(req.Conditions, zClient) {
+		if _, err := zClient.policysetrule.Update(globalPolicyTimeout.ID, ruleID, &req); err != nil {
+			return err
+		}
+		return resourcePolicyTimeoutRead(d, m)
+	} else {
+		return fmt.Errorf("couldn't validate the zpa policy timeout (%s) operands, please make sure you are using valid inputs for APP type, LHS & RHS", req.Name)
 	}
-
-	return resourcePolicyTimeoutRead(d, m)
 }
 
 func resourcePolicyTimeoutDelete(d *schema.ResourceData, m interface{}) error {
