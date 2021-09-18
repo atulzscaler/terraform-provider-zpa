@@ -3,7 +3,6 @@ package zscaler
 import (
 	"fmt"
 	"log"
-	"strconv"
 	"sync"
 
 	"github.com/SecurityGeekIO/terraform-provider-zpa/gozscaler/client"
@@ -287,17 +286,17 @@ func resourcePolicySetUpdate(d *schema.ResourceData, m interface{}) error {
 	if err != nil {
 		return err
 	}
-	ruleId := d.Id()
-	log.Printf("[INFO] Updating policy rule ID: %v\n", ruleId)
+	ruleID := d.Id()
+	log.Printf("[INFO] Updating policy rule ID: %v\n", ruleID)
 	req := expandCreatePolicyRule(d)
 	if ValidateConditions(req.Conditions, zClient) {
-		if _, err := zClient.policysetrule.Update(globalPolicySet.ID, ruleId, &req); err != nil {
+		if _, err := zClient.policysetrule.Update(globalPolicySet.ID, ruleID, &req); err != nil {
 			return err
 		}
 		if d.HasChange("rule_order") {
 			order, ok := d.GetOk("rule_order")
 			if ok {
-				reorder(order, globalPolicySet.ID, ruleId, zClient)
+				reorder(order, globalPolicySet.ID, ruleID, zClient)
 			}
 		}
 		return resourcePolicySetRead(d, m)
@@ -314,7 +313,7 @@ func resourcePolicySetDelete(d *schema.ResourceData, m interface{}) error {
 		return err
 	}
 
-	log.Printf("[INFO] Deleting IP list with id %v\n", d.Id())
+	log.Printf("[INFO] Deleting policy set rule with id %v\n", d.Id())
 
 	if _, err := zClient.policysetrule.Delete(globalPolicySet.ID, d.Id()); err != nil {
 		return err
@@ -324,42 +323,6 @@ func resourcePolicySetDelete(d *schema.ResourceData, m interface{}) error {
 
 }
 
-func reorder(orderI interface{}, policySetID, id string, zClient *Client) {
-	defer reorderAll(policySetID, zClient)
-	if orderI == nil {
-		log.Printf("[WARN] Invalid order for policy set %s: %v\n", id, orderI)
-		return
-	}
-	order, ok := orderI.(string)
-	if !ok || order == "" {
-		log.Printf("[WARN] Invalid order for policy set %s: %v\n", id, order)
-		return
-	}
-	orderInt, err := strconv.Atoi(order)
-	if err != nil || orderInt < 0 {
-		log.Printf("[ERROR] couldn't reorder the policy set, the order may not have taken place:%v %v\n", orderInt, err)
-		return
-	}
-	rules.Lock()
-	rules.orders[id] = orderInt
-	rules.Unlock()
-}
-
-// we keep calling reordering endpoint to reorder all rules after new rule was added
-// because the reorder endpoint shifts all order up to replac the new order.
-func reorderAll(policySetID string, zClient *Client) {
-	rules.Lock()
-	defer rules.Unlock()
-	count, _, _ := zClient.policysetglobal.RulesCount()
-	for k, v := range rules.orders {
-		if v <= count {
-			_, err := zClient.policysetrule.Reorder(policySetID, k, v)
-			if err != nil {
-				log.Printf("[ERROR] couldn't reorder the policy set, the order may not have taken place: %v\n", err)
-			}
-		}
-	}
-}
 func expandCreatePolicyRule(d *schema.ResourceData) policysetrule.PolicyRule {
 	policySetID, ok := d.Get("policy_set_id").(string)
 	if !ok {

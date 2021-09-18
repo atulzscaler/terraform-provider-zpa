@@ -3,6 +3,7 @@ package zscaler
 import (
 	"fmt"
 	"log"
+	"strconv"
 
 	"github.com/SecurityGeekIO/terraform-provider-zpa/gozscaler/policysetrule"
 	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/schema"
@@ -203,4 +204,41 @@ func rhsWarn(objType, expected, rhs interface{}, err error) {
 }
 func lhsWarn(objType, expected, lhs interface{}, err error) {
 	log.Printf("[WARN] when operand object type is %v LHS must be %#v value is \"%v\", %v\n", objType, expected, lhs, err)
+}
+
+func reorder(orderI interface{}, policySetID, id string, zClient *Client) {
+	defer reorderAll(policySetID, zClient)
+	if orderI == nil {
+		log.Printf("[WARN] Invalid order for policy set %s: %v\n", id, orderI)
+		return
+	}
+	order, ok := orderI.(string)
+	if !ok || order == "" {
+		log.Printf("[WARN] Invalid order for policy set %s: %v\n", id, order)
+		return
+	}
+	orderInt, err := strconv.Atoi(order)
+	if err != nil || orderInt < 0 {
+		log.Printf("[ERROR] couldn't reorder the policy set, the order may not have taken place:%v %v\n", orderInt, err)
+		return
+	}
+	rules.Lock()
+	rules.orders[id] = orderInt
+	rules.Unlock()
+}
+
+// we keep calling reordering endpoint to reorder all rules after new rule was added
+// because the reorder endpoint shifts all order up to replac the new order.
+func reorderAll(policySetID string, zClient *Client) {
+	rules.Lock()
+	defer rules.Unlock()
+	count, _, _ := zClient.policysetglobal.RulesCount()
+	for k, v := range rules.orders {
+		if v <= count {
+			_, err := zClient.policysetrule.Reorder(policySetID, k, v)
+			if err != nil {
+				log.Printf("[ERROR] couldn't reorder the policy set, the order may not have taken place: %v\n", err)
+			}
+		}
+	}
 }
