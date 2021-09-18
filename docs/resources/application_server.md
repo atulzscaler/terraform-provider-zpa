@@ -45,8 +45,6 @@ The following arguments are supported:
 * ` name` - (Required) Name. The name of the application server to be exported.
 * ` address` - (Required) Address. The address of the application server to be exported.
 
-- **address** (String) This field defines the domain or IP address of the server.
-- **name** (String) This field defines the name of the server.
 
 ### Optional
 
