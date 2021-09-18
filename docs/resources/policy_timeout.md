@@ -21,7 +21,7 @@ resource "zpa_policy_timeout" "contractors_browser_access" {
   reauth_idle_timeout           = "600"
   reauth_timeout                = "172800"
   operator                      = "AND"
-  policy_set_id                 = data.zpa_policy_timeout.all.id
+  policy_set_id                 = data.zpa_policy_timeout.global_policy_id.id
 
   conditions {
     negated = false
@@ -45,7 +45,7 @@ resource "zpa_policy_timeout" "contractors_browser_access" {
 ```
 
 ```hcl
-data "zpa_policy_timeout" "all" {
+data "zpa_policy_timeout" "global_policy_id" {
 }
 ```
 
