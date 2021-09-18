@@ -4,7 +4,7 @@ subcategory: "Application Server"
 layout: "zpa"
 page_title: "ZPA: application_server"
 description: |-
-  Gets a ZPA Application Segment details.
+  Creates a ZPA Application Server.
   
 ---
 
