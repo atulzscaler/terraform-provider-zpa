@@ -5,7 +5,7 @@ subcategory: "Application Segment"
 layout: "zpa"
 page_title: "ZPA: application_segment"
 description: |-
-  Gets a ZPA Application Segment details.
+  Creates a ZPA Application Segment details.
   
 ---
 # zpa_application_segment
