@@ -25,23 +25,49 @@ resource "zpa_application_segment" "example" {
     is_cname_enabled = true
     tcp_port_ranges = ["8080", "8080"]
     domain_names = ["server.acme.com"]
-    segment_group_id = data.zpa_segment_group.example.id
+    segment_group_id = zpa_segment_group.example.id
     server_groups {
-        id = [ data.zpa_server_group.servergroup.id]
+        id = [ zpa_server_group.servergroup.id]
     }
 }
 ```
 
 ```hcl
-data "zpa_segment_group" "example" {
- name = "segment_group_name"
+resource "zpa_segment_group" "example" {
+  name = "Example"
+  description = "Example"
+  enabled = true
+  policy_migrated = true
 }
 ```
 
 ```hcl
 # ZPA Server Group Data Source
-data "zpa_server_group" "example" {
- name = "server_group_name"
+resource "zpa_server_group" "example" {
+  name = "Example"
+  description = "Example"
+  enabled = false
+  dynamic_discovery = false
+  app_connector_groups {
+    id = [data.zpa_app_connector_group.example.id]
+  }
+  servers {
+    id = [zpa_application_server.example.id]
+  }
+}
+```
+
+```hcl
+resource "zpa_application_server" "example" {
+  name                          = "Example"
+  description                   = "Example"
+  address                       = "server.acme.com"
+  enabled                       = true
+}
+
+```hcl
+data "zpa_app_connector_group" "example" {
+  name = "AWS-Connector"
 }
 ```
 
