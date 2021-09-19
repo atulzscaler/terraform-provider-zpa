@@ -13,4 +13,4 @@ Requirements
 
 Building The Provider (Terraform v0.12+)
 -------------------------------------------
-Clone repository to: `$GOPATH/src/github.com/SecurityGeekIO/terraform-provider-zpa`
+- Clone repository to: `$GOPATH/src/github.com/SecurityGeekIO/terraform-provider-zpa`
