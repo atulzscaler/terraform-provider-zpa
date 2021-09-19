@@ -30,12 +30,6 @@ func Provider() *schema.Provider {
 				DefaultFunc: envDefaultFunc("ZPA_CUSTOMER_ID"),
 				Description: "zpa customer id",
 			},
-			"baseurl": {
-				Type:        schema.TypeString,
-				Optional:    true,
-				DefaultFunc: envDefaultFunc("ZPA_BASE_URL"),
-				Description: "zpa base url",
-			},
 		},
 		ResourcesMap: map[string]*schema.Resource{
 			/*
@@ -50,6 +44,7 @@ func Provider() *schema.Provider {
 			"zpa_policyset_rule":      resourcePolicySetRule(),
 			"zpa_policy_timeout":      resourcePolicyTimeout(),
 			"zpa_policy_forwarding":   resourcePolicyForwarding(),
+			"zpa_policy_isolation":    resourcePolicyIsolation(),
 		},
 		DataSourcesMap: map[string]*schema.Resource{
 			// terraform date source name: data source schema
@@ -70,6 +65,7 @@ func Provider() *schema.Provider {
 			"zpa_policy_set_global":     dataSourcePolicySetGlobal(),
 			"zpa_policy_timeout":        dataSourcePolicyTimeout(),
 			"zpa_policy_forwarding":     dataSourcePolicyForwarding(),
+			"zpa_policy_isolation":      dataSourcePolicyIsolation(),
 		},
 		ConfigureFunc: zscalerConfigure,
 	}
@@ -81,7 +77,6 @@ func zscalerConfigure(d *schema.ResourceData) (interface{}, error) {
 		ClientID:     d.Get("client_id").(string),
 		ClientSecret: d.Get("client_secret").(string),
 		CustomerID:   d.Get("customerid").(string),
-		BaseURL:      d.Get("baseurl").(string),
 	}
 
 	return config.Client()
