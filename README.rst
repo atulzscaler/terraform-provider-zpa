@@ -20,3 +20,36 @@ Building The Provider (Terraform v0.12+)
  $ mkdir -p $GOPATH/src/github.com/terraform-providers
  $ cd $GOPATH/src/github.com/terraform-providers
  $ git clone https://github.com/SecurityGeekIO/terraform-provider-zpa.git
+
+To clone on windows
+.. code-block:: console
+
+ $ mkdir %GOPATH%\src\github.com\terraform-providers
+ $ cd %GOPATH%\src\github.com\terraform-providers
+ $ git clone https://github.com/SecurityGeekIO/terraform-provider-zpa.git
+
+ Enter the provider directory and build the provider
+
+.. code-block:: console
+
+ $ cd $GOPATH/src/github.com/terraform-providers/terraform-provider-zpa
+ $ make fmt
+ $ make build
+
+ To build on Windows
+
+.. code-block:: console
+
+ $ cd %GOPATH%\src\github.com\terraform-providers\terraform-provider-zpa
+ $ go fmt
+ $ go install
+
+ Building The Provider (Terraform v0.13+)
+--------------------------------------------
+
+MacOS / Linux
+Run the following command:
+
+.. code-block:: console
+
+$ make build13
