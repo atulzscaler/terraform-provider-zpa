@@ -16,6 +16,7 @@ Building The Provider (Terraform v0.12+)
 - Clone repository to: `$GOPATH/src/github.com/SecurityGeekIO/terraform-provider-zpa`
 
 .. code-block:: console
-$ mkdir -p $GOPATH/src/github.com/terraform-providers
-$ cd $GOPATH/src/github.com/terraform-providers
-$ git clone https://github.com/SecurityGeekIO/terraform-provider-zpa.git
+
+ $ mkdir -p $GOPATH/src/github.com/terraform-providers
+ $ cd $GOPATH/src/github.com/terraform-providers
+ $ git clone https://github.com/SecurityGeekIO/terraform-provider-zpa.git
