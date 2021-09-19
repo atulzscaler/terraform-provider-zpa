@@ -12,7 +12,7 @@ Requirements
 - Create a directory, go, follow this `doc <https://github.com/golang/go/wiki/SettingGOPATH>`_ to edit ~/.bash_profile to setup the GOPATH environment variable)
 
 Building The Provider (Terraform v0.12+)
--------------------------------------------
+==========================================
 - Clone repository to: `$GOPATH/src/github.com/SecurityGeekIO/terraform-provider-zpa`
 
 .. code-block:: console
@@ -37,6 +37,7 @@ To clone on windows
  $ make build
 
  To build on Windows
+ --------------------
 
 .. code-block:: console
 
@@ -45,9 +46,10 @@ To clone on windows
  $ go install
 
  Building The Provider (Terraform v0.13+)
---------------------------------------------
+==========================================
 
 MacOS / Linux
+--------------
 Run the following command:
 
 .. code-block:: console
