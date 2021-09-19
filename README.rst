@@ -1,4 +1,4 @@
-.. image:: https://img.shields.io/github/license/SecurityGeekIO/terraform-provider-zpa
+.. image:: https://img.shields.io/github/license/SecurityGeekIO/terraform-provider-zpa.svg
   :target: https://github.com/SecurityGeekIO/terraform-provider-zpa
 
 Terraform Provider for ☁️Zscaler Private Access☁️
