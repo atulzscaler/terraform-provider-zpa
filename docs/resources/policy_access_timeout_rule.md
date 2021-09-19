@@ -7,14 +7,14 @@ description: |-
   Creates a ZPA Policy Timeout Rule.
   
 ---
-# zpa_policy_timeout (Resource)
+# zpa_policy_timeout_rule (Resource)
 
-The **zpa_policy_timeout** resource creates a policy timeout rule in the Zscaler Private Access cloud.
+The **zpa_policy_timeout_rule** resource creates a policy timeout rule in the Zscaler Private Access cloud.
 
 ## Example Usage
 
 ```hcl
-resource "zpa_policy_timeout" "example_timeout_access_rule" {
+resource "zpa_policy_timeout_rule" "example_timeout_access_rule" {
   name                          = "Example Timeout Access Rule"
   description                   = "Example Timeout Access Rule"
   action                        = "RE_AUTH"
