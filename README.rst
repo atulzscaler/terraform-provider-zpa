@@ -38,7 +38,7 @@ To clone on windows
  $ make build
 
  To build on Windows
- --------------------
+=====================
 
 .. code-block:: console
 
@@ -50,7 +50,7 @@ To clone on windows
 ==========================================
 
 MacOS / Linux
---------------
+=====================
 Run the following command:
 
 .. code-block:: console
