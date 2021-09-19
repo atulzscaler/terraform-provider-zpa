@@ -1,10 +1,10 @@
 // Access to DevOps Servers
-resource "zpa_policy_forwarding" "sgio_devops_bypass" {
+resource "zpa_policy_forwarding_rule" "sgio_devops_bypass" {
   name                          = "SGIO DevOps Servers Bypass"
   description                   = "SGIO DevOps Servers Bypass"
   action                        = "BYPASS"
   operator = "AND"
-  policy_set_id = data.zpa_policy_forwarding.all.id
+  policy_set_id = data.zpa_global_policy_forwarding.policyset.id
 
   conditions {
     negated = false

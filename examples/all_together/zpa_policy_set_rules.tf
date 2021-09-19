@@ -5,7 +5,7 @@ resource "zpa_policy_access_rule" "as_vcenter_servers" {
   action                        = "ALLOW"
   rule_order                    = 4
   operator = "AND"
-  policy_set_id = data.zpa_policy_set_global.all.id
+  policy_set_id = data.zpa_global_access_policy.policyset.id
   conditions {
     negated = false
     operator = "OR"
@@ -34,7 +34,7 @@ resource "zpa_policy_access_rule" "as_intranet_web_apps" {
   action                        = "ALLOW"
   rule_order                    = 5
   operator = "AND"
-  policy_set_id = data.zpa_policy_set_global.all.id
+  policy_set_id = data.zpa_global_access_policy.policyset.id
   conditions {
     negated = false
     operator = "OR"
@@ -82,7 +82,7 @@ resource "zpa_policy_access_rule" "browser_access_apps" {
   action                        = "ALLOW"
   rule_order                    = 6
   operator = "AND"
-  policy_set_id = data.zpa_policy_set_global.all.id
+  policy_set_id = data.zpa_global_access_policy.policyset.id
   conditions {
     negated = false
     operator = "OR"
@@ -124,7 +124,7 @@ resource "zpa_policy_access_rule" "all_other_services" {
   action                        = "ALLOW"
   rule_order                    = 7
   operator = "AND"
-  policy_set_id = data.zpa_policy_set_global.all.id
+  policy_set_id = data.zpa_global_access_policy.policyset.id
   conditions {
     negated = false
     operator = "OR"

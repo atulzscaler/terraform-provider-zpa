@@ -22,11 +22,11 @@ data "zpa_posture_profile" "crwd_zpa_pre_zta" {
  name = "CrowdStrike_ZPA_Pre-ZTA"
 }
 
-data "zpa_policy_set_global" "all" {}
+data "zpa_global_access_policy" "policyset" {}
 
-data "zpa_policy_timeout" "all" {}
+data "zpa_global_policy_timeout" "policyset" {}
 
-data "zpa_policy_forwarding" "all" {}
+data "zpa_global_policy_forwarding" "policyset" {}
 
 data "zpa_idp_controller" "sgio_user_okta" {
  name = "SGIO-User-Okta"

@@ -1,11 +1,11 @@
-resource "zpa_policy_timeout" "temp_contractors_browser_access" {
+resource "zpa_policy_timeout_rule" "temp_contractors_browser_access" {
   name                          = "Temp Contractors Browser Access"
   description                   = "Temp Contractors Browser Access"
   action                        = "RE_AUTH"
   reauth_idle_timeout           = "600"
   reauth_timeout                = "172800"
   operator                      = "AND"
-  policy_set_id                 = data.zpa_policy_timeout.all.id
+  policy_set_id                 = data.zpa_global_policy_timeout.policyset.id
 
   conditions {
     negated = false

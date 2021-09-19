@@ -39,9 +39,8 @@ func resourcePolicyAccessRule() *schema.Resource {
 				}, false),
 			},
 			"action_id": {
-				Type:        schema.TypeString,
-				Optional:    true,
-				Description: "This field defines the description of the server.",
+				Type:     schema.TypeString,
+				Computed: true,
 			},
 			"bypass_default_rule": {
 				Type:     schema.TypeBool,
@@ -76,7 +75,7 @@ func resourcePolicyAccessRule() *schema.Resource {
 			},
 			"policy_set_id": {
 				Type:     schema.TypeString,
-				Optional: true,
+				Required: true,
 			},
 			"policy_type": {
 				Type:     schema.TypeString,
@@ -105,7 +104,6 @@ func resourcePolicyAccessRule() *schema.Resource {
 			"app_server_groups": {
 				Type:        schema.TypeSet,
 				Optional:    true,
-				MaxItems:    1,
 				Description: "List of the server group IDs.",
 				Elem: &schema.Resource{
 					Schema: map[string]*schema.Schema{
@@ -122,7 +120,6 @@ func resourcePolicyAccessRule() *schema.Resource {
 			"app_connector_groups": {
 				Type:        schema.TypeSet,
 				Optional:    true,
-				MaxItems:    1,
 				Description: "List of app-connector IDs.",
 				Elem: &schema.Resource{
 					Schema: map[string]*schema.Schema{
@@ -152,7 +149,7 @@ func resourcePolicyAccessRule() *schema.Resource {
 						},
 						"operator": {
 							Type:     schema.TypeString,
-							Optional: true,
+							Required: true,
 							ValidateFunc: validation.StringInSlice([]string{
 								"AND",
 								"OR",
@@ -178,17 +175,17 @@ func resourcePolicyAccessRule() *schema.Resource {
 									},
 									"lhs": {
 										Type:        schema.TypeString,
-										Optional:    true,
+										Required:    true,
 										Description: "This signifies the key for the object type. String ID example: id ",
 									},
 									"rhs": {
 										Type:        schema.TypeString,
-										Optional:    true,
+										Required:    true,
 										Description: "This denotes the value for the given object type. Its value depends upon the key.",
 									},
 									"object_type": {
 										Type:        schema.TypeString,
-										Optional:    true,
+										Required:    true,
 										Description: "  This is for specifying the policy critiera.",
 										ValidateFunc: validation.StringInSlice([]string{
 											"USER",

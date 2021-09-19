@@ -5,7 +5,7 @@ resource "zpa_policy_access_rule" "crwd_zta_score_40" {
   action                        = "DENY"
   rule_order                    = 1
   operator = "AND"
-  policy_set_id = data.zpa_policy_set_global.all.id
+  policy_set_id = data.zpa_global_access_policy.policyset.id
   conditions {
     negated = false
     operator = "OR"
@@ -42,7 +42,7 @@ resource "zpa_policy_access_rule" "crwd_zta_score_80" {
   action                        = "DENY"
   rule_order                    = 2
   operator = "AND"
-  policy_set_id = data.zpa_policy_set_global.all.id
+  policy_set_id = data.zpa_global_access_policy.policyset.id
   conditions {
     negated = false
     operator = "OR"
@@ -79,7 +79,7 @@ resource "zpa_policy_access_rule" "crwd_zpa_pre_zta" {
   action                        = "DENY"
   rule_order                    = 3
   operator = "AND"
-  policy_set_id = data.zpa_policy_set_global.all.id
+  policy_set_id = data.zpa_global_access_policy.policyset.id
   conditions {
     negated = false
     operator = "OR"
