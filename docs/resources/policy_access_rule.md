@@ -7,9 +7,9 @@ description: |-
   
 ---
 
-# zpa_policyset_rule (Resource)
+# zpa_policy_access_rule (Resource)
 
-The **zpa_policyset_rule** resource creates a policy access rule in the Zscaler Private Access cloud.
+The **zpa_policy_access_rule** resource creates a policy access rule in the Zscaler Private Access cloud.
 
 ## Example Usage
 
@@ -19,7 +19,7 @@ resource "zpa_policy_access_rule" "gf_engineering" {
   description                   = "GF-Engineering"
   action                        = "ALLOW"
   operator                      = "AND"
-  policy_set_id                 = data.zpa_policy_timeout.global_policy_id.id
+  policy_set_id                 = data.zpa_global_access_policy.policyset.id
 
   conditions {
     negated = false
@@ -43,7 +43,7 @@ resource "zpa_policy_access_rule" "gf_engineering" {
 ```
 
 ```hcl
-data "zpa_policy_access_rule" "global_policy_id" {
+data "zpa_global_access_policy" "policyset" {
 }
 ```
 
