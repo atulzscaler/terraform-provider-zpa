@@ -7,9 +7,9 @@ import (
 	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/schema"
 )
 
-func dataSourcePolicyTimeout() *schema.Resource {
+func dataSourceGlobalPolicyTimeout() *schema.Resource {
 	return &schema.Resource{
-		Read: dataSourcePolicyTimeoutRead,
+		Read: dataSourceGlobalPolicyTimeoutRead,
 		Schema: map[string]*schema.Schema{
 			"creation_time": {
 				Type:     schema.TypeString,
@@ -223,7 +223,7 @@ func dataSourcePolicyTimeout() *schema.Resource {
 	}
 }
 
-func dataSourcePolicyTimeoutRead(d *schema.ResourceData, m interface{}) error {
+func dataSourceGlobalPolicyTimeoutRead(d *schema.ResourceData, m interface{}) error {
 	zClient := m.(*Client)
 	log.Printf("[INFO] Getting data for global timeout policy\n")
 

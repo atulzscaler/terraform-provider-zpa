@@ -7,9 +7,9 @@ import (
 	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/schema"
 )
 
-func dataSourcePolicyForwarding() *schema.Resource {
+func dataSourceGlobalAccessPolicy() *schema.Resource {
 	return &schema.Resource{
-		Read: dataSourcePolicyForwardingRead,
+		Read: dataSourceGlobalAccessPolicyRead,
 		Schema: map[string]*schema.Schema{
 			"creation_time": {
 				Type:     schema.TypeString,
@@ -223,11 +223,11 @@ func dataSourcePolicyForwarding() *schema.Resource {
 	}
 }
 
-func dataSourcePolicyForwardingRead(d *schema.ResourceData, m interface{}) error {
+func dataSourceGlobalAccessPolicyRead(d *schema.ResourceData, m interface{}) error {
 	zClient := m.(*Client)
-	log.Printf("[INFO] Getting data for global timeout policy\n")
+	log.Printf("[INFO] Getting data for global policy set\n")
 
-	resp, _, err := zClient.policysetglobal.GetBypass()
+	resp, _, err := zClient.policysetglobal.Get()
 	if err != nil {
 		return err
 	}
@@ -242,16 +242,16 @@ func dataSourcePolicyForwardingRead(d *schema.ResourceData, m interface{}) error
 	_ = d.Set("name", resp.Name)
 	_ = d.Set("policy_type", resp.PolicyType)
 
-	if err := d.Set("rules", flattenPolicyForwarding(resp)); err != nil {
+	if err := d.Set("rules", flattenPolicySetRules(resp)); err != nil {
 		return err
 	}
 
 	return nil
 }
 
-func flattenPolicyForwarding(policyForwardingRules *policysetglobal.PolicySet) []interface{} {
-	ruleItems := make([]interface{}, len(policyForwardingRules.Rules))
-	for i, ruleItem := range policyForwardingRules.Rules {
+func flattenPolicySetRules(policySetRules *policysetglobal.PolicySet) []interface{} {
+	ruleItems := make([]interface{}, len(policySetRules.Rules))
+	for i, ruleItem := range policySetRules.Rules {
 		ruleItems[i] = map[string]interface{}{
 			"action":                      ruleItem.Action,
 			"action_id":                   ruleItem.ActionID,
@@ -273,14 +273,14 @@ func flattenPolicyForwarding(policyForwardingRules *policysetglobal.PolicySet) [
 			"zpn_cbi_profile_id":          ruleItem.ZpnCbiProfileID,
 			"zpn_inspection_profile_id":   ruleItem.ZpnInspectionProfileID,
 			"zpn_inspection_profile_name": ruleItem.ZpnInspectionProfileName,
-			"conditions":                  flattenPolicyForwardingCondition(ruleItem),
+			"conditions":                  flattenRuleConditions(ruleItem),
 		}
 	}
 
 	return ruleItems
 }
 
-func flattenPolicyForwardingCondition(conditions policysetglobal.Rules) []interface{} {
+func flattenRuleConditions(conditions policysetglobal.Rules) []interface{} {
 	ruleConditions := make([]interface{}, len(conditions.Conditions))
 	for i, ruleCondition := range conditions.Conditions {
 		ruleConditions[i] = map[string]interface{}{
@@ -290,14 +290,14 @@ func flattenPolicyForwardingCondition(conditions policysetglobal.Rules) []interf
 			"modified_time": ruleCondition.ModifiedTime,
 			"negated":       ruleCondition.Negated,
 			"operator":      ruleCondition.Operator,
-			"operands":      flattenPolicyForwardingConditionOperands(ruleCondition),
+			"operands":      flattenConditionOperands(ruleCondition),
 		}
 	}
 
 	return ruleConditions
 }
 
-func flattenPolicyForwardingConditionOperands(operands policysetglobal.Conditions) []interface{} {
+func flattenConditionOperands(operands policysetglobal.Conditions) []interface{} {
 	conditionOperands := make([]interface{}, len(*operands.Operands))
 	for i, conditionOperand := range *operands.Operands {
 		conditionOperands[i] = map[string]interface{}{

@@ -1,5 +1,5 @@
 // Access to vCenter Server Rule
-resource "zpa_policyset_rule" "as_vcenter_servers" {
+resource "zpa_policy_access_rule" "as_vcenter_servers" {
   name                          = "SGIO vCenter Servers"
   description                   = "SGIO vCenter Servers"
   action                        = "ALLOW"
@@ -10,7 +10,6 @@ resource "zpa_policyset_rule" "as_vcenter_servers" {
     negated = false
     operator = "OR"
     operands {
-      name =  "SGIO vCenter Servers"
       object_type = "APP"
       lhs = "id"
       rhs = zpa_application_segment.as_vcenter_servers.id
@@ -29,7 +28,7 @@ resource "zpa_policyset_rule" "as_vcenter_servers" {
 }
 
 // Access to Intranet Web Apps
-resource "zpa_policyset_rule" "as_intranet_web_apps" {
+resource "zpa_policy_access_rule" "as_intranet_web_apps" {
   name                          = "SGIO Intranet Web Apps"
   description                   = "SGIO Intranet Web Apps"
   action                        = "ALLOW"
@@ -77,7 +76,7 @@ resource "zpa_policyset_rule" "as_intranet_web_apps" {
 }
 
 // Browser Access Rule
-resource "zpa_policyset_rule" "browser_access_apps" {
+resource "zpa_policy_access_rule" "browser_access_apps" {
   name                          = "Browser Access Apps"
   description                   = "Browser Access Apps"
   action                        = "ALLOW"
@@ -119,7 +118,7 @@ resource "zpa_policyset_rule" "browser_access_apps" {
 }
 
 // Access to all other Apps
-resource "zpa_policyset_rule" "all_other_services" {
+resource "zpa_policy_access_rule" "all_other_services" {
   name                          = "All Other Services"
   description                   = "All Other Services"
   action                        = "ALLOW"

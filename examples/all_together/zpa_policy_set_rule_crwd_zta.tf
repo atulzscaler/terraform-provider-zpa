@@ -1,5 +1,5 @@
 // CrowdStrike_ZTA_Score_Policy
-resource "zpa_policyset_rule" "crwd_zta_score_40" {
+resource "zpa_policy_access_rule" "crwd_zta_score_40" {
   name                          = "CrowdStrike_ZTA_Score_40"
   description                   = "CrowdStrike_ZTA_Score_40"
   action                        = "DENY"
@@ -36,7 +36,7 @@ resource "zpa_policyset_rule" "crwd_zta_score_40" {
   }
 }
 
-resource "zpa_policyset_rule" "crwd_zta_score_80" {
+resource "zpa_policy_access_rule" "crwd_zta_score_80" {
   name                          = "CrowdStrike_ZTA_Score_80"
   description                   = "CrowdStrike_ZTA_Score_80"
   action                        = "DENY"
@@ -73,7 +73,7 @@ resource "zpa_policyset_rule" "crwd_zta_score_80" {
   }
 }
 
-resource "zpa_policyset_rule" "crwd_zpa_pre_zta" {
+resource "zpa_policy_access_rule" "crwd_zpa_pre_zta" {
   name                          = "CrowdStrike_ZPA_Pre-ZTA"
   description                   = "CrowdStrike_ZPA_Pre-ZTA"
   action                        = "DENY"

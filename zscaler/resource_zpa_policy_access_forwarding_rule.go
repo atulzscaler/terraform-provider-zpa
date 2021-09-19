@@ -3,7 +3,6 @@ package zscaler
 import (
 	"fmt"
 	"log"
-	"sync"
 
 	"github.com/SecurityGeekIO/terraform-provider-zpa/gozscaler/client"
 	"github.com/SecurityGeekIO/terraform-provider-zpa/gozscaler/policysetrule"
@@ -11,21 +10,12 @@ import (
 	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/validation"
 )
 
-type listrules struct {
-	orders map[string]int
-	sync.Mutex
-}
-
-var rules = listrules{
-	orders: make(map[string]int),
-}
-
-func resourcePolicySetRule() *schema.Resource {
+func resourcePolicyForwardingRule() *schema.Resource {
 	return &schema.Resource{
-		Create:   resourcePolicySetCreate,
-		Read:     resourcePolicySetRead,
-		Update:   resourcePolicySetUpdate,
-		Delete:   resourcePolicySetDelete,
+		Create:   resourcePolicyForwardingRuleCreate,
+		Read:     resourcePolicyForwardingRuleRead,
+		Update:   resourcePolicyForwardingRuleUpdate,
+		Delete:   resourcePolicyForwardingRuleDelete,
 		Importer: &schema.ResourceImporter{},
 
 		Schema: map[string]*schema.Schema{
@@ -34,8 +24,9 @@ func resourcePolicySetRule() *schema.Resource {
 				Optional:    true,
 				Description: "  This is for providing the rule action.",
 				ValidateFunc: validation.StringInSlice([]string{
-					"ALLOW",
-					"DENY",
+					"BYPASS",
+					"INTERCEPT",
+					"INTERCEPT_ACCESSIBLE",
 				}, false),
 			},
 			"action_id": {
@@ -102,40 +93,6 @@ func resourcePolicySetRule() *schema.Resource {
 				Type:     schema.TypeString,
 				Optional: true,
 			},
-			"app_server_groups": {
-				Type:        schema.TypeSet,
-				Optional:    true,
-				MaxItems:    1,
-				Description: "List of the server group IDs.",
-				Elem: &schema.Resource{
-					Schema: map[string]*schema.Schema{
-						"id": {
-							Type:     schema.TypeList,
-							Optional: true,
-							Elem: &schema.Schema{
-								Type: schema.TypeString,
-							},
-						},
-					},
-				},
-			},
-			"app_connector_groups": {
-				Type:        schema.TypeSet,
-				Optional:    true,
-				MaxItems:    1,
-				Description: "List of app-connector IDs.",
-				Elem: &schema.Resource{
-					Schema: map[string]*schema.Schema{
-						"id": {
-							Type:     schema.TypeList,
-							Optional: true,
-							Elem: &schema.Schema{
-								Type: schema.TypeString,
-							},
-						},
-					},
-				},
-			},
 			"conditions": {
 				Type:        schema.TypeList,
 				Optional:    true,
@@ -177,9 +134,8 @@ func resourcePolicySetRule() *schema.Resource {
 										Optional: true,
 									},
 									"lhs": {
-										Type:        schema.TypeString,
-										Optional:    true,
-										Description: "This signifies the key for the object type. String ID example: id ",
+										Type:     schema.TypeString,
+										Optional: true,
 									},
 									"rhs": {
 										Type:        schema.TypeString,
@@ -191,20 +147,16 @@ func resourcePolicySetRule() *schema.Resource {
 										Optional:    true,
 										Description: "  This is for specifying the policy critiera.",
 										ValidateFunc: validation.StringInSlice([]string{
-											"USER",
-											"USER_GROUP",
-											"LOCATION",
 											"APP",
 											"APP_GROUP",
-											"SAML",
-											"POSTURE",
 											"CLIENT_TYPE",
+											"CLOUD_CONNECTOR_GROUP",
 											"IDP",
-											"TRUSTED_NETWORK",
-											"EDGE_CONNECTOR_GROUP",
-											"MACHINE_GRP",
+											"POSTURE",
+											"SAML",
 											"SCIM",
 											"SCIM_GROUP",
+											"TRUSTED_NETWORK",
 										}, false),
 									},
 								},
@@ -217,11 +169,11 @@ func resourcePolicySetRule() *schema.Resource {
 	}
 }
 
-func resourcePolicySetCreate(d *schema.ResourceData, m interface{}) error {
+func resourcePolicyForwardingRuleCreate(d *schema.ResourceData, m interface{}) error {
 	zClient := m.(*Client)
 
-	req := expandCreatePolicyRule(d)
-	log.Printf("[INFO] Creating zpa policy rule with request\n%+v\n", req)
+	req := expandCreatePolicyForwardingRule(d)
+	log.Printf("[INFO] Creating zpa policy forwarding rule with request\n%+v\n", req)
 	if ValidateConditions(req.Conditions, zClient) {
 		policysetrule, _, err := zClient.policysetrule.Create(&req)
 		if err != nil {
@@ -232,24 +184,25 @@ func resourcePolicySetCreate(d *schema.ResourceData, m interface{}) error {
 		if ok {
 			reorder(order, policysetrule.PolicySetID, policysetrule.ID, zClient)
 		}
-		return resourcePolicySetRead(d, m)
+		return resourcePolicyForwardingRuleRead(d, m)
 	} else {
-		return fmt.Errorf("couldn't validate the zpa policy rule (%s) operands, please make sure you are using valid inputs for APP type, LHS & RHS", req.Name)
+		return fmt.Errorf("couldn't validate the zpa policy forwarding (%s) operands, please make sure you are using valid inputs for APP type, LHS & RHS", req.Name)
 	}
+
 }
 
-func resourcePolicySetRead(d *schema.ResourceData, m interface{}) error {
+func resourcePolicyForwardingRuleRead(d *schema.ResourceData, m interface{}) error {
 	zClient := m.(*Client)
 
-	globalPolicySet, _, err := zClient.policysetglobal.Get()
+	globalPolicyForwarding, _, err := zClient.policysetglobal.GetBypass()
 	if err != nil {
 		return err
 	}
-	log.Printf("[INFO] Getting Policy Set Rule: globalPolicySet:%s id: %s\n", globalPolicySet.ID, d.Id())
-	resp, _, err := zClient.policysetrule.Get(globalPolicySet.ID, d.Id())
+	log.Printf("[INFO] Getting Policy Set Forwarding Rule: globalPolicySet:%s id: %s\n", globalPolicyForwarding.ID, d.Id())
+	resp, _, err := zClient.policysetrule.Get(globalPolicyForwarding.ID, d.Id())
 	if err != nil {
 		if obj, ok := err.(*client.ErrorResponse); ok && obj.IsObjectNotFound() {
-			log.Printf("[WARN] Removing policy rule %s from state because it no longer exists in ZPA", d.Id())
+			log.Printf("[WARN] Removing policy forwarding rule %s from state because it no longer exists in ZPA", d.Id())
 			d.SetId("")
 			return nil
 		}
@@ -257,7 +210,7 @@ func resourcePolicySetRead(d *schema.ResourceData, m interface{}) error {
 		return err
 	}
 
-	log.Printf("[INFO] Got Policy Set Rule:\n%+v\n", resp)
+	log.Printf("[INFO] Got Policy Set Forwarding Rule:\n%+v\n", resp)
 	d.SetId(resp.ID)
 	_ = d.Set("action", resp.Action)
 	_ = d.Set("action_id", resp.ActionID)
@@ -273,49 +226,47 @@ func resourcePolicySetRead(d *schema.ResourceData, m interface{}) error {
 	_ = d.Set("reauth_idle_timeout", resp.ReauthIdleTimeout)
 	_ = d.Set("reauth_timeout", resp.ReauthTimeout)
 	_ = d.Set("rule_order", resp.RuleOrder)
-	_ = d.Set("conditions", flattenPolicyRuleConditions(resp.Conditions))
-	_ = d.Set("app_server_groups", flattenPolicyRuleServerGroups(resp.AppServerGroups))
-	_ = d.Set("app_connector_groups", flattenPolicyRuleAppConnectorGroups(resp.AppConnectorGroups))
+	_ = d.Set("conditions", flattenPolicyForwardingConditions(resp.Conditions))
 
 	return nil
 }
 
-func resourcePolicySetUpdate(d *schema.ResourceData, m interface{}) error {
+func resourcePolicyForwardingRuleUpdate(d *schema.ResourceData, m interface{}) error {
 	zClient := m.(*Client)
-	globalPolicySet, _, err := zClient.policysetglobal.Get()
+	globalPolicyForwarding, _, err := zClient.policysetglobal.GetBypass()
 	if err != nil {
 		return err
 	}
 	ruleID := d.Id()
-	log.Printf("[INFO] Updating policy rule ID: %v\n", ruleID)
+	log.Printf("[INFO] Updating policy forwarding rule ID: %v\n", ruleID)
 	req := expandCreatePolicyRule(d)
 	if ValidateConditions(req.Conditions, zClient) {
-		if _, err := zClient.policysetrule.Update(globalPolicySet.ID, ruleID, &req); err != nil {
+		if _, err := zClient.policysetrule.Update(globalPolicyForwarding.ID, ruleID, &req); err != nil {
 			return err
 		}
 		if d.HasChange("rule_order") {
 			order, ok := d.GetOk("rule_order")
 			if ok {
-				reorder(order, globalPolicySet.ID, ruleID, zClient)
+				reorder(order, globalPolicyForwarding.ID, ruleID, zClient)
 			}
 		}
-		return resourcePolicySetRead(d, m)
+		return resourcePolicyForwardingRuleRead(d, m)
 	} else {
-		return fmt.Errorf("couldn't validate the zpa policy rule (%s) operands, please make sure you are using valid inputs for APP type, LHS & RHS", req.Name)
+		return fmt.Errorf("couldn't validate the zpa policy forwarding (%s) operands, please make sure you are using valid inputs for APP type, LHS & RHS", req.Name)
 	}
 
 }
 
-func resourcePolicySetDelete(d *schema.ResourceData, m interface{}) error {
+func resourcePolicyForwardingRuleDelete(d *schema.ResourceData, m interface{}) error {
 	zClient := m.(*Client)
-	globalPolicySet, _, err := zClient.policysetglobal.Get()
+	globalPolicyForwarding, _, err := zClient.policysetglobal.GetBypass()
 	if err != nil {
 		return err
 	}
 
-	log.Printf("[INFO] Deleting policy set rule with id %v\n", d.Id())
+	log.Printf("[INFO] Deleting policy forwarding rule with id %v\n", d.Id())
 
-	if _, err := zClient.policysetrule.Delete(globalPolicySet.ID, d.Id()); err != nil {
+	if _, err := zClient.policysetrule.Delete(globalPolicyForwarding.ID, d.Id()); err != nil {
 		return err
 	}
 
@@ -323,79 +274,32 @@ func resourcePolicySetDelete(d *schema.ResourceData, m interface{}) error {
 
 }
 
-func expandCreatePolicyRule(d *schema.ResourceData) policysetrule.PolicyRule {
+func expandCreatePolicyForwardingRule(d *schema.ResourceData) policysetrule.PolicyRule {
 	policySetID, ok := d.Get("policy_set_id").(string)
 	if !ok {
 		log.Printf("[ERROR] policy_set_id is not set\n")
 	}
 	log.Printf("[INFO] action_id:%v\n", d.Get("action_id"))
 	return policysetrule.PolicyRule{
-		Action:             d.Get("action").(string),
-		ActionID:           d.Get("action_id").(string),
-		CustomMsg:          d.Get("custom_msg").(string),
-		Description:        d.Get("description").(string),
-		ID:                 d.Get("id").(string),
-		Name:               d.Get("name").(string),
-		Operator:           d.Get("operator").(string),
-		PolicySetID:        policySetID,
-		PolicyType:         d.Get("policy_type").(string),
-		Priority:           d.Get("priority").(string),
-		ReauthDefaultRule:  d.Get("reauth_default_rule").(bool),
-		ReauthIdleTimeout:  d.Get("reauth_idle_timeout").(string),
-		ReauthTimeout:      d.Get("reauth_timeout").(string),
-		RuleOrder:          d.Get("rule_order").(string),
-		Conditions:         expandConditionSet(d),
-		AppServerGroups:    expandPolicySetRuleAppServerGroups(d),
-		AppConnectorGroups: expandPolicySetRuleAppConnectorGroups(d),
+		Action:            d.Get("action").(string),
+		ActionID:          d.Get("action_id").(string),
+		CustomMsg:         d.Get("custom_msg").(string),
+		Description:       d.Get("description").(string),
+		ID:                d.Get("id").(string),
+		Name:              d.Get("name").(string),
+		Operator:          d.Get("operator").(string),
+		PolicySetID:       policySetID,
+		PolicyType:        d.Get("policy_type").(string),
+		Priority:          d.Get("priority").(string),
+		ReauthDefaultRule: d.Get("reauth_default_rule").(bool),
+		ReauthIdleTimeout: d.Get("reauth_idle_timeout").(string),
+		ReauthTimeout:     d.Get("reauth_timeout").(string),
+		RuleOrder:         d.Get("rule_order").(string),
+		Conditions:        expandPolicyForwardingConditionSet(d),
 	}
 }
 
-func expandPolicySetRuleAppServerGroups(d *schema.ResourceData) []policysetrule.AppServerGroups {
-	appServerGroupsInterface, ok := d.GetOk("app_server_groups")
-	if ok {
-		appServer := appServerGroupsInterface.(*schema.Set)
-		log.Printf("[INFO] app server groups data: %+v\n", appServer)
-		var appServerGroups []policysetrule.AppServerGroups
-		for _, appServerGroup := range appServer.List() {
-			appServerGroup, _ := appServerGroup.(map[string]interface{})
-			if appServerGroup != nil {
-				for _, id := range appServerGroup["id"].([]interface{}) {
-					appServerGroups = append(appServerGroups, policysetrule.AppServerGroups{
-						ID: id.(string),
-					})
-				}
-			}
-		}
-		return appServerGroups
-	}
-
-	return []policysetrule.AppServerGroups{}
-}
-
-func expandPolicySetRuleAppConnectorGroups(d *schema.ResourceData) []policysetrule.AppConnectorGroups {
-	appConnectorGroupsInterface, ok := d.GetOk("app_connector_groups")
-	if ok {
-		appConnector := appConnectorGroupsInterface.(*schema.Set)
-		log.Printf("[INFO] app connector groups data: %+v\n", appConnector)
-		var appConnectorGroups []policysetrule.AppConnectorGroups
-		for _, appConnectorGroup := range appConnector.List() {
-			appConnectorGroup, _ := appConnectorGroup.(map[string]interface{})
-			if appConnectorGroup != nil {
-				for _, id := range appConnectorGroup["id"].([]interface{}) {
-					appConnectorGroups = append(appConnectorGroups, policysetrule.AppConnectorGroups{
-						ID: id.(string),
-					})
-				}
-
-			}
-		}
-		return appConnectorGroups
-	}
-
-	return []policysetrule.AppConnectorGroups{}
-}
-
-func expandConditionSet(d *schema.ResourceData) []policysetrule.Conditions {
+func expandPolicyForwardingConditionSet(d *schema.ResourceData) []policysetrule.Conditions {
 	conditionInterface, ok := d.GetOk("conditions")
 	if ok {
 		conditions := conditionInterface.([]interface{})
@@ -408,7 +312,7 @@ func expandConditionSet(d *schema.ResourceData) []policysetrule.Conditions {
 					ID:       conditionSet["id"].(string),
 					Negated:  conditionSet["negated"].(bool),
 					Operator: conditionSet["operator"].(string),
-					Operands: expandOperandsList(conditionSet["operands"]),
+					Operands: expandPolicyForwardingOperandsList(conditionSet["operands"]),
 				})
 			}
 		}
@@ -418,7 +322,7 @@ func expandConditionSet(d *schema.ResourceData) []policysetrule.Conditions {
 	return []policysetrule.Conditions{}
 }
 
-func expandOperandsList(ops interface{}) []policysetrule.Operands {
+func expandPolicyForwardingOperandsList(ops interface{}) []policysetrule.Operands {
 	if ops != nil {
 		operands := ops.([]interface{})
 		log.Printf("[INFO] operands data: %+v\n", operands)
@@ -443,21 +347,21 @@ func expandOperandsList(ops interface{}) []policysetrule.Operands {
 	}
 	return []policysetrule.Operands{}
 }
-func flattenPolicyRuleConditions(conditions []policysetrule.Conditions) []interface{} {
+func flattenPolicyForwardingConditions(conditions []policysetrule.Conditions) []interface{} {
 	ruleConditions := make([]interface{}, len(conditions))
 	for i, ruleConditionItems := range conditions {
 		ruleConditions[i] = map[string]interface{}{
 			"id":       ruleConditionItems.ID,
 			"negated":  ruleConditionItems.Negated,
 			"operator": ruleConditionItems.Operator,
-			"operands": flattenPolicyRuleOperands(ruleConditionItems.Operands),
+			"operands": flattenPolicyForwardingOperands(ruleConditionItems.Operands),
 		}
 	}
 
 	return ruleConditions
 }
 
-func flattenPolicyRuleOperands(conditionOperand []policysetrule.Operands) []interface{} {
+func flattenPolicyForwardingOperands(conditionOperand []policysetrule.Operands) []interface{} {
 	conditionOperands := make([]interface{}, len(conditionOperand))
 	for i, operandItems := range conditionOperand {
 		conditionOperands[i] = map[string]interface{}{
@@ -470,28 +374,4 @@ func flattenPolicyRuleOperands(conditionOperand []policysetrule.Operands) []inte
 	}
 
 	return conditionOperands
-}
-
-func flattenPolicyRuleServerGroups(appServerGroup []policysetrule.AppServerGroups) []interface{} {
-	result := make([]interface{}, 1)
-	mapIds := make(map[string]interface{})
-	ids := make([]string, len(appServerGroup))
-	for i, serverGroup := range appServerGroup {
-		ids[i] = serverGroup.ID
-	}
-	mapIds["id"] = ids
-	result[0] = mapIds
-	return result
-}
-
-func flattenPolicyRuleAppConnectorGroups(appConnectorGroups []policysetrule.AppConnectorGroups) []interface{} {
-	result := make([]interface{}, 1)
-	mapIds := make(map[string]interface{})
-	ids := make([]string, len(appConnectorGroups))
-	for i, group := range appConnectorGroups {
-		ids[i] = group.ID
-	}
-	mapIds["id"] = ids
-	result[0] = mapIds
-	return result
 }

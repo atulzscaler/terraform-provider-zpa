@@ -10,23 +10,21 @@ import (
 	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/validation"
 )
 
-func resourcePolicyForwarding() *schema.Resource {
+func resourcePolicyTimeoutRule() *schema.Resource {
 	return &schema.Resource{
-		Create:   resourcePolicyForwardingCreate,
-		Read:     resourcePolicyForwardingRead,
-		Update:   resourcePolicyForwardingUpdate,
-		Delete:   resourcePolicyForwardingDelete,
+		Create:   resourcePolicyTimeoutRuleCreate,
+		Read:     resourcePolicyTimeoutRuleRead,
+		Update:   resourcePolicyTimeoutRuleUpdate,
+		Delete:   resourcePolicyTimeoutRuleDelete,
 		Importer: &schema.ResourceImporter{},
 
 		Schema: map[string]*schema.Schema{
 			"action": {
 				Type:        schema.TypeString,
-				Optional:    true,
+				Required:    true,
 				Description: "  This is for providing the rule action.",
 				ValidateFunc: validation.StringInSlice([]string{
-					"BYPASS",
-					"INTERCEPT",
-					"INTERCEPT_ACCESSIBLE",
+					"RE_AUTH",
 				}, false),
 			},
 			"action_id": {
@@ -150,13 +148,11 @@ func resourcePolicyForwarding() *schema.Resource {
 											"APP",
 											"APP_GROUP",
 											"CLIENT_TYPE",
-											"CLOUD_CONNECTOR_GROUP",
 											"IDP",
 											"POSTURE",
 											"SAML",
 											"SCIM",
 											"SCIM_GROUP",
-											"TRUSTED_NETWORK",
 										}, false),
 									},
 								},
@@ -169,11 +165,11 @@ func resourcePolicyForwarding() *schema.Resource {
 	}
 }
 
-func resourcePolicyForwardingCreate(d *schema.ResourceData, m interface{}) error {
+func resourcePolicyTimeoutRuleCreate(d *schema.ResourceData, m interface{}) error {
 	zClient := m.(*Client)
 
-	req := expandCreatePolicyForwardingRule(d)
-	log.Printf("[INFO] Creating zpa policy forwarding rule with request\n%+v\n", req)
+	req := expandCreatePolicyTimeoutRule(d)
+	log.Printf("[INFO] Creating zpa policy timeout rule with request\n%+v\n", req)
 	if ValidateConditions(req.Conditions, zClient) {
 		policysetrule, _, err := zClient.policysetrule.Create(&req)
 		if err != nil {
@@ -184,25 +180,25 @@ func resourcePolicyForwardingCreate(d *schema.ResourceData, m interface{}) error
 		if ok {
 			reorder(order, policysetrule.PolicySetID, policysetrule.ID, zClient)
 		}
-		return resourcePolicyForwardingRead(d, m)
+		return resourcePolicyTimeoutRuleRead(d, m)
 	} else {
-		return fmt.Errorf("couldn't validate the zpa policy forwarding (%s) operands, please make sure you are using valid inputs for APP type, LHS & RHS", req.Name)
+		return fmt.Errorf("couldn't validate the zpa policy timeout rule (%s) operands, please make sure you are using valid inputs for APP type, LHS & RHS", req.Name)
 	}
 
 }
 
-func resourcePolicyForwardingRead(d *schema.ResourceData, m interface{}) error {
+func resourcePolicyTimeoutRuleRead(d *schema.ResourceData, m interface{}) error {
 	zClient := m.(*Client)
 
-	globalPolicyForwarding, _, err := zClient.policysetglobal.GetBypass()
+	globalPolicyTimeout, _, err := zClient.policysetglobal.GetReauth()
 	if err != nil {
 		return err
 	}
-	log.Printf("[INFO] Getting Policy Set Forwarding Rule: globalPolicySet:%s id: %s\n", globalPolicyForwarding.ID, d.Id())
-	resp, _, err := zClient.policysetrule.Get(globalPolicyForwarding.ID, d.Id())
+	log.Printf("[INFO] Getting Policy Set Timeout Rule: globalPolicySet:%s id: %s\n", globalPolicyTimeout.ID, d.Id())
+	resp, _, err := zClient.policysetrule.Get(globalPolicyTimeout.ID, d.Id())
 	if err != nil {
 		if obj, ok := err.(*client.ErrorResponse); ok && obj.IsObjectNotFound() {
-			log.Printf("[WARN] Removing policy forwarding rule %s from state because it no longer exists in ZPA", d.Id())
+			log.Printf("[WARN] Removing policy timeout rule %s from state because it no longer exists in ZPA", d.Id())
 			d.SetId("")
 			return nil
 		}
@@ -210,7 +206,7 @@ func resourcePolicyForwardingRead(d *schema.ResourceData, m interface{}) error {
 		return err
 	}
 
-	log.Printf("[INFO] Got Policy Set Forwarding Rule:\n%+v\n", resp)
+	log.Printf("[INFO] Got Policy Set Timeout Rule:\n%+v\n", resp)
 	d.SetId(resp.ID)
 	_ = d.Set("action", resp.Action)
 	_ = d.Set("action_id", resp.ActionID)
@@ -226,47 +222,46 @@ func resourcePolicyForwardingRead(d *schema.ResourceData, m interface{}) error {
 	_ = d.Set("reauth_idle_timeout", resp.ReauthIdleTimeout)
 	_ = d.Set("reauth_timeout", resp.ReauthTimeout)
 	_ = d.Set("rule_order", resp.RuleOrder)
-	_ = d.Set("conditions", flattenPolicyForwardingConditions(resp.Conditions))
+	_ = d.Set("conditions", flattenPolicyTimeoutConditions(resp.Conditions))
 
 	return nil
 }
 
-func resourcePolicyForwardingUpdate(d *schema.ResourceData, m interface{}) error {
+func resourcePolicyTimeoutRuleUpdate(d *schema.ResourceData, m interface{}) error {
 	zClient := m.(*Client)
-	globalPolicyForwarding, _, err := zClient.policysetglobal.GetBypass()
+	globalPolicyTimeout, _, err := zClient.policysetglobal.GetReauth()
 	if err != nil {
 		return err
 	}
 	ruleID := d.Id()
-	log.Printf("[INFO] Updating policy forwarding rule ID: %v\n", ruleID)
+	log.Printf("[INFO] Updating policy rule ID: %v\n", ruleID)
 	req := expandCreatePolicyRule(d)
 	if ValidateConditions(req.Conditions, zClient) {
-		if _, err := zClient.policysetrule.Update(globalPolicyForwarding.ID, ruleID, &req); err != nil {
+		if _, err := zClient.policysetrule.Update(globalPolicyTimeout.ID, ruleID, &req); err != nil {
 			return err
 		}
 		if d.HasChange("rule_order") {
 			order, ok := d.GetOk("rule_order")
 			if ok {
-				reorder(order, globalPolicyForwarding.ID, ruleID, zClient)
+				reorder(order, globalPolicyTimeout.ID, ruleID, zClient)
 			}
 		}
-		return resourcePolicyForwardingRead(d, m)
+		return resourcePolicyTimeoutRuleRead(d, m)
 	} else {
-		return fmt.Errorf("couldn't validate the zpa policy forwarding (%s) operands, please make sure you are using valid inputs for APP type, LHS & RHS", req.Name)
+		return fmt.Errorf("couldn't validate the zpa policy timeout (%s) operands, please make sure you are using valid inputs for APP type, LHS & RHS", req.Name)
 	}
-
 }
 
-func resourcePolicyForwardingDelete(d *schema.ResourceData, m interface{}) error {
+func resourcePolicyTimeoutRuleDelete(d *schema.ResourceData, m interface{}) error {
 	zClient := m.(*Client)
-	globalPolicyForwarding, _, err := zClient.policysetglobal.GetBypass()
+	globalPolicyTimeout, _, err := zClient.policysetglobal.GetReauth()
 	if err != nil {
 		return err
 	}
 
-	log.Printf("[INFO] Deleting policy forwarding rule with id %v\n", d.Id())
+	log.Printf("[INFO] Deleting Policy Timeout Rule with id %v\n", d.Id())
 
-	if _, err := zClient.policysetrule.Delete(globalPolicyForwarding.ID, d.Id()); err != nil {
+	if _, err := zClient.policysetrule.Delete(globalPolicyTimeout.ID, d.Id()); err != nil {
 		return err
 	}
 
@@ -274,7 +269,7 @@ func resourcePolicyForwardingDelete(d *schema.ResourceData, m interface{}) error
 
 }
 
-func expandCreatePolicyForwardingRule(d *schema.ResourceData) policysetrule.PolicyRule {
+func expandCreatePolicyTimeoutRule(d *schema.ResourceData) policysetrule.PolicyRule {
 	policySetID, ok := d.Get("policy_set_id").(string)
 	if !ok {
 		log.Printf("[ERROR] policy_set_id is not set\n")
@@ -295,11 +290,11 @@ func expandCreatePolicyForwardingRule(d *schema.ResourceData) policysetrule.Poli
 		ReauthIdleTimeout: d.Get("reauth_idle_timeout").(string),
 		ReauthTimeout:     d.Get("reauth_timeout").(string),
 		RuleOrder:         d.Get("rule_order").(string),
-		Conditions:        expandPolicyForwardingConditionSet(d),
+		Conditions:        expandPolicyTimeoutConditionSet(d),
 	}
 }
 
-func expandPolicyForwardingConditionSet(d *schema.ResourceData) []policysetrule.Conditions {
+func expandPolicyTimeoutConditionSet(d *schema.ResourceData) []policysetrule.Conditions {
 	conditionInterface, ok := d.GetOk("conditions")
 	if ok {
 		conditions := conditionInterface.([]interface{})
@@ -312,7 +307,7 @@ func expandPolicyForwardingConditionSet(d *schema.ResourceData) []policysetrule.
 					ID:       conditionSet["id"].(string),
 					Negated:  conditionSet["negated"].(bool),
 					Operator: conditionSet["operator"].(string),
-					Operands: expandPolicyForwardingOperandsList(conditionSet["operands"]),
+					Operands: expandPolicyTimeoutOperandsList(conditionSet["operands"]),
 				})
 			}
 		}
@@ -322,7 +317,7 @@ func expandPolicyForwardingConditionSet(d *schema.ResourceData) []policysetrule.
 	return []policysetrule.Conditions{}
 }
 
-func expandPolicyForwardingOperandsList(ops interface{}) []policysetrule.Operands {
+func expandPolicyTimeoutOperandsList(ops interface{}) []policysetrule.Operands {
 	if ops != nil {
 		operands := ops.([]interface{})
 		log.Printf("[INFO] operands data: %+v\n", operands)
@@ -347,21 +342,21 @@ func expandPolicyForwardingOperandsList(ops interface{}) []policysetrule.Operand
 	}
 	return []policysetrule.Operands{}
 }
-func flattenPolicyForwardingConditions(conditions []policysetrule.Conditions) []interface{} {
+func flattenPolicyTimeoutConditions(conditions []policysetrule.Conditions) []interface{} {
 	ruleConditions := make([]interface{}, len(conditions))
 	for i, ruleConditionItems := range conditions {
 		ruleConditions[i] = map[string]interface{}{
 			"id":       ruleConditionItems.ID,
 			"negated":  ruleConditionItems.Negated,
 			"operator": ruleConditionItems.Operator,
-			"operands": flattenPolicyForwardingOperands(ruleConditionItems.Operands),
+			"operands": flattenPolicyTimeoutOperands(ruleConditionItems.Operands),
 		}
 	}
 
 	return ruleConditions
 }
 
-func flattenPolicyForwardingOperands(conditionOperand []policysetrule.Operands) []interface{} {
+func flattenPolicyTimeoutOperands(conditionOperand []policysetrule.Operands) []interface{} {
 	conditionOperands := make([]interface{}, len(conditionOperand))
 	for i, operandItems := range conditionOperand {
 		conditionOperands[i] = map[string]interface{}{
