@@ -14,14 +14,14 @@ The **zpa_policy_timeout** resource creates a policy timeout rule in the Zscaler
 ## Example Usage
 
 ```hcl
-resource "zpa_policy_timeout" "contractors_browser_access" {
-  name                          = "Contractors Browser Access"
-  description                   = "Contractors Browser Access"
+resource "zpa_policy_timeout" "example_timeout_access_rule" {
+  name                          = "Example Timeout Access Rule"
+  description                   = "Example Timeout Access Rule"
   action                        = "RE_AUTH"
   reauth_idle_timeout           = "600"
   reauth_timeout                = "172800"
   operator                      = "AND"
-  policy_set_id                 = data.zpa_policy_timeout.global_policy_id.id
+  policy_set_id                 = data.zpa_global_policy_timeout.policyset.id
 
   conditions {
     negated = false
@@ -45,7 +45,7 @@ resource "zpa_policy_timeout" "contractors_browser_access" {
 ```
 
 ```hcl
-data "zpa_policy_timeout" "global_policy_id" {
+data "zpa_global_policy_timeout" "policyset" {
 }
 ```
 
