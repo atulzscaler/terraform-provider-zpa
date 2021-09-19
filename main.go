@@ -5,7 +5,7 @@ import (
 	"flag"
 	"log"
 
-	"github.com/SecurityGeekIO/terraform-provider-zpa/zscaler"
+	"github.com/SecurityGeekIO/terraform-provider-zpa/zpa"
 	"github.com/hashicorp/terraform-plugin-sdk/v2/plugin"
 )
 
@@ -18,13 +18,13 @@ func main() {
 	if debugMode {
 		err := plugin.Debug(context.Background(), "github.com/SecurityGeekIO/terraform-provider-zpa",
 			&plugin.ServeOpts{
-				ProviderFunc: zscaler.Provider,
+				ProviderFunc: zpa.Provider,
 			})
 		if err != nil {
 			log.Println(err.Error())
 		}
 	} else {
 		plugin.Serve(&plugin.ServeOpts{
-			ProviderFunc: zscaler.Provider})
+			ProviderFunc: zpa.Provider})
 	}
 }
