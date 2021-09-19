@@ -40,13 +40,13 @@ func resourceApplicationSegment() *schema.Resource {
 			},
 			"tcp_port_ranges": {
 				Type:        schema.TypeList,
-				Optional:    true,
+				Required:    true,
 				Description: "TCP port ranges used to access the app.",
 				Elem:        &schema.Schema{Type: schema.TypeInt},
 			},
 			"udp_port_ranges": {
 				Type:        schema.TypeList,
-				Optional:    true,
+				Required:    true,
 				Description: "UDP port ranges used to access the app.",
 				Elem:        &schema.Schema{Type: schema.TypeInt},
 			},
@@ -135,13 +135,13 @@ func resourceApplicationSegment() *schema.Resource {
 			},
 			"server_groups": {
 				Type:        schema.TypeSet,
-				Optional:    true,
+				Required:    true,
 				Description: "List of the server group IDs.",
 				Elem: &schema.Resource{
 					Schema: map[string]*schema.Schema{
 						"id": {
 							Type:     schema.TypeList,
-							Optional: true,
+							Required: true,
 							Elem: &schema.Schema{
 								Type: schema.TypeString,
 							},
