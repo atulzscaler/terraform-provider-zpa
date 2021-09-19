@@ -22,6 +22,7 @@ Building The Provider (Terraform v0.12+)
  $ git clone https://github.com/SecurityGeekIO/terraform-provider-zpa.git
 
 To clone on windows
+
 .. code-block:: console
 
  $ mkdir %GOPATH%\src\github.com\terraform-providers
