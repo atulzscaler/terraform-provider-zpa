@@ -50,7 +50,11 @@ func resourceApplicationServer() *schema.Resource {
 			},
 			"config_space": {
 				Type:     schema.TypeString,
-				Computed: true,
+				Optional: true,
+				ValidateFunc: validation.StringInSlice([]string{
+					"DEFAULT",
+					"SIEM",
+				}, false),
 			},
 			"id": {
 				Type:     schema.TypeString,
