@@ -4,7 +4,7 @@ subcategory: "Policy Access Forwarding Rule"
 layout: "zpa"
 page_title: "ZPA: policy_forwarding_rule"
 description: |-
-  Creates a ZPA Policy Timeout Rule.
+  Creates a ZPA Policy Access Forwarding Rule.
   
 ---
 # zpa_policy_forwarding_rule (Resource)
