@@ -13,7 +13,7 @@ resource "zpa_policy_forwarding_rule" "sgio_devops_bypass" {
       name =  "SGIO DevOps Servers"
       object_type = "APP"
       lhs = "id"
-      rhs = zpa_application_segment.as_sgio_devops.id
+      rhs_list = [zpa_application_segment.as_sgio_devops.id]
     }
   }
   conditions {
@@ -22,7 +22,7 @@ resource "zpa_policy_forwarding_rule" "sgio_devops_bypass" {
     operands {
       object_type = "SCIM_GROUP"
       lhs = data.zpa_idp_controller.sgio_user_okta.id
-      rhs = data.zpa_scim_groups.engineering.id
+      rhs_list = [data.zpa_scim_groups.engineering.id]
       idp_id = data.zpa_idp_controller.sgio_user_okta.id
     }
   }

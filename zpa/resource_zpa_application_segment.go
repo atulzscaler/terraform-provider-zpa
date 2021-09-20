@@ -46,7 +46,7 @@ func resourceApplicationSegment() *schema.Resource {
 			},
 			"udp_port_ranges": {
 				Type:        schema.TypeList,
-				Required:    true,
+				Optional:    true,
 				Description: "UDP port ranges used to access the app.",
 				Elem:        &schema.Schema{Type: schema.TypeInt},
 			},

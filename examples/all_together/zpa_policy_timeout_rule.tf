@@ -23,7 +23,7 @@ resource "zpa_policy_timeout_rule" "temp_contractors_browser_access" {
     operands {
       object_type = "SCIM_GROUP"
       lhs = data.zpa_idp_controller.sgio_user_okta.id
-      rhs = data.zpa_scim_groups.contractors.id
+      rhs_list = [data.zpa_scim_groups.contractors.id]
       idp_id = data.zpa_idp_controller.sgio_user_okta.id
     }
   }

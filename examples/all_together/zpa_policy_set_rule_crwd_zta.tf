@@ -12,7 +12,7 @@ resource "zpa_policy_access_rule" "crwd_zta_score_40" {
     operands {
       object_type = "APP"
       lhs = "id"
-      rhs = zpa_application_segment.as_intranet_web_apps.id
+      rhs_list = [zpa_application_segment.as_intranet_web_apps.id]
     }
   }
   conditions {
@@ -30,7 +30,7 @@ resource "zpa_policy_access_rule" "crwd_zta_score_40" {
     operands {
       object_type = "SAML"
       lhs = data.zpa_saml_attribute.email_sgio_user_sso.id
-      rhs = "alison.abbas@securitygeek.io"
+      rhs_list = ["alison.abbas@securitygeek.io"]
       idp_id = data.zpa_idp_controller.sgio_user_okta.id
     }
   }
@@ -49,7 +49,7 @@ resource "zpa_policy_access_rule" "crwd_zta_score_80" {
     operands {
       object_type = "APP"
       lhs = "id"
-      rhs = zpa_application_segment.as_intranet_web_apps.id
+      rhs_list = [zpa_application_segment.as_intranet_web_apps.id]
     }
   }
   conditions {
@@ -67,7 +67,7 @@ resource "zpa_policy_access_rule" "crwd_zta_score_80" {
     operands {
       object_type = "SAML"
       lhs = data.zpa_saml_attribute.email_sgio_user_sso.id
-      rhs = "alison.abbas@securitygeek.io"
+      rhs_list = ["alison.abbas@securitygeek.io"]
       idp_id = data.zpa_idp_controller.sgio_user_okta.id
     }
   }
@@ -86,7 +86,7 @@ resource "zpa_policy_access_rule" "crwd_zpa_pre_zta" {
     operands {
       object_type = "APP"
       lhs = "id"
-      rhs = zpa_application_segment.as_intranet_web_apps.id
+      rhs_list = [zpa_application_segment.as_intranet_web_apps.id]
     }
   }
   conditions {
@@ -104,7 +104,7 @@ resource "zpa_policy_access_rule" "crwd_zpa_pre_zta" {
     operands {
       object_type = "SAML"
       lhs = data.zpa_saml_attribute.email_sgio_user_sso.id
-      rhs = "alison.abbas@securitygeek.io"
+      rhs_list = ["alison.abbas@securitygeek.io"]
       idp_id = data.zpa_idp_controller.sgio_user_okta.id
     }
   }
