@@ -28,7 +28,7 @@ resource "zpa_policy_forwarding_rule" "corporate_services_bypass_rule" {
     operands {
       object_type = "APP"
       lhs = "id"
-      rhs = zpa_application_segment.as_corporate_services.id
+      rhs = [zpa_application_segment.as_corporate_services.id]
     }
   }
   conditions {
@@ -37,7 +37,7 @@ resource "zpa_policy_forwarding_rule" "corporate_services_bypass_rule" {
     operands {
       object_type = "SCIM_GROUP"
       lhs = data.zpa_idp_controller.idp_name.id
-      rhs = data.zpa_scim_groups.engineering.id
+      rhs = [data.zpa_scim_groups.engineering.id]
     }
   }
 }
