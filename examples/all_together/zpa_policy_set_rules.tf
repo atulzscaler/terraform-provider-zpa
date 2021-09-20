@@ -51,30 +51,14 @@ resource "zpa_policy_access_rule" "as_intranet_web_apps" {
     operands {
       object_type = "SCIM_GROUP"
       lhs = data.zpa_idp_controller.sgio_user_okta.id
-      rhs_list = [data.zpa_scim_groups.engineering.id,
-            data.zpa_scim_groups.sales.id,
-            data.zpa_scim_groups.finance.id,
-            data.zpa_scim_groups.executives.id]
+      rhs_list = [
+                data.zpa_scim_groups.engineering.id,
+                data.zpa_scim_groups.sales.id,
+                data.zpa_scim_groups.finance.id,
+                data.zpa_scim_groups.executives.id
+              ]
       idp_id = data.zpa_idp_controller.sgio_user_okta.id
     }
-    // operands {
-    //   object_type = "SCIM_GROUP"
-    //   lhs = data.zpa_idp_controller.sgio_user_okta.id
-    //   rhs = data.zpa_scim_groups.sales.id
-    //   idp_id = data.zpa_idp_controller.sgio_user_okta.id
-    // }
-    // operands {
-    //   object_type = "SCIM_GROUP"
-    //   lhs = data.zpa_idp_controller.sgio_user_okta.id
-    //   rhs = data.zpa_scim_groups.finance.id
-    //   idp_id = data.zpa_idp_controller.sgio_user_okta.id
-    // }
-    // operands {
-    //   object_type = "SCIM_GROUP"
-    //   lhs = data.zpa_idp_controller.sgio_user_okta.id
-    //   rhs = data.zpa_scim_groups.executives.id
-    //   idp_id = data.zpa_idp_controller.sgio_user_okta.id
-    // }
   }
 }
 
@@ -106,18 +90,6 @@ resource "zpa_policy_access_rule" "browser_access_apps" {
                   data.zpa_scim_groups.executives.id]
       idp_id = data.zpa_idp_controller.sgio_user_okta.id
     }
-    // operands {
-    //   object_type = "SCIM_GROUP"
-    //   lhs = data.zpa_idp_controller.sgio_user_okta.id
-    //   rhs = data.zpa_scim_groups.finance.id
-    //   idp_id = data.zpa_idp_controller.sgio_user_okta.id
-    // }
-    // operands {
-    //   object_type = "SCIM_GROUP"
-    //   lhs = data.zpa_idp_controller.sgio_user_okta.id
-    //   rhs = data.zpa_scim_groups.executives.id
-    //   idp_id = data.zpa_idp_controller.sgio_user_okta.id
-    // }
   }
 }
 
@@ -145,29 +117,13 @@ resource "zpa_policy_access_rule" "all_other_services" {
     operands {
       object_type = "SCIM_GROUP"
       lhs = data.zpa_idp_controller.sgio_user_okta.id
-      rhs_list = [data.zpa_scim_groups.engineering.id,
-             data.zpa_scim_groups.sales.id,
-             data.zpa_scim_groups.finance.id,
-             data.zpa_scim_groups.executives.id]
+      rhs_list = [
+                data.zpa_scim_groups.engineering.id,
+                data.zpa_scim_groups.sales.id,
+                data.zpa_scim_groups.finance.id,
+                data.zpa_scim_groups.executives.id
+              ]
       idp_id = data.zpa_idp_controller.sgio_user_okta.id
     }
-    // operands {
-    //   object_type = "SCIM_GROUP"
-    //   lhs = data.zpa_idp_controller.sgio_user_okta.id
-    //   rhs = data.zpa_scim_groups.sales.id
-    //   idp_id = data.zpa_idp_controller.sgio_user_okta.id
-    // }
-    // operands {
-    //   object_type = "SCIM_GROUP"
-    //   lhs = data.zpa_idp_controller.sgio_user_okta.id
-    //   rhs = data.zpa_scim_groups.finance.id
-    //   idp_id = data.zpa_idp_controller.sgio_user_okta.id
-    // }
-    // operands {
-    //   object_type = "SCIM_GROUP"
-    //   lhs = data.zpa_idp_controller.sgio_user_okta.id
-    //   rhs = data.zpa_scim_groups.executives.id
-    //   idp_id = data.zpa_idp_controller.sgio_user_okta.id
-    // }
   }
 }
