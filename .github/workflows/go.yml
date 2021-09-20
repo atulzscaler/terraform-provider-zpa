@@ -25,7 +25,7 @@ jobs:
       run: make fmtcheck
       
     - name: Build
-      run: make build
+      run: make build13
       
   lint:
     name: "Run static analysis"
