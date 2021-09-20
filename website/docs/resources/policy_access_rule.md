@@ -36,7 +36,7 @@ resource "zpa_policy_access_rule" "gf_engineering" {
     operands {
       object_type = "SCIM_GROUP"
       lhs = data.zpa_idp_controller.idp_name.id
-      rhs = data.zpa_scim_groups.engineering.id
+      rhs = [data.zpa_scim_groups.engineering.id]
     }
   }
 }
