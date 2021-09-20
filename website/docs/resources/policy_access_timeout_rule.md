@@ -38,7 +38,7 @@ resource "zpa_policy_timeout_rule" "example_timeout_access_rule" {
     operands {
       object_type = "SCIM_GROUP"
       lhs = data.zpa_idp_controller.idp_name.id
-      rhs = data.zpa_scim_groups.engineering.id
+      rhs = [data.zpa_scim_groups.engineering.id]
     }
   }
 }
