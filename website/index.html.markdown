@@ -37,8 +37,10 @@ provider "zpa" {
   zpa_client_secret     = "xxxxxxxxxxxxxxxx"
   zpa_customer_id       = "xxxxxxxxxxxxxxxx"
 }
+```
 
 ### Environment variables
+
 You can provide credentials via the `ZPA_CLIENT_ID`, `ZPA_CLIENT_SECRET`, `ZPA_CUSTOMER_ID` environment variables, representing your ZPA API key credentials and customer ID, of your ZPA account, respectively.
 
 ```hcl
