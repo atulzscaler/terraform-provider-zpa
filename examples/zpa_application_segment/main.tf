@@ -1,3 +1,4 @@
+// Create Application Segment
 resource "zpa_application_segment" "crm_application" {
     name = "CRM Application"
     description = "CRM Application"
