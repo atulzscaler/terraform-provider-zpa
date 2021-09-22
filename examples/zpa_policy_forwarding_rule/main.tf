@@ -1,8 +1,8 @@
 // Create Policy Forwarding Rule
-resource "zpa_policy_forwarding_rule" "" {
-  name                          = "example"
-  description                   = "example"
-  action                        = "INTERCEPT_ACCESSIBLE"
+resource "zpa_policy_forwarding_rule" "crm_application_rule" {
+  name                          = "CRM Application"
+  description                   = "CRM Application"
+  action                        = "BYPASS"
   operator = "AND"
   policy_set_id = data.zpa_global_policy_forwarding.policyset.id
 
