@@ -1,6 +1,5 @@
 package zpa
 
-/*
 import (
 	"fmt"
 	"testing"
@@ -82,5 +81,3 @@ func testAccDataSourceApplicationSegment(name string) resource.TestCheckFunc {
 		return nil
 	}
 }
-
-*/
