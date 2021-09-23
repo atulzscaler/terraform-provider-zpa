@@ -1,3 +1,5 @@
+[![Build Status](https://app.travis-ci.com/SecurityGeekIO/terraform-provider-zpa.svg?token=Djmu8v8CsRiipfYMXaRA&branch=master)](https://app.travis-ci.com/SecurityGeekIO/terraform-provider-zpa)
+
 Terraform Provider for ☁️Zscaler Private Access☁️
 =========================================================================
 
