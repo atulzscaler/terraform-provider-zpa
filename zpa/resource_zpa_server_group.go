@@ -113,8 +113,8 @@ func resourceServerGroupCreate(d *schema.ResourceData, m interface{}) error {
 	req := expandServerGroup(d)
 	log.Printf("[INFO] Creating zpa server group with request\n%+v\n", req)
 	if len(req.Servers) > 0 && req.DynamicDiscovery {
-		log.Printf("[ERROR] An application server can only be attached to a server group when DynamicDiscovery is disabled\n")
-		return fmt.Errorf("an application server can only be attached to a server group when DynamicDiscovery is disabled")
+		log.Printf("[ERROR] An application server can only be attached to a server when DynamicDiscovery is disabled\n")
+		return fmt.Errorf("an application server can only be attached to a server when DynamicDiscovery is disabled")
 	}
 	if !req.DynamicDiscovery && len(req.Servers) == 0 {
 		log.Printf("[ERROR] Servers must not be empty when DynamicDiscovery is disabled\n")
@@ -167,8 +167,8 @@ func resourceServerGroupUpdate(d *schema.ResourceData, m interface{}) error {
 	log.Printf("[INFO] Updating server group ID: %v\n", id)
 	req := expandServerGroup(d)
 	if (d.HasChange("servers") || d.HasChange("dynamic_discovery")) && req.DynamicDiscovery && len(req.Servers) > 0 {
-		log.Printf("[ERROR] Can't update the server group: an application server can only be attached to a server group when DynamicDiscovery is disabled\n")
-		return fmt.Errorf("can't perform the changes: an application server can only be attached to a server group when DynamicDiscovery is disabled")
+		log.Printf("[ERROR] Can't update the server group: an application server can only be attached to a server when DynamicDiscovery is disabled\n")
+		return fmt.Errorf("can't perform the changes: an application server can only be attached to a server when DynamicDiscovery is disabled")
 	}
 	if (d.HasChange("servers") || d.HasChange("dynamic_discovery")) && !req.DynamicDiscovery && len(req.Servers) == 0 {
 		log.Printf("[ERROR] Can't update server group: servers must not be empty when DynamicDiscovery is disabled\n")
